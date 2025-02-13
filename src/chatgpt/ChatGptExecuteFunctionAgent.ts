@@ -265,11 +265,16 @@ export namespace ChatGptExecuteFunctionAgent {
         );
       // EXECUTE FUNCTION
       try {
-        const value: any = await call.operation.controller.execute({
-          application: call.operation.controller.application,
-          function: call.operation.function,
-          arguments: call.arguments,
-        });
+        const value: any =
+          typeof call.operation.controller.execute === "function"
+            ? await call.operation.controller.execute({
+                application: call.operation.controller.application,
+                function: call.operation.function,
+                arguments: call.arguments,
+              })
+            : await (call.operation.controller.execute as any)[
+                call.operation.function.name
+              ](call.arguments);
         return WrtnAgentPromptFactory.execute({
           type: "execute",
           protocol: "class",
