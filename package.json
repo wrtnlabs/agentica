@@ -1,6 +1,6 @@
 {
   "name": "@wrtnlabs/agent",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "typings": "lib/index.d.ts",
@@ -74,6 +74,9 @@
     "typia": "^7.6.4"
   },
   "dependencies": {
+    "@samchon/openapi": "^2.4.3",
+    "openai": "^4.82.0",
+    "typia": "^7.6.4",
     "uuid": "^11.0.4"
   },
   "peerDependencies": {
