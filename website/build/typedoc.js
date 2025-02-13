@@ -7,27 +7,34 @@ const main = async () => {
   await fs.promises.writeFile(
     `${__dirname}/../typedoc-json/openapi.json`,
     await fetch("https://samchon.github.io/openapi/api/openapi.json").then(
-      (r) => r.text()
+      (r) => r.text(),
     ),
-    "utf8"
+    "utf8",
+  );
+  await fs.promises.writeFile(
+    `${__dirname}/../typedoc-json/typia.json`,
+    await fetch("https://typia.io/api/typia.json").then((r) => r.text()),
+    "utf8",
   );
 
-  const execute = (str) =>
-    cp.execSync(str, {
+  cp.execSync("npx typedoc --json website/typedoc-json/agent.json", {
+    cwd: `${__dirname}/../..`,
+    stdio: "inherit",
+  });
+  cp.execSync(
+    `npx typedoc --entryPointStrategy merge "typedoc-json/*.json" --plugin typedoc-github-theme --theme typedoc-github-theme --out public/api`,
+    {
       cwd: `${__dirname}/..`,
       stdio: "inherit",
-    });
-  execute("npx typedoc --json typedoc-json/agent.json");
-  execute(
-    `npx typedoc --entryPointStrategy merge "typedoc-json/*.json" --plugin typedoc-github-theme --theme typedoc-github-theme`
+    },
   );
   await fs.promises.writeFile(
     `${__dirname}/../public/api/agent.json`,
     await fs.promises.readFile(
       `${__dirname}/../typedoc-json/agent.json`,
-      "utf8"
+      "utf8",
     ),
-    "utf8"
+    "utf8",
   );
 };
 main().catch((error) => {
