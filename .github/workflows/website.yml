@@ -2,11 +2,12 @@ name: website
 on: 
   push: 
     branches:
-      - master
+      - main
     paths:
       - 'src/**'
       - 'website/**'
       - 'package.json'
+      - .github/workflows/website.yml
 jobs:
   website:
     runs-on: ubuntu-latest
