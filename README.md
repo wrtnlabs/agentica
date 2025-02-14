@@ -8,11 +8,11 @@
 
 The simplest AI agent library, specialized in **LLM function calling**.
 
-`@wrtnlabs/agent` is the simplest AI agent library specialized for LLM (Large Language Model) function calling. You can provide functions call by *Swagger/OpenAPI* document or *TypeScript class type*, and it will make everything possible. *Super AI Chatbot* development, or *Multi-Agent Orchestration*, all of them can be realized by the function calling.
+`@wrtnlabs/agent` is the simplest AI agent library specialized for LLM (Large Language Model) function calling. You can provide functions to call by *Swagger/OpenAPI* document or *TypeScript class type*, and it will make everything possible. *Super AI Chatbot* development, or *Multi-Agent Orchestration*, all of them can be realized by the function calling.
 
-For example, if you provide **Swagger document** of a Shopping Mall Server, `@wrtnlabs/agent` will compose **Super AI Chatbot** application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just delivering the Swagger document.
+For example, if you provide **Swagger document** of a Shopping Mall Server, `@wrtnlabs/agent` will compose **Super AI Chatbot** application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just by delivering the Swagger document.
 
-Also, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to deelop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. `@wrtnlabs/agent` will centralize and realize the multi-agent orchestration through function calling.
+Also, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. `@wrtnlabs/agent` will centralize and realize the multi-agent orchestration through function calling.
 
 > https://github.com/user-attachments/assets/01604b53-aca4-41cb-91aa-3faf63549ea6
 >
@@ -305,13 +305,15 @@ And `@wrtnlabs/agent` enters to a loop statement until the candidate functions t
 Such LLM (Large Language Model) function calling strategy separating `selector`, `executor`, and `describer` is the key logic of `@wrtnlabs/agent`.
 
 ### Validation Feedback
-Is LLM function calling feature is perfect? 
+Is LLM function calling perfect? 
 
-The answer is not, and LLM providers like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an `Array<string>` type, LLM often fills it just by a `string` typed value.
+The answer is not, and LLM (Large Language Model) providers like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an `Array<string>` type, LLM often fills it just by a `string` typed value.
 
-Therefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the validation errors and let the LLM to retry the function calling. And `@wrtnlabs/agent` is utilizing [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.applicationOfValidate<Class, Model>()`](https://typia.io/docs/llm/application/#applicationofvalidate) functions for the validation feedback, for the perfect runtime validation.
+Therefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the most detailed validation errors, and let the LLM to retry the function calling referencing the validation errors.
 
-Such validation feedback strategy and combination with typia's runtime validator, `@wrtnlabs/agent` has achieved the most ideal LLM function calling.
+About the validation feedback, `@wrtnlabs/agent` is utilizing [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.applicationOfValidate<Class, Model>()`](https://typia.io/docs/llm/application/#applicationofvalidate) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.
+
+Such validation feedback strategy and combination with `typia` runtime validator, `@wrtnlabs/agent` has achieved the most ideal LLM function calling.
 
 Components               | `typia` | `TypeBox` | `ajv` | `io-ts` | `zod` | `C.V.`
 -------------------------|--------|-----------|-------|---------|-------|------------------
