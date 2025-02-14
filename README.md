@@ -185,7 +185,7 @@ Just deliver the TypeScript type to the `@wrtnlabs/agent`, and start conversatio
 
 From now on, every TypeScript classes you've developed can be the AI chatbot.
 
-### Multi-agent Orchestration
+### Multi Agent Orchestration
 ```typescript
 import { WrtnAgent } from "@wrtnlabs/agent";
 import typia from "typia";
@@ -245,7 +245,7 @@ In the `@wrtnlabs/agent`, you can implement multi-agent orchestration super easi
 
 Just develop a TypeScript class which contains agent feature like Vector Store, and just deliver the TypeScript class type to the `@wrtnlabs/agent` like above. The `@wrtnlabs/agent` will centralize and realize the multi-agent orchestration by LLM function calling strategy to the TypeScript class.
 
-And then the agent will ride on a loop until 
+
 
 
 ## Principles
@@ -311,7 +311,7 @@ The answer is not, and LLM providers like OpenAI take a lot of type level mistak
 
 Therefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the validation errors and let the LLM to retry the function calling. And `@wrtnlabs/agent` is utilizing [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.applicationOfValidate<Class, Model>()`](https://typia.io/docs/llm/application/#applicationofvalidate) functions for the validation feedback, for the perfect runtime validation.
 
-With the validation feedback strategy and combination with typia's runtime validator, `@wrtnlabs/agent`
+Such validation feedback strategy and combination with typia's runtime validator, `@wrtnlabs/agent` has achieved the most ideal LLM function calling.
 
 Components               | `typia` | `TypeBox` | `ajv` | `io-ts` | `zod` | `C.V.`
 -------------------------|--------|-----------|-------|---------|-------|------------------
@@ -366,3 +366,80 @@ With the v3.1 emended OpenAPI document, `@samchon/openapi` converts it to a migr
 > If directly convert from each version of OpenAPI specification to specific LLM's function calling schema, I have to make much more converters increased by cartesian product. In current models, number of converters would be 12 = 3 x 4.
 >
 > However, if define intermediate schema, number of converters are shrunk to plus operation. In current models, I just need to develop only (7 = 3 + 4) converters, and this is the reason why I've defined intermediate specification. This way is economic.
+
+
+
+
+## Roadmap
+### Guide Documents
+In here README document, `@wrtnlabs/agent` is introducing its key concepts, principles, and demonstrating some examples. 
+
+However, this contents are not fully enough for new comers of AI Chatbot development. We need much more guide documents and example projects are required for education. We have to guide backend developers to write proper definitions optimized for LLM function calling. We should introduce the best way of multi-agent orchestration implementation.
+
+We'll write such fully detailed guide documents until 2025-03-31, and we will continuously release documents that are in the middle of being completed.
+
+### Playground
+https://nestia.io/chat/playground
+
+I had developed Swagger AI chatbot playground website for a long time ago.
+
+However, the another part obtaining function schemas from TypeScript class type, it is not prepared yet. I'll make the TypeScript class type based playground website by embedding TypeScript compiler (`tsc`).
+
+The new playground website would be published until 2025-03-15.
+
+### WebSocket Module
+```typescript
+import { 
+  IWrtnAgentEvent,
+  IWrtnAgentHeader,
+  IWrtnAgentListener,
+  IWrtnAgentService 
+} from "@wrtnlabs/agent";
+import { Driver, WebSocketConnector } from "tgrid";
+
+const main = async (): Promise<void> => {
+  const connector: WebSocketConnector<
+    IWrtnAgentHeader,
+    IWrtnAgentListener,
+    IWrtnAgentService
+  > = new WebSocketConnector(
+    {
+      locale: "en-US",
+    } satisfies IWrtnAgentHeader,
+    {
+      // EVENT LISTENERS
+      conversate: async (event: IWrtnAgentEvent.IConversate) => {},
+      select: async (event: IWrtnAgentEvent.ISelect) => {},
+      execute: async (event: IWrtnAgentEvent.IExecute) => {},
+      describe: async (event: IWrtnAgentEvent.IDescribe) => {},
+    } satisfies IWrtnAgentService,
+  );
+  await connector.connect("http://localhost:3000/chat");
+
+  // CALL SERVER'S FUNCTION
+  const service: Driver<IWrtnAgentService> = connector.getDriver();
+  await service.conversate("Hello, what you can do?");
+};
+main().catch(console.error);
+```
+
+`@wrtnlabs/agent` will provider WebSocket module of RPC (Remote Procedure Call) paradigm.
+
+It will help easy integration with agent backend server and AI chatbot frontend application.
+
+We're going to support this feature until 2025-02-28.
+
+### LLM Providers
+```mermaid
+flowchart
+OpenAI("<b><u>OpenAI</u></b>")
+Claude
+Llama
+Gemini
+```
+
+Currently, `@wrtnlabs/agent` supports only OpenAI. 
+
+It is because `@wrtnlabs/agent` is still in the POC (Proof of Concept) and demonstration stage. However, even nthough OpenAI is the most famous model in the AI world, `@wrtnlabs/agent` have to support much more models for broad users.
+
+We're going to support much more models until 2025-04-30.
