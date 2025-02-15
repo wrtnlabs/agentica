@@ -1,5 +1,5 @@
 # `@wrtnlabs/agent`
-![Key Concept Gear Diagram](https://github.com/user-attachments/assets/828a43d0-ba2a-4f05-a1b1-6048dcdb2ffc)
+![Key Concept Gear Diagram](https://github.com/user-attachments/assets/2cdb6e05-77f0-419a-ab7f-539b3d2bcbc5)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agent/blob/master/LICENSE)
 [![npm version](https://img.shields.io/npm/v/@wrtnlabs/agent.svg)](https://www.npmjs.com/package/@wrtnlabs/agent)
@@ -305,6 +305,42 @@ And `@wrtnlabs/agent` enters to a loop statement until the candidate functions t
 Such LLM (Large Language Model) function calling strategy separating `selector`, `executor`, and `describer` is the key logic of `@wrtnlabs/agent`.
 
 ### Validation Feedback
+```typescript
+import { FunctionCall } from "pseudo";
+import { ILlmFunctionOfValidate, IValidate } from "typia";
+
+export const correctFunctionCall = (p: {
+  call: FunctionCall;
+  functions: Array<ILlmFunctionOfValidate<"chatgpt">>;
+  retry: (reason: string, detail?: object) => Promise<unknown>;
+}): Promise<unknown> => {
+  // FIND FUNCTION
+  const func: ILlmFunctionOfValidate<"chatgpt"> | undefined =
+    p.functions.find(f => f.name === p.call.function.name);
+  if (func === undefined) {
+    // never happened in my experience
+    return p.retry(
+      "Unable to find the matched function name. Try it again."
+    );
+  }
+
+  // VALIDATE
+  const result: IValidation<unknown> = func.validate(p.call.function.arguments);
+  if (result.success === false) {
+    // 1st trial: 50% (gpt-4o-mini in shopping mall chatbot)
+    // 2nd trial with validation feedback: 99%
+    // 3nd trial with validation feedback again: never have failed
+    return p.retry(
+      "Type errors are detected. Correct it through validation errors"
+      {
+        errors: result.errors,
+      },
+    );
+  }
+  return result.data;
+}
+```
+
 Is LLM function calling perfect? 
 
 The answer is not, and LLM (Large Language Model) providers like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an `Array<string>` type, LLM often fills it just by a `string` typed value.
@@ -313,7 +349,7 @@ Therefore, when developing an LLM function calling agent, the validation feedbac
 
 About the validation feedback, `@wrtnlabs/agent` is utilizing [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.applicationOfValidate<Class, Model>()`](https://typia.io/docs/llm/application/#applicationofvalidate) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.
 
-Such validation feedback strategy and combination with `typia` runtime validator, `@wrtnlabs/agent` has achieved the most ideal LLM function calling.
+Such validation feedback strategy and combination with `typia` runtime validator, `@wrtnlabs/agent` has achieved the most ideal LLM function calling. In my experience, when using OpenAI's `gpt-4o-mini` model, it tends to construct invalid function calling arguments at the first trial about 50% of the time. By the way, if correct it through validation feedback with `typia`, success rate soars to 99%. And I've never had a failure when trying validation feedback twice.
 
 Components               | `typia` | `TypeBox` | `ajv` | `io-ts` | `zod` | `C.V.`
 -------------------------|--------|-----------|-------|---------|-------|------------------
@@ -389,6 +425,13 @@ However, the another part obtaining function schemas from TypeScript class type,
 
 The new playground website would be published until 2025-03-15.
 
+### Optimization
+As I've concenstrated on POC (Proof of Concept) development on the early stage level, internal agents composing `@wrtnlabs/agent` are not cost optimized yet. Especially, `selector` agent is consuming LLM tokens too much repeatedly. We'll optimize the `selector` agent by RAG (Retrieval Augmented Generation) skills.
+
+Also, we will support dozens of useful add-on agents which can connect with `@wrtnlabs/agent` by TypeScript class function calling. One of them is `@wrtnlabs/hive` which optimizes `selector` agent so that reducing LLM costs dramatically. The others would be OpenAI Vector Store handler and Postgres based RAG engine.
+
+With these `@wrtnlabs/agent` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@wrtnlabs/agent` makes the Multi agent system interaction super easily.
+
 ### WebSocket Module
 ```typescript
 import { 
@@ -434,10 +477,15 @@ We're going to support this feature until 2025-02-28.
 ### LLM Providers
 ```mermaid
 flowchart
+Agent["<code>@wrtnlabs/agent</code>"]
 OpenAI("<b><u>OpenAI</u></b>")
 Claude
 Llama
 Gemini
+Agent==supports==>OpenAI
+Agent-.not yet.->Claude
+Agent-.not yet.->Llama
+Agent-.not yet.->Gemini
 ```
 
 Currently, `@wrtnlabs/agent` supports only OpenAI. 
