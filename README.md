@@ -307,31 +307,31 @@ Such LLM (Large Language Model) function calling strategy separating `selector`,
 ### Validation Feedback
 ```typescript
 import { FunctionCall } from "pseudo";
-import { ILlmFunctionOfValidate, IValidate } from "typia";
+import { ILlmFunctionOfValidate, IValidation } from "typia";
 
 export const correctFunctionCall = (p: {
   call: FunctionCall;
   functions: Array<ILlmFunctionOfValidate<"chatgpt">>;
-  retry: (reason: string, detail?: object) => Promise<unknown>;
+  retry: (reason: string, errors?: IValidation.IError[]) => Promise<unknown>;
 }): Promise<unknown> => {
   // FIND FUNCTION
   const func: ILlmFunctionOfValidate<"chatgpt"> | undefined =
-    p.functions.find(f => f.name === p.call.function.name);
+    p.functions.find(f => f.name === p.call.name);
   if (func === undefined) {
     // never happened in my experience
     return p.retry(
-      "Unable to find the matched function name. Try it again."
+      "Unable to find the matched function name. Try it again.",
     );
   }
 
   // VALIDATE
-  const result: IValidation<unknown> = func.validate(p.call.function.arguments);
+  const result: IValidation<unknown> = func.validate(p.call.arguments);
   if (result.success === false) {
     // 1st trial: 50% (gpt-4o-mini in shopping mall chatbot)
     // 2nd trial with validation feedback: 99%
     // 3nd trial with validation feedback again: never have failed
     return p.retry(
-      "Type errors are detected. Correct it through validation errors"
+      "Type errors are detected. Correct it through validation errors",
       {
         errors: result.errors,
       },
