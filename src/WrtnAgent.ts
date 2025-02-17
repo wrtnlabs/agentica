@@ -258,7 +258,7 @@ export class WrtnAgent {
    */
   public on<Type extends IWrtnAgentEvent.Type>(
     type: Type,
-    listener: (event: IWrtnAgentEvent.Mapper[Type]) => void | Promise<void>,
+    listener: (event: IWrtnAgentEvent.Map<Type>) => void | Promise<void>,
   ): void {
     __map_take(this.listeners_, type, () => new Set()).add(
       listener as (event: IWrtnAgentEvent) => void | Promise<void>,
@@ -275,22 +275,19 @@ export class WrtnAgent {
    */
   public off<Type extends IWrtnAgentEvent.Type>(
     type: Type,
-    listener: (event: IWrtnAgentEvent.Mapper[Type]) => void | Promise<void>,
+    listener: (event: IWrtnAgentEvent.Map<Type>) => void | Promise<void>,
   ): void {
-    const set:
-      | Set<(event: IWrtnAgentEvent.Mapper[Type]) => void | Promise<void>>
-      | undefined = this.listeners_.get(type);
+    const set = this.listeners_.get(type);
     if (set) {
-      set.delete(listener);
+      set.delete(listener as (event: IWrtnAgentEvent) => void | Promise<void>);
       if (set.size === 0) this.listeners_.delete(type);
     }
   }
 
-  private async dispatch<Event extends IWrtnAgentEvent>(
-    event: Event,
+  private async dispatch<Type extends IWrtnAgentEvent.Type>(
+    event: IWrtnAgentEvent.Map<Type>,
   ): Promise<void> {
-    const set: Set<(event: Event) => void | Promise<void>> | undefined =
-      this.listeners_.get(event.type);
+    const set = this.listeners_.get(event.type);
     if (set)
       await Promise.all(
         Array.from(set).map(async (listener) => {

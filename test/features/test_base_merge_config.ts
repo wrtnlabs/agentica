@@ -7,7 +7,7 @@ import OpenAI from "openai";
 
 import { IWrtnAdditionalAgent } from "../../src/structures/IWrtnAdditionalAgent";
 
-export async function test_merge_config() {
+export async function test_base_merge_config() {
   // Create agent with default configuration
   const basicAgent = new WrtnAgent({
     provider: {

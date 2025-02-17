@@ -107,7 +107,9 @@ export interface IWrtnAgentContext {
    *
    * @param event Event to deliver
    */
-  dispatch: (event: IWrtnAgentEvent) => Promise<void>;
+  dispatch: <Type extends IWrtnAgentEvent.Type>(
+    event: IWrtnAgentEvent.Map<Type>,
+  ) => Promise<void>;
 
   /**
    * Request to the OpenAI server.

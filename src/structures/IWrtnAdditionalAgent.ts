@@ -71,7 +71,7 @@ export namespace IWrtnAdditionalAgent {
   export const DEFAULT_CHATGPT_AGENT = {
     initialize: {
       execute: (ctx: IWrtnAgentContext): Awaitable<IWrtnAgentPrompt[]> => {
-        if (ctx.ready() === false) {
+        if (ctx.ready()) {
           return [];
         }
         return ChatGptInitializeFunctionAgent.execute(ctx);

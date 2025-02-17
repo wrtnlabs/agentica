@@ -13,12 +13,21 @@ import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
  *
  * @author Samchon
  */
-export type IWrtnAgentEvent<T extends IWrtnAgentEvent.IBase<string> = never> =
-  | IWrtnAgentEvent.Mapper[keyof IWrtnAgentEvent.Mapper]
-  | T;
+export type IWrtnAgentEvent<
+  T extends IWrtnAgentEvent.Type = IWrtnAgentEvent.Type,
+> = IWrtnAgentEvent.Map<T>;
 export namespace IWrtnAgentEvent {
-  export type Type = Mapper[keyof Mapper]["type"];
-  export type Mapper = {
+  export type Type = `before_${string}` | `after_${string}` | keyof Mapper;
+
+  export type Map<T extends Type> = T extends `before_${string}`
+    ? IBeforeBase<T>
+    : T extends `after_${string}`
+      ? IAfterBase<T>
+      : T extends keyof Mapper
+        ? Mapper[T]
+        : never;
+
+  type Mapper = {
     initialize: IInitialize;
     select: ISelect;
     cancel: ICancel;
@@ -28,7 +37,17 @@ export namespace IWrtnAgentEvent {
     text: IText;
     request: IRequest;
     response: IResponse;
+    each_before: IBeforeBase<"each_before">;
+    each_after: IAfterBase<"each_after">;
   };
+
+  export interface IBeforeBase<T extends string> extends IBase<T> {
+    beforeAgentExecuteResult: IWrtnAgentPrompt[];
+  }
+
+  export interface IAfterBase<T extends string> extends IBase<T> {
+    executedResult: IWrtnAgentPrompt[];
+  }
 
   /**
    * Event of initializing the chatbot.

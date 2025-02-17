@@ -17,8 +17,10 @@ import typia from "typia";
 import { TestGlobal } from "./TestGlobal";
 
 const main = async (): Promise<void> => {
-  if (!TestGlobal.env.CHATGPT_API_KEY?.length) return;
-
+  if (!TestGlobal.env.CHATGPT_API_KEY?.length) {
+    console.error("CHATGPT_API_KEY is not set");
+    return;
+  }
   // COMPOSE LLM APPLICATION SCHEMA
   const swagger:
     | SwaggerV2.IDocument

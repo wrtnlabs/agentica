@@ -15,11 +15,27 @@ export namespace ChatGptAgent {
       if (plan == null) {
         return;
       }
+      await ctx.dispatch({
+        type: `each_before`,
+        beforeAgentExecuteResult: agentExecutedResult,
+      });
+      await ctx.dispatch({
+        type: `before_${stateName}`,
+        beforeAgentExecuteResult: agentExecutedResult,
+      });
       const executedResult = await plan.execute(
         ctx,
         agentExecutedResult,
         histories,
       );
+      await ctx.dispatch({
+        type: `after_${stateName}`,
+        executedResult,
+      });
+      await ctx.dispatch({
+        type: `each_after`,
+        executedResult,
+      });
       histories.push(...executedResult);
       const nextState = await plan.nextAgent(ctx, executedResult, histories);
 
