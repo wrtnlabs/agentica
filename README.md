@@ -245,6 +245,67 @@ In the `@wrtnlabs/agent`, you can implement multi-agent orchestration super easi
 
 Just develop a TypeScript class which contains agent feature like Vector Store, and just deliver the TypeScript class type to the `@wrtnlabs/agent` like above. The `@wrtnlabs/agent` will centralize and realize the multi-agent orchestration by LLM function calling strategy to the TypeScript class.
 
+### WebSocket Communication
+`@wrtnlabs/agent` provides WebSocket interaction module.
+
+The websocket interface module is following RPC (Remote Procedure Call) paradigm of the [TGrid](https://github.com/samchon/tgrid), so it is very easy to interact between frontend application and backend server of the AI agent.
+
+```typescript
+import {
+  IWrtnAgentRpcListener,
+  IWrtnAgentRpcService,
+  WrtnAgent,
+  WrtnAgentRpcService,
+} from "@wrtnlabs/agent";
+import { WebSocketServer } from "tgrid";
+
+const server: WebSocketServer<
+  null,
+  IWrtnAgentRpcService,
+  IWrtnAgentRpcListener
+> = new WebSocketServer();
+await server.open(3001, async (acceptor) => {
+  await acceptor.accept(
+    new WrtnAgentRpcService({
+      agent: new WrtnAgent({ ... }),
+      listener: acceptor.getDriver(),
+    }),
+  );
+});
+```
+
+When developing backend server, wrap `WrtnAgent` to `WrtnAgentRpcService`.
+
+If you're developing WebSocket protocol backend server, create a new `WrtnAgent` instance, and wrap it to the `WrtnAgentRpcService` class. And then open the websocket server like above code. The WebSocket server will call the client functions of the `IWrtnAgentRpcListener` remotely.
+
+```typescript
+import { IWrtnAgentRpcListener, IWrtnAgentRpcService } from "@wrtnlabs/agent";
+import { Driver, WebSocketConnector } from "tgrid";
+
+const connector: WebSocketConnector<
+  null,
+  IWrtnAgentRpcListener,
+  IWrtnAgentRpcService
+> = new WebSocketConnector(null, {
+  text: async (evt) => {
+    console.log(evt.role, evt.text);
+  },
+  describe: async (evt) => {
+    console.log("describer", evt.text);
+  },
+});
+await connector.connect("ws://localhost:3001");
+
+const driver: Driver<IWrtnAgentRpcService> = connector.getDriver();
+await driver.conversate("Hello, what you can do?");
+```
+
+When developing frontend application, define `IWrtnAgentRpcListener` instance.
+
+Otherwise you're developing WebSocket protocol client application, connect to the websocket backend server with its URL address, and provide `IWrtnAgentRpcListener` instance for event listening.
+
+And then call the backend server's function `IWrtnAgentRpcService.conversate()` remotely through the `Driver<IWrtnAgentRpcService>` wrapping. The backend server will call your `IWrtnAgentRpcListener` functions remotely through the RPC paradigm.
+
 
 
 
