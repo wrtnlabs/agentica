@@ -1,6 +1,6 @@
 {
   "name": "@wrtnlabs/agent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "typings": "lib/index.d.ts",
@@ -63,6 +63,7 @@
     "prettier": "^3.5.0",
     "rimraf": "^6.0.1",
     "rollup": "^4.29.1",
+    "tgrid": "^1.1.0",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
     "tstl": "^3.0.0",

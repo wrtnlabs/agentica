@@ -1,3 +1,4 @@
+// TYPES
 export * from "./structures/IWrtnAgentConfig";
 export * from "./structures/IWrtnAgentContext";
 export * from "./structures/IWrtnAgentController";
@@ -10,9 +11,13 @@ export * from "./structures/IWrtnAgentProps";
 export * from "./structures/IWrtnAgentProvider";
 export * from "./structures/IWrtnAgentSystemPrompt";
 export * from "./structures/IWrtnAgentTokenUsage";
-
 export * from "./typings/WrtnAgentSource";
 
-export * from "./functional/createHttpLlmApplication";
+// REMOTE PROCEDURE CALL
+export * from "./rpc/IWrtnAgentRpcListener";
+export * from "./rpc/IWrtnAgentRpcService";
+export * from "./rpc/WrtnAgentRpcService";
 
+// FACADE CLASS
+export * from "./functional/createHttpLlmApplication";
 export * from "./WrtnAgent";
