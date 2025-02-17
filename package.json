@@ -13,7 +13,7 @@
     "build:prompt": "ts-node build/prompt.ts",
     "dev": "npm run build:prompt && npm run build:test -- --watch",
     "eslint": "eslint ./**/*.ts",
-    "test": "pnpm run build:test && node bin/test/index.js",
+    "test": "npm run build:test && node bin/test/index.js",
     "typedoc": "node website/build/typedoc"
   },
   "repository": {
