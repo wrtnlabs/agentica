@@ -1,4 +1,7 @@
 # `@wrtnlabs/agent`
+
+*Read this in other languages: [한국어](README.ko.md), [日本語](README.ja.md)*
+
 ![Key Concept Gear Diagram](https://github.com/user-attachments/assets/2cdb6e05-77f0-419a-ab7f-539b3d2bcbc5)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agent/blob/master/LICENSE)
@@ -488,7 +491,7 @@ Agent-.not yet.->Llama
 Agent-.not yet.->Gemini
 ```
 
-Currently, `@wrtnlabs/agent` supports only OpenAI. 
+Currently, `@wrtnlabs/agent` supports only OpenAI.
 
 It is because `@wrtnlabs/agent` is still in the POC (Proof of Concept) and demonstration stage. However, even nthough OpenAI is the most famous model in the AI world, `@wrtnlabs/agent` have to support much more models for broad users.
 
