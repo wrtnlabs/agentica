@@ -8,7 +8,7 @@ import OpenAI from "openai";
 import { IWrtnAdditionalAgent } from "../../src/structures/IWrtnAdditionalAgent";
 
 export async function test_merge_config() {
-  // 기본 설정으로 agent 생성
+  // Create agent with default configuration
   const basicAgent = new WrtnAgent({
     provider: {
       model: "gpt-4",
@@ -20,13 +20,13 @@ export async function test_merge_config() {
     controllers: [],
   });
 
-  // 기본 설정이 올바르게 적용되었는지 확인
+  // Check if default configuration is applied correctly
   const basicConfig = basicAgent.getConfig();
   if (!("agentExecutePlan" in basicConfig)) {
-    throw new Error("기본 agentExecutePlan이 없습니다");
+    throw new Error("Default agentExecutePlan is missing");
   }
 
-  // DEFAULT_CHATGPT_AGENT의 모든 기본 상태가 존재하는지 확인
+  // Check if all default states from DEFAULT_CHATGPT_AGENT exist
   const defaultStates: IWrtnAdditionalAgent.DefaultAgentName[] = [
     "initialize",
     "select",
@@ -45,11 +45,11 @@ export async function test_merge_config() {
     }
 
     if (!(state in basicConfig.agentExecutePlan)) {
-      throw new Error(`기본 상태 "${state}"가 누락되었습니다`);
+      throw new Error(`Default state "${state}" is missing`);
     }
   }
 
-  // 커스텀 설정으로 agent 생성
+  // Create agent with custom configuration
   const customAgent = new WrtnAgent({
     provider: {
       model: "gpt-4",
@@ -74,34 +74,36 @@ export async function test_merge_config() {
     },
   });
 
-  // 커스텀 설정이 기본 설정과 올바르게 합성되었는지 확인
+  // Check if custom configuration is properly merged with default configuration
   const customConfig = customAgent.getConfig();
   if (!("agentExecutePlan" in customConfig)) {
-    throw new Error("커스텀 agentExecutePlan이 없습니다");
+    throw new Error("Custom agentExecutePlan is missing");
   }
 
-  // 1. 기본 상태들이 모두 유지되는지 확인
+  // 1. Check if all default states are maintained
   for (const state of defaultStates) {
     if (!customConfig.agentExecutePlan) {
       break;
     }
     if (!(state in customConfig.agentExecutePlan)) {
-      throw new Error(`커스텀 설정 후 기본 상태 "${state}"가 누락되었습니다`);
+      throw new Error(
+        `Default state "${state}" is missing after custom configuration`,
+      );
     }
   }
 
-  // 2. 커스텀 상태 'new'가 추가되었는지 확인
+  // 2. Check if custom state 'new' is added
   if (
     customConfig.agentExecutePlan &&
     !("new" in customConfig.agentExecutePlan)
   ) {
-    throw new Error("커스텀 상태 'new'가 추가되지 않았습니다");
+    throw new Error("Custom state 'new' was not added");
   }
 
-  // 3. describe 상태가 올바르게 오버라이드되었는지 확인
+  // 3. Check if describe state is properly overridden
   const customDescribe = customConfig?.agentExecutePlan?.["describe"];
   if (!customDescribe) {
-    throw new Error("커스텀 describe가 없습니다");
+    throw new Error("Custom describe is missing");
   }
   const customDescribeResult = await customDescribe.execute(
     {} as IWrtnAgentContext, // mock context
@@ -110,25 +112,25 @@ export async function test_merge_config() {
   );
 
   if (customDescribeResult.length !== 0) {
-    throw new Error("커스텀 describe.execute가 적용되지 않았습니다");
+    throw new Error("Custom describe.execute was not applied");
   }
 
-  // 4. describe의 nextAgent는 기본값을 유지하는지 확인
+  // 4. Check if describe's nextAgent maintains default value
   const defaultDescribeNextAgent =
     IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT.describe.nextAgent;
   if (customDescribe.nextAgent !== defaultDescribeNextAgent) {
-    throw new Error("describe.nextAgent가 기본값을 유지하지 않습니다");
+    throw new Error("describe.nextAgent does not maintain default value");
   }
 
-  // 5. new 상태의 nextAgent가 "describe"를 반환하는지 확인
+  // 5. Check if new state's nextAgent returns "describe"
   const newStateNextAgent = customConfig?.agentExecutePlan?.["new"]?.nextAgent;
   if (!newStateNextAgent) {
-    throw new Error("커스텀 new 상태의 nextAgent가 없습니다");
+    throw new Error("Custom new state's nextAgent is missing");
   }
   const nextState = await newStateNextAgent({} as IWrtnAgentContext, [], []);
   if (nextState !== "describe") {
     throw new Error(
-      `new 상태의 nextAgent가 "describe"를 반환하지 않습니다. 반환값: ${nextState}`,
+      `new state's nextAgent does not return "describe". Return value: ${nextState}`,
     );
   }
 
