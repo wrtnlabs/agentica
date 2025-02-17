@@ -23,7 +23,7 @@
 							"fileName": "src/functional/createHttpLlmApplication.ts",
 							"line": 28,
 							"character": 13,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/functional/createHttpLlmApplication.ts#L28"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/functional/createHttpLlmApplication.ts#L28"
 						}
 					],
 					"target": 293
@@ -39,7 +39,7 @@
 							"fileName": "src/structures/IWrtnAgentConfig.ts",
 							"line": 19,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L19"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L19"
 						}
 					],
 					"target": 1
@@ -55,7 +55,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 41,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L41"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L41"
 						}
 					],
 					"target": 8
@@ -71,13 +71,13 @@
 							"fileName": "src/structures/IWrtnAgentController.ts",
 							"line": 24,
 							"character": 12,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L24"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L24"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentController.ts",
 							"line": 27,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L27"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L27"
 						}
 					],
 					"target": 29
@@ -93,13 +93,13 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 16,
 							"character": 12,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L16"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L16"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 26,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L26"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L26"
 						}
 					],
 					"target": 57
@@ -115,13 +115,13 @@
 							"fileName": "src/structures/IWrtnAgentOperation.ts",
 							"line": 21,
 							"character": 12,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L21"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L21"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentOperation.ts",
 							"line": 24,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L24"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L24"
 						}
 					],
 					"target": 111
@@ -137,7 +137,7 @@
 							"fileName": "src/structures/IWrtnAgentOperationCollection.ts",
 							"line": 12,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationCollection.ts#L12"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationCollection.ts#L12"
 						}
 					],
 					"target": 115
@@ -153,13 +153,13 @@
 							"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 							"line": 19,
 							"character": 12,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L19"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L19"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 							"line": 22,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L22"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L22"
 						}
 					],
 					"target": 120
@@ -175,13 +175,13 @@
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 23,
 							"character": 12,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L23"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L23"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 29,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L29"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L29"
 						}
 					],
 					"target": 124
@@ -197,7 +197,7 @@
 							"fileName": "src/structures/IWrtnAgentProps.ts",
 							"line": 30,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L30"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L30"
 						}
 					],
 					"target": 146
@@ -213,13 +213,13 @@
 							"fileName": "src/structures/IWrtnAgentProvider.ts",
 							"line": 19,
 							"character": 12,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L19"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L19"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentProvider.ts",
 							"line": 20,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L20"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L20"
 						}
 					],
 					"target": 245
@@ -235,7 +235,7 @@
 							"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 							"line": 22,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L22"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L22"
 						}
 					],
 					"target": 252
@@ -251,13 +251,13 @@
 							"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 							"line": 19,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L19"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L19"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 							"line": 39,
 							"character": 17,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L39"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L39"
 						}
 					],
 					"target": 277
@@ -273,7 +273,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 46,
 							"character": 13,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L46"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L46"
 						}
 					],
 					"target": 300
@@ -289,7 +289,7 @@
 							"fileName": "src/typings/WrtnAgentSource.ts",
 							"line": 1,
 							"character": 12,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/typings/WrtnAgentSource.ts#L1"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/typings/WrtnAgentSource.ts#L1"
 						}
 					],
 					"target": 292
@@ -322,7 +322,7 @@
 					"fileName": "src/module.ts",
 					"line": 1,
 					"character": 0,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/module.ts#L1"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/module.ts#L1"
 				}
 			]
 		},
@@ -377,7 +377,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 129,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L129"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L129"
 								}
 							],
 							"type": {
@@ -414,7 +414,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 93,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L93"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L93"
 								}
 							],
 							"type": {
@@ -430,7 +430,7 @@
 											"fileName": "src/structures/IWrtnAgentController.ts",
 											"line": 93,
 											"character": 13,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L93"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L93"
 										}
 									],
 									"signatures": [
@@ -459,7 +459,7 @@
 													"fileName": "src/structures/IWrtnAgentController.ts",
 													"line": 93,
 													"character": 13,
-													"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L93"
+													"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L93"
 												}
 											],
 											"parameters": [
@@ -512,7 +512,7 @@
 																					"fileName": "src/structures/IWrtnAgentController.ts",
 																					"line": 100,
 																					"character": 12,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L100"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L100"
 																				}
 																			],
 																			"type": {
@@ -550,7 +550,7 @@
 																					"fileName": "src/structures/IWrtnAgentController.ts",
 																					"line": 110,
 																					"character": 12,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L110"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L110"
 																				}
 																			],
 																			"type": {
@@ -577,7 +577,7 @@
 																					"fileName": "src/structures/IWrtnAgentController.ts",
 																					"line": 105,
 																					"character": 12,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L105"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L105"
 																				}
 																			],
 																			"type": {
@@ -612,7 +612,7 @@
 																			"fileName": "src/structures/IWrtnAgentController.ts",
 																			"line": 96,
 																			"character": 10,
-																			"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L96"
+																			"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L96"
 																		}
 																	]
 																}
@@ -662,7 +662,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 124,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L124"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L124"
 								}
 							],
 							"type": {
@@ -696,7 +696,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 119,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L119"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L119"
 								}
 							],
 							"type": {
@@ -726,7 +726,7 @@
 							"fileName": "src/structures/IWrtnAgentController.ts",
 							"line": 85,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L85"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L85"
 						}
 					],
 					"extendedTypes": [
@@ -808,7 +808,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 129,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L129"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L129"
 								}
 							],
 							"type": {
@@ -845,7 +845,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 40,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L40"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L40"
 								}
 							],
 							"type": {
@@ -879,7 +879,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 48,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L48"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L48"
 								}
 							],
 							"type": {
@@ -895,7 +895,7 @@
 											"fileName": "src/structures/IWrtnAgentController.ts",
 											"line": 48,
 											"character": 14,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L48"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L48"
 										}
 									],
 									"signatures": [
@@ -924,7 +924,7 @@
 													"fileName": "src/structures/IWrtnAgentController.ts",
 													"line": 48,
 													"character": 14,
-													"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L48"
+													"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L48"
 												}
 											],
 											"parameters": [
@@ -970,7 +970,7 @@
 																			"fileName": "src/structures/IWrtnAgentController.ts",
 																			"line": 57,
 																			"character": 6,
-																			"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L57"
+																			"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L57"
 																		}
 																	],
 																	"type": {
@@ -1008,7 +1008,7 @@
 																			"fileName": "src/structures/IWrtnAgentController.ts",
 																			"line": 74,
 																			"character": 6,
-																			"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L74"
+																			"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L74"
 																		}
 																	],
 																	"type": {
@@ -1035,7 +1035,7 @@
 																			"fileName": "src/structures/IWrtnAgentController.ts",
 																			"line": 52,
 																			"character": 6,
-																			"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L52"
+																			"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L52"
 																		}
 																	],
 																	"type": {
@@ -1067,7 +1067,7 @@
 																			"fileName": "src/structures/IWrtnAgentController.ts",
 																			"line": 62,
 																			"character": 6,
-																			"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L62"
+																			"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L62"
 																		}
 																	],
 																	"type": {
@@ -1103,7 +1103,7 @@
 																	"fileName": "src/structures/IWrtnAgentController.ts",
 																	"line": 48,
 																	"character": 22,
-																	"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L48"
+																	"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L48"
 																}
 															]
 														}
@@ -1156,7 +1156,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 124,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L124"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L124"
 								}
 							],
 							"type": {
@@ -1190,7 +1190,7 @@
 									"fileName": "src/structures/IWrtnAgentController.ts",
 									"line": 119,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L119"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L119"
 								}
 							],
 							"type": {
@@ -1221,7 +1221,7 @@
 							"fileName": "src/structures/IWrtnAgentController.ts",
 							"line": 34,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L34"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L34"
 						}
 					],
 					"extendedTypes": [
@@ -1272,13 +1272,13 @@
 					"fileName": "src/structures/IWrtnAgentController.ts",
 					"line": 24,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L24"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L24"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentController.ts",
 					"line": 27,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L27"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L27"
 				}
 			]
 		},
@@ -1333,7 +1333,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 111,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L111"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L111"
 								}
 							],
 							"type": {
@@ -1360,7 +1360,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 97,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L97"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L97"
 								}
 							],
 							"type": {
@@ -1387,7 +1387,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 102,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L102"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L102"
 								}
 							],
 							"type": {
@@ -1418,7 +1418,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -1448,7 +1448,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 93,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L93"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L93"
 						}
 					],
 					"extendedTypes": [
@@ -1503,7 +1503,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 75,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L75"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L75"
 								}
 							],
 							"type": {
@@ -1532,7 +1532,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 87,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L87"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L87"
 								}
 							],
 							"type": {
@@ -1561,7 +1561,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -1590,7 +1590,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 68,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L68"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L68"
 						}
 					],
 					"extendedTypes": [
@@ -1645,7 +1645,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 150,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L150"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L150"
 								}
 							],
 							"type": {
@@ -1678,7 +1678,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 155,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L155"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L155"
 								}
 							],
 							"type": {
@@ -1707,7 +1707,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -1736,7 +1736,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 144,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L144"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L144"
 						}
 					],
 					"extendedTypes": [
@@ -1791,7 +1791,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 131,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L131"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L131"
 								}
 							],
 							"type": {
@@ -1818,7 +1818,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 121,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L121"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L121"
 								}
 							],
 							"type": {
@@ -1845,7 +1845,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 126,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L126"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L126"
 								}
 							],
 							"type": {
@@ -1876,7 +1876,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -1908,7 +1908,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 136,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L136"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L136"
 								}
 							],
 							"type": {
@@ -1934,7 +1934,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 117,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L117"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L117"
 						}
 					],
 					"extendedTypes": [
@@ -1991,7 +1991,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -2018,7 +2018,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 43,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L43"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L43"
 						}
 					],
 					"extendedTypes": [
@@ -2073,13 +2073,13 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 185,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L185"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L185"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/resources/chat/completions/completions.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/resources/chat/completions/completions.ts",
 									"qualifiedName": "ChatCompletionCreateParamsNonStreaming"
 								},
 								"name": "ChatCompletionCreateParamsNonStreaming",
@@ -2107,13 +2107,13 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 190,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L190"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L190"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/index.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/index.ts",
 									"qualifiedName": "OpenAI.RequestOptions"
 								},
 								"name": "RequestOptions",
@@ -2140,7 +2140,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 180,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L180"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L180"
 								}
 							],
 							"type": {
@@ -2171,7 +2171,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -2201,7 +2201,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 176,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L176"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L176"
 						}
 					],
 					"extendedTypes": [
@@ -2256,13 +2256,13 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 205,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L205"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L205"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/resources/chat/completions/completions.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/resources/chat/completions/completions.ts",
 									"qualifiedName": "ChatCompletionCreateParamsNonStreaming"
 								},
 								"name": "ChatCompletionCreateParamsNonStreaming",
@@ -2290,13 +2290,13 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 210,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L210"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L210"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/index.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/index.ts",
 									"qualifiedName": "OpenAI.RequestOptions"
 								},
 								"name": "RequestOptions",
@@ -2323,7 +2323,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 200,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L200"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L200"
 								}
 							],
 							"type": {
@@ -2354,7 +2354,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -2386,13 +2386,13 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 215,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L215"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L215"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/resources/chat/completions/completions.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/resources/chat/completions/completions.ts",
 									"qualifiedName": "ChatCompletion"
 								},
 								"name": "ChatCompletion",
@@ -2417,7 +2417,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 196,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L196"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L196"
 						}
 					],
 					"extendedTypes": [
@@ -2472,7 +2472,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 54,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L54"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L54"
 								}
 							],
 							"type": {
@@ -2501,7 +2501,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 62,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L62"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L62"
 								}
 							],
 							"type": {
@@ -2530,7 +2530,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -2559,7 +2559,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 48,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L48"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L48"
 						}
 					],
 					"extendedTypes": [
@@ -2614,7 +2614,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 165,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L165"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L165"
 								}
 							],
 							"type": {
@@ -2650,7 +2650,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 170,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L170"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L170"
 								}
 							],
 							"type": {
@@ -2679,7 +2679,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 222,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L222"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L222"
 								}
 							],
 							"type": {
@@ -2708,7 +2708,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 161,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L161"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L161"
 						}
 					],
 					"extendedTypes": [
@@ -2740,7 +2740,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 28,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L28"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L28"
 						}
 					],
 					"type": {
@@ -2763,7 +2763,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 32,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L32"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L32"
 										}
 									],
 									"type": {
@@ -2785,7 +2785,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 31,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L31"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L31"
 										}
 									],
 									"type": {
@@ -2807,7 +2807,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 34,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L34"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L34"
 										}
 									],
 									"type": {
@@ -2829,7 +2829,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 33,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L33"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L33"
 										}
 									],
 									"type": {
@@ -2851,7 +2851,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 29,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L29"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L29"
 										}
 									],
 									"type": {
@@ -2873,7 +2873,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 36,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L36"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L36"
 										}
 									],
 									"type": {
@@ -2895,7 +2895,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 37,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L37"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L37"
 										}
 									],
 									"type": {
@@ -2917,7 +2917,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 30,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L30"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L30"
 										}
 									],
 									"type": {
@@ -2939,7 +2939,7 @@
 											"fileName": "src/structures/IWrtnAgentEvent.ts",
 											"line": 35,
 											"character": 4,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L35"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L35"
 										}
 									],
 									"type": {
@@ -2972,7 +2972,7 @@
 									"fileName": "src/structures/IWrtnAgentEvent.ts",
 									"line": 28,
 									"character": 23,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L28"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L28"
 								}
 							]
 						}
@@ -2989,7 +2989,7 @@
 							"fileName": "src/structures/IWrtnAgentEvent.ts",
 							"line": 27,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L27"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L27"
 						}
 					],
 					"type": {
@@ -3035,13 +3035,13 @@
 					"fileName": "src/structures/IWrtnAgentEvent.ts",
 					"line": 16,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L16"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L16"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentEvent.ts",
 					"line": 26,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L26"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L26"
 				}
 			]
 		},
@@ -3071,7 +3071,7 @@
 							"fileName": "src/structures/IWrtnAgentOperation.ts",
 							"line": 37,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L37"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L37"
 						}
 					],
 					"type": {
@@ -3130,7 +3130,7 @@
 							"fileName": "src/structures/IWrtnAgentOperation.ts",
 							"line": 28,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L28"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L28"
 						}
 					],
 					"type": {
@@ -3185,13 +3185,13 @@
 					"fileName": "src/structures/IWrtnAgentOperation.ts",
 					"line": 21,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L21"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L21"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentOperation.ts",
 					"line": 24,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L24"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L24"
 				}
 			]
 		},
@@ -3213,7 +3213,7 @@
 							"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 							"line": 29,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L29"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L29"
 						}
 					],
 					"type": {
@@ -3264,7 +3264,7 @@
 							"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 							"line": 23,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L23"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L23"
 						}
 					],
 					"type": {
@@ -3319,13 +3319,13 @@
 					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 					"line": 19,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L19"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L19"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 					"line": 22,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L22"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L22"
 				}
 			]
 		},
@@ -3354,7 +3354,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 77,
 									"character": 16,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L77"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L77"
 								}
 							],
 							"type": {
@@ -3409,7 +3409,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 71,
 									"character": 16,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L71"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L71"
 								}
 							],
 							"type": {
@@ -3473,13 +3473,13 @@
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 69,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L69"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L69"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 70,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L70"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L70"
 						}
 					]
 				},
@@ -3517,7 +3517,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 56,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L56"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L56"
 								}
 							],
 							"type": {
@@ -3544,7 +3544,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 61,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L61"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L61"
 								}
 							],
 							"type": {
@@ -3578,7 +3578,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 169,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 								}
 							],
 							"type": {
@@ -3607,7 +3607,7 @@
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 52,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L52"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L52"
 						}
 					],
 					"extendedTypes": [
@@ -3662,7 +3662,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 142,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L142"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L142"
 								}
 							],
 							"type": {
@@ -3695,7 +3695,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 147,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L147"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L147"
 								}
 							],
 							"type": {
@@ -3724,7 +3724,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 169,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 								}
 							],
 							"type": {
@@ -3753,7 +3753,7 @@
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 136,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L136"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L136"
 						}
 					],
 					"extendedTypes": [
@@ -3808,7 +3808,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 39,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L39"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L39"
 								}
 							],
 							"type": {
@@ -3835,7 +3835,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 44,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L44"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L44"
 								}
 							],
 							"type": {
@@ -3869,7 +3869,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 169,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 								}
 							],
 							"type": {
@@ -3898,7 +3898,7 @@
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 35,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L35"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L35"
 						}
 					],
 					"extendedTypes": [
@@ -3953,7 +3953,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 157,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L157"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L157"
 								}
 							],
 							"type": {
@@ -3989,7 +3989,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 162,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L162"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L162"
 								}
 							],
 							"type": {
@@ -4018,7 +4018,7 @@
 									"fileName": "src/structures/IWrtnAgentPrompt.ts",
 									"line": 169,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 								}
 							],
 							"type": {
@@ -4047,7 +4047,7 @@
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 153,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L153"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L153"
 						}
 					],
 					"extendedTypes": [
@@ -4087,13 +4087,13 @@
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 69,
 							"character": 14,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L69"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L69"
 						},
 						{
 							"fileName": "src/structures/IWrtnAgentPrompt.ts",
 							"line": 70,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L70"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L70"
 						}
 					],
 					"type": {
@@ -4145,13 +4145,13 @@
 					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 					"line": 23,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L23"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L23"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 					"line": 29,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L29"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L29"
 				}
 			]
 		},
@@ -4196,13 +4196,13 @@
 									"fileName": "src/structures/IWrtnAgentProvider.ts",
 									"line": 33,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L33"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L33"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/index.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/index.ts",
 									"qualifiedName": "OpenAI"
 								},
 								"name": "OpenAI",
@@ -4228,13 +4228,13 @@
 									"fileName": "src/structures/IWrtnAgentProvider.ts",
 									"line": 38,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L38"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L38"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/resources/chat/chat.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/resources/chat/chat.ts",
 									"qualifiedName": "ChatModel"
 								},
 								"name": "ChatModel",
@@ -4262,13 +4262,13 @@
 									"fileName": "src/structures/IWrtnAgentProvider.ts",
 									"line": 43,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L43"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L43"
 								}
 							],
 							"type": {
 								"type": "reference",
 								"target": {
-									"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/index.ts",
+									"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/index.ts",
 									"qualifiedName": "OpenAI.RequestOptions"
 								},
 								"name": "RequestOptions",
@@ -4295,7 +4295,7 @@
 									"fileName": "src/structures/IWrtnAgentProvider.ts",
 									"line": 28,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L28"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L28"
 								}
 							],
 							"type": {
@@ -4320,7 +4320,7 @@
 							"fileName": "src/structures/IWrtnAgentProvider.ts",
 							"line": 24,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L24"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L24"
 						}
 					]
 				}
@@ -4338,13 +4338,13 @@
 					"fileName": "src/structures/IWrtnAgentProvider.ts",
 					"line": 19,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L19"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L19"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentProvider.ts",
 					"line": 20,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L20"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L20"
 				}
 			]
 		},
@@ -4373,7 +4373,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 47,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L47"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L47"
 								}
 							],
 							"type": {
@@ -4392,7 +4392,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 48,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L48"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L48"
 								}
 							],
 							"type": {
@@ -4411,7 +4411,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 49,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L49"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L49"
 								}
 							],
 							"type": {
@@ -4430,7 +4430,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 50,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L50"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L50"
 								}
 							],
 							"type": {
@@ -4449,7 +4449,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 46,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L46"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L46"
 								}
 							],
 							"type": {
@@ -4475,7 +4475,7 @@
 							"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 							"line": 45,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L45"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L45"
 						}
 					]
 				},
@@ -4497,7 +4497,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 42,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L42"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L42"
 								}
 							],
 							"type": {
@@ -4516,7 +4516,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 43,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L43"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L43"
 								}
 							],
 							"type": {
@@ -4535,7 +4535,7 @@
 									"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 									"line": 41,
 									"character": 4,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L41"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L41"
 								}
 							],
 							"type": {
@@ -4559,7 +4559,7 @@
 							"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 							"line": 40,
 							"character": 19,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L40"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L40"
 						}
 					]
 				}
@@ -4578,13 +4578,13 @@
 					"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 					"line": 19,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L19"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L19"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 					"line": 39,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L39"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L39"
 				}
 			]
 		},
@@ -4769,7 +4769,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 70,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L70"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L70"
 						}
 					],
 					"signatures": [
@@ -4792,7 +4792,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 70,
 									"character": 2,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L70"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L70"
 								}
 							],
 							"parameters": [
@@ -4840,7 +4840,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 122,
 							"character": 15,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L122"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L122"
 						}
 					],
 					"signatures": [
@@ -4884,7 +4884,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 122,
 									"character": 15,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L122"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L122"
 								}
 							],
 							"parameters": [
@@ -4944,7 +4944,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 186,
 							"character": 9,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L186"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L186"
 						}
 					],
 					"signatures": [
@@ -4967,7 +4967,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 186,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L186"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L186"
 								}
 							],
 							"type": {
@@ -5001,7 +5001,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 203,
 							"character": 9,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L203"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L203"
 						}
 					],
 					"signatures": [
@@ -5024,7 +5024,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 203,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L203"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L203"
 								}
 							],
 							"type": {
@@ -5056,7 +5056,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 214,
 							"character": 9,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L214"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L214"
 						}
 					],
 					"signatures": [
@@ -5090,7 +5090,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 214,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L214"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L214"
 								}
 							],
 							"type": {
@@ -5118,7 +5118,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 193,
 							"character": 9,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L193"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L193"
 						}
 					],
 					"signatures": [
@@ -5141,7 +5141,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 193,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L193"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L193"
 								}
 							],
 							"type": {
@@ -5167,7 +5167,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 226,
 							"character": 9,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L226"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L226"
 						}
 					],
 					"signatures": [
@@ -5211,7 +5211,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 226,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L226"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L226"
 								}
 							],
 							"type": {
@@ -5236,7 +5236,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 256,
 							"character": 9,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L256"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L256"
 						}
 					],
 					"signatures": [
@@ -5259,7 +5259,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 256,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L256"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L256"
 								}
 							],
 							"typeParameters": [
@@ -5362,7 +5362,7 @@
 													"fileName": "src/WrtnAgent.ts",
 													"line": 258,
 													"character": 14,
-													"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L258"
+													"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L258"
 												}
 											],
 											"signatures": [
@@ -5377,7 +5377,7 @@
 															"fileName": "src/WrtnAgent.ts",
 															"line": 258,
 															"character": 14,
-															"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L258"
+															"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L258"
 														}
 													],
 													"parameters": [
@@ -5456,7 +5456,7 @@
 							"fileName": "src/WrtnAgent.ts",
 							"line": 241,
 							"character": 9,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L241"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L241"
 						}
 					],
 					"signatures": [
@@ -5479,7 +5479,7 @@
 									"fileName": "src/WrtnAgent.ts",
 									"line": 241,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L241"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L241"
 								}
 							],
 							"typeParameters": [
@@ -5582,7 +5582,7 @@
 													"fileName": "src/WrtnAgent.ts",
 													"line": 243,
 													"character": 14,
-													"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L243"
+													"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L243"
 												}
 											],
 											"signatures": [
@@ -5597,7 +5597,7 @@
 															"fileName": "src/WrtnAgent.ts",
 															"line": 243,
 															"character": 14,
-															"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L243"
+															"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L243"
 														}
 													],
 													"parameters": [
@@ -5690,7 +5690,7 @@
 					"fileName": "src/WrtnAgent.ts",
 					"line": 46,
 					"character": 13,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/WrtnAgent.ts#L46"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/WrtnAgent.ts#L46"
 				}
 			]
 		},
@@ -5797,7 +5797,7 @@
 							"fileName": "src/structures/IWrtnAgentConfig.ts",
 							"line": 74,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L74"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L74"
 						}
 					],
 					"type": {
@@ -5855,7 +5855,7 @@
 							"fileName": "src/structures/IWrtnAgentConfig.ts",
 							"line": 90,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L90"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L90"
 						}
 					],
 					"type": {
@@ -5907,7 +5907,7 @@
 							"fileName": "src/structures/IWrtnAgentConfig.ts",
 							"line": 31,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L31"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L31"
 						}
 					],
 					"type": {
@@ -5947,7 +5947,7 @@
 							"fileName": "src/structures/IWrtnAgentConfig.ts",
 							"line": 57,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L57"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L57"
 						}
 					],
 					"type": {
@@ -5976,7 +5976,7 @@
 							"fileName": "src/structures/IWrtnAgentConfig.ts",
 							"line": 98,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L98"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L98"
 						}
 					],
 					"type": {
@@ -6026,7 +6026,7 @@
 							"fileName": "src/structures/IWrtnAgentConfig.ts",
 							"line": 42,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L42"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L42"
 						}
 					],
 					"type": {
@@ -6053,7 +6053,7 @@
 					"fileName": "src/structures/IWrtnAgentConfig.ts",
 					"line": 19,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentConfig.ts#L19"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentConfig.ts#L19"
 				}
 			]
 		},
@@ -6215,7 +6215,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 62,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L62"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L62"
 						}
 					],
 					"type": {
@@ -6263,7 +6263,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 110,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L110"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L110"
 						}
 					],
 					"type": {
@@ -6279,7 +6279,7 @@
 									"fileName": "src/structures/IWrtnAgentContext.ts",
 									"line": 110,
 									"character": 12,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L110"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L110"
 								}
 							],
 							"signatures": [
@@ -6294,7 +6294,7 @@
 											"fileName": "src/structures/IWrtnAgentContext.ts",
 											"line": 110,
 											"character": 12,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L110"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L110"
 										}
 									],
 									"parameters": [
@@ -6359,7 +6359,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 70,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L70"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L70"
 						}
 					],
 					"type": {
@@ -6391,7 +6391,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 127,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L127"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L127"
 						}
 					],
 					"type": {
@@ -6407,7 +6407,7 @@
 									"fileName": "src/structures/IWrtnAgentContext.ts",
 									"line": 127,
 									"character": 14,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L127"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L127"
 								}
 							],
 							"signatures": [
@@ -6422,7 +6422,7 @@
 											"fileName": "src/structures/IWrtnAgentContext.ts",
 											"line": 127,
 											"character": 14,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L127"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L127"
 										}
 									],
 									"type": {
@@ -6464,7 +6464,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 52,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L52"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L52"
 						}
 					],
 					"type": {
@@ -6503,7 +6503,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 85,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L85"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L85"
 						}
 					],
 					"type": {
@@ -6569,7 +6569,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 97,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L97"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L97"
 						}
 					],
 					"type": {
@@ -6585,7 +6585,7 @@
 									"fileName": "src/structures/IWrtnAgentContext.ts",
 									"line": 97,
 									"character": 9,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L97"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L97"
 								}
 							],
 							"signatures": [
@@ -6600,7 +6600,7 @@
 											"fileName": "src/structures/IWrtnAgentContext.ts",
 											"line": 97,
 											"character": 9,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L97"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L97"
 										}
 									],
 									"type": {
@@ -6631,7 +6631,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 119,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L119"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L119"
 						}
 					],
 					"type": {
@@ -6647,7 +6647,7 @@
 									"fileName": "src/structures/IWrtnAgentContext.ts",
 									"line": 119,
 									"character": 11,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L119"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L119"
 								}
 							],
 							"signatures": [
@@ -6676,7 +6676,7 @@
 											"fileName": "src/structures/IWrtnAgentContext.ts",
 											"line": 119,
 											"character": 11,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L119"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L119"
 										}
 									],
 									"parameters": [
@@ -6725,7 +6725,7 @@
 													{
 														"type": "reference",
 														"target": {
-															"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/resources/chat/completions/completions.ts",
+															"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/resources/chat/completions/completions.ts",
 															"qualifiedName": "ChatCompletionCreateParamsNonStreaming"
 														},
 														"name": "ChatCompletionCreateParamsNonStreaming",
@@ -6751,7 +6751,7 @@
 											{
 												"type": "reference",
 												"target": {
-													"sourceFileName": "node_modules/.pnpm/openai@4.85.0/node_modules/openai/src/resources/chat/completions/completions.ts",
+													"sourceFileName": "node_modules/.pnpm/openai@4.85.1/node_modules/openai/src/resources/chat/completions/completions.ts",
 													"qualifiedName": "ChatCompletion"
 												},
 												"name": "ChatCompletion",
@@ -6785,7 +6785,7 @@
 							"fileName": "src/structures/IWrtnAgentContext.ts",
 							"line": 77,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L77"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L77"
 						}
 					],
 					"type": {
@@ -6820,7 +6820,7 @@
 					"fileName": "src/structures/IWrtnAgentContext.ts",
 					"line": 41,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentContext.ts#L41"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentContext.ts#L41"
 				}
 			]
 		},
@@ -6887,7 +6887,7 @@
 							"fileName": "src/structures/IWrtnAgentOperationCollection.ts",
 							"line": 16,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationCollection.ts#L16"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationCollection.ts#L16"
 						}
 					],
 					"type": {
@@ -6995,7 +6995,7 @@
 							"fileName": "src/structures/IWrtnAgentOperationCollection.ts",
 							"line": 33,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationCollection.ts#L33"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationCollection.ts#L33"
 						}
 					],
 					"type": {
@@ -7043,7 +7043,7 @@
 							"fileName": "src/structures/IWrtnAgentOperationCollection.ts",
 							"line": 40,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationCollection.ts#L40"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationCollection.ts#L40"
 						}
 					],
 					"type": {
@@ -7105,7 +7105,7 @@
 							"fileName": "src/structures/IWrtnAgentOperationCollection.ts",
 							"line": 49,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationCollection.ts#L49"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationCollection.ts#L49"
 						}
 					],
 					"type": {
@@ -7162,7 +7162,7 @@
 					"fileName": "src/structures/IWrtnAgentOperationCollection.ts",
 					"line": 12,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationCollection.ts#L12"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationCollection.ts#L12"
 				}
 			]
 		},
@@ -7292,7 +7292,7 @@
 							"fileName": "src/structures/IWrtnAgentProps.ts",
 							"line": 74,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L74"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L74"
 						}
 					],
 					"type": {
@@ -7308,7 +7308,7 @@
 									"fileName": "src/structures/IWrtnAgentProps.ts",
 									"line": 74,
 									"character": 23,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L74"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L74"
 								}
 							],
 							"signatures": [
@@ -7323,7 +7323,7 @@
 											"fileName": "src/structures/IWrtnAgentProps.ts",
 											"line": 74,
 											"character": 23,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L74"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L74"
 										}
 									],
 									"parameters": [
@@ -7411,7 +7411,7 @@
 							"fileName": "src/structures/IWrtnAgentProps.ts",
 							"line": 56,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L56"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L56"
 						}
 					],
 					"type": {
@@ -7440,7 +7440,7 @@
 							"fileName": "src/structures/IWrtnAgentProps.ts",
 							"line": 39,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L39"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L39"
 						}
 					],
 					"type": {
@@ -7474,7 +7474,7 @@
 							"fileName": "src/structures/IWrtnAgentProps.ts",
 							"line": 64,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L64"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L64"
 						}
 					],
 					"type": {
@@ -7510,7 +7510,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 157,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L157"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L157"
 													}
 												],
 												"type": {
@@ -7546,7 +7546,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 162,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L162"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L162"
 													}
 												],
 												"type": {
@@ -7573,7 +7573,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 169,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 													}
 												],
 												"type": {
@@ -7629,7 +7629,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 39,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L39"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L39"
 													}
 												],
 												"type": {
@@ -7656,7 +7656,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 44,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L44"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L44"
 													}
 												],
 												"type": {
@@ -7692,7 +7692,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 44,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L44"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L44"
 																				}
 																			],
 																			"type": {
@@ -7719,7 +7719,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 52,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L52"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L52"
 																				}
 																			],
 																			"type": {
@@ -7774,7 +7774,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 60,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L60"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L60"
 																				}
 																			],
 																			"type": {
@@ -7801,7 +7801,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 39,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L39"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L39"
 																				}
 																			],
 																			"type": {
@@ -7828,7 +7828,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 65,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L65"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L65"
 																				}
 																			],
 																			"type": {
@@ -7886,7 +7886,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 44,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L44"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L44"
 																				}
 																			],
 																			"type": {
@@ -7913,7 +7913,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 52,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L52"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L52"
 																				}
 																			],
 																			"type": {
@@ -7968,7 +7968,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 60,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L60"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L60"
 																				}
 																			],
 																			"type": {
@@ -7995,7 +7995,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 39,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L39"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L39"
 																				}
 																			],
 																			"type": {
@@ -8022,7 +8022,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 65,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L65"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L65"
 																				}
 																			],
 																			"type": {
@@ -8075,7 +8075,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 169,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 													}
 												],
 												"type": {
@@ -8131,7 +8131,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 56,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L56"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L56"
 													}
 												],
 												"type": {
@@ -8158,7 +8158,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 61,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L61"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L61"
 													}
 												],
 												"type": {
@@ -8194,7 +8194,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 44,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L44"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L44"
 																				}
 																			],
 																			"type": {
@@ -8221,7 +8221,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 52,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L52"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L52"
 																				}
 																			],
 																			"type": {
@@ -8276,7 +8276,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 60,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L60"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L60"
 																				}
 																			],
 																			"type": {
@@ -8303,7 +8303,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 39,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L39"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L39"
 																				}
 																			],
 																			"type": {
@@ -8330,7 +8330,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 65,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L65"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L65"
 																				}
 																			],
 																			"type": {
@@ -8388,7 +8388,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 44,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L44"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L44"
 																				}
 																			],
 																			"type": {
@@ -8415,7 +8415,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 52,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L52"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L52"
 																				}
 																			],
 																			"type": {
@@ -8470,7 +8470,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 60,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L60"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L60"
 																				}
 																			],
 																			"type": {
@@ -8497,7 +8497,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 39,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L39"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L39"
 																				}
 																			],
 																			"type": {
@@ -8524,7 +8524,7 @@
 																					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 																					"line": 65,
 																					"character": 4,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L65"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L65"
 																				}
 																			],
 																			"type": {
@@ -8577,7 +8577,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 169,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 													}
 												],
 												"type": {
@@ -8633,7 +8633,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 120,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L120"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L120"
 													}
 												],
 												"type": {
@@ -8660,7 +8660,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 97,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L97"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L97"
 													}
 												],
 												"type": {
@@ -8687,7 +8687,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 102,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L102"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L102"
 													}
 												],
 												"type": {
@@ -8714,7 +8714,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 107,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L107"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L107"
 													}
 												],
 												"type": {
@@ -8769,7 +8769,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 115,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L115"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L115"
 													}
 												],
 												"type": {
@@ -8796,7 +8796,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 92,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L92"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L92"
 													}
 												],
 												"type": {
@@ -8823,7 +8823,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 87,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L87"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L87"
 													}
 												],
 												"type": {
@@ -8850,7 +8850,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 125,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L125"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L125"
 													}
 												],
 												"type": {
@@ -9077,7 +9077,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 120,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L120"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L120"
 													}
 												],
 												"type": {
@@ -9104,7 +9104,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 97,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L97"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L97"
 													}
 												],
 												"type": {
@@ -9131,7 +9131,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 102,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L102"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L102"
 													}
 												],
 												"type": {
@@ -9158,7 +9158,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 107,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L107"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L107"
 													}
 												],
 												"type": {
@@ -9213,7 +9213,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 115,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L115"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L115"
 													}
 												],
 												"type": {
@@ -9240,7 +9240,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 92,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L92"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L92"
 													}
 												],
 												"type": {
@@ -9267,7 +9267,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 87,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L87"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L87"
 													}
 												],
 												"type": {
@@ -9294,7 +9294,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 125,
 														"character": 6,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L125"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L125"
 													}
 												],
 												"type": {
@@ -9355,7 +9355,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 142,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L142"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L142"
 													}
 												],
 												"type": {
@@ -9391,7 +9391,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 120,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L120"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L120"
 																				}
 																			],
 																			"type": {
@@ -9418,7 +9418,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 97,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L97"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L97"
 																				}
 																			],
 																			"type": {
@@ -9445,7 +9445,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 102,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L102"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L102"
 																				}
 																			],
 																			"type": {
@@ -9472,7 +9472,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 107,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L107"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L107"
 																				}
 																			],
 																			"type": {
@@ -9527,7 +9527,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 115,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L115"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L115"
 																				}
 																			],
 																			"type": {
@@ -9554,7 +9554,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 92,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L92"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L92"
 																				}
 																			],
 																			"type": {
@@ -9581,7 +9581,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 87,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L87"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L87"
 																				}
 																			],
 																			"type": {
@@ -9608,7 +9608,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 125,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L125"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L125"
 																				}
 																			],
 																			"type": {
@@ -9835,7 +9835,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 120,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L120"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L120"
 																				}
 																			],
 																			"type": {
@@ -9862,7 +9862,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 97,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L97"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L97"
 																				}
 																			],
 																			"type": {
@@ -9889,7 +9889,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 102,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L102"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L102"
 																				}
 																			],
 																			"type": {
@@ -9916,7 +9916,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 107,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L107"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L107"
 																				}
 																			],
 																			"type": {
@@ -9971,7 +9971,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 115,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L115"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L115"
 																				}
 																			],
 																			"type": {
@@ -9998,7 +9998,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 92,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L92"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L92"
 																				}
 																			],
 																			"type": {
@@ -10025,7 +10025,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 87,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L87"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L87"
 																				}
 																			],
 																			"type": {
@@ -10052,7 +10052,7 @@
 																					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 																					"line": 125,
 																					"character": 6,
-																					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L125"
+																					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L125"
 																				}
 																			],
 																			"type": {
@@ -10108,7 +10108,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 147,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L147"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L147"
 													}
 												],
 												"type": {
@@ -10135,7 +10135,7 @@
 														"fileName": "src/structures/IWrtnAgentPrompt.ts",
 														"line": 169,
 														"character": 4,
-														"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L169"
+														"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L169"
 													}
 												],
 												"type": {
@@ -10186,7 +10186,7 @@
 							"fileName": "src/structures/IWrtnAgentProps.ts",
 							"line": 34,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L34"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L34"
 						}
 					],
 					"type": {
@@ -10215,7 +10215,7 @@
 					"fileName": "src/structures/IWrtnAgentProps.ts",
 					"line": 30,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProps.ts#L30"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProps.ts#L30"
 				}
 			]
 		},
@@ -10344,7 +10344,7 @@
 							"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 							"line": 86,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L86"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L86"
 						}
 					],
 					"type": {
@@ -10360,7 +10360,7 @@
 									"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 									"line": 86,
 									"character": 11,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L86"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L86"
 								}
 							],
 							"signatures": [
@@ -10389,7 +10389,7 @@
 											"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 											"line": 86,
 											"character": 11,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L86"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L86"
 										}
 									],
 									"parameters": [
@@ -10459,7 +10459,7 @@
 							"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 							"line": 30,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L30"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L30"
 						}
 					],
 					"type": {
@@ -10475,7 +10475,7 @@
 									"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 									"line": 30,
 									"character": 11,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L30"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L30"
 								}
 							],
 							"signatures": [
@@ -10504,7 +10504,7 @@
 											"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 											"line": 30,
 											"character": 11,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L30"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L30"
 										}
 									],
 									"parameters": [
@@ -10602,7 +10602,7 @@
 							"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 							"line": 121,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L121"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L121"
 						}
 					],
 					"type": {
@@ -10618,7 +10618,7 @@
 									"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 									"line": 121,
 									"character": 13,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L121"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L121"
 								}
 							],
 							"signatures": [
@@ -10647,7 +10647,7 @@
 											"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 											"line": 121,
 											"character": 13,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L121"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L121"
 										}
 									],
 									"parameters": [
@@ -10736,7 +10736,7 @@
 							"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 							"line": 104,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L104"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L104"
 						}
 					],
 					"type": {
@@ -10752,7 +10752,7 @@
 									"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 									"line": 104,
 									"character": 12,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L104"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L104"
 								}
 							],
 							"signatures": [
@@ -10781,7 +10781,7 @@
 											"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 											"line": 104,
 											"character": 12,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L104"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L104"
 										}
 									],
 									"parameters": [
@@ -10888,7 +10888,7 @@
 							"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 							"line": 48,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L48"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L48"
 						}
 					],
 					"type": {
@@ -10904,7 +10904,7 @@
 									"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 									"line": 48,
 									"character": 15,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L48"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L48"
 								}
 							],
 							"signatures": [
@@ -10933,7 +10933,7 @@
 											"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 											"line": 48,
 											"character": 15,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L48"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L48"
 										}
 									],
 									"parameters": [
@@ -11040,7 +11040,7 @@
 							"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 							"line": 69,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L69"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L69"
 						}
 					],
 					"type": {
@@ -11056,7 +11056,7 @@
 									"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 									"line": 69,
 									"character": 11,
-									"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L69"
+									"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L69"
 								}
 							],
 							"signatures": [
@@ -11085,7 +11085,7 @@
 											"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 											"line": 69,
 											"character": 11,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L69"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L69"
 										}
 									],
 									"parameters": [
@@ -11142,7 +11142,7 @@
 					"fileName": "src/structures/IWrtnAgentSystemPrompt.ts",
 					"line": 22,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentSystemPrompt.ts#L22"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentSystemPrompt.ts#L22"
 				}
 			]
 		},
@@ -11246,7 +11246,7 @@
 							"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 							"line": 37,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L37"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L37"
 						}
 					],
 					"type": {
@@ -11276,7 +11276,7 @@
 							"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 							"line": 30,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L30"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L30"
 						}
 					],
 					"type": {
@@ -11306,7 +11306,7 @@
 							"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 							"line": 23,
 							"character": 2,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L23"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L23"
 						}
 					],
 					"type": {
@@ -11330,13 +11330,13 @@
 					"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 					"line": 19,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L19"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L19"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentTokenUsage.ts",
 					"line": 39,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentTokenUsage.ts#L39"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentTokenUsage.ts#L39"
 				}
 			]
 		},
@@ -11420,13 +11420,13 @@
 					"fileName": "src/structures/IWrtnAgentController.ts",
 					"line": 24,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L24"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L24"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentController.ts",
 					"line": 27,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentController.ts#L27"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentController.ts#L27"
 				}
 			],
 			"type": {
@@ -11504,13 +11504,13 @@
 					"fileName": "src/structures/IWrtnAgentEvent.ts",
 					"line": 16,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L16"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L16"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentEvent.ts",
 					"line": 26,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentEvent.ts#L26"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentEvent.ts#L26"
 				}
 			],
 			"type": {
@@ -11646,13 +11646,13 @@
 					"fileName": "src/structures/IWrtnAgentOperation.ts",
 					"line": 21,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L21"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L21"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentOperation.ts",
 					"line": 24,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperation.ts#L24"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperation.ts#L24"
 				}
 			],
 			"type": {
@@ -11747,13 +11747,13 @@
 					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 					"line": 19,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L19"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L19"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentOperationSelection.ts",
 					"line": 22,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentOperationSelection.ts#L22"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentOperationSelection.ts#L22"
 				}
 			],
 			"type": {
@@ -11858,13 +11858,13 @@
 					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 					"line": 23,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L23"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L23"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentPrompt.ts",
 					"line": 29,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentPrompt.ts#L29"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentPrompt.ts#L29"
 				}
 			],
 			"type": {
@@ -12001,13 +12001,13 @@
 					"fileName": "src/structures/IWrtnAgentProvider.ts",
 					"line": 19,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L19"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L19"
 				},
 				{
 					"fileName": "src/structures/IWrtnAgentProvider.ts",
 					"line": 20,
 					"character": 17,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/structures/IWrtnAgentProvider.ts#L20"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/structures/IWrtnAgentProvider.ts#L20"
 				}
 			],
 			"type": {
@@ -12028,7 +12028,7 @@
 					"fileName": "src/typings/WrtnAgentSource.ts",
 					"line": 1,
 					"character": 12,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/typings/WrtnAgentSource.ts#L1"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/typings/WrtnAgentSource.ts#L1"
 				}
 			],
 			"type": {
@@ -12121,7 +12121,7 @@
 					"fileName": "src/functional/createHttpLlmApplication.ts",
 					"line": 28,
 					"character": 13,
-					"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/functional/createHttpLlmApplication.ts#L28"
+					"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/functional/createHttpLlmApplication.ts#L28"
 				}
 			],
 			"signatures": [
@@ -12150,7 +12150,7 @@
 							"fileName": "src/functional/createHttpLlmApplication.ts",
 							"line": 28,
 							"character": 40,
-							"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/functional/createHttpLlmApplication.ts#L28"
+							"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/functional/createHttpLlmApplication.ts#L28"
 						}
 					],
 					"parameters": [
@@ -12196,7 +12196,7 @@
 													"fileName": "src/functional/createHttpLlmApplication.ts",
 													"line": 37,
 													"character": 2,
-													"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/functional/createHttpLlmApplication.ts#L37"
+													"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/functional/createHttpLlmApplication.ts#L37"
 												}
 											],
 											"type": {
@@ -12264,7 +12264,7 @@
 													"fileName": "src/functional/createHttpLlmApplication.ts",
 													"line": 32,
 													"character": 2,
-													"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/functional/createHttpLlmApplication.ts#L32"
+													"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/functional/createHttpLlmApplication.ts#L32"
 												}
 											],
 											"type": {
@@ -12293,7 +12293,7 @@
 													"fileName": "src/functional/createHttpLlmApplication.ts",
 													"line": 46,
 													"character": 2,
-													"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/functional/createHttpLlmApplication.ts#L46"
+													"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/functional/createHttpLlmApplication.ts#L46"
 												}
 											],
 											"type": {
@@ -12340,7 +12340,7 @@
 											"fileName": "src/functional/createHttpLlmApplication.ts",
 											"line": 28,
 											"character": 48,
-											"url": "https://github.com/wrtnlabs/agent/blob/8244f1f58fb919580d19f13d7cb5fd3dcaec2131/src/functional/createHttpLlmApplication.ts#L28"
+											"url": "https://github.com/wrtnlabs/agent/blob/595958f0f9fbad84425b5e2a0135efe559b3f2d1/src/functional/createHttpLlmApplication.ts#L28"
 										}
 									]
 								}
@@ -12439,7 +12439,7 @@
 		},
 		{
 			"kind": "text",
-			"text": "\n![Conceptual Diagram](https://github.com/user-attachments/assets/6d4f7b54-2f1e-4ecb-8a34-5bdba8b545e6)\n\n[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agent/blob/master/LICENSE)\n[![npm version](https://img.shields.io/npm/v/@wrtnlabs/agent.svg)](https://www.npmjs.com/package/@wrtnlabs/agent)\n[![Downloads](https://img.shields.io/npm/dm/@wrtnlabs/agent.svg)](https://www.npmjs.com/package/@wrtnlabs/agent)\n[![Build Status](https://github.com/wrtnlabs/agent/workflows/build/badge.svg)](https://github.com/wrtnlabs/agent/actions?query=workflow%3Abuild)\n\nThe simplest AI agent library, specialized in **LLM function calling**.\n\n"
+			"text": "\n![Key Concept Gear Diagram](https://github.com/user-attachments/assets/2cdb6e05-77f0-419a-ab7f-539b3d2bcbc5)\n\n[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agent/blob/master/LICENSE)\n[![npm version](https://img.shields.io/npm/v/@wrtnlabs/agent.svg)](https://www.npmjs.com/package/@wrtnlabs/agent)\n[![Downloads](https://img.shields.io/npm/dm/@wrtnlabs/agent.svg)](https://www.npmjs.com/package/@wrtnlabs/agent)\n[![Build Status](https://github.com/wrtnlabs/agent/workflows/build/badge.svg)](https://github.com/wrtnlabs/agent/actions?query=workflow%3Abuild)\n\nThe simplest AI agent library, specialized in **LLM function calling**.\n\n"
 		},
 		{
 			"kind": "code",
@@ -12447,7 +12447,7 @@
 		},
 		{
 			"kind": "text",
-			"text": " is the simplest AI agent library specialized for LLM (Large Language Model) function calling. You can provide functions call by *Swagger/OpenAPI* document or *TypeScript class type*, and it will make everything possible. *Super AI Chatbot* development, or *Multi-Agent Orchestration*, all of them can be realized by the function calling.\n\nFor example, if you provide **Swagger document** of a Shopping Mall Server, "
+			"text": " is the simplest AI agent library specialized for LLM (Large Language Model) function calling. You can provide functions to call by *Swagger/OpenAPI* document or *TypeScript class type*, and it will make everything possible. *Super AI Chatbot* development, or *Multi-Agent Orchestration*, all of them can be realized by the function calling.\n\nFor example, if you provide **Swagger document** of a Shopping Mall Server, "
 		},
 		{
 			"kind": "code",
@@ -12455,7 +12455,7 @@
 		},
 		{
 			"kind": "text",
-			"text": " will compose **Super AI Chatbot** application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just delivering the Swagger document.\n\nAlso, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to deelop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. "
+			"text": " will compose **Super AI Chatbot** application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just by delivering the Swagger document.\n\nAlso, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. "
 		},
 		{
 			"kind": "code",
@@ -12735,7 +12735,15 @@
 		},
 		{
 			"kind": "text",
-			"text": ".\n\n### Validation Feedback\nIs LLM function calling feature is perfect? \n\nThe answer is not, and LLM providers like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an "
+			"text": ".\n\n### Validation Feedback\n"
+		},
+		{
+			"kind": "code",
+			"text": "```typescript\nimport { FunctionCall } from \"pseudo\";\nimport { ILlmFunctionOfValidate, IValidation } from \"typia\";\n\nexport const correctFunctionCall = (p: {\n  call: FunctionCall;\n  functions: Array<ILlmFunctionOfValidate<\"chatgpt\">>;\n  retry: (reason: string, errors?: IValidation.IError[]) => Promise<unknown>;\n}): Promise<unknown> => {\n  // FIND FUNCTION\n  const func: ILlmFunctionOfValidate<\"chatgpt\"> | undefined =\n    p.functions.find(f => f.name === p.call.name);\n  if (func === undefined) {\n    // never happened in my experience\n    return p.retry(\n      \"Unable to find the matched function name. Try it again.\",\n    );\n  }\n\n  // VALIDATE\n  const result: IValidation<unknown> = func.validate(p.call.arguments);\n  if (result.success === false) {\n    // 1st trial: 50% (gpt-4o-mini in shopping mall chatbot)\n    // 2nd trial with validation feedback: 99%\n    // 3nd trial with validation feedback again: never have failed\n    return p.retry(\n      \"Type errors are detected. Correct it through validation errors\",\n      {\n        errors: result.errors,\n      },\n    );\n  }\n  return result.data;\n}\n```"
+		},
+		{
+			"kind": "text",
+			"text": "\n\nIs LLM function calling perfect? \n\nThe answer is not, and LLM (Large Language Model) providers like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an "
 		},
 		{
 			"kind": "code",
@@ -12751,7 +12759,7 @@
 		},
 		{
 			"kind": "text",
-			"text": " typed value.\n\nTherefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the validation errors and let the LLM to retry the function calling. And "
+			"text": " typed value.\n\nTherefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the most detailed validation errors, and let the LLM to retry the function calling referencing the validation errors.\n\nAbout the validation feedback, "
 		},
 		{
 			"kind": "code",
@@ -12775,7 +12783,15 @@
 		},
 		{
 			"kind": "text",
-			"text": "](https://typia.io/docs/llm/application/#applicationofvalidate) functions for the validation feedback, for the perfect runtime validation.\n\nSuch validation feedback strategy and combination with typia's runtime validator, "
+			"text": "](https://typia.io/docs/llm/application/#applicationofvalidate) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.\n\nSuch validation feedback strategy and combination with "
+		},
+		{
+			"kind": "code",
+			"text": "`typia`"
+		},
+		{
+			"kind": "text",
+			"text": " runtime validator, "
 		},
 		{
 			"kind": "code",
@@ -12783,7 +12799,23 @@
 		},
 		{
 			"kind": "text",
-			"text": " has achieved the most ideal LLM function calling.\n\nComponents               | "
+			"text": " has achieved the most ideal LLM function calling. In my experience, when using OpenAI's "
+		},
+		{
+			"kind": "code",
+			"text": "`gpt-4o-mini`"
+		},
+		{
+			"kind": "text",
+			"text": " model, it tends to construct invalid function calling arguments at the first trial about 50% of the time. By the way, if correct it through validation feedback with "
+		},
+		{
+			"kind": "code",
+			"text": "`typia`"
+		},
+		{
+			"kind": "text",
+			"text": ", success rate soars to 99%. And I've never had a failure when trying validation feedback twice.\n\nComponents               | "
 		},
 		{
 			"kind": "code",
@@ -12911,7 +12943,71 @@
 		},
 		{
 			"kind": "text",
-			"text": ").\n\nThe new playground website would be published until 2025-03-15.\n\n### WebSocket Module\n"
+			"text": ").\n\nThe new playground website would be published until 2025-03-15.\n\n### Optimization\nAs I've concenstrated on POC (Proof of Concept) development on the early stage level, internal agents composing "
+		},
+		{
+			"kind": "code",
+			"text": "`@wrtnlabs/agent`"
+		},
+		{
+			"kind": "text",
+			"text": " are not cost optimized yet. Especially, "
+		},
+		{
+			"kind": "code",
+			"text": "`selector`"
+		},
+		{
+			"kind": "text",
+			"text": " agent is consuming LLM tokens too much repeatedly. We'll optimize the "
+		},
+		{
+			"kind": "code",
+			"text": "`selector`"
+		},
+		{
+			"kind": "text",
+			"text": " agent by RAG (Retrieval Augmented Generation) skills.\n\nAlso, we will support dozens of useful add-on agents which can connect with "
+		},
+		{
+			"kind": "code",
+			"text": "`@wrtnlabs/agent`"
+		},
+		{
+			"kind": "text",
+			"text": " by TypeScript class function calling. One of them is "
+		},
+		{
+			"kind": "code",
+			"text": "`@wrtnlabs/hive`"
+		},
+		{
+			"kind": "text",
+			"text": " which optimizes "
+		},
+		{
+			"kind": "code",
+			"text": "`selector`"
+		},
+		{
+			"kind": "text",
+			"text": " agent so that reducing LLM costs dramatically. The others would be OpenAI Vector Store handler and Postgres based RAG engine.\n\nWith these "
+		},
+		{
+			"kind": "code",
+			"text": "`@wrtnlabs/agent`"
+		},
+		{
+			"kind": "text",
+			"text": " providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how "
+		},
+		{
+			"kind": "code",
+			"text": "`@wrtnlabs/agent`"
+		},
+		{
+			"kind": "text",
+			"text": " makes the Multi agent system interaction super easily.\n\n### WebSocket Module\n"
 		},
 		{
 			"kind": "code",
@@ -12931,7 +13027,7 @@
 		},
 		{
 			"kind": "code",
-			"text": "```mermaid\nflowchart\nOpenAI(\"<b><u>OpenAI</u></b>\")\nClaude\nLlama\nGemini\n```"
+			"text": "```mermaid\nflowchart\nAgent[\"<code>@wrtnlabs/agent</code>\"]\nOpenAI(\"<b><u>OpenAI</u></b>\")\nClaude\nLlama\nGemini\nAgent==supports==>OpenAI\nAgent-.not yet.->Claude\nAgent-.not yet.->Llama\nAgent-.not yet.->Gemini\n```"
 		},
 		{
 			"kind": "text",
