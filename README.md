@@ -493,48 +493,6 @@ Also, we will support dozens of useful add-on agents which can connect with `@wr
 
 With these `@wrtnlabs/agent` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@wrtnlabs/agent` makes the Multi agent system interaction super easily.
 
-### WebSocket Module
-```typescript
-import { 
-  IWrtnAgentEvent,
-  IWrtnAgentHeader,
-  IWrtnAgentListener,
-  IWrtnAgentService 
-} from "@wrtnlabs/agent";
-import { Driver, WebSocketConnector } from "tgrid";
-
-const main = async (): Promise<void> => {
-  const connector: WebSocketConnector<
-    IWrtnAgentHeader,
-    IWrtnAgentListener,
-    IWrtnAgentService
-  > = new WebSocketConnector(
-    {
-      locale: "en-US",
-    } satisfies IWrtnAgentHeader,
-    {
-      // EVENT LISTENERS
-      conversate: async (event: IWrtnAgentEvent.IConversate) => {},
-      select: async (event: IWrtnAgentEvent.ISelect) => {},
-      execute: async (event: IWrtnAgentEvent.IExecute) => {},
-      describe: async (event: IWrtnAgentEvent.IDescribe) => {},
-    } satisfies IWrtnAgentService,
-  );
-  await connector.connect("http://localhost:3000/chat");
-
-  // CALL SERVER'S FUNCTION
-  const service: Driver<IWrtnAgentService> = connector.getDriver();
-  await service.conversate("Hello, what you can do?");
-};
-main().catch(console.error);
-```
-
-`@wrtnlabs/agent` will provider WebSocket module of RPC (Remote Procedure Call) paradigm.
-
-It will help easy integration with agent backend server and AI chatbot frontend application.
-
-We're going to support this feature until 2025-02-28.
-
 ### LLM Providers
 ```mermaid
 flowchart
