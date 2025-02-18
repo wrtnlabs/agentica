@@ -1,5 +1,5 @@
 # author: elliot-huffman
-name: release
+name: release:agent
 on:
   release:
     types: [created]
@@ -22,6 +22,7 @@ jobs:
         run: pnpm install
       - name: Copy README
         run: sh deploy/README.sh
+        
       - name: Build
         run: cd packages/agent && pnpm build
       - name: Test
