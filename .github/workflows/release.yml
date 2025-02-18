@@ -23,9 +23,11 @@ jobs:
       - name: Copy README
         run: sh deploy/README.sh
       - name: Build
-        run: pnpm build:agent
+        run: cd packages/agent && pnpm build
       - name: Test
-        run: pnpm test:agent
+        run: cd packages/agent && pnpm test
+        env:
+          CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
       - name: Publish to npm
         run: cd packages/agent && npm publish --access public --provenance
         env:

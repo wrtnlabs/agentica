@@ -21,6 +21,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build
-        run: pnpm run build:agent
+        run: cd packages/agent && pnpm run build
       - name: Test
-        run: pnpm run test:agent
+        run: cd packages/agent && pnpm run test
+        env:
+          CHATGPT_API_KEY: ${{ secrets.GITHUB_CHATGPT_API_KEY }}
