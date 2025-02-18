@@ -35,5 +35,11 @@ interface IEnvironments {
 const environments = new Singleton(() => {
   const env = dotenv.config();
   dotenvExpand.expand(env);
+  console.log(
+    "after, has CHATGPT_API_KEY",
+    process.env.CHATGPT_API_KEY === ""
+      ? "empty string"
+      : !!process.env.CHATGPT_API_KEY,
+  );
   return typia.assert<IEnvironments>(process.env);
 });
