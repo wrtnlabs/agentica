@@ -1,4 +1,4 @@
-name: build
+name: build:agent
 on:
   pull_request:
     paths:
@@ -21,6 +21,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build
-        run: pnpm run build
+        run: pnpm run build:agent
       - name: Test
-        run: pnpm run test
+        run: pnpm run test:agent

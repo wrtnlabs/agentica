@@ -17,14 +17,14 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10.4.0
       - name: Install dependencies
         run: pnpm install
       - name: Build
-        run: pnpm run build
+        run: pnpm build:agent
       - name: Test
-        run: pnpm test
+        run: pnpm test:agent
       - name: Publish to npm
-        run: npm publish --access public --provenance
+        run: cd packages/agent && npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
