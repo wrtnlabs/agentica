@@ -33,6 +33,12 @@ interface IEnvironments {
 }
 
 const environments = new Singleton(() => {
+  console.log(
+    "before, has CHATGPT_API_KEY",
+    process.env.CHATGPT_API_KEY === ""
+      ? "empty string"
+      : !!process.env.CHATGPT_API_KEY,
+  );
   const env = dotenv.config();
   dotenvExpand.expand(env);
   console.log(
