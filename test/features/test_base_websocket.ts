@@ -11,7 +11,7 @@ import { WebSocketConnector, WebSocketServer } from "tgrid";
 import { randint } from "tstl";
 import { Primitive } from "typia";
 
-export const test_websocket = async (): Promise<void> => {
+export const test_base_websocket = async (): Promise<void> => {
   const port: number = randint(30_001, 65_001);
   const server: WebSocketServer<
     null,
