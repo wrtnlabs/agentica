@@ -61,6 +61,7 @@ export class WrtnAgentRpcService implements IWrtnAgentRpcService {
     agent.on("describe", (evt) => listener.describe(primitive(evt)));
 
     // OPTIONAL LISTENERS
+    agent.on("initialize", (evt) => listener.initialize!(primitive(evt)));
     agent.on("select", (evt) => listener.select!(primitive(evt)));
     agent.on("cancel", (evt) => listener.cancel!(primitive(evt)));
     agent.on("call", async (evt) => {

@@ -63,6 +63,16 @@ export interface IWrtnAgentRpcListener {
   text(evt: Primitive<IWrtnAgentEvent.IText>): Promise<void>;
 
   /**
+   * Initialize the AI agent.
+   *
+   * Informs an initialization of controller functions from
+   * the AI agent server to client.
+   *
+   * @param evt Event of initialization
+   */
+  initialize?(evt: Primitive<IWrtnAgentEvent.IInitialize>): Promise<void>;
+
+  /**
    * Select a function to call.
    *
    * Informs a selected function to call from the AI agent server to client.
