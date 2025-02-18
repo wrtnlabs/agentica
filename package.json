@@ -2,9 +2,9 @@
   "name": "@wrtnlabs/agent-station",
   "version": "1.0.0",
   "description": "Super A.I. Chatbot agent by Swagger Document",
-  "packageManager": "pnpm@10.4.0",
+  "packageManager": "pnpm@8.9.0",
   "engines": {
-    "pnpm": "10.4.0"
+    "pnpm": "8.9.0"
   },
   "scripts": {
     "prepare": "ts-patch install && typia patch",
