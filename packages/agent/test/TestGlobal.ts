@@ -33,7 +33,9 @@ interface IEnvironments {
 }
 
 const environments = new Singleton(() => {
+  console.log("before", process.env);
   const env = dotenv.config();
   dotenvExpand.expand(env);
+  console.log("after", process.env);
   return typia.assert<IEnvironments>(process.env);
 });
