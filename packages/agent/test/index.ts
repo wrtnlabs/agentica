@@ -4,7 +4,9 @@ import chalk from "chalk";
 import { TestGlobal } from "./TestGlobal";
 
 const main = async (): Promise<void> => {
-  if (!TestGlobal.env.CHATGPT_API_KEY?.length) return;
+  if (!TestGlobal.env.CHATGPT_API_KEY?.length) {
+    throw new Error("environments CHATGPT_API_KEY is not set");
+  }
 
   // DO TEST
   const include: string[] = TestGlobal.getArguments("include");

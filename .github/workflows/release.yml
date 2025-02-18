@@ -20,11 +20,15 @@ jobs:
           version: 8
       - name: Install dependencies
         run: pnpm install
+      - name: Copy README
+        run: sh deploy/README.sh
       - name: Build
-        run: pnpm run build
+        run: cd packages/agent && pnpm build
       - name: Test
-        run: pnpm test
+        run: cd packages/agent && pnpm test
+        env:
+          CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
       - name: Publish to npm
-        run: npm publish --access public --provenance
+        run: cd packages/agent && npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}

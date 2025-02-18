@@ -17,10 +17,13 @@ const main = async () => {
     "utf8",
   );
 
-  cp.execSync("npx typedoc --json website/typedoc-json/agent.json", {
-    cwd: `${__dirname}/../..`,
-    stdio: "inherit",
-  });
+  cp.execSync(
+    "cd packages/agent && npx typedoc --json ../../website/typedoc-json/agent.json",
+    {
+      cwd: `${__dirname}/../..`,
+      stdio: "inherit",
+    },
+  );
   cp.execSync(
     `npx typedoc --entryPointStrategy merge "typedoc-json/*.json" --plugin typedoc-github-theme --theme typedoc-github-theme --out public/api`,
     {

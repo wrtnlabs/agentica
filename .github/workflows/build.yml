@@ -1,4 +1,4 @@
-name: build
+name: build:agent
 on:
   pull_request:
     paths:
@@ -16,11 +16,12 @@ jobs:
           node-version: 20.x
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
-
+          version: 8.15.9
       - name: Install dependencies
         run: pnpm install
       - name: Build
-        run: pnpm run build
+        run: cd packages/agent && pnpm run build
       - name: Test
-        run: pnpm run test
+        run: cd packages/agent && pnpm run test
+        env:
+          CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
