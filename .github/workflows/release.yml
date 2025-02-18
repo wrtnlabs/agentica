@@ -20,6 +20,8 @@ jobs:
           version: 8
       - name: Install dependencies
         run: pnpm install
+      - name: Copy README
+        run: sh deploy/README.sh
       - name: Build
         run: pnpm build:agent
       - name: Test

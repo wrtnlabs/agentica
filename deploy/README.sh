@@ -1,0 +1,1 @@
+cp ./README.md ./packages/agent/README.md
