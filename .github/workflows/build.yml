@@ -25,4 +25,4 @@ jobs:
       - name: Test
         run: cd packages/agent && pnpm run test
         env:
-          CHATGPT_API_KEY: ${{ secrets.GITHUB_CHATGPT_API_KEY }}
+          CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
