@@ -1,3 +1,4 @@
+import { IWrtnAgentPrompt } from "../../module";
 import { IWrtnAgentOperationSelection } from "../../structures/IWrtnAgentOperationSelection";
 import { IWrtnAgentTokenUsage } from "../../structures/IWrtnAgentTokenUsage";
 import { IWrtnAgentSelectBenchmarkScenario } from "./IWrtnAgentSelectBenchmarkScenario";
@@ -45,6 +46,11 @@ export namespace IWrtnAgentSelectBenchmarkEvent {
      * Selected operations in the benchmark.
      */
     selected: IWrtnAgentOperationSelection[];
+
+    /**
+     * Prompt messages from the assistant.
+     */
+    assistantPrompts: IWrtnAgentPrompt.IText<"assistant">[];
   }
 
   /**
@@ -63,6 +69,11 @@ export namespace IWrtnAgentSelectBenchmarkEvent {
      * Selected operations in the benchmark.
      */
     selected: IWrtnAgentOperationSelection[];
+
+    /**
+     * Prompt messages from the assistant.
+     */
+    assistantPrompts: IWrtnAgentPrompt.IText<"assistant">[];
   }
 
   export interface IError extends IEventBase<"error"> {

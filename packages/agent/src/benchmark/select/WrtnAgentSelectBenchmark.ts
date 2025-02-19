@@ -184,6 +184,12 @@ export class WrtnAgentSelectBenchmark {
         scenario,
         selected,
         usage,
+        assistantPrompts: prompts
+          .filter((p) => p.type === "text")
+          .filter(
+            (p): p is IWrtnAgentPrompt.IText<"assistant"> =>
+              p.role === "assistant",
+          ),
         started_at,
         completed_at: new Date(),
       } satisfies
