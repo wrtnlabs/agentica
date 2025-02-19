@@ -125,6 +125,20 @@ export namespace WrtnAgentSelectBenchmarkReporter {
           ) + " ms",
         ].join(" | "),
       ),
+      "",
+      "## Scenario",
+      "### User Prompt",
+      process.scenario.text,
+      "",
+      ...process.scenario.operations.map((op) =>
+        [
+          `### ${op.name}`,
+          `  - Controller: ${op.controller.name}`,
+          `  - Function: ${op.function.name}`,
+          "",
+          ...(op.function.description ? [op.function.description, ""] : []),
+        ].join("\n"),
+      ),
     ].join("\n");
   };
 
@@ -168,6 +182,13 @@ export namespace WrtnAgentSelectBenchmarkReporter {
                 ...(s.function.description ? [s.function.description, ""] : []),
               ].join("\n"),
             ),
+          ]
+        : []),
+      ...(event.type !== "error" && event.assistantPrompts.length > 0
+        ? [
+            "## Assistant Prompts",
+            ...event.assistantPrompts.map((p) => p.text).join("\n\n"),
+            "",
           ]
         : []),
       ...(event.type === "failure"

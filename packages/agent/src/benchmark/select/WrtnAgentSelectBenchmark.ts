@@ -175,6 +175,7 @@ export class WrtnAgentSelectBenchmark {
         .filter((p) => p.type === "select")
         .map((p) => p.operations)
         .flat();
+
       return {
         type: scenario.operations.every((op) =>
           selected.some((s) => s.name === op.name),
@@ -184,6 +185,12 @@ export class WrtnAgentSelectBenchmark {
         scenario,
         selected,
         usage,
+        assistantPrompts: prompts
+          .filter((p) => p.type === "text")
+          .filter(
+            (p): p is IWrtnAgentPrompt.IText<"assistant"> =>
+              p.role === "assistant",
+          ),
         started_at,
         completed_at: new Date(),
       } satisfies

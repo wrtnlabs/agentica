@@ -56,11 +56,9 @@ export const test_benchmark_select = async (): Promise<void> => {
         text: [
           "I wanna see every sales in the shopping mall",
           "",
-          "If there is a Macbook in the list,",
-          "please show me the detailed information",
-          "about the Macbook.",
+          "And then show me the detailed information about the Macbook.",
           "",
-          "And then, select the most expensive stock",
+          "After that, select the most expensive stock",
           "from the Macbook, and put it into my shopping cart.",
           "",
           "At last, take the shopping cart to the order.",
@@ -68,7 +66,6 @@ export const test_benchmark_select = async (): Promise<void> => {
         operations: [
           find("patch", "/shoppings/customers/sales"),
           find("get", "/shoppings/customers/sales/{id}"),
-          find("post", "/shoppings/customers/carts/commodities"),
           find("post", "/shoppings/customers/orders"),
         ],
       },
@@ -78,6 +75,8 @@ export const test_benchmark_select = async (): Promise<void> => {
 
   const docs: Record<string, string> = benchmark.report();
   const root: string = `${TestGlobal.ROOT}/test/docs/benchmarks/select`;
+
+  await rmdir(root);
   for (const [key, value] of Object.entries(docs)) {
     await mkdir(path.join(root, key.split("/").slice(0, -1).join("/")));
     await fs.promises.writeFile(path.join(root, key), value, "utf8");
@@ -87,6 +86,13 @@ export const test_benchmark_select = async (): Promise<void> => {
 const mkdir = async (str: string) => {
   try {
     await fs.promises.mkdir(str, {
+      recursive: true,
+    });
+  } catch {}
+};
+const rmdir = async (str: string) => {
+  try {
+    await fs.promises.rmdir(str, {
       recursive: true,
     });
   } catch {}
