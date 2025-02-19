@@ -9,6 +9,7 @@ import { IWrtnAgentConfig } from "./structures/IWrtnAgentConfig";
 import { IWrtnAgentContext } from "./structures/IWrtnAgentContext";
 import { IWrtnAgentController } from "./structures/IWrtnAgentController";
 import { IWrtnAgentEvent } from "./structures/IWrtnAgentEvent";
+import { IWrtnAgentOperation } from "./structures/IWrtnAgentOperation";
 import { IWrtnAgentOperationCollection } from "./structures/IWrtnAgentOperationCollection";
 import { IWrtnAgentOperationSelection } from "./structures/IWrtnAgentOperationSelection";
 import { IWrtnAgentPrompt } from "./structures/IWrtnAgentPrompt";
@@ -120,62 +121,19 @@ export class WrtnAgent {
    * @returns List of newly created chat prompts
    */
   public async conversate(content: string): Promise<IWrtnAgentPrompt[]> {
-    const prompt: IWrtnAgentPrompt.IText = {
+    const prompt: IWrtnAgentPrompt.IText<"user"> = {
       type: "text",
       role: "user",
       text: content,
     };
     await this.dispatch(prompt);
 
-    const newbie: IWrtnAgentPrompt[] = await this.agentExecutionPlan_({
-      // APPLICATION
-      operations: this.operations_,
-      config: this.props.config,
-
-      // STATES
-      histories: this.prompt_histories_,
-      stack: this.stack_,
-      ready: () => this.ready_,
-      prompt,
-
-      // HANDLERS
-      dispatch: (event) => this.dispatch(event),
-      request: async (source, body) => {
-        // request information
-        const event: IWrtnAgentEvent.IRequest = {
-          type: "request",
-          source,
-          body: {
-            ...body,
-            model: this.props.provider.model,
-          },
-          options: this.props.provider.options,
-        };
-        await this.dispatch(event);
-
-        // completion
-        const value: OpenAI.ChatCompletion =
-          await this.props.provider.api.chat.completions.create(
-            event.body,
-            event.options,
-          );
-        WrtnAgentCostAggregator.aggregate(this.token_usage_, value);
-        await this.dispatch({
-          type: "response",
-          source,
-          body: event.body,
-          options: event.options,
-          value,
-        });
-        return value;
-      },
-      initialize: async () => {
-        this.ready_ = true;
-        await this.dispatch({
-          type: "initialize",
-        });
-      },
-    });
+    const newbie: IWrtnAgentPrompt[] = await this.agentExecutionPlan_(
+      this.getContext({
+        prompt,
+        usage: this.token_usage_,
+      }),
+    );
     this.prompt_histories_.push(prompt, ...newbie);
     return [prompt, ...newbie];
   }
@@ -205,6 +163,18 @@ export class WrtnAgent {
   }
 
   /**
+   * Get operations.
+   *
+   * Get list of operations, which has capsuled the pair of controller
+   * and function from the {@link getControllers controllers}.
+   *
+   * @returns
+   */
+  public getOperations(): ReadonlyArray<IWrtnAgentOperation> {
+    return this.operations_.array;
+  }
+
+  /**
    * Get the chatbot's prompt histories.
    *
    * Get list of chat prompts that the chatbot has been conversated.
@@ -225,6 +195,65 @@ export class WrtnAgent {
    */
   public getTokenUsage(): IWrtnAgentTokenUsage {
     return this.token_usage_;
+  }
+
+  /**
+   * @internal
+   */
+  public getContext(props: {
+    prompt: IWrtnAgentPrompt.IText<"user">;
+    usage: IWrtnAgentTokenUsage;
+  }): IWrtnAgentContext {
+    const dispatch = (event: IWrtnAgentEvent) => this.dispatch(event);
+    return {
+      // APPLICATION
+      operations: this.operations_,
+      config: this.props.config,
+
+      // STATES
+      histories: this.prompt_histories_,
+      stack: this.stack_,
+      ready: () => this.ready_,
+      prompt: props.prompt,
+
+      // HANDLERS
+      dispatch,
+      request: async (source, body) => {
+        // request information
+        const event: IWrtnAgentEvent.IRequest = {
+          type: "request",
+          source,
+          body: {
+            ...body,
+            model: this.props.provider.model,
+          },
+          options: this.props.provider.options,
+        };
+        await dispatch(event);
+
+        // completion
+        const value: OpenAI.ChatCompletion =
+          await this.props.provider.api.chat.completions.create(
+            event.body,
+            event.options,
+          );
+        WrtnAgentCostAggregator.aggregate(props.usage, value);
+        await dispatch({
+          type: "response",
+          source,
+          body: event.body,
+          options: event.options,
+          value,
+        });
+        return value;
+      },
+      initialize: async () => {
+        this.ready_ = true;
+        await dispatch({
+          type: "initialize",
+        });
+      },
+    };
   }
 
   /* -----------------------------------------------------------

@@ -150,11 +150,13 @@ export namespace IWrtnAgentPrompt {
   /**
    * Text prompt.
    */
-  export interface IText extends IBase<"text"> {
+  export interface IText<
+    Role extends "assistant" | "user" = "assistant" | "user",
+  > extends IBase<"text"> {
     /**
      * Role of the orator.
      */
-    role: "assistant" | "user";
+    role: Role;
 
     /**
      * The text content.

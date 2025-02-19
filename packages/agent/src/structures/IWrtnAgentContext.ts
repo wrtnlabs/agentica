@@ -82,7 +82,7 @@ export interface IWrtnAgentContext {
    * Text conversation written the by user through the
    * {@link WrtnAgent.conversate} function.
    */
-  prompt: IWrtnAgentPrompt.IText;
+  prompt: IWrtnAgentPrompt.IText<"user">;
 
   /**
    * Whether the agent is ready.

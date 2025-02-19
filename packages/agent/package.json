@@ -1,6 +1,6 @@
 {
   "name": "@wrtnlabs/agent",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "typings": "lib/index.d.ts",
@@ -11,7 +11,7 @@
     "build:main": "rimraf lib && pnpm build:prompt && tsc && rollup -c",
     "build:test": "rimraf bin && tsc -p test/tsconfig.json",
     "build:prompt": "ts-node build/prompt.ts",
-    "dev": "pnpm build:prompt && pnpm build:test -- --watch",
+    "dev": "pnpm build:prompt && pnpm build:test --watch",
     "eslint": "eslint ./**/*.ts",
     "test": "pnpm build:test && node bin/test/index.js"
   },
