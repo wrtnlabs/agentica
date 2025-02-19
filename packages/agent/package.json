@@ -73,7 +73,6 @@
   },
   "dependencies": {
     "@samchon/openapi": "^2.4.3",
-    "openai": "^4.82.0",
     "typia": "^7.6.4",
     "uuid": "^11.0.4"
   },
