@@ -18,6 +18,12 @@ export * from "./rpc/IWrtnAgentRpcListener";
 export * from "./rpc/IWrtnAgentRpcService";
 export * from "./rpc/WrtnAgentRpcService";
 
+// BENCHMARK
+export * from "./benchmark/select/WrtnAgentSelectBenchmark";
+export * from "./benchmark/select/IWrtnAgentSelectBenchmarkEvent";
+export * from "./benchmark/select/IWrtnAgentSelectBenchmarkResult";
+export * from "./benchmark/select/IWrtnAgentSelectBenchmarkScenario";
+
 // FACADE CLASS
 export * from "./functional/createHttpLlmApplication";
 export * from "./WrtnAgent";
