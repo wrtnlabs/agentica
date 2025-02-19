@@ -66,8 +66,6 @@
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
     "tstl": "^3.0.0",
-    "typedoc": "^0.27.7",
-    "typedoc-github-theme": "^0.2.1",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.18.2",
     "typescript-transform-paths": "^3.5.3",
