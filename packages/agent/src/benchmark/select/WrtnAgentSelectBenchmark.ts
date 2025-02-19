@@ -176,12 +176,11 @@ export class WrtnAgentSelectBenchmark {
         .map((p) => p.operations)
         .flat();
       return {
-        type:
-          selected.every((op) =>
-            scenario.operations.some((sop) => sop.name === op.name),
-          ) === true
-            ? "success"
-            : "failure",
+        type: scenario.operations.every((op) =>
+          selected.some((s) => s.name === op.name),
+        )
+          ? "success"
+          : "failure",
         scenario,
         selected,
         usage,
