@@ -175,7 +175,6 @@ export class WrtnAgentSelectBenchmark {
         .filter((p) => p.type === "select")
         .map((p) => p.operations)
         .flat();
-
       return {
         type: scenario.operations.every((op) =>
           selected.some((s) => s.name === op.name),
