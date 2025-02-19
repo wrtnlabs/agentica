@@ -2,9 +2,8 @@ name: build:agent
 on:
   pull_request:
     paths:
-      - 'examples/**'
-      - 'src/**'
-      - 'test/**'
+      - 'packages/*/src/**'
+      - 'packages/*/test/**'
       - 'package.json'
 jobs:
   Ubuntu:
