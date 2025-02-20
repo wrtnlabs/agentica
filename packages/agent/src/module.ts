@@ -3,6 +3,7 @@ export * from "./structures/IWrtnAgentConfig";
 export * from "./structures/IWrtnAgentContext";
 export * from "./structures/IWrtnAgentController";
 export * from "./structures/IWrtnAgentEvent";
+export * from "./structures/IWrtnAgentExecutor";
 export * from "./structures/IWrtnAgentOperation";
 export * from "./structures/IWrtnAgentOperationCollection";
 export * from "./structures/IWrtnAgentOperationSelection";
