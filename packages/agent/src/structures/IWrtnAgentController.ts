@@ -87,29 +87,28 @@ export namespace IWrtnAgentController {
     /**
      * Executor of the class function.
      *
-     * @param props Target class instance or properties of the function call.
-     * @returns Return value of the function call.
+     * Executor of the class function, by target class instance
+     * or callback function with given schema and arguments
+     * information.
      */
-    execute: (
-      props:
-        | object
-        | {
-            /**
-             * Target application schema.
-             */
-            application: ILlmApplicationOfValidate<"chatgpt">;
+    execute:
+      | object
+      | ((props: {
+          /**
+           * Target application schema.
+           */
+          application: ILlmApplicationOfValidate<"chatgpt">;
 
-            /**
-             * Target function schema.
-             */
-            function: ILlmFunctionOfValidate<"chatgpt">;
+          /**
+           * Target function schema.
+           */
+          function: ILlmFunctionOfValidate<"chatgpt">;
 
-            /**
-             * Arguments of the function calling.
-             */
-            arguments: object;
-          },
-    ) => Promise<unknown>;
+          /**
+           * Arguments of the function calling.
+           */
+          arguments: object;
+        }) => Promise<unknown>);
   }
 
   interface IBase<Protocol, Application> {
