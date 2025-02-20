@@ -56,7 +56,7 @@ export class WrtnAgent {
   // STATUS
   private readonly token_usage_: IWrtnAgentTokenUsage;
   private ready_: boolean;
-  private readonly agentExecutionPlan_: (
+  private readonly executor_: (
     ctx: IWrtnAgentContext,
   ) => Promise<IWrtnAgentPrompt[]>;
 
@@ -102,7 +102,10 @@ export class WrtnAgent {
       },
     };
     this.ready_ = false;
-    this.agentExecutionPlan_ = props.agentExecutionPlan ?? ChatGptAgent.execute;
+    this.executor_ =
+      typeof props.config?.executor === "function"
+        ? props.config.executor
+        : ChatGptAgent.execute(props.config?.executor ?? null);
   }
 
   /* -----------------------------------------------------------
@@ -128,7 +131,7 @@ export class WrtnAgent {
     };
     await this.dispatch(prompt);
 
-    const newbie: IWrtnAgentPrompt[] = await this.agentExecutionPlan_(
+    const newbie: IWrtnAgentPrompt[] = await this.executor_(
       this.getContext({
         prompt,
         usage: this.token_usage_,

@@ -92,7 +92,7 @@ const mkdir = async (str: string) => {
 };
 const rmdir = async (str: string) => {
   try {
-    await fs.promises.rmdir(str, {
+    await fs.promises.rm(str, {
       recursive: true,
     });
   } catch {}
