@@ -316,7 +316,7 @@ sequenceDiagram
 actor User
 actor Agent
 participant Selector
-participant Executor
+participant Caller
 participant Describer
 activate User
 User-->>Agent: Conversate:<br/>user says
@@ -335,12 +335,12 @@ end
 deactivate Agent
 loop Candidate functions exist
   activate Agent
-  Agent->>Executor: Deliver conversation text
-  activate Executor
+  Agent->>Caller: Deliver conversation text
+  activate Caller
   alt Contexts are enough
-    Note over Executor: Call fulfilled functions
-    Executor->>Describer: Function call histories
-    deactivate Executor
+    Note over Caller: Call fulfilled functions
+    Caller->>Describer: Function call histories
+    deactivate Caller
     activate Describer
     Describer->>Agent: Describe function calls
     deactivate Describer
@@ -349,7 +349,7 @@ loop Candidate functions exist
     deactivate User
   else Contexts are not enough
     break
-      Executor->>Agent: Request more information
+      Caller->>Agent: Request more information
     end
     Agent->>User: Conversate:<br/>agent requests
     activate User
@@ -361,9 +361,9 @@ end
 
 When user says, `@wrtnlabs/agent` delivers the conversation text to the `selector` agent, and let the `selector` agent to find (or cancel) candidate functions from the context. If the `selector` agent could not find any candidate function to call and there is not any candidate function previously selected either, the `selector` agent will work just like a plain ChatGPT.
 
-And `@wrtnlabs/agent` enters to a loop statement until the candidate functions to be empty. In the loop statement, `executor` agent tries to LLM function calling by analyzing the user's conversation text. If context is enough to compose arguments of candidate functions, the `executor` agent actually calls the target functions, and let `decriber` agent to explain the function calling results. Otherwise the context is not enough to compose arguments, `executor` agent requests more information to user.
+And `@wrtnlabs/agent` enters to a loop statement until the candidate functions to be empty. In the loop statement, `caller` agent tries to LLM function calling by analyzing the user's conversation text. If context is enough to compose arguments of candidate functions, the `caller` agent actually calls the target functions, and let `decriber` agent to explain the function calling results. Otherwise the context is not enough to compose arguments, `caller` agent requests more information to user.
 
-Such LLM (Large Language Model) function calling strategy separating `selector`, `executor`, and `describer` is the key logic of `@wrtnlabs/agent`.
+Such LLM (Large Language Model) function calling strategy separating `selector`, `caller`, and `describer` is the key logic of `@wrtnlabs/agent`.
 
 ### Validation Feedback
 ```typescript

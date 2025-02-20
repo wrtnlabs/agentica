@@ -19,7 +19,7 @@ import { IWrtnAgentPrompt } from "../structures/IWrtnAgentPrompt";
 import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
-export namespace ChatGptExecuteFunctionAgent {
+export namespace ChatGptCallFunctionAgent {
   export const execute = async (
     ctx: IWrtnAgentContext,
   ): Promise<IWrtnAgentPrompt[]> => {
