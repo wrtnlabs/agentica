@@ -27,7 +27,7 @@ export interface IWrtnAgentSystemPrompt {
    * @returns The common system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/common.md
    */
-  common: (config?: IWrtnAgentConfig | undefined) => string;
+  common?: (config?: IWrtnAgentConfig | undefined) => string;
 
   /**
    * Initialize system prompt.
@@ -45,7 +45,7 @@ export interface IWrtnAgentSystemPrompt {
    * @returns initialize system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/initialize.md
    */
-  initialize: (histories: IWrtnAgentPrompt[]) => string;
+  initialize?: (histories: IWrtnAgentPrompt[]) => string;
 
   /**
    * Select system prompt.
@@ -66,7 +66,7 @@ export interface IWrtnAgentSystemPrompt {
    * @returns select system promopt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/select.md
    */
-  select: (histories: IWrtnAgentPrompt[]) => string;
+  select?: (histories: IWrtnAgentPrompt[]) => string;
 
   /**
    * Cancel system prompt.
@@ -83,7 +83,7 @@ export interface IWrtnAgentSystemPrompt {
    * @returns cancel system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/cancel.md
    */
-  cancel: (histories: IWrtnAgentPrompt[]) => string;
+  cancel?: (histories: IWrtnAgentPrompt[]) => string;
 
   /**
    * Execute system prompt.
@@ -101,7 +101,7 @@ export interface IWrtnAgentSystemPrompt {
    * @returns execute system prompt
    * https://github.com/samchon/nestia/blob/master/packages/agent/prompts/execute.md
    */
-  execute: (histories: IWrtnAgentPrompt[]) => string;
+  execute?: (histories: IWrtnAgentPrompt[]) => string;
 
   /**
    * Describe system prompt.
@@ -118,5 +118,5 @@ export interface IWrtnAgentSystemPrompt {
    * @returns describe system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/describe.md
    */
-  describe: (histories: IWrtnAgentPrompt.IExecute[]) => string;
+  describe?: (histories: IWrtnAgentPrompt.IExecute[]) => string;
 }
