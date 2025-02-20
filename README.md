@@ -1,5 +1,5 @@
 # `@wrtnlabs/agent`
-![Key Concept Gear Diagram](https://github.com/user-attachments/assets/2cdb6e05-77f0-419a-ab7f-539b3d2bcbc5)
+![agent-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agent/blob/master/LICENSE)
 [![npm version](https://img.shields.io/npm/v/@wrtnlabs/agent.svg)](https://www.npmjs.com/package/@wrtnlabs/agent)
