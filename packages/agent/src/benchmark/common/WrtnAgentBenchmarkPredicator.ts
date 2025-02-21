@@ -64,36 +64,127 @@ export namespace WrtnAgentBenchmarkPredicator {
     return typia.is(input) ? input.reply : null;
   };
 
+  /**
+   * Check if the called operations match the expected operations.
+   *
+   * @param props Properties for checking the match of the called operations
+   * and the expected operations
+   *
+   * @returns `true` if the called operations match the expected operations,
+   * otherwise `false`.
+   */
   export const success = (props: {
+    /**
+     * Expected operations to be called.
+     *
+     * For 'allOf' within an 'array', the next expected element starts checking from the element that follows the last called element in 'allOf'.
+     */
     expected: IWrtnAgentBenchmarkExpected;
-    entire: readonly IWrtnAgentOperation[];
+
+    /**
+     * Called operations.
+     */
     called: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
-    strict: boolean;
-  }): boolean => {
+
+    /**
+     * If it's `false`, check the array and let it go even if there's something wrong between them.
+     *
+     * @default `false`
+     */
+    strict?: boolean;
+  }): boolean => successInner(props).result;
+
+  const successInner = (
+    props: Parameters<typeof success>[0],
+  ):
+    | {
+        result: true;
+        take: number;
+      }
+    | {
+        result: false;
+      } => {
     const call = (
       expected: IWrtnAgentBenchmarkExpected,
       overrideOperations?: Array<
         IWrtnAgentOperation | IWrtnAgentPrompt.IExecute
       >,
     ) =>
-      success({
+      successInner({
         expected,
-        strict: props.strict,
-        entire: props.entire,
         called: overrideOperations ?? props.called,
+        strict: props.strict,
       });
 
     switch (props.expected.type) {
+      case "array": {
+        let take = 0;
+        const targetIterator = props.expected.items[Symbol.iterator]();
+        let targeted = targetIterator.next();
+
+        while (true) {
+          if (targeted.done) {
+            return {
+              result: true,
+              take,
+            };
+          }
+          if (take >= props.called.length) {
+            return { result: false };
+          }
+
+          const result = call(targeted.value, props.called.slice(take));
+          if (!result.result) {
+            if (!props.strict) {
+              take += 1;
+              continue;
+            }
+            return { result: false };
+          }
+
+          take += result.take;
+          targeted = targetIterator.next();
+        }
+      }
       case "standalone": {
         const target = props.expected.operation;
-        return props.called.some((op) => op.name === target.name);
+        const result = props.called.some((op) => op.name === target.name);
+        if (result) {
+          return { result, take: 1 };
+        }
+        return {
+          result,
+        };
       }
-      case "allOf":
-        return props.expected.allOf.every((expected) => call(expected));
       case "anyOf":
-        return props.expected.anyOf.some((expected) => call(expected));
-      case "array":
-        return props.expected.items.every((expect) => call(expect));
+        for (const expected of props.expected.anyOf) {
+          const callResult = call(expected);
+          if (callResult.result) {
+            return callResult;
+          }
+        }
+
+        return { result: false };
+      case "allOf": {
+        /**
+         * @example
+         * expected = [4, 2];
+         * called = [1, 2, 3, 4, 5];
+         *
+         * { result: true, take: 3 };
+         */
+        const result = props.expected.allOf.map((expected) => call(expected));
+        if (result.every((r) => r.result)) {
+          return {
+            result: true,
+            take: result.reduce((acc, r) => Math.max(acc, r.take), 0),
+          };
+        }
+
+        return {
+          result: false,
+        };
+      }
     }
   };
 }

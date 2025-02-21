@@ -59,7 +59,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
         type: "standalone",
         operation: find("patch", "/shoppings/customers/sales"),
       },
-      entire: agent.getOperations(),
       called: [find("patch", "/shoppings/customers/sales")],
       strict: false,
     }),
@@ -84,7 +83,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      entire: agent.getOperations(),
       called: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
@@ -109,32 +107,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      entire: agent.getOperations(),
       called: [find("post", "/shoppings/customers/orders")],
-      strict: false,
-    }),
-  );
-
-  TestValidator.equals("allOf")(true)(
-    WrtnAgentBenchmarkPredicator.success({
-      expected: {
-        type: "allOf",
-        allOf: [
-          {
-            type: "standalone",
-            operation: find("post", "/shoppings/customers/carts/commodities"),
-          },
-          {
-            type: "standalone",
-            operation: find("post", "/shoppings/customers/orders"),
-          },
-        ],
-      },
-      entire: agent.getOperations(),
-      called: [
-        find("post", "/shoppings/customers/carts/commodities"),
-        find("post", "/shoppings/customers/orders"),
-      ],
       strict: false,
     }),
   );
@@ -146,6 +119,8 @@ export const test_benchmark_predicator = async (): Promise<void> => {
     WrtnAgentBenchmarkPredicator.success({
       expected: {
         type: "array",
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         items: [
           {
             type: "array",
@@ -159,10 +134,9 @@ export const test_benchmark_predicator = async (): Promise<void> => {
                 operation: find("get", "/shoppings/customers/sales/{id}"),
               },
             ],
-          } satisfies IWrtnAgentBenchmarkExpected.IArray as any,
-        ],
+          } satisfies IWrtnAgentBenchmarkExpected.IArray,
+        ] as any,
       },
-      entire: agent.getOperations(),
       called: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
@@ -218,13 +192,113 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      entire: agent.getOperations(),
       called: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
         find("post", "/shoppings/customers/carts/commodities"),
         find("post", "/shoppings/customers/orders"),
         find("post", "/shoppings/customers/orders/{orderId}/publish"),
+      ],
+      strict: false,
+    }),
+  );
+
+  //----
+  // COMPLEX PATTERNS
+  //----
+  TestValidator.equals("complex nested patterns with anyOf, allOf, and array")(
+    true,
+  )(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
+        type: "allOf",
+        allOf: [
+          {
+            type: "array",
+            items: [
+              {
+                type: "standalone",
+                operation: find("patch", "/shoppings/customers/sales"),
+              },
+              {
+                type: "anyOf",
+                anyOf: [
+                  {
+                    type: "array",
+                    items: [
+                      {
+                        type: "standalone",
+                        operation: find(
+                          "get",
+                          "/shoppings/customers/sales/{id}",
+                        ),
+                      },
+                      {
+                        type: "standalone",
+                        operation: find("post", "/shoppings/customers/orders"),
+                      },
+                    ],
+                  },
+                  {
+                    type: "standalone",
+                    operation: find(
+                      "post",
+                      "/shoppings/customers/orders/direct",
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "array",
+            items: [
+              {
+                type: "standalone",
+                operation: find(
+                  "post",
+                  "/shoppings/customers/carts/commodities",
+                ),
+              },
+              {
+                type: "allOf",
+                allOf: [
+                  {
+                    type: "standalone",
+                    operation: find(
+                      "post",
+                      "/shoppings/customers/orders/{orderId}/publish",
+                    ),
+                  },
+                  {
+                    type: "anyOf",
+                    anyOf: [
+                      {
+                        type: "standalone",
+                        operation: find(
+                          "get",
+                          "/shoppings/customers/sales/{id}",
+                        ),
+                      },
+                      {
+                        type: "standalone",
+                        operation: find("patch", "/shoppings/admins/sales"),
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      called: [
+        find("patch", "/shoppings/customers/sales"),
+        find("get", "/shoppings/customers/sales/{id}"),
+        find("post", "/shoppings/customers/orders"),
+        find("post", "/shoppings/customers/carts/commodities"),
+        find("post", "/shoppings/customers/orders/{orderId}/publish"),
+        find("get", "/shoppings/customers/sales/{id}"),
       ],
       strict: false,
     }),
