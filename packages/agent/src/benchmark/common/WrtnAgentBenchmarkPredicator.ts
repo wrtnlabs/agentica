@@ -76,6 +76,8 @@ export namespace WrtnAgentBenchmarkPredicator {
   export const success = (props: {
     /**
      * Expected operations to be called.
+     *
+     * For 'allOf' within an 'array', the next expected element starts checking from the element that follows the last called element in 'allOf'.
      */
     expected: IWrtnAgentBenchmarkExpected;
 
@@ -85,8 +87,7 @@ export namespace WrtnAgentBenchmarkPredicator {
     called: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
 
     /**
-     * If `true`, the function will return `false` even if the expected operation
-     * is not found in the called operations.
+     * If it's `false`, check the array and let it go even if there's something wrong between them.
      *
      * @default `false`
      */
