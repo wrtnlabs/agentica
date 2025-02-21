@@ -84,7 +84,7 @@ export const test_benchmark_call = async (): Promise<void> => {
           "from the Macbook, and put it into my shopping cart.",
           "And take the shopping cart to the order.",
           "",
-          "At last, I'll pay it with cash, and my address is",
+          "At last, I'll publish it by cash payment, and my address is",
           "",
           "  - country: South Korea",
           "  - city/province: Seoul",

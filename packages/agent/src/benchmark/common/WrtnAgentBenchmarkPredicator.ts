@@ -82,9 +82,9 @@ export namespace WrtnAgentBenchmarkPredicator {
     expected: IWrtnAgentBenchmarkExpected;
 
     /**
-     * Called operations.
+     * Specified operations.
      */
-    called: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
+    operations: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
 
     /**
      * If it's `false`, check the array and let it go even if there's something wrong between them.
@@ -112,7 +112,7 @@ export namespace WrtnAgentBenchmarkPredicator {
     ) =>
       successInner({
         expected,
-        called: overrideOperations ?? props.called,
+        operations: overrideOperations ?? props.operations,
         strict: props.strict,
       });
 
@@ -129,11 +129,11 @@ export namespace WrtnAgentBenchmarkPredicator {
               take,
             };
           }
-          if (take >= props.called.length) {
+          if (take >= props.operations.length) {
             return { result: false };
           }
 
-          const result = call(targeted.value, props.called.slice(take));
+          const result = call(targeted.value, props.operations.slice(take));
           if (!result.result) {
             if (!props.strict) {
               take += 1;
@@ -148,7 +148,7 @@ export namespace WrtnAgentBenchmarkPredicator {
       }
       case "standalone": {
         const target = props.expected.operation;
-        const result = props.called.some((op) => op.name === target.name);
+        const result = props.operations.some((op) => op.name === target.name);
         if (result) {
           return { result, take: 1 };
         }

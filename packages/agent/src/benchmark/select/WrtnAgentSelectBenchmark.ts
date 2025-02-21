@@ -9,6 +9,7 @@ import { IWrtnAgentOperation } from "../../structures/IWrtnAgentOperation";
 import { IWrtnAgentOperationSelection } from "../../structures/IWrtnAgentOperationSelection";
 import { IWrtnAgentPrompt } from "../../structures/IWrtnAgentPrompt";
 import { IWrtnAgentTokenUsage } from "../../structures/IWrtnAgentTokenUsage";
+import { WrtnAgentBenchmarkPredicator } from "../common/WrtnAgentBenchmarkPredicator";
 import { IWrtnAgentSelectBenchmarkEvent } from "./IWrtnAgentSelectBenchmarkEvent";
 import { IWrtnAgentSelectBenchmarkResult } from "./IWrtnAgentSelectBenchmarkResult";
 import { IWrtnAgentSelectBenchmarkScenario } from "./IWrtnAgentSelectBenchmarkScenario";
@@ -173,9 +174,10 @@ export class WrtnAgentSelectBenchmark {
         .map((p) => p.operations)
         .flat();
       return {
-        type: scenario.operations.every((op) =>
-          selected.some((s) => s.name === op.name),
-        )
+        type: WrtnAgentBenchmarkPredicator.success({
+          expected: scenario.expected,
+          operations: selected,
+        })
           ? "success"
           : "failure",
         scenario,
