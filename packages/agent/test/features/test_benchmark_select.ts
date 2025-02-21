@@ -10,7 +10,9 @@ import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_select = async (): Promise<void> => {
+export const test_benchmark_select = async (): Promise<void | false> => {
+  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+
   const agent: WrtnAgent = new WrtnAgent({
     provider: {
       model: "gpt-4o-mini",

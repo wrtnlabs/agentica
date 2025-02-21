@@ -11,7 +11,11 @@ import { WebSocketConnector, WebSocketServer } from "tgrid";
 import { randint } from "tstl";
 import { Primitive } from "typia";
 
-export const test_base_websocket = async (): Promise<void> => {
+import { TestGlobal } from "../TestGlobal";
+
+export const test_base_websocket = async (): Promise<void | false> => {
+  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+
   const port: number = randint(30_001, 65_001);
   const server: WebSocketServer<
     null,
@@ -23,7 +27,7 @@ export const test_base_websocket = async (): Promise<void> => {
       provider: {
         model: "gpt-4o-mini",
         api: new OpenAI({
-          apiKey: process.env.CHATGPT_API_KEY,
+          apiKey: TestGlobal.env.CHATGPT_API_KEY,
         }),
         type: "chatgpt",
       },

@@ -4,10 +4,6 @@ import chalk from "chalk";
 import { TestGlobal } from "./TestGlobal";
 
 const main = async (): Promise<void> => {
-  if (!TestGlobal.env.CHATGPT_API_KEY?.length) {
-    throw new Error("environments CHATGPT_API_KEY is not set");
-  }
-
   // DO TEST
   const include: string[] = TestGlobal.getArguments("include");
   const exclude: string[] = TestGlobal.getArguments("exclude");
@@ -15,10 +11,11 @@ const main = async (): Promise<void> => {
     prefix: "test_",
     location: __dirname + "/features",
     parameters: () => [],
-    onComplete: (exec) => {
+    onComplete: (exec: DynamicExecutor.IExecution) => {
       const trace = (str: string) =>
         console.log(`  - ${chalk.green(exec.name)}: ${str}`);
-      if (exec.error === null) {
+      if (exec.value === false) trace(chalk.gray("Pass"));
+      else if (exec.error === null) {
         const elapsed: number =
           new Date(exec.completed_at).getTime() -
           new Date(exec.started_at).getTime();

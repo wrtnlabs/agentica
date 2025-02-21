@@ -6,7 +6,6 @@ import {
   WrtnAgent,
 } from "@wrtnlabs/agent";
 import { WrtnAgentBenchmarkPredicator } from "@wrtnlabs/agent/lib/benchmark/common/WrtnAgentBenchmarkPredicator";
-import OpenAI from "openai";
 
 export const test_benchmark_predicator = async (): Promise<void> => {
   //----
@@ -15,9 +14,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
   const agent: WrtnAgent = new WrtnAgent({
     provider: {
       model: "gpt-4o-mini",
-      api: new OpenAI({
-        apiKey: process.env.CHATGPT_API_KEY,
-      }),
+      api: null!,
       type: "chatgpt",
     },
     controllers: [
