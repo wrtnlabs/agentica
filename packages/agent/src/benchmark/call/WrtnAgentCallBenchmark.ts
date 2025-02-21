@@ -9,6 +9,26 @@ import { IWrtnAgentCallBenchmarkResult } from "./IWrtnAgentCallBenchmarkResult";
 import { IWrtnAgentCallBenchmarkScenario } from "./IWrtnAgentCallBenchmarkScenario";
 import { WrtnAgentCallBenchmarkReporter } from "./internal/WrtnAgentCallBenchmarkReporter";
 
+/**
+ * LLM function calling selection benchmark.
+ *
+ * `WrtnAgentCallBenchmark` is a class for the benchmark of the
+ * LLM (Large Model Language) function calling part. It utilizes both
+ * `selector` and `caller` agents and tests whether the expected
+ * {@link IWrtnAgentOperation operations} are properly selected and
+ * called from the given
+ * {@link IWrtnAgentCallBenchmarkScenario scenarios}.
+ *
+ * Note that, this `WrtnAgentCallBenchmark` consumes a lot of time and
+ * LLM token costs because it needs the whole process of the
+ * {@link WrtnAgent} class with a lot of repetitions. If you don't want
+ * such a heavy benchmark, consider to using
+ * {@link WrtnAgentSelectBenchmark} instead. In my experience,
+ * {@link WrtnAgent} does not fail to function calling, so the function
+ * selection benchmark is much economical.
+ *
+ * @author Samchon
+ */
 export class WrtnAgentCallBenchmark {
   private agent_: WrtnAgent;
   private scenarios_: IWrtnAgentCallBenchmarkScenario[];
@@ -31,6 +51,22 @@ export class WrtnAgentCallBenchmark {
     this.result_ = null;
   }
 
+  /**
+   * Execute the benchmark.
+   *
+   * Execute the benchmark of the LLM function calling, and returns
+   * the result of the benchmark.
+   *
+   * If you wanna see progress of the benchmark, you can pass a callback
+   * function as the argument of the `listener`. The callback function
+   * would be called whenever a benchmark event is occurred.
+   *
+   * Also, you can publish a markdown format report by calling
+   * the {@link report} function after the benchmark execution.
+   *
+   * @param listener Callback function listening the benchmark events
+   * @returns Results of the function calling benchmark
+   */
   public async execute(
     listener?: (event: IWrtnAgentCallBenchmarkEvent) => void,
   ): Promise<IWrtnAgentCallBenchmarkResult> {

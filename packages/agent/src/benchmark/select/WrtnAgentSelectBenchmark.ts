@@ -68,7 +68,7 @@ export class WrtnAgentSelectBenchmark {
    * the {@link report} function after the benchmark execution.
    *
    * @param listener Callback function listening the benchmark events
-   * @returns Results of the selection benchmark
+   * @returns Results of the function selection benchmark
    */
   public async execute(
     listener?: (event: IWrtnAgentSelectBenchmarkEvent) => void,
