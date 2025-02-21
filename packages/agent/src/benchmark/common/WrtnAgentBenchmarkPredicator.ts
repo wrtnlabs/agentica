@@ -93,24 +93,7 @@ export namespace WrtnAgentBenchmarkPredicator {
       case "anyOf":
         return props.expected.anyOf.some((expected) => call(expected));
       case "array":
-        const targetIterator = props.expected.items[Symbol.iterator]();
-        let targeted = targetIterator.next();
-
-        for (const history of props.called) {
-          if (targeted.done) {
-            return true;
-          }
-
-          if (call(targeted.value, [history])) {
-            targeted = targetIterator.next();
-            continue;
-          }
-
-          if (props.strict) {
-            return false;
-          }
-        }
-        return !!targeted.done;
+        return props.expected.items.every((expect) => call(expect));
     }
   };
 }

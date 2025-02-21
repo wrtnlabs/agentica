@@ -1,5 +1,17 @@
 import { IWrtnAgentOperation } from "../../structures/IWrtnAgentOperation";
 
+/**
+ * Expected operation determinant.
+ *
+ * `IWrtnAgentBenchmarkExpected` is a type for determining what
+ * operation is expected in the benchmarking.
+ *
+ * And `IWrtnAgentBenchmarkExpected` is an union type of 4 types,
+ * especially designed for the detailed determination of the expected
+ * operations.
+ *
+ * @author Samchon
+ */
 export type IWrtnAgentBenchmarkExpected =
   | IWrtnAgentBenchmarkExpected.IAllOf
   | IWrtnAgentBenchmarkExpected.IAnyOf
@@ -7,7 +19,7 @@ export type IWrtnAgentBenchmarkExpected =
   | IWrtnAgentBenchmarkExpected.IStandalone;
 export namespace IWrtnAgentBenchmarkExpected {
   /**
-   * 이들 모두가 실행되어야 만족이되, 순서는 중요하지 않음.
+   * All of them must meet the condition, but sequence is not important.
    */
   export interface IAllOf {
     type: "allOf";
@@ -17,7 +29,7 @@ export namespace IWrtnAgentBenchmarkExpected {
   }
 
   /**
-   * 이 중 단 하나만 실행되어도 만족.
+   * At least one of them must meet the condition.
    */
   export interface IAnyOf {
     type: "anyOf";
@@ -27,7 +39,7 @@ export namespace IWrtnAgentBenchmarkExpected {
   }
 
   /**
-   * 이들 모두가 순서대로 실행되어야 함.
+   * All of them must meet the condition, and sequence is important.
    */
   export interface IArray {
     type: "array";
@@ -37,7 +49,7 @@ export namespace IWrtnAgentBenchmarkExpected {
   }
 
   /**
-   * 단독 실행 조건.
+   * Standalone operation.
    */
   export interface IStandalone {
     type: "standalone";
