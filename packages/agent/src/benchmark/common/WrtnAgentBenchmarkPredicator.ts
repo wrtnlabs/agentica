@@ -149,9 +149,11 @@ export namespace WrtnAgentBenchmarkPredicator {
       case "standalone": {
         const target = props.expected.operation;
         const result = props.called.some((op) => op.name === target.name);
+        if (result) {
+          return { result, take: 1 };
+        }
         return {
           result,
-          take: result ? 1 : -1,
         };
       }
       case "anyOf":
