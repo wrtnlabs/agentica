@@ -69,6 +69,9 @@ export const test_benchmark_call = async (): Promise<void> => {
   };
   const benchmark: WrtnAgentCallBenchmark = new WrtnAgentCallBenchmark({
     agent,
+    config: {
+      repeat: 3,
+    },
     scenarios: [
       {
         name: "order",
