@@ -129,7 +129,10 @@ export const test_benchmark_call = async (): Promise<void> => {
             },
             {
               type: "standalone",
-              operation: find("post", "/shoppings/customers/orders/publish"),
+              operation: find(
+                "post",
+                "/shoppings/customers/orders/:{orderId}/publish",
+              ),
             },
           ],
         },
