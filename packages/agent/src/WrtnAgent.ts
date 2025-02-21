@@ -108,6 +108,16 @@ export class WrtnAgent {
         : ChatGptAgent.execute(props.config?.executor ?? null);
   }
 
+  /**
+   * @internal
+   */
+  public clone(): WrtnAgent {
+    return new WrtnAgent({
+      ...this.props,
+      histories: this.props.histories?.slice(),
+    });
+  }
+
   /* -----------------------------------------------------------
     ACCESSORS
   ----------------------------------------------------------- */

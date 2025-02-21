@@ -20,10 +20,15 @@ export * from "./rpc/IWrtnAgentRpcService";
 export * from "./rpc/WrtnAgentRpcService";
 
 // BENCHMARK
+export * from "./benchmark/common/IWrtnAgentBenchmarkExpected";
 export * from "./benchmark/select/WrtnAgentSelectBenchmark";
 export * from "./benchmark/select/IWrtnAgentSelectBenchmarkEvent";
 export * from "./benchmark/select/IWrtnAgentSelectBenchmarkResult";
 export * from "./benchmark/select/IWrtnAgentSelectBenchmarkScenario";
+export * from "./benchmark/call/IWrtnAgentCallBenchmarkEvent";
+export * from "./benchmark/call/IWrtnAgentCallBenchmarkResult";
+export * from "./benchmark/call/IWrtnAgentCallBenchmarkScenario";
+export * from "./benchmark/call/WrtnAgentCallBenchmark";
 
 // FACADE CLASS
 export * from "./functional/createHttpLlmApplication";

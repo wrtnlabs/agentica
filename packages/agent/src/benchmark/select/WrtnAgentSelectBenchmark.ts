@@ -36,7 +36,6 @@ export class WrtnAgentSelectBenchmark {
   private scenarios_: IWrtnAgentSelectBenchmarkScenario[];
   private config_: WrtnAgentSelectBenchmark.IConfig;
   private histories_: IWrtnAgentPrompt[];
-
   private result_: IWrtnAgentSelectBenchmarkResult | null;
 
   /**
@@ -76,7 +75,7 @@ export class WrtnAgentSelectBenchmark {
   ): Promise<IWrtnAgentSelectBenchmarkResult> {
     const started_at: Date = new Date();
     const semaphore: Semaphore = new Semaphore(this.config_.simultaneous);
-    const processes: IWrtnAgentSelectBenchmarkResult.IExperiment[] =
+    const experiments: IWrtnAgentSelectBenchmarkResult.IExperiment[] =
       await Promise.all(
         this.scenarios_.map(async (scenario) => {
           const events: IWrtnAgentSelectBenchmarkEvent[] = await Promise.all(
@@ -100,10 +99,10 @@ export class WrtnAgentSelectBenchmark {
         }),
       );
     return (this.result_ = {
-      experiments: processes,
+      experiments,
       started_at,
       completed_at: new Date(),
-      usage: processes
+      usage: experiments
         .map((p) => p.usage)
         .reduce(TokenUsageComputer.plus, TokenUsageComputer.zero()),
     });
@@ -113,9 +112,10 @@ export class WrtnAgentSelectBenchmark {
    * Report the benchmark result as markdown files.
    *
    * Report the benchmark result {@link execute}d by
-   * `WrtnAgentSelectBenchmark` as markdown files, and returns a dictionary
-   * object of the markdown reporting files. The key of the dictionary would
-   * be file name, and the value would be the markdown content.
+   * `WrtnAgentSelectBenchmark` as markdown files, and returns a
+   * dictionary object of the markdown reporting files. The key of
+   * the dictionary would be file name, and the value would be the
+   * markdown content.
    *
    * For reference, the markdown files are composed like below:
    *
@@ -133,9 +133,6 @@ export class WrtnAgentSelectBenchmark {
     return WrtnAgentSelectBenchmarkReporter.markdown(this.result_);
   }
 
-  /**
-   * @hidden
-   */
   private async step(
     scenario: IWrtnAgentSelectBenchmarkScenario,
   ): Promise<IWrtnAgentSelectBenchmarkEvent> {
