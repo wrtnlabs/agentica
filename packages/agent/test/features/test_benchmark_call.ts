@@ -131,7 +131,7 @@ export const test_benchmark_call = async (): Promise<void> => {
               type: "standalone",
               operation: find(
                 "post",
-                "/shoppings/customers/orders/:{orderId}/publish",
+                "/shoppings/customers/orders/{orderId}/publish",
               ),
             },
           ],
