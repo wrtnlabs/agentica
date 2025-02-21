@@ -59,7 +59,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
         type: "standalone",
         operation: find("patch", "/shoppings/customers/sales"),
       },
-      called: [find("patch", "/shoppings/customers/sales")],
+      operations: [find("patch", "/shoppings/customers/sales")],
       strict: false,
     }),
   );
@@ -83,7 +83,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      called: [
+      operations: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
         find("post", "/shoppings/customers/orders"),
@@ -107,7 +107,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      called: [find("post", "/shoppings/customers/orders")],
+      operations: [find("post", "/shoppings/customers/orders")],
       strict: false,
     }),
   );
@@ -137,7 +137,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           } satisfies IWrtnAgentBenchmarkExpected.IArray,
         ] as any,
       },
-      called: [
+      operations: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
       ],
@@ -192,7 +192,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      called: [
+      operations: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
         find("post", "/shoppings/customers/carts/commodities"),
@@ -292,7 +292,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      called: [
+      operations: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
         find("post", "/shoppings/customers/orders"),

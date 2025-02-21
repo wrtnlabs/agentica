@@ -136,13 +136,15 @@ export class WrtnAgentCallBenchmark {
     const success = () =>
       WrtnAgentBenchmarkPredicator.success({
         expected: scenario.expected,
-        called: agent.getPromptHistories().filter((p) => p.type === "execute"),
+        operations: agent
+          .getPromptHistories()
+          .filter((p) => p.type === "execute"),
         strict: false,
       });
     const out = (): IWrtnAgentCallBenchmarkEvent => {
       const select = WrtnAgentBenchmarkPredicator.success({
         expected: scenario.expected,
-        called: agent
+        operations: agent
           .getPromptHistories()
           .filter((p) => p.type === "select")
           .map((p) => p.operations)

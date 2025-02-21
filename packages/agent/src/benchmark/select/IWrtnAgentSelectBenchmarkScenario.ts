@@ -1,4 +1,4 @@
-import { IWrtnAgentOperation } from "../../structures/IWrtnAgentOperation";
+import { IWrtnAgentBenchmarkExpected } from "../common/IWrtnAgentBenchmarkExpected";
 
 /**
  * Scenario of function selection.
@@ -28,17 +28,12 @@ export interface IWrtnAgentSelectBenchmarkScenario {
   text: string;
 
   /**
-   * List of operations that should be selected.
+   * Expected function selection sequence.
    *
-   * List of operations (API operation or class function) that
-   * should be selected during the `selector` agent from the user's
+   * Sequence of operations (API operation or class function) that
+   * should be selected by the `selector` agent from the user's
    * {@link text} conversation for the LLM (Large Language Model)
-   * function calling.
-   *
-   * Note that, sequence of the operations are not important.
-   * It's because the `selector` agent has been designed to just
-   * list up candidate functions to call, and actual function
-   * calling sequence is determined by the `executor` agent.
+   * function selection.
    */
-  operations: IWrtnAgentOperation[];
+  expected: IWrtnAgentBenchmarkExpected;
 }

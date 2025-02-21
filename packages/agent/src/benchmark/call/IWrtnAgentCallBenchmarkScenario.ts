@@ -29,6 +29,11 @@ export interface IWrtnAgentCallBenchmarkScenario {
 
   /**
    * Expected function calling sequence.
+   *
+   * Sequence of operations (API operation or class function) that
+   * should be called by both `selector` and `caller` agents from
+   * the user's {@link text} conversation for the LLM
+   * (Large Language Model) function calling.
    */
   expected: IWrtnAgentBenchmarkExpected;
 }

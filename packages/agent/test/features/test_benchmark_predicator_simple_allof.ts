@@ -65,7 +65,7 @@ export const test_benchmark_predicator_simple_allof =
             },
           ],
         },
-        called: [
+        operations: [
           find("post", "/shoppings/customers/carts/commodities"),
           find("post", "/shoppings/customers/orders"),
         ],

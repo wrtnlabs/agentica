@@ -63,14 +63,48 @@ export const test_benchmark_select = async (): Promise<void> => {
           "",
           "After that, select the most expensive stock",
           "from the Macbook, and put it into my shopping cart.",
+          "And take the shopping cart to the order.",
           "",
-          "At last, take the shopping cart to the order.",
+          "At last, I'll publish it by cash payment, and my address is",
+          "",
+          "  - country: South Korea",
+          "  - city/province: Seoul",
+          "  - department: Wrtn Apartment",
+          "  - Possession: 101-1411",
         ].join("\n"),
-        operations: [
-          find("patch", "/shoppings/customers/sales"),
-          find("get", "/shoppings/customers/sales/{id}"),
-          find("post", "/shoppings/customers/orders"),
-        ],
+        expected: {
+          type: "array",
+          items: [
+            {
+              type: "standalone",
+              operation: find("patch", "/shoppings/customers/sales"),
+            },
+            {
+              type: "standalone",
+              operation: find("get", "/shoppings/customers/sales/{id}"),
+            },
+            {
+              type: "anyOf",
+              anyOf: [
+                {
+                  type: "standalone",
+                  operation: find("post", "/shoppings/customers/orders"),
+                },
+                {
+                  type: "standalone",
+                  operation: find("post", "/shoppings/customers/orders/direct"),
+                },
+              ],
+            },
+            {
+              type: "standalone",
+              operation: find(
+                "post",
+                "/shoppings/customers/orders/{orderId}/publish",
+              ),
+            },
+          ],
+        },
       },
     ],
   });

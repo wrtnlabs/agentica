@@ -306,6 +306,139 @@ Otherwise you're developing WebSocket protocol client application, connect to th
 
 And then call the backend server's function `IWrtnAgentRpcService.conversate()` remotely through the `Driver<IWrtnAgentRpcService>` wrapping. The backend server will call your `IWrtnAgentRpcListener` functions remotely through the RPC paradigm.
 
+### Benchmark
+```typescript
+import { HttpLlm, OpenApi } from "@samchon/openapi";
+import {
+  IWrtnAgentOperation,
+  WrtnAgent,
+  WrtnAgentSelectBenchmark,
+} from "@wrtnlabs/agent";
+import OpenAI from "openai";
+
+const main = async (): Promise<void> => {
+  // CREATE AI AGENT
+  const agent: WrtnAgent = new WrtnAgent({
+    provider: {
+      model: "gpt-4o-mini",
+      api: new OpenAI({
+        apiKey: "YOUR_OPENAI_API_KEY",
+      }),
+      type: "chatgpt",
+    },
+    controllers: [
+      {
+        protocol: "http",
+        name: "shopping",
+        application: HttpLlm.application({
+          model: "chatgpt",
+          document: await fetch(
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
+          ).then((res) => res.json()),
+        }),
+        connection: {
+          host: "https://shopping-be.wrtn.ai",
+        },
+      },
+    ],
+  });
+
+  // DO BENCHMARK
+  const find = (method: OpenApi.Method, path: string): IWrtnAgentOperation => {
+    const found = agent
+      .getOperations()
+      .find(
+        (op) =>
+          op.protocol === "http" &&
+          op.function.method === method &&
+          op.function.path === path,
+      );
+    if (!found) throw new Error(`Operation not found: ${method} ${path}`);
+    return found;
+  };
+  const benchmark: WrtnAgentSelectBenchmark = new WrtnAgentSelectBenchmark({
+    agent,
+    config: {
+      repeat: 4,
+    },
+    scenarios: [
+      {
+        name: "order",
+        text: [
+          "I wanna see every sales in the shopping mall",
+          "",
+          "And then show me the detailed information about the Macbook.",
+          "",
+          "After that, select the most expensive stock",
+          "from the Macbook, and put it into my shopping cart.",
+          "And take the shopping cart to the order.",
+          "",
+          "At last, I'll publish it by cash payment, and my address is",
+          "",
+          "  - country: South Korea",
+          "  - city/province: Seoul",
+          "  - department: Wrtn Apartment",
+          "  - Possession: 101-1411",
+        ].join("\n"),
+        expected: {
+          type: "array",
+          items: [
+            {
+              type: "standalone",
+              operation: find("patch", "/shoppings/customers/sales"),
+            },
+            {
+              type: "standalone",
+              operation: find("get", "/shoppings/customers/sales/{id}"),
+            },
+            {
+              type: "anyOf",
+              anyOf: [
+                {
+                  type: "standalone",
+                  operation: find("post", "/shoppings/customers/orders"),
+                },
+                {
+                  type: "standalone",
+                  operation: find("post", "/shoppings/customers/orders/direct"),
+                },
+              ],
+            },
+            {
+              type: "standalone",
+              operation: find(
+                "post",
+                "/shoppings/customers/orders/{orderId}/publish",
+              ),
+            },
+          ],
+        },
+      },
+    ],
+  });
+  await benchmark.execute();
+
+  // REPORT
+  const docs: Record<string, string> = benchmark.report();
+  
+  ...SAVE_DOCS_TO_MARKDOWN_FILES
+};
+```
+
+> Benchmark of Shopping Mall Scenario
+>
+> - [Benchmark Report](https://github.com/wrtnlabs/agent/tree/main/packages/agent/examples/benchmarks/select)
+> - Swagger Document: https://shopping-be.wrtn.ai/editor
+> - Repository: https://github.com/wrtnlabs/shopping-backend
+
+Benchmark your documentation quality of functions.
+
+You can measure a benchmark that AI agent can select proper functions from the user's conversations by the LLM (Large Language Model) function calling feature. Create `WrtnAgent` and `WrtnAgentSelectBenchmark` typed instances, and execute the benchmark with your specific scenarios like above.
+
+If you have written enough and proper descriptions on the functions (or API operations) and DTO schema types, success ratio of `WrtnAgentSelectBenchmark` would be higher. Otherwise descriptions are not enough or have bad quality, you may get a threatening benchmark report. If you wanna see how the `WrtnAgentSelectBenchmark` reports, click above [benchmark report link](https://github.com/wrtnlabs/agent/tree/main/packages/agent/examples/benchmarks/select) please.
+
+For reference, you can actually perform not only function selection, but also function calling through `WrtnAgentCallBenchmark`. By the way, `@wrtnlabs/agent` tends not to failed on arguments filling process of LLM function calling. Therefore, as actual function calling with arguments filling spends much more times and LLM tokens than only selection benchmark case, testing only `WrtnAgentSelectBenchmark` is economic.
+
 
 
 

@@ -1,4 +1,5 @@
 import { MathUtil } from "../../../internal/MathUtil";
+import { WrtnAgentBenchmarkUtil } from "../../common/WrtnAgentBenchmarkUtil";
 import { IWrtnAgentSelectBenchmarkEvent } from "../IWrtnAgentSelectBenchmarkEvent";
 import { IWrtnAgentSelectBenchmarkResult } from "../IWrtnAgentSelectBenchmarkResult";
 
@@ -129,15 +130,14 @@ export namespace WrtnAgentSelectBenchmarkReporter {
       "### User Prompt",
       exp.scenario.text,
       "",
-      ...exp.scenario.operations.map((op) =>
-        [
-          `### ${op.name}`,
-          `  - Controller: ${op.controller.name}`,
-          `  - Function: ${op.function.name}`,
-          "",
-          ...(op.function.description ? [op.function.description, ""] : []),
-        ].join("\n"),
+      "### Expected",
+      "```json",
+      JSON.stringify(
+        WrtnAgentBenchmarkUtil.expectedToJson(exp.scenario.expected),
+        null,
+        2,
       ),
+      "```",
     ].join("\n");
   };
 
@@ -168,40 +168,30 @@ export namespace WrtnAgentSelectBenchmarkReporter {
           ]
         : []),
       "",
+      "## Scenario",
+      "### User Prompt",
+      event.scenario.text,
+      "",
+      "### Expected",
+      "```json",
+      JSON.stringify(
+        WrtnAgentBenchmarkUtil.expectedToJson(event.scenario.expected),
+        null,
+        2,
+      ),
+      "```",
+      "",
       ...(event.type === "success" || event.type === "failure"
         ? [
             "## Result",
             ...event.selected.map((s) =>
               [
                 `### ${s.name}`,
-                `  - Controller: ${s.controller.name}`,
-                `  - Function: ${s.function.name}`,
+                `  - Controller: \`${s.controller.name}\``,
+                `  - Function: \`${s.function.name}\``,
                 `  - Reason: ${s.reason}`,
                 "",
                 ...(s.function.description ? [s.function.description, ""] : []),
-              ].join("\n"),
-            ),
-          ]
-        : []),
-      ...(event.type !== "error" && event.assistantPrompts.length > 0
-        ? [
-            "## Assistant Prompts",
-            ...event.assistantPrompts.map((p) => p.text).join("\n\n"),
-            "",
-          ]
-        : []),
-      ...(event.type === "failure"
-        ? [
-            "## Expected",
-            ...event.scenario.operations.map((op) =>
-              [
-                `### ${op.name}`,
-                `  - Controller: ${op.controller.name}`,
-                `  - Function: ${op.function.name}`,
-                "",
-                ...(op.function.description
-                  ? [op.function.description, ""]
-                  : []),
               ].join("\n"),
             ),
           ]
@@ -210,7 +200,9 @@ export namespace WrtnAgentSelectBenchmarkReporter {
         ? [
             "## Error",
             "```json",
-            errorToJson(JSON.stringify(event.error, null, 2)),
+            WrtnAgentBenchmarkUtil.errorToJson(
+              JSON.stringify(event.error, null, 2),
+            ),
             "```",
             "",
           ]
@@ -218,14 +210,3 @@ export namespace WrtnAgentSelectBenchmarkReporter {
     ].join("\n");
   };
 }
-
-const errorToJson = (error: any): any => {
-  if (error instanceof Error)
-    return {
-      ...error,
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    };
-  return error;
-};

@@ -1,5 +1,5 @@
 import { MathUtil } from "../../../internal/MathUtil";
-import { IWrtnAgentBenchmarkExpected } from "../../common/IWrtnAgentBenchmarkExpected";
+import { WrtnAgentBenchmarkUtil } from "../../common/WrtnAgentBenchmarkUtil";
 import { WrtnAgentPromptReporter } from "../../common/WrtnAgentPromptReporter";
 import { IWrtnAgentCallBenchmarkEvent } from "../IWrtnAgentCallBenchmarkEvent";
 import { IWrtnAgentCallBenchmarkResult } from "../IWrtnAgentCallBenchmarkResult";
@@ -104,7 +104,11 @@ export namespace WrtnAgentCallBenchmarkReporter {
       "",
       "### Expected",
       "```json",
-      JSON.stringify(exp.scenario.expected, null, 2),
+      JSON.stringify(
+        WrtnAgentBenchmarkUtil.expectedToJson(exp.scenario.expected),
+        null,
+        2,
+      ),
       "```",
     ].join("\n");
   };
@@ -135,17 +139,25 @@ export namespace WrtnAgentCallBenchmarkReporter {
       "",
       "### Expected",
       "```json",
-      JSON.stringify(expectedToJson(event.scenario.expected), null, 2),
+      JSON.stringify(
+        WrtnAgentBenchmarkUtil.expectedToJson(event.scenario.expected),
+        null,
+        2,
+      ),
       "```",
       "",
-      "## HistoriesResult",
+      "## Prompt Histories",
       ...event.prompts.map(WrtnAgentPromptReporter.markdown),
       "",
       ...(event.type === "error"
         ? [
             "## Error",
             "```json",
-            JSON.stringify(errorToJson(event.error), null, 2),
+            JSON.stringify(
+              WrtnAgentBenchmarkUtil.errorToJson(event.error),
+              null,
+              2,
+            ),
             "```",
           ]
         : []),
@@ -163,40 +175,3 @@ export namespace WrtnAgentCallBenchmarkReporter {
     );
   };
 }
-
-const errorToJson = (error: any): any => {
-  if (error instanceof Error)
-    return {
-      ...error,
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    };
-  return error;
-};
-
-const expectedToJson = (expected: IWrtnAgentBenchmarkExpected): any => {
-  if (expected.type === "standalone")
-    return {
-      type: expected.type,
-      operation: {
-        name: expected.operation.name,
-        description: expected.operation.function.description,
-      },
-    };
-  else if (expected.type === "array")
-    return {
-      type: expected.type,
-      items: expected.items.map(expectedToJson),
-    };
-  else if (expected.type === "allOf")
-    return {
-      type: expected.type,
-      allOf: expected.allOf.map(expectedToJson),
-    };
-  else
-    return {
-      type: expected.type,
-      anyOf: expected.anyOf.map(expectedToJson),
-    };
-};

@@ -1,30 +1,17 @@
 # order
 ## Summary
-  - Aggregation:
-    - Trial: 4
-    - Success: 4
-    - Failure: 0
-    - Average Time: 4,479 ms
-  - Token Usage
-    - Total: 115,144
-    - Prompt
-      - Total: 114,404
-      - Audio: 0
-      - Cached: 113,536
-    - Completion:
-      - Total: 115,144
-      - Accepted Prediction: 0
-      - Audio: 0
-      - Reasoning: 0
-      - Rejected Prediction: 0
+  - Scenarios: #4
+  - Success: 2
+  - Failure: 2
+  - Average Time: 173,549.5 ms
 
 ## Events
- No | Type | Time
----:|:-----|----:
-[1.](./1.success.md) | success | 4234 ms
-[2.](./2.success.md) | success | 3442 ms
-[3.](./3.success.md) | success | 5406 ms
-[4.](./4.success.md) | success | 4834 ms
+ Name | Type | Time
+:-----|:-----|----:
+[1.](./1.failure.md) | failure | 89333 ms
+[2.](./2.success.md) | success | 203062 ms
+[3.](./3.failure.md) | failure | 143959 ms
+[4.](./4.success.md) | success | 257844 ms
 
 ## Scenario
 ### User Prompt
@@ -66,11 +53,23 @@ At last, I'll publish it by cash payment, and my address is
       "type": "anyOf",
       "anyOf": [
         {
-          "type": "standalone",
-          "operation": {
-            "name": "shoppings_customers_orders_create",
-            "description": "Create a new order application.\n\nCreate a new {@link IShoppingOrder order application} from a\n{@link IShoppingCartCommodity shopping cart} that has been composed by the\n{@link IShoppingCustomer}. Of course, do not need to put every commodities\nto the order, but possible to select some of them by the customer.\n\nBy the way, this function does not mean completion the order, but means\njust customer is applying the order. The order be completed only when customer\n{@link IShoppingOrderPublish.paid_at pays} the order.\n\n> If you are an A.I. chatbot, don't take a mistake that writing\n> the `commodity_id` with the user selected stock ID. The\n> `commodity_id` is the ID of the shopping cart commodity, not the\n> stock ID. The stock ID is already included in the shopping cart\n> commodity."
-          }
+          "type": "array",
+          "items": [
+            {
+              "type": "standalone",
+              "operation": {
+                "name": "shoppings_customers_carts_commodities_create",
+                "description": "Create a new commodity.\n\nCreate a new {@link IShoppingCartCommodity commodity} into a specific\nshopping cart.\n\nIf {@link IShoppingCartCommodity.ICreate.accumulate} has `true` value\nand there's some same commodity that composed with same\n{@link IShoppingSaleUnitStock.IInvert stocks and quantities},\nthen new commodity would not be created but the volume would be accumulated.\n\nBy the way, if the target {@link IShoppingSale sale} has been suspended or\n{@link IShoppingSaleUnitStockInventory out of stock}, then 410 gone error\nwould be thrown. Therefore, it would better to check the target sale and\n{@link IShoppingSaleUnitStock stock}'s status before."
+              }
+            },
+            {
+              "type": "standalone",
+              "operation": {
+                "name": "shoppings_customers_orders_create",
+                "description": "Create a new order application.\n\nCreate a new {@link IShoppingOrder order application} from a\n{@link IShoppingCartCommodity shopping cart} that has been composed by the\n{@link IShoppingCustomer}. Of course, do not need to put every commodities\nto the order, but possible to select some of them by the customer.\n\nBy the way, this function does not mean completion the order, but means\njust customer is applying the order. The order be completed only when customer\n{@link IShoppingOrderPublish.paid_at pays} the order.\n\n> If you are an A.I. chatbot, don't take a mistake that writing\n> the `commodity_id` with the user selected stock ID. The\n> `commodity_id` is the ID of the shopping cart commodity, not the\n> stock ID. The stock ID is already included in the shopping cart\n> commodity."
+              }
+            }
+          ]
         },
         {
           "type": "standalone",
