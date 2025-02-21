@@ -95,7 +95,8 @@ export const test_benchmark_predicator = async (): Promise<void> => {
 
   const result: boolean = WrtnAgentBenchmarkPredicator.success({
     expected,
-    operations: [
+    entire: agent.getOperations(),
+    called: [
       find("patch", "/shoppings/customers/sales"),
       find("get", "/shoppings/customers/sales/{id}"),
       find("post", "/shoppings/customers/carts/commodities"),

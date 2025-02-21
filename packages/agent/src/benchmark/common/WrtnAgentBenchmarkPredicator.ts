@@ -66,7 +66,8 @@ export namespace WrtnAgentBenchmarkPredicator {
 
   export const success = (props: {
     expected: IWrtnAgentBenchmarkExpected;
-    operations: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
+    entire: readonly IWrtnAgentOperation[];
+    called: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
     strict: boolean;
   }): boolean => {
     const call = (
@@ -77,16 +78,15 @@ export namespace WrtnAgentBenchmarkPredicator {
     ) =>
       success({
         expected,
-        operations: overrideOperations ?? props.operations,
         strict: props.strict,
+        entire: props.entire,
+        called: overrideOperations ?? props.called,
       });
 
     switch (props.expected.type) {
       case "standalone": {
-        const standalone = props.expected;
-        return props.operations.some(
-          (op) => op.name === standalone.operation.name,
-        );
+        const target = props.expected.operation;
+        return props.called.some((op) => op.name === target.name);
       }
       case "allOf":
         return props.expected.allOf.every((expected) => call(expected));
@@ -96,7 +96,7 @@ export namespace WrtnAgentBenchmarkPredicator {
         const targetIterator = props.expected.items[Symbol.iterator]();
         let targeted = targetIterator.next();
 
-        for (const history of props.operations) {
+        for (const history of props.called) {
           if (targeted.done) {
             return true;
           }
