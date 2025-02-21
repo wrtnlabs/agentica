@@ -9,6 +9,9 @@ import { WrtnAgentBenchmarkPredicator } from "@wrtnlabs/agent/lib/benchmark/comm
 import OpenAI from "openai";
 
 export const test_benchmark_predicator = async (): Promise<void> => {
+  //----
+  // PREPARATIONS
+  //----
   const agent: WrtnAgent = new WrtnAgent({
     provider: {
       model: "gpt-4o-mini",
@@ -47,63 +50,183 @@ export const test_benchmark_predicator = async (): Promise<void> => {
     return found;
   };
 
-  const expected: IWrtnAgentBenchmarkExpected = {
-    type: "array",
-    items: [
-      {
+  //----
+  // MONOTONIC SCENARIOS
+  //----
+  TestValidator.equals("standalone")(true)(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
         type: "standalone",
         operation: find("patch", "/shoppings/customers/sales"),
       },
-      {
-        type: "standalone",
-        operation: find("get", "/shoppings/customers/sales/{id}"),
+      entire: agent.getOperations(),
+      called: [find("patch", "/shoppings/customers/sales")],
+      strict: false,
+    }),
+  );
+
+  TestValidator.equals("array")(true)(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
+        type: "array",
+        items: [
+          {
+            type: "standalone",
+            operation: find("patch", "/shoppings/customers/sales"),
+          },
+          {
+            type: "standalone",
+            operation: find("get", "/shoppings/customers/sales/{id}"),
+          },
+          {
+            type: "standalone",
+            operation: find("post", "/shoppings/customers/orders"),
+          },
+        ],
       },
-      {
+      entire: agent.getOperations(),
+      called: [
+        find("patch", "/shoppings/customers/sales"),
+        find("get", "/shoppings/customers/sales/{id}"),
+        find("post", "/shoppings/customers/orders"),
+      ],
+      strict: false,
+    }),
+  );
+
+  TestValidator.equals("anyOf")(true)(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
         type: "anyOf",
         anyOf: [
+          {
+            type: "standalone",
+            operation: find("post", "/shoppings/customers/carts/commodities"),
+          },
+          {
+            type: "standalone",
+            operation: find("post", "/shoppings/customers/orders"),
+          },
+        ],
+      },
+      entire: agent.getOperations(),
+      called: [find("post", "/shoppings/customers/orders")],
+      strict: false,
+    }),
+  );
+
+  TestValidator.equals("allOf")(true)(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
+        type: "allOf",
+        allOf: [
+          {
+            type: "standalone",
+            operation: find("post", "/shoppings/customers/carts/commodities"),
+          },
+          {
+            type: "standalone",
+            operation: find("post", "/shoppings/customers/orders"),
+          },
+        ],
+      },
+      entire: agent.getOperations(),
+      called: [
+        find("post", "/shoppings/customers/carts/commodities"),
+        find("post", "/shoppings/customers/orders"),
+      ],
+      strict: false,
+    }),
+  );
+
+  //----
+  // COMPLICATE SCENARIOS
+  //----
+  TestValidator.equals("array in array")(true)(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
+        type: "array",
+        items: [
           {
             type: "array",
             items: [
               {
                 type: "standalone",
-                operation: find(
-                  "post",
-                  "/shoppings/customers/carts/commodities",
-                ),
+                operation: find("patch", "/shoppings/customers/sales"),
               },
               {
                 type: "standalone",
-                operation: find("post", "/shoppings/customers/orders"),
+                operation: find("get", "/shoppings/customers/sales/{id}"),
+              },
+            ],
+          } satisfies IWrtnAgentBenchmarkExpected.IArray as any,
+        ],
+      },
+      entire: agent.getOperations(),
+      called: [
+        find("patch", "/shoppings/customers/sales"),
+        find("get", "/shoppings/customers/sales/{id}"),
+      ],
+      strict: false,
+    }),
+  );
+
+  TestValidator.equals("anyOf and array")(true)(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
+        type: "array",
+        items: [
+          {
+            type: "standalone",
+            operation: find("patch", "/shoppings/customers/sales"),
+          },
+          {
+            type: "standalone",
+            operation: find("get", "/shoppings/customers/sales/{id}"),
+          },
+          {
+            type: "anyOf",
+            anyOf: [
+              {
+                type: "array",
+                items: [
+                  {
+                    type: "standalone",
+                    operation: find(
+                      "post",
+                      "/shoppings/customers/carts/commodities",
+                    ),
+                  },
+                  {
+                    type: "standalone",
+                    operation: find("post", "/shoppings/customers/orders"),
+                  },
+                ],
+              },
+              {
+                type: "standalone",
+                operation: find("post", "/shoppings/customers/orders/direct"),
               },
             ],
           },
           {
             type: "standalone",
-            operation: find("post", "/shoppings/customers/orders/direct"),
+            operation: find(
+              "post",
+              "/shoppings/customers/orders/{orderId}/publish",
+            ),
           },
         ],
       },
-      {
-        type: "standalone",
-        operation: find(
-          "post",
-          "/shoppings/customers/orders/{orderId}/publish",
-        ),
-      },
-    ],
-  };
-
-  const result: boolean = WrtnAgentBenchmarkPredicator.success({
-    expected,
-    entire: agent.getOperations(),
-    called: [
-      find("patch", "/shoppings/customers/sales"),
-      find("get", "/shoppings/customers/sales/{id}"),
-      find("post", "/shoppings/customers/carts/commodities"),
-      find("post", "/shoppings/customers/orders"),
-      find("post", "/shoppings/customers/orders/{orderId}/publish"),
-    ],
-    strict: false,
-  });
-  TestValidator.equals("success")(result)(true);
+      entire: agent.getOperations(),
+      called: [
+        find("patch", "/shoppings/customers/sales"),
+        find("get", "/shoppings/customers/sales/{id}"),
+        find("post", "/shoppings/customers/carts/commodities"),
+        find("post", "/shoppings/customers/orders"),
+        find("post", "/shoppings/customers/orders/{orderId}/publish"),
+      ],
+      strict: false,
+    }),
+  );
 };
