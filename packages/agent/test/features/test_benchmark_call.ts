@@ -80,10 +80,7 @@ export const test_benchmark_call = async (): Promise<void> => {
           "",
           "And then show me the detailed information about the Macbook.",
           "",
-          "After that, select the most expensive stock",
-          "from the Macbook, and put it into my shopping cart.",
-          "",
-          "At last, take the shopping cart to the order.",
+          "After that, order the most expensive stock of the Macbook.",
         ].join("\n"),
         expected: {
           type: "array",
