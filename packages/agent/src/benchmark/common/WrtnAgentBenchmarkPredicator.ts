@@ -64,9 +64,24 @@ export namespace WrtnAgentBenchmarkPredicator {
     return typia.is(input) ? input.reply : null;
   };
 
+  /**
+   * Check if the called operations match the expected operations.
+   *
+   * @param props Properties for checking the match of the called operations
+   * and the expected operations
+   *
+   * @returns `true` if the called operations match the expected operations,
+   * otherwise `false`.
+   */
   export const success = (props: {
+    /**
+     * Expected operations to be called.
+     */
     expected: IWrtnAgentBenchmarkExpected;
-    entire: readonly IWrtnAgentOperation[];
+
+    /**
+     * Called operations.
+     */
     called: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
 
     /**
@@ -96,7 +111,6 @@ export namespace WrtnAgentBenchmarkPredicator {
     ) =>
       successInner({
         expected,
-        entire: props.entire,
         called: overrideOperations ?? props.called,
         strict: props.strict,
       });

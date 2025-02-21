@@ -59,7 +59,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
         type: "standalone",
         operation: find("patch", "/shoppings/customers/sales"),
       },
-      entire: agent.getOperations(),
       called: [find("patch", "/shoppings/customers/sales")],
       strict: false,
     }),
@@ -84,7 +83,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      entire: agent.getOperations(),
       called: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
@@ -109,7 +107,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      entire: agent.getOperations(),
       called: [find("post", "/shoppings/customers/orders")],
       strict: false,
     }),
@@ -122,6 +119,8 @@ export const test_benchmark_predicator = async (): Promise<void> => {
     WrtnAgentBenchmarkPredicator.success({
       expected: {
         type: "array",
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         items: [
           {
             type: "array",
@@ -135,10 +134,9 @@ export const test_benchmark_predicator = async (): Promise<void> => {
                 operation: find("get", "/shoppings/customers/sales/{id}"),
               },
             ],
-          } satisfies IWrtnAgentBenchmarkExpected.IArray as any,
-        ],
+          } satisfies IWrtnAgentBenchmarkExpected.IArray,
+        ] as any,
       },
-      entire: agent.getOperations(),
       called: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
@@ -194,7 +192,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      entire: agent.getOperations(),
       called: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
@@ -295,7 +292,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           },
         ],
       },
-      entire: agent.getOperations(),
       called: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),
