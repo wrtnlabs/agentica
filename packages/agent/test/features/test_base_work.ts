@@ -1,12 +1,16 @@
 import { IWrtnAgentPrompt, WrtnAgent } from "@wrtnlabs/agent";
 import OpenAI from "openai";
 
-export async function test_base_work() {
+import { TestGlobal } from "../TestGlobal";
+
+export async function test_base_work(): Promise<void | false> {
+  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+
   const agent: WrtnAgent = new WrtnAgent({
     provider: {
       model: "gpt-4o-mini",
       api: new OpenAI({
-        apiKey: process.env.CHATGPT_API_KEY,
+        apiKey: TestGlobal.env.CHATGPT_API_KEY,
       }),
       type: "chatgpt",
     },

@@ -8,7 +8,9 @@ import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_call = async (): Promise<void> => {
+export const test_benchmark_call = async (): Promise<void | false> => {
+  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+
   // HANDLESHAKE WITH SHOPPING BACKEND
   const connection: IHttpConnection = {
     host: "https://shopping-be.wrtn.ai",

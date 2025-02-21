@@ -1,7 +1,11 @@
 import { WrtnAgent } from "@wrtnlabs/agent";
 import OpenAI from "openai";
 
-export async function test_base_event() {
+import { TestGlobal } from "../TestGlobal";
+
+export async function test_base_event(): Promise<void | false> {
+  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+
   // initialize count
   let initializeCount = 0;
   // text count
@@ -12,7 +16,7 @@ export async function test_base_event() {
     provider: {
       model: "gpt-4o-mini",
       api: new OpenAI({
-        apiKey: process.env.CHATGPT_API_KEY,
+        apiKey: TestGlobal.env.CHATGPT_API_KEY,
       }),
       type: "chatgpt",
     },
@@ -80,6 +84,4 @@ export async function test_base_event() {
   if ((textCount as number) !== 4) {
     throw new Error(`Text count should remain 4, but got ${textCount}`);
   }
-
-  return await Promise.resolve();
 }
