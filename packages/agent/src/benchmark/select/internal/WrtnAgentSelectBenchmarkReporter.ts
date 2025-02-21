@@ -83,54 +83,53 @@ export namespace WrtnAgentSelectBenchmarkReporter {
   };
 
   const writeExperimentIndex = (
-    process: IWrtnAgentSelectBenchmarkResult.IExperiment,
+    exp: IWrtnAgentSelectBenchmarkResult.IExperiment,
   ): string => {
     return [
-      `# ${process.scenario.name}`,
+      `# ${exp.scenario.name}`,
       "## Summary",
       "  - Aggregation:",
-      `    - Trial: ${process.events.length}`,
-      `    - Success: ${process.events.filter((e) => e.type === "success").length}`,
-      `    - Failure: ${process.events.filter((e) => e.type === "failure").length}`,
+      `    - Trial: ${exp.events.length}`,
+      `    - Success: ${exp.events.filter((e) => e.type === "success").length}`,
+      `    - Failure: ${exp.events.filter((e) => e.type === "failure").length}`,
       `    - Average Time: ${MathUtil.round(
-        process.events
+        exp.events
           .map(
             (event) =>
               event.completed_at.getTime() - event.started_at.getTime(),
           )
-          .reduce((a, b) => a + b, 0) / process.events.length,
+          .reduce((a, b) => a + b, 0) / exp.events.length,
       ).toLocaleString()} ms`,
       "  - Token Usage",
-      `    - Total: ${process.usage.total.toLocaleString()}`,
+      `    - Total: ${exp.usage.total.toLocaleString()}`,
       `    - Prompt`,
-      `      - Total: ${process.usage.prompt.total.toLocaleString()}`,
-      `      - Audio: ${process.usage.prompt.audio.toLocaleString()}`,
-      `      - Cached: ${process.usage.prompt.cached.toLocaleString()}`,
+      `      - Total: ${exp.usage.prompt.total.toLocaleString()}`,
+      `      - Audio: ${exp.usage.prompt.audio.toLocaleString()}`,
+      `      - Cached: ${exp.usage.prompt.cached.toLocaleString()}`,
       `    - Completion:`,
-      `      - Total: ${process.usage.completion.total.toLocaleString()}`,
-      `      - Accepted Prediction: ${process.usage.completion.accepted_prediction.toLocaleString()}`,
-      `      - Audio: ${process.usage.completion.audio.toLocaleString()}`,
-      `      - Reasoning: ${process.usage.completion.reasoning.toLocaleString()}`,
-      `      - Rejected Prediction: ${process.usage.completion.rejected_prediction.toLocaleString()}`,
+      `      - Total: ${exp.usage.completion.total.toLocaleString()}`,
+      `      - Accepted Prediction: ${exp.usage.completion.accepted_prediction.toLocaleString()}`,
+      `      - Audio: ${exp.usage.completion.audio.toLocaleString()}`,
+      `      - Reasoning: ${exp.usage.completion.reasoning.toLocaleString()}`,
+      `      - Rejected Prediction: ${exp.usage.completion.rejected_prediction.toLocaleString()}`,
       "",
       "## Events",
       " No | Type | Time",
       "---:|:-----|----:",
-      ...process.events.map((event, i) =>
+      ...exp.events.map((e, i) =>
         [
-          `[${i + 1}.](./${i + 1}.${event.type}.md)`,
-          event.type,
-          MathUtil.round(
-            event.completed_at.getTime() - event.started_at.getTime(),
-          ) + " ms",
+          `[${i + 1}.](./${i + 1}.${e.type}.md)`,
+          e.type,
+          MathUtil.round(e.completed_at.getTime() - e.started_at.getTime()) +
+            " ms",
         ].join(" | "),
       ),
       "",
       "## Scenario",
       "### User Prompt",
-      process.scenario.text,
+      exp.scenario.text,
       "",
-      ...process.scenario.operations.map((op) =>
+      ...exp.scenario.operations.map((op) =>
         [
           `### ${op.name}`,
           `  - Controller: ${op.controller.name}`,

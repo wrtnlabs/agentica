@@ -23,7 +23,7 @@ export interface IWrtnAgentSelectBenchmarkScenario {
   name: string;
 
   /**
-   * The conversation text from user.
+   * The prompt text from user.
    */
   text: string;
 

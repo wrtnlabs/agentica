@@ -50,6 +50,9 @@ export const test_benchmark_select = async (): Promise<void> => {
   };
   const benchmark: WrtnAgentSelectBenchmark = new WrtnAgentSelectBenchmark({
     agent,
+    config: {
+      repeat: 4,
+    },
     scenarios: [
       {
         name: "order",
