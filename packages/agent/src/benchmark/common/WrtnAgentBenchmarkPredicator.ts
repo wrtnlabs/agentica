@@ -68,32 +68,106 @@ export namespace WrtnAgentBenchmarkPredicator {
     expected: IWrtnAgentBenchmarkExpected;
     entire: readonly IWrtnAgentOperation[];
     called: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
-    strict: boolean;
-  }): boolean => {
+
+    /**
+     * If `true`, the function will return `false` even if the expected operation
+     * is not found in the called operations.
+     *
+     * @default `false`
+     */
+    strict?: boolean;
+  }): boolean => successInner(props).result;
+
+  const successInner = (
+    props: Parameters<typeof success>[0],
+  ):
+    | {
+        result: true;
+        take: number;
+      }
+    | {
+        result: false;
+      } => {
     const call = (
       expected: IWrtnAgentBenchmarkExpected,
       overrideOperations?: Array<
         IWrtnAgentOperation | IWrtnAgentPrompt.IExecute
       >,
     ) =>
-      success({
+      successInner({
         expected,
-        strict: props.strict,
         entire: props.entire,
         called: overrideOperations ?? props.called,
+        strict: props.strict,
       });
 
     switch (props.expected.type) {
+      case "array": {
+        let take = 0;
+        const targetIterator = props.expected.items[Symbol.iterator]();
+        let targeted = targetIterator.next();
+
+        while (true) {
+          if (targeted.done) {
+            return {
+              result: true,
+              take,
+            };
+          }
+          if (take >= props.called.length) {
+            return { result: false };
+          }
+
+          const result = call(targeted.value, props.called.slice(take));
+          if (!result.result) {
+            if (!props.strict) {
+              take += 1;
+              continue;
+            }
+            return { result: false };
+          }
+
+          take += result.take;
+          targeted = targetIterator.next();
+        }
+      }
       case "standalone": {
         const target = props.expected.operation;
-        return props.called.some((op) => op.name === target.name);
+        const result = props.called.some((op) => op.name === target.name);
+        return {
+          result,
+          take: result ? 1 : -1,
+        };
       }
-      case "allOf":
-        return props.expected.allOf.every((expected) => call(expected));
       case "anyOf":
-        return props.expected.anyOf.some((expected) => call(expected));
-      case "array":
-        return props.expected.items.every((expect) => call(expect));
+        for (const expected of props.expected.anyOf) {
+          const callResult = call(expected);
+          if (callResult.result) {
+            return callResult;
+          }
+        }
+
+        return { result: false };
+      case "allOf": {
+        /**
+         * @example
+         * expected = [4, 2];
+         * called = [1, 2, 3, 4, 5];
+         *
+         * { result: true, take: 3 };
+         */
+        const result = props.expected.allOf.map((expected) => call(expected));
+        if (result.every((r) => r.result)) {
+          return {
+            result: true,
+            take: result.reduce((acc, r) => Math.max(acc, r.take), 0),
+          };
+        }
+
+        return {
+          result: false,
+        };
+      }
     }
   };
 }

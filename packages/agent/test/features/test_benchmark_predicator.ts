@@ -115,30 +115,6 @@ export const test_benchmark_predicator = async (): Promise<void> => {
     }),
   );
 
-  TestValidator.equals("allOf")(true)(
-    WrtnAgentBenchmarkPredicator.success({
-      expected: {
-        type: "allOf",
-        allOf: [
-          {
-            type: "standalone",
-            operation: find("post", "/shoppings/customers/carts/commodities"),
-          },
-          {
-            type: "standalone",
-            operation: find("post", "/shoppings/customers/orders"),
-          },
-        ],
-      },
-      entire: agent.getOperations(),
-      called: [
-        find("post", "/shoppings/customers/carts/commodities"),
-        find("post", "/shoppings/customers/orders"),
-      ],
-      strict: false,
-    }),
-  );
-
   //----
   // COMPLICATE SCENARIOS
   //----
@@ -225,6 +201,108 @@ export const test_benchmark_predicator = async (): Promise<void> => {
         find("post", "/shoppings/customers/carts/commodities"),
         find("post", "/shoppings/customers/orders"),
         find("post", "/shoppings/customers/orders/{orderId}/publish"),
+      ],
+      strict: false,
+    }),
+  );
+
+  //----
+  // COMPLEX PATTERNS
+  //----
+  TestValidator.equals("complex nested patterns with anyOf, allOf, and array")(
+    true,
+  )(
+    WrtnAgentBenchmarkPredicator.success({
+      expected: {
+        type: "allOf",
+        allOf: [
+          {
+            type: "array",
+            items: [
+              {
+                type: "standalone",
+                operation: find("patch", "/shoppings/customers/sales"),
+              },
+              {
+                type: "anyOf",
+                anyOf: [
+                  {
+                    type: "array",
+                    items: [
+                      {
+                        type: "standalone",
+                        operation: find(
+                          "get",
+                          "/shoppings/customers/sales/{id}",
+                        ),
+                      },
+                      {
+                        type: "standalone",
+                        operation: find("post", "/shoppings/customers/orders"),
+                      },
+                    ],
+                  },
+                  {
+                    type: "standalone",
+                    operation: find(
+                      "post",
+                      "/shoppings/customers/orders/direct",
+                    ),
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "array",
+            items: [
+              {
+                type: "standalone",
+                operation: find(
+                  "post",
+                  "/shoppings/customers/carts/commodities",
+                ),
+              },
+              {
+                type: "allOf",
+                allOf: [
+                  {
+                    type: "standalone",
+                    operation: find(
+                      "post",
+                      "/shoppings/customers/orders/{orderId}/publish",
+                    ),
+                  },
+                  {
+                    type: "anyOf",
+                    anyOf: [
+                      {
+                        type: "standalone",
+                        operation: find(
+                          "get",
+                          "/shoppings/customers/sales/{id}",
+                        ),
+                      },
+                      {
+                        type: "standalone",
+                        operation: find("patch", "/shoppings/admins/sales"),
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      entire: agent.getOperations(),
+      called: [
+        find("patch", "/shoppings/customers/sales"),
+        find("get", "/shoppings/customers/sales/{id}"),
+        find("post", "/shoppings/customers/orders"),
+        find("post", "/shoppings/customers/carts/commodities"),
+        find("post", "/shoppings/customers/orders/{orderId}/publish"),
+        find("get", "/shoppings/customers/sales/{id}"),
       ],
       strict: false,
     }),
