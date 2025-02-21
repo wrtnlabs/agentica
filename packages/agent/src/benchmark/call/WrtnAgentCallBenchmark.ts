@@ -135,7 +135,6 @@ export class WrtnAgentCallBenchmark {
     const started_at: Date = new Date();
     const success = () =>
       WrtnAgentBenchmarkPredicator.success({
-        agent,
         expected: scenario.expected,
         operations: agent
           .getPromptHistories()
@@ -144,7 +143,6 @@ export class WrtnAgentCallBenchmark {
       });
     const out = (): IWrtnAgentCallBenchmarkEvent => {
       const select = WrtnAgentBenchmarkPredicator.success({
-        agent,
         expected: scenario.expected,
         operations: agent
           .getPromptHistories()

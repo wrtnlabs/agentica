@@ -65,7 +65,6 @@ export namespace WrtnAgentBenchmarkPredicator {
   };
 
   export const success = (props: {
-    agent: WrtnAgent;
     expected: IWrtnAgentBenchmarkExpected;
     operations: Array<IWrtnAgentOperation | IWrtnAgentPrompt.IExecute>;
     strict: boolean;
@@ -77,7 +76,6 @@ export namespace WrtnAgentBenchmarkPredicator {
       >,
     ) =>
       success({
-        agent: props.agent,
         expected,
         operations: overrideOperations ?? props.operations,
         strict: props.strict,
