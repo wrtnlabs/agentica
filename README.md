@@ -12,7 +12,7 @@ The simplest Agentic AI library, specialized in **LLM function calling**.
 
 For example, if you provide **Swagger document** of a Shopping Mall Server, `@agentica` will compose **Super AI Chatbot** application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just by delivering the Swagger document.
 
-Also, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. `@agentica/agentica` will centralize and realize the multi-agent orchestration through function calling.
+Also, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. `@agentica` will centralize and realize the multi-agent orchestration through function calling.
 
 ```typescript
 import { Agentica } from "@agentica/core";
