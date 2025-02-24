@@ -1,6 +1,6 @@
-# Contributing to @wrtnlabs/agent 🤝
+# Contributing to @agentica/core 🤝
 
-Thank you for your interest in contributing to @wrtnlabs/agent! We welcome contributions from the community to help make this AI agent library even better. 🚀
+Thank you for your interest in contributing to @agentica/core! We welcome contributions from the community to help make this AI agent library even better. 🚀
 
 ## Bug reports 🐛
 
@@ -14,7 +14,7 @@ Feature requests are welcome. For new features, open an issue first to discuss w
 
 ## How to resolve issue?
 
-If you're looking for somewhere to start, check out the [gfi(good first issue)](https://github.com/wrtnlabs/agent/issues?q=is%3Aissue+is%3Aopen+label%3Agfi) tags.  
+If you're looking for somewhere to start, check out the [gfi(good first issue)](https://github.com/wrtnlabs/agentica/issues?q=is%3Aissue+is%3Aopen+label%3Agfi) tags.  
 
 If you want to work on an already existing issue, please leave a comment on that issue so others know someone is working on it.  
 If you’re not entirely confident about the solution you plan to submit, feel free to share your thoughts or concerns in a comment at any time.  
@@ -42,7 +42,7 @@ The contributors push changes to their personal fork and create a pull request t
 ### Structures
 
 - `typings`: Common types
-- `structures`: WrtnAgent's structures
+- `structures`: Agentica's structures
 - `internal`: These are codes that are not exposed externally but are commonly used internally.
 - `functional`: Pure functions that operate independently of our module's functionality are located here.
 - `chatgpt`: As a module that will soon be generalized, it defines the behavior for each API SDK. (but, currently, it only supports `chatgpt`)

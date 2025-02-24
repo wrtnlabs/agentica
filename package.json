@@ -1,20 +1,19 @@
 {
-  "name": "@wrtnlabs/agent-station",
-  "version": "1.0.0",
-  "description": "Super A.I. Chatbot agent by Swagger Document",
+  "private": true,
+  "name": "@agentica/station",
+  "version": "0.7.0-dev.20250224-5",
+  "description": "Agentic AI library specialized in LLM Function Calling",
   "engines": {
     "pnpm": ">=8"
   },
   "scripts": {
-    "dev:agent": "cd packages/agent && pnpm build:prompt && pnpm build:test -- --watch",
-    "build:agent": "cd packages/agent && pnpm build:main && pnpm build:test",
-    "test:agent": "cd packages/agent && pnpm run build:test && node bin/test/index.js",
-    "eslint": "eslint ./**/*.ts",
-    "typedoc": "node website/build/typedoc"
+    "build": "node deploy/build",
+    "package:latest": "node deploy/publish --tag latest",
+    "package:next": "node deploy/publish --tag dev"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wrtnlabs/agent"
+    "url": "https://github.com/wrtnlabs/agentica"
   },
   "keywords": [
     "openai",
@@ -30,7 +29,7 @@
   "author": "Wrtn Technologies",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wrtnlabs/agent/issues"
+    "url": "https://github.com/wrtnlabs/agentica/issues"
   },
   "homepage": "https://wrtnlabs.io",
   "files": [
@@ -43,11 +42,6 @@
   ],
   "devDependencies": {
     "@eslint/js": "^9.17.0",
-    "@nestia/e2e": "^0.8.0",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^12.1.1",
-    "@samchon/openapi": "^2.4.2",
-    "@samchon/shopping-api": "^0.11.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "eslint": "^9.17.0",
     "prettier": "^3.5.0",

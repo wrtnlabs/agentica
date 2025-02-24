@@ -26,7 +26,7 @@ By the way, how can a human does not take any mistake? To solve this human mista
 In this article, I'll demonstrate you how to develop Super AI chatbot with Swagger document. And then, I'll introduce you the new AI era's backend development way, the compiler based Swagger generator. You backend developers, let's be the AI developers.
 
 - Related Repositories
-  - [`@wrtnlabs/agent`](https://github.com/wrtnlabs/agent): Super AI Chatbot agent library using Swagger document
+  - [`@agentica/core`](https://github.com/wrtnlabs/agentica): Super AI Chatbot agent library using Swagger document
   - [`@wrtnlabs/autoview`](https://github.com/wrtnlabs/autoview): Automatic frontend component renderer
   - [`@samchon/openapi`](https://github.com/samchon/openapi): Swagger to LLM function calling schema converter
   - [`typia`](https://github.com/samchon/typia): TypeScript compiled based schema generator
@@ -99,7 +99,7 @@ main().catch(console.error);
 
 ```typescript
 import { HttpLlm, IHttpLlmApplication, OpenApi } from "@samchon/openapi";
-import { WrtnAgent } from "@wrtnlabs/agent";
+import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
 
 const main = async (): Promise<void> => {
@@ -111,7 +111,7 @@ const main = async (): Promise<void> => {
       )
     ),
   });
-  const agent: WrtnAgent = new WrtnAgent({
+  const agent: Agentica = new Agentica({
     provider: {
       type: "chatgpt",
       model: "gpt-4o-mini",
@@ -145,7 +145,7 @@ https://nestia.io/chat/shopping/
 ### 2.3. Frontend Application Development
 
 ```typescript
-import { WrtnAgent } from "@wrtnlabs/agent";
+import { Agentica } from "@agentica/core";
 import { WrtnChatApplication } from "@wrtnlabs/chat";
 import {
   HttpLlm,
@@ -185,7 +185,7 @@ export const ShoppingChatApplication = (
       </div>
     );
 
-  const agent: WrtnAgent = new WrtnAgent({
+  const agent: Agentica = new Agentica({
     provider: {
       type: "chatgpt",
       model: "gpt-4o-mini",
