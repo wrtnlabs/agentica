@@ -110,7 +110,7 @@ export const test_benchmark_select = async (): Promise<void | false> => {
   await benchmark.execute();
 
   const docs: Record<string, string> = benchmark.report();
-  const root: string = `${TestGlobal.ROOT}/test/docs/benchmarks/select`;
+  const root: string = `${TestGlobal.ROOT}/docs/benchmarks/select`;
 
   await rmdir(root);
   for (const [key, value] of Object.entries(docs)) {

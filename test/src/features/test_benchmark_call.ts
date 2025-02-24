@@ -108,20 +108,8 @@ export const test_benchmark_call = async (): Promise<void | false> => {
               type: "anyOf",
               anyOf: [
                 {
-                  type: "array",
-                  items: [
-                    {
-                      type: "standalone",
-                      operation: find(
-                        "post",
-                        "/shoppings/customers/carts/commodities",
-                      ),
-                    },
-                    {
-                      type: "standalone",
-                      operation: find("post", "/shoppings/customers/orders"),
-                    },
-                  ],
+                  type: "standalone",
+                  operation: find("post", "/shoppings/customers/orders"),
                 },
                 {
                   type: "standalone",
@@ -145,7 +133,7 @@ export const test_benchmark_call = async (): Promise<void | false> => {
 
   // REPORT
   const docs: Record<string, string> = benchmark.report();
-  const root: string = `${TestGlobal.ROOT}/test/docs/benchmarks/call`;
+  const root: string = `${TestGlobal.ROOT}/docs/benchmarks/call`;
 
   await rmdir(root);
   for (const [key, value] of Object.entries(docs)) {

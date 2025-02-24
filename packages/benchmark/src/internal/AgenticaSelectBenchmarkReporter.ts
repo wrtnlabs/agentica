@@ -146,7 +146,7 @@ export namespace AgenticaSelectBenchmarkReporter {
     index: number,
   ): string => {
     return [
-      `# ${index}. ${event.type}`,
+      `# ${index + 1}. ${event.type}`,
       `## Summary`,
       `  - Name: ${event.scenario.name}`,
       `  - Type: ${event.type}`,

@@ -243,66 +243,6 @@ In the `@agentica/core`, you can implement multi-agent orchestration super easil
 
 Just develop a TypeScript class which contains agent feature like Vector Store, and just deliver the TypeScript class type to the `@agentica/core` like above. The `@agentica/core` will centralize and realize the multi-agent orchestration by LLM function calling strategy to the TypeScript class.
 
-### WebSocket Communication
-`@agentica/core` provides WebSocket interaction module.
-
-The websocket interface module is following RPC (Remote Procedure Call) paradigm of the [TGrid](https://github.com/samchon/tgrid), so it is very easy to interact between frontend application and backend server of the AI agent.
-
-```typescript
-import {
-  IAgenticaRpcListener,
-  IAgenticaRpcService,
-  Agentica,
-  AgenticaRpcService,
-} from "@agentica/core";
-import { WebSocketServer } from "tgrid";
-
-const server: WebSocketServer<
-  null,
-  IAgenticaRpcService,
-  IAgenticaRpcListener
-> = new WebSocketServer();
-await server.open(3001, async (acceptor) => {
-  await acceptor.accept(
-    new AgenticaRpcService({
-      agent: new Agentica({ ... }),
-      listener: acceptor.getDriver(),
-    }),
-  );
-});
-```
-
-When developing backend server, wrap `Agentica` to `AgenticaRpcService`.
-
-If you're developing WebSocket protocol backend server, create a new `Agentica` instance, and wrap it to the `AgenticaRpcService` class. And then open the websocket server like above code. The WebSocket server will call the client functions of the `IAgenticaRpcListener` remotely.
-
-```typescript
-import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/core";
-import { Driver, WebSocketConnector } from "tgrid";
-
-const connector: WebSocketConnector<
-  null,
-  IAgenticaRpcListener,
-  IAgenticaRpcService
-> = new WebSocketConnector(null, {
-  text: async (evt) => {
-    console.log(evt.role, evt.text);
-  },
-  describe: async (evt) => {
-    console.log("describer", evt.text);
-  },
-});
-await connector.connect("ws://localhost:3001");
-
-const driver: Driver<IAgenticaRpcService> = connector.getDriver();
-await driver.conversate("Hello, what you can do?");
-```
-
-When developing frontend application, define `IAgenticaRpcListener` instance.
-
-Otherwise you're developing WebSocket protocol client application, connect to the websocket backend server with its URL address, and provide `IAgenticaRpcListener` instance for event listening.
-
-And then call the backend server's function `IAgenticaRpcService.conversate()` remotely through the `Driver<IAgenticaRpcService>` wrapping. The backend server will call your `IAgenticaRpcListener` functions remotely through the RPC paradigm.
 
 
 

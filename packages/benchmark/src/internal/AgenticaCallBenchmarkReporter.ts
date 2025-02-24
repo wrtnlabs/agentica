@@ -118,7 +118,7 @@ export namespace AgenticaCallBenchmarkReporter {
     index: number,
   ): string => {
     return [
-      `# ${index}. ${event.type}`,
+      `# ${index + 1}. ${event.type}`,
       "## Summary",
       `  - Name: ${event.scenario.name}`,
       `  - Type: ${event.type}`,
@@ -168,7 +168,9 @@ export namespace AgenticaCallBenchmarkReporter {
     events: IAgenticaCallBenchmarkEvent[],
     success: (e: IAgenticaCallBenchmarkEvent) => boolean,
   ): string => {
-    const count: number = events.filter(success).length;
+    const count: number = Math.floor(
+      (events.filter(success).length / events.length) * 10,
+    );
     return (
       new Array(count).fill("■").join("") +
       new Array(10 - count).fill("□").join("")
