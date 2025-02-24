@@ -1,4 +1,4 @@
-name: build:agent
+name: build
 on:
   pull_request:
     paths:
