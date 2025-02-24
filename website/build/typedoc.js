@@ -17,27 +17,29 @@ const main = async () => {
     "utf8",
   );
 
-  cp.execSync(
-    "cd packages/agent && npx typedoc --json ../../website/typedoc-json/agent.json",
-    {
-      cwd: `${__dirname}/../..`,
-      stdio: "inherit",
-    },
-  );
+  for (const pack of ["benchmark", "core", "rpc"]) {
+    const location = `${__dirname}/../../packages/${pack}`;
+    if (fs.existsSync(`${location}/node_modules`) === false)
+      cp.execSync("pnpm install", { cwd: location, stdio: "ignore" });
+    cp.execSync(
+      [
+        `npx typedoc --json typedoc-json/${pack}.json`,
+        `--options ../packages/${pack}/typedoc.json`,
+        `--validation.invalidLink false`,
+      ].join(" "),
+      {
+        cwd: `${__dirname}/..`,
+        stdio: "inherit",
+      },
+    );
+  }
+
   cp.execSync(
     `npx typedoc --entryPointStrategy merge "typedoc-json/*.json" --plugin typedoc-github-theme --theme typedoc-github-theme --out public/api`,
     {
       cwd: `${__dirname}/..`,
       stdio: "inherit",
     },
-  );
-  await fs.promises.writeFile(
-    `${__dirname}/../public/api/agent.json`,
-    await fs.promises.readFile(
-      `${__dirname}/../typedoc-json/agent.json`,
-      "utf8",
-    ),
-    "utf8",
   );
 };
 main().catch((error) => {

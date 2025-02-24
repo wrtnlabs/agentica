@@ -1,9 +1,9 @@
-name: build:agent
+name: build
 on:
   pull_request:
     paths:
       - 'packages/*/src/**'
-      - 'packages/*/test/**'
+      - 'test/**'
       - 'package.json'
 jobs:
   Ubuntu:
@@ -18,9 +18,7 @@ jobs:
           version: 8.15.9
       - name: Install dependencies
         run: pnpm install
-      - name: Build
-        run: cd packages/agent && pnpm run build
       - name: Test
-        run: cd packages/agent && pnpm run test
+        run: cd test && pnpm start
         env:
           CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}

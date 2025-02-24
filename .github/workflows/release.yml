@@ -18,17 +18,7 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      - name: Install dependencies
-        run: pnpm install
-      - name: Copy README
-        run: sh deploy/README.sh
-      - name: Build
-        run: cd packages/agent && pnpm build
-      - name: Test
-        run: cd packages/agent && pnpm test
-        env:
-          CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
-      - name: Publish to npm
-        run: cd packages/agent && npm publish --access public --provenance
+      - name: Publish to NPM
+        run: npm run package:latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
