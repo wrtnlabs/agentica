@@ -18,7 +18,7 @@ Also, the LLM function calling strategy is effective for the **Multi-Agent Orche
 import { Agentica } from "@agentica/core";
 
 const agent: Agentica = new Agentica({ ... });
-await agent.conversate("What you can do?");
+await agent.conversate("I wanna buy MacBook Pro");
 ```
 
 > https://github.com/user-attachments/assets/01604b53-aca4-41cb-91aa-3faf63549ea6
@@ -29,10 +29,15 @@ await agent.conversate("What you can do?");
 
 
 
-## Guide Documents
-### `@agentica/core`
-Core library of Agentic AI, specialized in LLM Function Calling.
 
+## Guide Documents
+### 🏠 Home
+Preparing detailed guide documents.
+
+Until that, please satisfy with README document of each module.
+
+### 📖 Features
+- **Core Library**
   - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/core)
   - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/core#how-to-use)
     - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/core#setup)
@@ -43,19 +48,13 @@ Core library of Agentic AI, specialized in LLM Function Calling.
     - [Agent Strategy](https://github.com/wrtnlabs/agentica/tree/main/packages/core#agent-strategy)
     - [Validation Feedback](https://github.com/wrtnlabs/agentica/tree/main/packages/core#validation-feedback)
     - [OpenAPI Specification](https://github.com/wrtnlabs/agentica/tree/main/packages/core#openapi-specification)
-
-### `@agentica/rpc`
-RPC module of `Agentica` for WebSocket Communication
-
+- **Benchmark Program**
   - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc)
   - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#how-to-use)
     - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#setup)
     - [Server Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#server-application)
     - [Client Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#client-application)
-
-### `@agentica/benchmark`
-Benchmark program of `Agentica`
-
+- **WebSocket RPC**
   - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#introduction)
   - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#how-to-use)
     - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#setup)
@@ -65,10 +64,9 @@ Benchmark program of `Agentica`
     - [Multi Turn Benchmark](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#multi-turn-benchmark)
     - [Estimator Agent](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#estimator-benchmark)
 
-### `@agentica/ui`
-Preparing...
-
-
+### Appendix
+  - [API Documents](http://wrtnlabs.github.io/agentica/api)
+  - [⇲ Benchmark Result](https://github.com/wrtnlabs/agentica/tree/main/test/examples/benchmarks/call)
 
 
 
