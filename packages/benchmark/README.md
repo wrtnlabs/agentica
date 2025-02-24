@@ -32,7 +32,11 @@ npx typia setup
 
 Install `@agentica/benchmark` with its dependent libraries.
 
-Note that, you have to install not only `@agentica/core` or `@agentica/benchmark` libraries, but also 
+Note that, you have to install not only `@agentica/core` or `@agentica/benchmark` libraries, but also [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://github.com/samchon/typia) too. 
+
+`@samchon/openapi` is an OpenAPI specification library which can convert Swagger/OpenAPI document to LLM function calling schema. And `typia` is a transformer (compiler) library which can compose LLM function calling schema from a TypeScript class type.
+
+By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`.
 
 ### Function Selection Benchmark
 ```typescript
