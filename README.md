@@ -66,7 +66,7 @@ Until that, please satisfy with README document of each module.
 
 ### Appendix
   - [API Documents](http://wrtnlabs.github.io/agentica/api)
-  - [⇲ Benchmark Result](https://github.com/wrtnlabs/agentica/tree/main/test/examples/benchmarks/call)
+  - [⇲ Benchmark Result](https://github.com/wrtnlabs/agentica/tree/main/test/examples/benchmarks/select)
 
 
 
