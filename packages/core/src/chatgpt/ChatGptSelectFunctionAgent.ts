@@ -143,7 +143,9 @@ export namespace ChatGptSelectFunctionAgent {
         // SYSTEM PROMPT
         {
           role: "system",
-          content: AgenticaSystemPrompt.SELECT,
+          content:
+            ctx.config?.systemPrompt?.select?.(ctx.histories) ??
+            AgenticaSystemPrompt.SELECT,
         },
         // TYPE CORRECTIONS
         ...emendMessages(failures ?? []),
