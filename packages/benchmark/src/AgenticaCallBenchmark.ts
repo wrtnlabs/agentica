@@ -1,4 +1,5 @@
 import { Agentica } from "@agentica/core";
+import { AgenticaTokenUsageAggregator } from "@agentica/core/src/internal/AgenticaTokenUsageAggregator";
 import { Semaphore } from "tstl";
 import { tags } from "typia";
 
@@ -7,7 +8,6 @@ import { AgenticaCallBenchmarkReporter } from "./internal/AgenticaCallBenchmarkR
 import { IAgenticaCallBenchmarkEvent } from "./structures/IAgenticaCallBenchmarkEvent";
 import { IAgenticaCallBenchmarkResult } from "./structures/IAgenticaCallBenchmarkResult";
 import { IAgenticaCallBenchmarkScenario } from "./structures/IAgenticaCallBenchmarkScenario";
-import { TokenUsageComputer } from "./utils/TokenUsageComputer";
 
 /**
  * LLM function calling selection benchmark.
@@ -90,7 +90,10 @@ export class AgenticaCallBenchmark {
             usage: events
               .filter((e) => e.type !== "error")
               .map((e) => e.usage)
-              .reduce(TokenUsageComputer.plus, TokenUsageComputer.zero()),
+              .reduce(
+                AgenticaTokenUsageAggregator.plus,
+                AgenticaTokenUsageAggregator.zero(),
+              ),
           };
         }),
       );
@@ -100,7 +103,10 @@ export class AgenticaCallBenchmark {
       completed_at: new Date(),
       usage: experiments
         .map((p) => p.usage)
-        .reduce(TokenUsageComputer.plus, TokenUsageComputer.zero()),
+        .reduce(
+          AgenticaTokenUsageAggregator.plus,
+          AgenticaTokenUsageAggregator.zero(),
+        ),
     });
   }
 

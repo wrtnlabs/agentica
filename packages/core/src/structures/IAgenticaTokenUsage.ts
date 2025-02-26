@@ -18,35 +18,95 @@
  */
 export interface IAgenticaTokenUsage {
   /**
-   * Total token usage.
+   * Aggregated token usage.
    */
-  total: number;
+  aggregate: IAgenticaTokenUsage.IComponent<"aggregate">;
 
   /**
-   * Token usage in the prompt.
-   *
-   * In other words, it is called as the input token.
+   * Token uasge of initializer agent.
    */
-  prompt: IAgenticaTokenUsage.IPrompt;
+  initialize: IAgenticaTokenUsage.IComponent<"initialize">;
 
   /**
-   * Token usage in the completion.
-   *
-   * In other words, it is called as the output token.
+   * Token usage of function selector agent.
    */
-  completion: IAgenticaTokenUsage.ICompletion;
+  select: IAgenticaTokenUsage.IComponent<"select">;
+
+  /**
+   * Token usage of function canceler agent.
+   */
+  cancel: IAgenticaTokenUsage.IComponent<"cancel">;
+
+  /**
+   * Token usage of function caller agent.
+   */
+  call: IAgenticaTokenUsage.IComponent<"call">;
+
+  /**
+   * Token usage of function calling describer agent.
+   */
+  describe: IAgenticaTokenUsage.IComponent<"describe">;
 }
 export namespace IAgenticaTokenUsage {
-  export interface IPrompt {
+  export interface IComponent<Kind extends string> {
+    /**
+     * Kind of the token usage.
+     */
+    kind: Kind;
+
+    /**
+     * Total token usage.
+     */
     total: number;
-    audio: number;
+
+    /**
+     * Input token usage of detailed.
+     */
+    input: IInput;
+
+    /**
+     * Output token usage of detailed.
+     */
+    output: IOutput;
+  }
+
+  /**
+   * Input token usage of detailed.
+   */
+  export interface IInput {
+    /**
+     * Total amount of input token uasge.
+     */
+    total: number;
+
+    /**
+     * Cached token usage.
+     */
     cached: number;
   }
-  export interface ICompletion {
+
+  /**
+   * Output token usage of detailed.
+   */
+  export interface IOutput {
+    /**
+     * Total amount of output token usage.
+     */
     total: number;
-    accepted_prediction: number;
-    audio: number;
+
+    /**
+     * Reasoning token usage.
+     */
     reasoning: number;
+
+    /**
+     * Prediction token usage.
+     */
+    accepted_prediction: number;
+
+    /**
+     * Rejected prediction token usage.
+     */
     rejected_prediction: number;
   }
 }
