@@ -26,7 +26,7 @@ export namespace ChatGptCallFunctionAgent {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("execute", {
+    const completion: OpenAI.ChatCompletion = await ctx.request("call", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -316,7 +316,7 @@ export namespace ChatGptCallFunctionAgent {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("execute", {
+    const completion: OpenAI.ChatCompletion = await ctx.request("call", {
       messages: [
         // COMMON SYSTEM PROMPT
         {

@@ -1,3 +1,5 @@
+import { IAgenticaTokenUsage } from "@agentica/core";
+
 import { IAgenticaCallBenchmarkEvent } from "../structures/IAgenticaCallBenchmarkEvent";
 import { IAgenticaCallBenchmarkResult } from "../structures/IAgenticaCallBenchmarkResult";
 import { MathUtil } from "../utils/MathUtil";
@@ -29,6 +31,8 @@ export namespace AgenticaCallBenchmarkReporter {
       events
         .map((e) => e.completed_at.getTime() - e.started_at.getTime())
         .reduce((a, b) => a + b, 0) / events.length;
+    const aggregate: IAgenticaTokenUsage.IComponent<"aggregate"> =
+      result.usage.aggregate;
     return [
       "# LLM Function Call Benchmark",
       "## Summary",
@@ -39,17 +43,15 @@ export namespace AgenticaCallBenchmarkReporter {
       `    - Failure: ${events.filter((e) => e.type === "failure").length}`,
       `    - Average Time: ${MathUtil.round(average).toLocaleString()} ms`,
       `  - Token Usage`,
-      `    - Total: ${result.usage.total.toLocaleString()}`,
-      `    - Prompt`,
-      `      - Total: ${result.usage.prompt.total.toLocaleString()}`,
-      `      - Audio: ${result.usage.prompt.audio.toLocaleString()}`,
-      `      - Cached: ${result.usage.prompt.cached.toLocaleString()}`,
-      `    - Completion:`,
-      `      - Total: ${result.usage.completion.total.toLocaleString()}`,
-      `      - Accepted Prediction: ${result.usage.completion.accepted_prediction.toLocaleString()}`,
-      `      - Audio: ${result.usage.completion.audio.toLocaleString()}`,
-      `      - Reasoning: ${result.usage.completion.reasoning.toLocaleString()}`,
-      `      - Rejected Prediction: ${result.usage.completion.rejected_prediction.toLocaleString()}`,
+      `    - Total: ${aggregate.total.toLocaleString()}`,
+      `    - Input`,
+      `      - Total: ${aggregate.input.total.toLocaleString()}`,
+      `      - Cached: ${aggregate.input.cached.toLocaleString()}`,
+      `    - Output:`,
+      `      - Total: ${aggregate.output.total.toLocaleString()}`,
+      `      - Reasoning: ${aggregate.output.reasoning.toLocaleString()}`,
+      `      - Accepted Prediction: ${aggregate.output.accepted_prediction.toLocaleString()}`,
+      `      - Rejected Prediction: ${aggregate.output.rejected_prediction.toLocaleString()}`,
       "",
       "## Experiments",
       " Name | Select | Call | Time/Avg ",

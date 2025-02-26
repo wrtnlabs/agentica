@@ -1,9 +1,9 @@
 import OpenAI from "openai";
 
 import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
-import { AgenticaCostAggregator } from "./internal/AgenticaCostAggregator";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
 import { AgenticaPromptTransformer } from "./internal/AgenticaPromptTransformer";
+import { AgenticaTokenUsageAggregator } from "./internal/AgenticaTokenUsageAggregator";
 import { __map_take } from "./internal/__map_take";
 import { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import { IAgenticaContext } from "./structures/IAgenticaContext";
@@ -86,21 +86,7 @@ export class Agentica {
     );
 
     // STATUS
-    this.token_usage_ = {
-      total: 0,
-      prompt: {
-        total: 0,
-        audio: 0,
-        cached: 0,
-      },
-      completion: {
-        total: 0,
-        accepted_prediction: 0,
-        audio: 0,
-        reasoning: 0,
-        rejected_prediction: 0,
-      },
-    };
+    this.token_usage_ = AgenticaTokenUsageAggregator.zero();
     this.ready_ = false;
     this.executor_ =
       typeof props.config?.executor === "function"
@@ -231,11 +217,11 @@ export class Agentica {
 
       // HANDLERS
       dispatch,
-      request: async (source, body) => {
+      request: async (kind, body) => {
         // request information
         const event: IAgenticaEvent.IRequest = {
           type: "request",
-          source,
+          source: kind,
           body: {
             ...body,
             model: this.props.provider.model,
@@ -245,20 +231,24 @@ export class Agentica {
         await dispatch(event);
 
         // completion
-        const value: OpenAI.ChatCompletion =
+        const completion: OpenAI.ChatCompletion =
           await this.props.provider.api.chat.completions.create(
             event.body,
             event.options,
           );
-        AgenticaCostAggregator.aggregate(props.usage, value);
+        AgenticaTokenUsageAggregator.aggregate({
+          kind,
+          completion,
+          usage: props.usage,
+        });
         await dispatch({
           type: "response",
-          source,
+          source: kind,
           body: event.body,
           options: event.options,
-          value,
+          value: completion,
         });
-        return value;
+        return completion;
       },
       initialize: async () => {
         this.ready_ = true;

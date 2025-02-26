@@ -2,5 +2,5 @@ export type AgenticaSource =
   | "initialize"
   | "select"
   | "cancel"
-  | "execute"
+  | "call"
   | "describe";
