@@ -7,7 +7,7 @@
 <p><code>@agentica</code> is the simplest AI agent library specialized for LLM (Large Language Model) function calling. You can provide functions to call by <em>Swagger/OpenAPI</em> document or <em>TypeScript class type</em>, and it will make everything possible. <em>Super AI Chatbot</em> development, or <em>Multi-Agent Orchestration</em>, all of them can be realized by the function calling.</p>
 <p>For example, if you provide <strong>Swagger document</strong> of a Shopping Mall Server, <code>@agentica</code> will compose <strong>Super AI Chatbot</strong> application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just by delivering the Swagger document.</p>
 <p>Also, the LLM function calling strategy is effective for the <strong>Multi-Agent Orchestration</strong>, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the <strong>TypeScript class type</strong>. <code>@agentica</code> will centralize and realize the multi-agent orchestration through function calling.</p>
-<pre><code class="typescript"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">Agentica</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@agentica/core&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">agent</span><span class="hl-1">: </span><span class="hl-6">Agentica</span><span class="hl-1"> = </span><span class="hl-4">new</span><span class="hl-1"> </span><span class="hl-7">Agentica</span><span class="hl-1">({ ... });</span><br/><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">agent</span><span class="hl-1">.</span><span class="hl-7">conversate</span><span class="hl-1">(</span><span class="hl-3">&quot;I wanna buy MacBook Pro&quot;</span><span class="hl-1">);</span>
+<pre><code class="typescript"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">Agentica</span><span class="hl-1">, </span><span class="hl-2">createHttpLlmApplication</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@agentica/core&quot;</span><span class="hl-1">;</span><br/><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">OpenApi</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@samchon/openapi&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">document</span><span class="hl-1">: </span><span class="hl-6">OpenApi</span><span class="hl-1">.</span><span class="hl-6">IDocument</span><span class="hl-1">;</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">agent</span><span class="hl-1">: </span><span class="hl-6">Agentica</span><span class="hl-1"> = </span><span class="hl-4">new</span><span class="hl-1"> </span><span class="hl-7">Agentica</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-2">controllers:</span><span class="hl-1"> [</span><br/><span class="hl-1">    {</span><br/><span class="hl-1">      </span><span class="hl-2">name:</span><span class="hl-1"> </span><span class="hl-3">&quot;shopping&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">application:</span><span class="hl-1"> </span><span class="hl-7">createHttpLlmApplication</span><span class="hl-1">({</span><br/><span class="hl-1">        </span><span class="hl-2">model:</span><span class="hl-1"> </span><span class="hl-3">&quot;chatgpt&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">        </span><span class="hl-2">document</span><span class="hl-1">,</span><br/><span class="hl-1">      }),</span><br/><span class="hl-1">      </span><span class="hl-2">connection:</span><span class="hl-1"> {</span><br/><span class="hl-1">        </span><span class="hl-2">host:</span><span class="hl-1"> </span><span class="hl-3">&quot;http://localhost:3000&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">      },</span><br/><span class="hl-1">    },</span><br/><span class="hl-1">  ],</span><br/><span class="hl-1">  ...</span><br/><span class="hl-1">});</span><br/><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">agent</span><span class="hl-1">.</span><span class="hl-7">conversate</span><span class="hl-1">(</span><span class="hl-3">&quot;I wanna buy MacBook Pro&quot;</span><span class="hl-1">);</span>
 </code><button type="button">Copy</button></pre>
 
 <blockquote>
@@ -52,18 +52,17 @@
 </li>
 <li><strong>WebSocket RPC</strong>
 <ul>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#introduction">Introduction</a></li>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#how-to-use">How to Use</a>
+<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#introduction">Introduction</a></li>
+<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#how-to-use">How to Use</a>
 <ul>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#setup">Setup</a></li>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#function-selecting-benchmark">Function Selecting Benchmark</a></li>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#function-calling-benchmark">Function Calling Benchmark</a></li>
+<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#setup">Setup</a></li>
+<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#server-application">Server Application</a></li>
+<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#client-application">Client Application</a></li>
 </ul>
 </li>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#roadmap">Roadmap</a>
+<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#principles">Principles</a>
 <ul>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#multi-turn-benchmark">Multi Turn Benchmark</a></li>
-<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#estimator-benchmark">Estimator Agent</a></li>
+<li><a href="https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#remote-procedure-call">Remote Procedure Call</a></li>
 </ul>
 </li>
 </ul>
