@@ -1,3 +1,6 @@
+import { IAgenticaController } from "@agentica/core";
+import { Primitive } from "typia";
+
 /**
  * RPC interface of AI agent service.
  *
@@ -26,4 +29,12 @@ export interface IAgenticaRpcService {
    * @returns Returned when the conversation process is completely done
    */
   conversate(content: string): Promise<void>;
+
+  /**
+   * Get controllers.
+   *
+   * Get controllers, collection of functions that would be
+   * called by the AI chatbot.
+   */
+  getControllers(): Promise<Primitive<IAgenticaController[]>>;
 }
