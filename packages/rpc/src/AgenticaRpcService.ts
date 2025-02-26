@@ -1,4 +1,4 @@
-import { Agentica } from "@agentica/core";
+import { Agentica, IAgenticaController } from "@agentica/core";
 import { Primitive } from "typia";
 
 import { IAgenticaRpcListener } from "./IAgenticaRpcListener";
@@ -78,6 +78,13 @@ export class AgenticaRpcService implements IAgenticaRpcService {
    */
   public async conversate(content: string): Promise<void> {
     await this.props.agent.conversate(content);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public async getControllers(): Promise<Primitive<IAgenticaController>[]> {
+    return this.props.agent.getControllers() satisfies ReadonlyArray<IAgenticaController> as Primitive<IAgenticaController>[];
   }
 }
 export namespace AgenticaRpcService {

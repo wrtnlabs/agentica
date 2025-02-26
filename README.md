@@ -15,9 +15,25 @@ For example, if you provide **Swagger document** of a Shopping Mall Server, `@ag
 Also, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. `@agentica` will centralize and realize the multi-agent orchestration through function calling.
 
 ```typescript
-import { Agentica } from "@agentica/core";
+import { Agentica, createHttpLlmApplication } from "@agentica/core";
+import { OpenApi } from "@samchon/openapi";
 
-const agent: Agentica = new Agentica({ ... });
+const document: OpenApi.IDocument;
+const agent: Agentica = new Agentica({
+  controllers: [
+    {
+      name: "shopping",
+      application: createHttpLlmApplication({
+        model: "chatgpt",
+        document,
+      }),
+      connection: {
+        host: "http://localhost:3000",
+      },
+    },
+  ],
+  ...
+});
 await agent.conversate("I wanna buy MacBook Pro");
 ```
 
@@ -55,14 +71,13 @@ Until that, please satisfy with README document of each module.
     - [Server Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#server-application)
     - [Client Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#client-application)
 - **WebSocket RPC**
-  - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#introduction)
-  - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#how-to-use)
-    - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#setup)
-    - [Function Selecting Benchmark](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#function-selecting-benchmark)
-    - [Function Calling Benchmark](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#function-calling-benchmark)
-  - [Roadmap](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#roadmap)
-    - [Multi Turn Benchmark](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#multi-turn-benchmark)
-    - [Estimator Agent](https://github.com/wrtnlabs/agentica/tree/main/packages/benchmark#estimator-benchmark)
+  - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#introduction)
+  - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#how-to-use)
+    - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#setup)
+    - [Server Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#server-application)
+    - [Client Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#client-application)
+  - [Principles](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#principles)
+    - [Remote Procedure Call](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#remote-procedure-call)
 
 ### Appendix
   - [API Documents](http://wrtnlabs.github.io/agentica/api)

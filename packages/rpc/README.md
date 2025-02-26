@@ -107,3 +107,71 @@ When developing frontend application, define `IAgenticaRpcListener` instance.
 Otherwise you're developing WebSocket protocol client application, connect to the websocket backend server with its URL address, and provide `IAgenticaRpcListener` instance for event listening.
 
 And then call the backend server's function `IAgenticaRpcService.conversate()` remotely through the `Driver<IAgenticaRpcService>` wrapping. The backend server will call your `IAgenticaRpcListener` functions remotely through the RPC paradigm.
+
+
+
+
+## Principles
+### Remote Procedure Call
+```mermaid
+sequenceDiagram
+box Client Application
+  actor User
+  participant Driver as Driver<Listener>
+  participant Connector as Communicator (Client)
+end
+box Server Application
+  participant Acceptor as Communicator (Server)
+  actor Provider
+end
+User->>Driver: 1. calls a function
+Activate User
+Activate Driver
+Driver->>Connector: 2. delivers the function call
+Activate Connector
+Deactivate Driver
+Connector-->>Acceptor: 3. sends a protocolized<br/>network message<br/>meaning a function call
+Deactivate Connector
+Activate Acceptor
+Acceptor->>Provider: 4. calls the function
+Provider->>Acceptor: 5. returns a value
+Acceptor-->>Connector: 6. sends a protocolized<br/>network message<br/>meaning a return value
+Deactivate Acceptor
+Activate Connector
+Connector->>Driver: 7. delivers the return value
+Deactivate Connector
+Activate Driver
+Driver->>User: 8. returns the value
+Deactivate Driver
+Deactivate User
+```
+
+WebSocket protocol with RPC paradigm for AI chatbot.
+
+`@agentica/rpc` supports WebSocket protocol that is utilizing [`TGrid`](https://github.com/samchon/tgrid) and its RPC (Remote Procedure Call) paradigm for easy and type safe development. In the RPC paradigm, client application can call a function of `IAgenticaRpcService` remotely as if it were its own object.
+
+Internally, the RPC has composed with three elements; [`Communicator`](https://tgrid.com/docs/features/components/#communicator), [`Provider`](https://tgrid.com/docs/features/components/#provider) and [`Driver`](https://tgrid.com/docs/features/components/#driver). The first `Communicator` takes a responsibility of (WebSocket) network communication. The next `Provider` means an object providing to the remote system for RPC, and `Driver` is a proxy instance realizing the RPC to the remote provided `Provider` instance.
+
+For example, below client application code is calling `IAgenticaRpcService.conversate()` function remotely through the `Driver<IAgenticaRpcService>` typed instance. In that case, `IAgenticaRpcService` is the `Provider` instance from server to client. And `WebSocketConnector` is the communicator taking responsibility of WebSocket communication.
+
+```typescript
+import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
+import { Driver, WebSocketConnector } from "tgrid";
+
+const connector: WebSocketConnector<
+  null,
+  IAgenticaRpcListener,
+  IAgenticaRpcService
+> = new WebSocketConnector(null, {
+  text: async (evt) => {
+    console.log(evt.role, evt.text);
+  },
+  describe: async (evt) => {
+    console.log("describer", evt.text);
+  },
+});
+await connector.connect("ws://localhost:3001");
+
+const driver: Driver<IAgenticaRpcService> = connector.getDriver();
+await driver.conversate("Hello, what you can do?");
+```
