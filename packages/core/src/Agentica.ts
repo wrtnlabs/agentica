@@ -21,7 +21,7 @@ import { IAgenticaTokenUsage } from "./structures/IAgenticaTokenUsage";
  * Nestia A.I. chatbot agent.
  *
  * `Agentica` is a facade class for the super A.I. chatbot agent
- * which performs the {@link converstate user's conversation function}
+ * which performs the {@link conversate user's conversation function}
  * with LLM (Large Language Model) function calling and manages the
  * {@link getPromptHistories prompt histories}.
  *
