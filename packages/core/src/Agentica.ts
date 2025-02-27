@@ -300,9 +300,9 @@ export class Agentica {
 
   private async dispatch<Event extends IAgenticaEvent>(
     event: Event,
-  ): Promise<void> {
+  ): Promise<this> {
     const set = this.listeners_.get(event.type);
-    if (set)
+    if (set) {
       await Promise.all(
         Array.from(set).map(async (listener) => {
           try {
@@ -310,5 +310,8 @@ export class Agentica {
           } catch {}
         }),
       );
+    }
+
+    return this;
   }
 }
