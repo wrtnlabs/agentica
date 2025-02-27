@@ -216,7 +216,9 @@ export class Agentica {
       prompt: props.prompt,
 
       // HANDLERS
-      dispatch,
+      dispatch: async (event: IAgenticaEvent) => {
+        await this.dispatch(event);
+      },
       request: async (kind, body) => {
         // request information
         const event: IAgenticaEvent.IRequest = {
