@@ -6,33 +6,25 @@
 [![Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
 [![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
 
-The simplest Agentic AI library, specialized in **LLM function calling**.
+The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
-`@agentica` is the simplest AI agent library specialized for LLM (Large Language Model) function calling. You can provide functions to call by *Swagger/OpenAPI* document or *TypeScript class type*, and it will make everything possible. *Super AI Chatbot* development, or *Multi-Agent Orchestration*, all of them can be realized by the function calling.
+Just deliver **Swagger/OpenAPI** document or **TypeScript class type** to the `agentica`. Then `agentica` will do everything.
 
-For example, if you provide **Swagger document** of a Shopping Mall Server, `@agentica` will compose **Super AI Chatbot** application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just by delivering the Swagger document.
-
-Also, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. `@agentica` will centralize and realize the multi-agent orchestration through function calling.
+Look at the below demonstration, and feel how `agentica` is easy and powerful.
 
 ```typescript
-import { Agentica, createHttpLlmApplication } from "@agentica/core";
-import { OpenApi } from "@samchon/openapi";
+import typia from "typia";
+import { Agentica } from "@agentica/core";
 
-const document: OpenApi.IDocument;
 const agent: Agentica = new Agentica({
   controllers: [
-    {
-      name: "shopping",
-      application: createHttpLlmApplication({
-        model: "chatgpt",
-        document,
-      }),
-      connection: {
-        host: "http://localhost:3000",
-      },
-    },
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
   ],
-  ...
 });
 await agent.conversate("I wanna buy MacBook Pro");
 ```

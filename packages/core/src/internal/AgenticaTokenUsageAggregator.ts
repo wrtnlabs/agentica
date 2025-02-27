@@ -69,7 +69,7 @@ export namespace AgenticaTokenUsageAggregator {
       a: IAgenticaTokenUsage.IComponent<Kind>,
       b: IAgenticaTokenUsage.IComponent<Kind>,
     ): IAgenticaTokenUsage.IComponent<Kind> => ({
-      kind: a.kind,
+      type: a.type,
       total: a.total + b.total,
       input: {
         total: a.input.total + b.input.total,
@@ -98,7 +98,7 @@ export namespace AgenticaTokenUsageAggregator {
     const component = <Kind extends string>(
       kind: Kind,
     ): IAgenticaTokenUsage.IComponent<Kind> => ({
-      kind,
+      type: kind,
       total: 0,
       input: {
         total: 0,
