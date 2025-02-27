@@ -48,11 +48,11 @@ export interface IAgenticaTokenUsage {
   describe: IAgenticaTokenUsage.IComponent<"describe">;
 }
 export namespace IAgenticaTokenUsage {
-  export interface IComponent<Kind extends string> {
+  export interface IComponent<Type extends string> {
     /**
-     * Kind of the token usage.
+     * Discriminator type.
      */
-    kind: Kind;
+    type: Type;
 
     /**
      * Total token usage.
