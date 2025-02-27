@@ -306,8 +306,11 @@ export class Agentica {
       await Promise.all(
         Array.from(set).map(async (listener) => {
           try {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             await listener(event);
-          } catch {}
+          } catch {
+            /* empty */
+          }
         }),
       );
     }
