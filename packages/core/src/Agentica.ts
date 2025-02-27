@@ -216,9 +216,7 @@ export class Agentica {
       prompt: props.prompt,
 
       // HANDLERS
-      dispatch: async (event: IAgenticaEvent) => {
-        await this.dispatch(event);
-      },
+      dispatch: (event) => this.dispatch(event),
       request: async (kind, body) => {
         // request information
         const event: IAgenticaEvent.IRequest = {
@@ -302,7 +300,7 @@ export class Agentica {
 
   private async dispatch<Event extends IAgenticaEvent>(
     event: Event,
-  ): Promise<this> {
+  ): Promise<void> {
     const set = this.listeners_.get(event.type);
     if (set) {
       await Promise.all(
@@ -316,7 +314,5 @@ export class Agentica {
         }),
       );
     }
-
-    return this;
   }
 }

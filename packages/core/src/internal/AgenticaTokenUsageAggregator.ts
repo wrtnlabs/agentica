@@ -13,8 +13,7 @@ export namespace AgenticaTokenUsageAggregator {
     //----
     // COMPONENT
     //----
-    const component: IAgenticaTokenUsage.IComponent<any> =
-      props.usage[props.kind];
+    const component: IAgenticaTokenUsage.IComponent = props.usage[props.kind];
 
     // TOTAL
     component.total += props.completion.usage.total_tokens;
@@ -39,15 +38,12 @@ export namespace AgenticaTokenUsageAggregator {
     //----
     // RE-AGGREGATE
     //----
-    const sum = (
-      getter: (comp: IAgenticaTokenUsage.IComponent<any>) => number,
-    ) =>
+    const sum = (getter: (comp: IAgenticaTokenUsage.IComponent) => number) =>
       Object.entries(props.usage)
         .filter(([key]) => key !== "aggregate")
         .map(([_, comp]) => getter(comp))
         .reduce((a, b) => a + b, 0);
-    const aggregate: IAgenticaTokenUsage.IComponent<"aggregate"> =
-      props.usage.aggregate;
+    const aggregate: IAgenticaTokenUsage.IComponent = props.usage.aggregate;
     aggregate.total = sum((comp) => comp.total);
     aggregate.input.total = sum((comp) => comp.input.total);
     aggregate.input.cached = sum((comp) => comp.input.cached);
@@ -65,11 +61,10 @@ export namespace AgenticaTokenUsageAggregator {
     x: IAgenticaTokenUsage,
     y: IAgenticaTokenUsage,
   ): IAgenticaTokenUsage => {
-    const component = <Kind extends string>(
-      a: IAgenticaTokenUsage.IComponent<Kind>,
-      b: IAgenticaTokenUsage.IComponent<Kind>,
-    ): IAgenticaTokenUsage.IComponent<Kind> => ({
-      type: a.type,
+    const component = (
+      a: IAgenticaTokenUsage.IComponent,
+      b: IAgenticaTokenUsage.IComponent,
+    ): IAgenticaTokenUsage.IComponent => ({
       total: a.total + b.total,
       input: {
         total: a.input.total + b.input.total,
@@ -95,10 +90,7 @@ export namespace AgenticaTokenUsageAggregator {
   };
 
   export const zero = (): IAgenticaTokenUsage => {
-    const component = <Kind extends string>(
-      kind: Kind,
-    ): IAgenticaTokenUsage.IComponent<Kind> => ({
-      type: kind,
+    const component = (): IAgenticaTokenUsage.IComponent => ({
       total: 0,
       input: {
         total: 0,
@@ -112,12 +104,12 @@ export namespace AgenticaTokenUsageAggregator {
       },
     });
     return {
-      aggregate: component("aggregate"),
-      initialize: component("initialize"),
-      select: component("select"),
-      cancel: component("cancel"),
-      call: component("call"),
-      describe: component("describe"),
+      aggregate: component(),
+      initialize: component(),
+      select: component(),
+      cancel: component(),
+      call: component(),
+      describe: component(),
     };
   };
 }

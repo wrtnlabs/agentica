@@ -33,8 +33,7 @@ export namespace AgenticaSelectBenchmarkReporter {
       events
         .map((e) => e.completed_at.getTime() - e.started_at.getTime())
         .reduce((a, b) => a + b, 0) / events.length;
-    const aggregate: IAgenticaTokenUsage.IComponent<"aggregate"> =
-      result.usage.aggregate;
+    const aggregate: IAgenticaTokenUsage.IComponent = result.usage.aggregate;
     return [
       "# LLM Function Selection Benchmark",
       "## Summary",
@@ -88,8 +87,7 @@ export namespace AgenticaSelectBenchmarkReporter {
   const writeExperimentIndex = (
     exp: IAgenticaSelectBenchmarkResult.IExperiment,
   ): string => {
-    const aggregate: IAgenticaTokenUsage.IComponent<"aggregate"> =
-      exp.usage.aggregate;
+    const aggregate: IAgenticaTokenUsage.IComponent = exp.usage.aggregate;
     return [
       `# ${exp.scenario.name}`,
       "## Summary",
