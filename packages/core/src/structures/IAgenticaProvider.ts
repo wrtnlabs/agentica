@@ -34,8 +34,10 @@ export namespace IAgenticaProvider {
 
     /**
      * Chat model to be used.
+     *
+     * `({}) & string` means to support third party hosting cloud(eg. openRouter, aws)
      */
-    model: OpenAI.ChatModel;
+    model: OpenAI.ChatModel | ({} & string);
 
     /**
      * Options for the request.
