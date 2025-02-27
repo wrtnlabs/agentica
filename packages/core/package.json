@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@agentica/core",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "main": "src/index.ts",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "scripts": {

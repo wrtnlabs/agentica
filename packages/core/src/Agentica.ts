@@ -216,7 +216,9 @@ export class Agentica {
       prompt: props.prompt,
 
       // HANDLERS
-      dispatch,
+      dispatch: async (event: IAgenticaEvent) => {
+        await this.dispatch(event);
+      },
       request: async (kind, body) => {
         // request information
         const event: IAgenticaEvent.IRequest = {
@@ -273,8 +275,9 @@ export class Agentica {
   public on<Type extends IAgenticaEvent.Type>(
     type: Type,
     listener: (event: IAgenticaEvent.Mapper[Type]) => void | Promise<void>,
-  ): void {
+  ): this {
     __map_take(this.listeners_, type, () => new Set()).add(listener);
+    return this;
   }
 
   /**
@@ -288,25 +291,32 @@ export class Agentica {
   public off<Type extends IAgenticaEvent.Type>(
     type: Type,
     listener: (event: IAgenticaEvent.Mapper[Type]) => void | Promise<void>,
-  ): void {
-    const set: Set<Function> | undefined = this.listeners_.get(type);
+  ): this {
+    const set = this.listeners_.get(type);
     if (set) {
       set.delete(listener);
       if (set.size === 0) this.listeners_.delete(type);
     }
+    return this;
   }
 
   private async dispatch<Event extends IAgenticaEvent>(
     event: Event,
-  ): Promise<void> {
-    const set: Set<Function> | undefined = this.listeners_.get(event.type);
-    if (set)
+  ): Promise<this> {
+    const set = this.listeners_.get(event.type);
+    if (set) {
       await Promise.all(
         Array.from(set).map(async (listener) => {
           try {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             await listener(event);
-          } catch {}
+          } catch {
+            /* empty */
+          }
         }),
       );
+    }
+
+    return this;
   }
 }
