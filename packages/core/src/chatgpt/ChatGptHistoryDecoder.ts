@@ -41,6 +41,7 @@ export namespace ChatGptHistoryDecoder {
           content: "",
         },
       ];
+
     return [
       {
         role: "assistant",
