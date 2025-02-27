@@ -6,6 +6,7 @@ import {
   IAgenticaTokenUsage,
 } from "@agentica/core";
 import { ChatGptSelectFunctionAgent } from "@agentica/core/src/chatgpt/ChatGptSelectFunctionAgent";
+import { AgenticaTokenUsageAggregator } from "@agentica/core/src/internal/AgenticaTokenUsageAggregator";
 import { Semaphore } from "tstl";
 import { tags } from "typia";
 
@@ -14,7 +15,6 @@ import { AgenticaSelectBenchmarkReporter } from "./internal/AgenticaSelectBenchm
 import { IAgenticaSelectBenchmarkEvent } from "./structures/IAgenticaSelectBenchmarkEvent";
 import { IAgenticaSelectBenchmarkResult } from "./structures/IAgenticaSelectBenchmarkResult";
 import { IAgenticaSelectBenchmarkScenario } from "./structures/IAgenticaSelectBenchmarkScenario";
-import { TokenUsageComputer } from "./utils/TokenUsageComputer";
 
 /**
  * LLM function calling selection benchmark.
@@ -96,7 +96,10 @@ export class AgenticaSelectBenchmark {
             usage: events
               .filter((e) => e.type !== "error")
               .map((e) => e.usage)
-              .reduce(TokenUsageComputer.plus, TokenUsageComputer.zero()),
+              .reduce(
+                AgenticaTokenUsageAggregator.plus,
+                AgenticaTokenUsageAggregator.zero(),
+              ),
           };
         }),
       );
@@ -106,7 +109,10 @@ export class AgenticaSelectBenchmark {
       completed_at: new Date(),
       usage: experiments
         .map((p) => p.usage)
-        .reduce(TokenUsageComputer.plus, TokenUsageComputer.zero()),
+        .reduce(
+          AgenticaTokenUsageAggregator.plus,
+          AgenticaTokenUsageAggregator.zero(),
+        ),
     });
   }
 
@@ -140,21 +146,7 @@ export class AgenticaSelectBenchmark {
   ): Promise<IAgenticaSelectBenchmarkEvent> {
     const started_at: Date = new Date();
     try {
-      const usage: IAgenticaTokenUsage = {
-        total: 0,
-        prompt: {
-          total: 0,
-          audio: 0,
-          cached: 0,
-        },
-        completion: {
-          total: 0,
-          accepted_prediction: 0,
-          audio: 0,
-          reasoning: 0,
-          rejected_prediction: 0,
-        },
-      };
+      const usage: IAgenticaTokenUsage = AgenticaTokenUsageAggregator.zero();
       const prompts: IAgenticaPrompt[] =
         await ChatGptSelectFunctionAgent.execute({
           ...this.agent_.getContext({

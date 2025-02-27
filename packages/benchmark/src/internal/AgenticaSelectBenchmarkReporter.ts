@@ -1,3 +1,5 @@
+import { IAgenticaTokenUsage } from "@agentica/core";
+
 import { IAgenticaSelectBenchmarkEvent } from "../structures/IAgenticaSelectBenchmarkEvent";
 import { IAgenticaSelectBenchmarkResult } from "../structures/IAgenticaSelectBenchmarkResult";
 import { MathUtil } from "../utils/MathUtil";
@@ -31,6 +33,8 @@ export namespace AgenticaSelectBenchmarkReporter {
       events
         .map((e) => e.completed_at.getTime() - e.started_at.getTime())
         .reduce((a, b) => a + b, 0) / events.length;
+    const aggregate: IAgenticaTokenUsage.IComponent<"aggregate"> =
+      result.usage.aggregate;
     return [
       "# LLM Function Selection Benchmark",
       "## Summary",
@@ -41,17 +45,15 @@ export namespace AgenticaSelectBenchmarkReporter {
       `    - Failure: ${events.filter((e) => e.type === "failure").length}`,
       `    - Average Time: ${MathUtil.round(average).toLocaleString()} ms`,
       `  - Token Usage`,
-      `    - Total: ${result.usage.total.toLocaleString()}`,
-      `    - Prompt`,
-      `      - Total: ${result.usage.prompt.total.toLocaleString()}`,
-      `      - Audio: ${result.usage.prompt.audio.toLocaleString()}`,
-      `      - Cached: ${result.usage.prompt.cached.toLocaleString()}`,
-      `    - Completion:`,
-      `      - Total: ${result.usage.completion.total.toLocaleString()}`,
-      `      - Accepted Prediction: ${result.usage.completion.accepted_prediction.toLocaleString()}`,
-      `      - Audio: ${result.usage.completion.audio.toLocaleString()}`,
-      `      - Reasoning: ${result.usage.completion.reasoning.toLocaleString()}`,
-      `      - Rejected Prediction: ${result.usage.completion.rejected_prediction.toLocaleString()}`,
+      `    - Total: ${aggregate.total.toLocaleString()}`,
+      `    - Input`,
+      `      - Total: ${aggregate.input.total.toLocaleString()}`,
+      `      - Cached: ${aggregate.input.cached.toLocaleString()}`,
+      `    - Output:`,
+      `      - Total: ${aggregate.output.total.toLocaleString()}`,
+      `      - Accepted Prediction: ${aggregate.output.accepted_prediction.toLocaleString()}`,
+      `      - Reasoning: ${aggregate.output.reasoning.toLocaleString()}`,
+      `      - Rejected Prediction: ${aggregate.output.rejected_prediction.toLocaleString()}`,
       "",
       "## Experiments",
       " Name | Status | Time/Avg  ",
@@ -86,6 +88,8 @@ export namespace AgenticaSelectBenchmarkReporter {
   const writeExperimentIndex = (
     exp: IAgenticaSelectBenchmarkResult.IExperiment,
   ): string => {
+    const aggregate: IAgenticaTokenUsage.IComponent<"aggregate"> =
+      exp.usage.aggregate;
     return [
       `# ${exp.scenario.name}`,
       "## Summary",
@@ -101,18 +105,16 @@ export namespace AgenticaSelectBenchmarkReporter {
           )
           .reduce((a, b) => a + b, 0) / exp.events.length,
       ).toLocaleString()} ms`,
-      "  - Token Usage",
-      `    - Total: ${exp.usage.total.toLocaleString()}`,
-      `    - Prompt`,
-      `      - Total: ${exp.usage.prompt.total.toLocaleString()}`,
-      `      - Audio: ${exp.usage.prompt.audio.toLocaleString()}`,
-      `      - Cached: ${exp.usage.prompt.cached.toLocaleString()}`,
-      `    - Completion:`,
-      `      - Total: ${exp.usage.completion.total.toLocaleString()}`,
-      `      - Accepted Prediction: ${exp.usage.completion.accepted_prediction.toLocaleString()}`,
-      `      - Audio: ${exp.usage.completion.audio.toLocaleString()}`,
-      `      - Reasoning: ${exp.usage.completion.reasoning.toLocaleString()}`,
-      `      - Rejected Prediction: ${exp.usage.completion.rejected_prediction.toLocaleString()}`,
+      `  - Token Usage`,
+      `    - Total: ${aggregate.total.toLocaleString()}`,
+      `    - Input`,
+      `      - Total: ${aggregate.input.total.toLocaleString()}`,
+      `      - Cached: ${aggregate.input.cached.toLocaleString()}`,
+      `    - Output:`,
+      `      - Total: ${aggregate.output.total.toLocaleString()}`,
+      `      - Accepted Prediction: ${aggregate.output.accepted_prediction.toLocaleString()}`,
+      `      - Reasoning: ${aggregate.output.reasoning.toLocaleString()}`,
+      `      - Rejected Prediction: ${aggregate.output.rejected_prediction.toLocaleString()}`,
       "",
       "## Events",
       " No | Type | Time",
@@ -154,17 +156,15 @@ export namespace AgenticaSelectBenchmarkReporter {
       ...(event.type !== "error"
         ? [
             "  - Token Usage",
-            `    - Total: ${event.usage.total.toLocaleString()}`,
+            `    - Total: ${event.usage.aggregate.toLocaleString()}`,
             `    - Prompt`,
-            `      - Total: ${event.usage.prompt.total.toLocaleString()}`,
-            `      - Audio: ${event.usage.prompt.audio.toLocaleString()}`,
-            `      - Cached: ${event.usage.prompt.cached.toLocaleString()}`,
+            `      - Total: ${event.usage.aggregate.input.total.toLocaleString()}`,
+            `      - Cached: ${event.usage.aggregate.input.cached.toLocaleString()}`,
             `    - Completion:`,
-            `      - Total: ${event.usage.completion.total.toLocaleString()}`,
-            `      - Accepted Prediction: ${event.usage.completion.accepted_prediction.toLocaleString()}`,
-            `      - Audio: ${event.usage.completion.audio.toLocaleString()}`,
-            `      - Reasoning: ${event.usage.completion.reasoning.toLocaleString()}`,
-            `      - Rejected Prediction: ${event.usage.completion.rejected_prediction.toLocaleString()}`,
+            `      - Total: ${event.usage.aggregate.output.total.toLocaleString()}`,
+            `      - Reasoning: ${event.usage.aggregate.output.reasoning.toLocaleString()}`,
+            `      - Accepted Prediction: ${event.usage.aggregate.output.accepted_prediction.toLocaleString()}`,
+            `      - Rejected Prediction: ${event.usage.aggregate.output.rejected_prediction.toLocaleString()}`,
           ]
         : []),
       "",
