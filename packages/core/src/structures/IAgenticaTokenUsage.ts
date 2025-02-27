@@ -20,40 +20,35 @@ export interface IAgenticaTokenUsage {
   /**
    * Aggregated token usage.
    */
-  aggregate: IAgenticaTokenUsage.IComponent<"aggregate">;
+  aggregate: IAgenticaTokenUsage.IComponent;
 
   /**
    * Token uasge of initializer agent.
    */
-  initialize: IAgenticaTokenUsage.IComponent<"initialize">;
+  initialize: IAgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function selector agent.
    */
-  select: IAgenticaTokenUsage.IComponent<"select">;
+  select: IAgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function canceler agent.
    */
-  cancel: IAgenticaTokenUsage.IComponent<"cancel">;
+  cancel: IAgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function caller agent.
    */
-  call: IAgenticaTokenUsage.IComponent<"call">;
+  call: IAgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function calling describer agent.
    */
-  describe: IAgenticaTokenUsage.IComponent<"describe">;
+  describe: IAgenticaTokenUsage.IComponent;
 }
 export namespace IAgenticaTokenUsage {
-  export interface IComponent<Type extends string> {
-    /**
-     * Discriminator type.
-     */
-    type: Type;
-
+  export interface IComponent {
     /**
      * Total token usage.
      */
