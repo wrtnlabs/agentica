@@ -19,16 +19,20 @@ import { IAgenticaTokenUsage } from "./structures/IAgenticaTokenUsage";
 
 type Middleware = (
   /**
-   *
+   * The context object for the current request, containing relevant data
+   * that middleware functions can read or modify.
    */
-  input: IAgenticaContext,
+  ctx: IAgenticaContext,
 
   /**
+   * A function that passes control to the next middleware in the chain.
    *
+   * - Must be called to continue execution; otherwise, the chain will stop.
+   * - Returns a `Promise<void>`, so it should be awaited (`await next()`).
+   * - If not called, the current middleware will act as a termination point.
    */
   next: () => Promise<void>,
 ) => any;
-
 /**
  * Nestia A.I. chatbot agent.
  *
