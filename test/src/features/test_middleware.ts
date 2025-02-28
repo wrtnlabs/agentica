@@ -20,23 +20,24 @@ export async function test_middleware(): Promise<void> {
   });
 
   let i = 1;
+
   agent.use(function middleware_one(_ctx, next) {
     i = i + 1; // 2
-    console.log(i);
+    TestValidator.equals("called")(i)(2);
     next();
   });
 
   agent.use(function middleware_two(_ctx, next) {
     i = i * 2; // 4
-    console.log(i);
+    TestValidator.equals("called")(i)(4);
     next();
   });
 
   agent.use(async function middleware_three(_ctx, next) {
     i = i - 1; // 3
-    console.log(i);
+    TestValidator.equals("called")(i)(3);
     await next();
   });
 
-  TestValidator.equals("order of execution of middleware")(i)(3);
+  await agent.conversate("hi!");
 }

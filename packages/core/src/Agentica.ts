@@ -164,9 +164,7 @@ export class Agentica {
     if (middlewares) {
       await Array.from(middlewares).reduce((acc, cur) => {
         return this.middlewareCompose(acc, cur);
-      })(context, async () => {
-        console.log("final");
-      });
+      })(context, async () => {});
     }
 
     const newbie: IAgenticaPrompt[] = await this.executor_(context);
