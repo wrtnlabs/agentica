@@ -8,13 +8,13 @@
 
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
-Just deliver **Swagger/OpenAPI** document or **TypeScript class type** to the `agentica`. Then `agentica` will do everything.
+Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** document or **TypeScript class type** linearly to the `agentica`. Then `agentica` will do everything with the function calling.
 
 Look at the below demonstration, and feel how `agentica` is easy and powerful.
 
 ```typescript
-import typia from "typia";
 import { Agentica } from "@agentica/core";
+import typia from "typia";
 
 const agent: Agentica = new Agentica({
   controllers: [
