@@ -1,4 +1,5 @@
 import { Agentica, IAgenticaController } from "@agentica/core";
+import { ILlmSchema } from "@samchon/openapi";
 import { Primitive } from "typia";
 
 import { IAgenticaRpcListener } from "./IAgenticaRpcListener";
@@ -47,13 +48,15 @@ import { IAgenticaRpcService } from "./IAgenticaRpcService";
  *
  * @author Samchon
  */
-export class AgenticaRpcService implements IAgenticaRpcService {
+export class AgenticaRpcService<Model extends ILlmSchema.Model>
+  implements IAgenticaRpcService<Model>
+{
   /**
    * Initializer Constructor.
    *
    * @param props Properties to construct the RPC service
    */
-  public constructor(private readonly props: AgenticaRpcService.IProps) {
+  public constructor(private readonly props: AgenticaRpcService.IProps<Model>) {
     const { agent, listener } = props;
 
     // ESSENTIAL LISTENERS
@@ -70,7 +73,7 @@ export class AgenticaRpcService implements IAgenticaRpcService {
       );
       if (!!args) evt.arguments = args;
     });
-    agent.on("execute", (evt) => listener.execute!(primitive(evt)));
+    agent.on("execute", (evt) => listener.execute!(primitive(evt as any)));
   }
 
   /**
@@ -83,24 +86,28 @@ export class AgenticaRpcService implements IAgenticaRpcService {
   /**
    * @inheritDoc
    */
-  public async getControllers(): Promise<Primitive<IAgenticaController>[]> {
-    return this.props.agent.getControllers() satisfies ReadonlyArray<IAgenticaController> as Primitive<IAgenticaController>[];
+  public async getControllers(): Promise<
+    Primitive<IAgenticaController<Model>>[]
+  > {
+    return this.props.agent.getControllers() satisfies ReadonlyArray<
+      IAgenticaController<Model>
+    > as Primitive<IAgenticaController<Model>>[];
   }
 }
 export namespace AgenticaRpcService {
   /**
    * Properties of the {@link AgenticaRpcService}.
    */
-  export interface IProps {
+  export interface IProps<Model extends ILlmSchema.Model> {
     /**
      * Target agent to provide as RPC service.
      */
-    agent: Agentica;
+    agent: Agentica<Model>;
 
     /**
      * Listener to be binded on the agent.
      */
-    listener: IAgenticaRpcListener;
+    listener: IAgenticaRpcListener<Model>;
   }
 }
 

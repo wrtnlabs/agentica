@@ -1,4 +1,4 @@
-import { IHttpLlmFunction, IHttpResponse } from "@samchon/openapi";
+import { IHttpLlmFunction, IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import { ILlmFunctionOfValidate } from "typia";
 
 import { IAgenticaController } from "./IAgenticaController";
@@ -20,19 +20,20 @@ import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
  *
  * @author Samchon
  */
-export type IAgenticaPrompt =
+export type IAgenticaPrompt<Model extends ILlmSchema.Model> =
   | IAgenticaPrompt.IText
-  | IAgenticaPrompt.ISelect
-  | IAgenticaPrompt.ICancel
-  | IAgenticaPrompt.IExecute
-  | IAgenticaPrompt.IDescribe;
+  | IAgenticaPrompt.ISelect<Model>
+  | IAgenticaPrompt.ICancel<Model>
+  | IAgenticaPrompt.IExecute<Model>
+  | IAgenticaPrompt.IDescribe<Model>;
 export namespace IAgenticaPrompt {
   /**
    * Select prompt.
    *
    * Selection prompt about candidate functions to call.
    */
-  export interface ISelect extends IBase<"select"> {
+  export interface ISelect<Model extends ILlmSchema.Model>
+    extends IBase<"select"> {
     /**
      * ID of the LLM tool call result.
      */
@@ -41,7 +42,7 @@ export namespace IAgenticaPrompt {
     /**
      * Operations that have been selected.
      */
-    operations: IAgenticaOperationSelection[];
+    operations: IAgenticaOperationSelection<Model>[];
   }
 
   /**
@@ -49,7 +50,8 @@ export namespace IAgenticaPrompt {
    *
    * Cancellation prompt about the candidate functions to be discarded.
    */
-  export interface ICancel extends IBase<"cancel"> {
+  export interface ICancel<Model extends ILlmSchema.Model>
+    extends IBase<"cancel"> {
     /**
      * ID of the LLM tool call result.
      */
@@ -58,7 +60,7 @@ export namespace IAgenticaPrompt {
     /**
      * Operations that have been cancelled.
      */
-    operations: IAgenticaOperationSelection[];
+    operations: IAgenticaOperationSelection<Model>[];
   }
 
   /**
@@ -66,18 +68,20 @@ export namespace IAgenticaPrompt {
    *
    * Execution prompt about the LLM function calling.
    */
-  export type IExecute = IExecute.IHttp | IExecute.IClass;
+  export type IExecute<Model extends ILlmSchema.Model> =
+    | IExecute.IHttp<Model>
+    | IExecute.IClass<Model>;
   export namespace IExecute {
-    export type IHttp = IBase<
+    export type IHttp<Model extends ILlmSchema.Model> = IBase<
       "http",
-      IAgenticaController.IHttp,
-      IHttpLlmFunction<"chatgpt">,
+      IAgenticaController.IHttp<Model>,
+      IHttpLlmFunction<Model>,
       IHttpResponse
     >;
-    export type IClass = IBase<
+    export type IClass<Model extends ILlmSchema.Model> = IBase<
       "class",
-      IAgenticaController.IClass,
-      ILlmFunctionOfValidate<"chatgpt">,
+      IAgenticaController.IClass<Model>,
+      ILlmFunctionOfValidate<Model>,
       any
     >;
     interface IBase<Protocol, Controller, Function, Value> {
@@ -133,13 +137,14 @@ export namespace IAgenticaPrompt {
    *
    * Description prompt about the return value of the LLM function calling.
    */
-  export interface IDescribe extends IBase<"describe"> {
+  export interface IDescribe<Model extends ILlmSchema.Model>
+    extends IBase<"describe"> {
     /**
      * Executions of the LLM function calling.
      *
      * This prompt describes the return value of them.
      */
-    executions: IExecute[];
+    executions: IExecute<Model>[];
 
     /**
      * Description text.

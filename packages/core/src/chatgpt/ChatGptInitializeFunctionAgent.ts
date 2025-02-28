@@ -1,4 +1,4 @@
-import { ILlmFunction } from "@samchon/openapi";
+import { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -10,9 +10,9 @@ import { __IChatInitialApplication } from "../structures/internal/__IChatInitial
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptInitializeFunctionAgent {
-  export const execute = async (
-    ctx: IAgenticaContext,
-  ): Promise<IAgenticaPrompt[]> => {
+  export const execute = async <Model extends ILlmSchema.Model>(
+    ctx: IAgenticaContext<Model>,
+  ): Promise<IAgenticaPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -56,7 +56,7 @@ export namespace ChatGptInitializeFunctionAgent {
     //----
     // PROCESS COMPLETION
     //----
-    const prompts: IAgenticaPrompt[] = [];
+    const prompts: IAgenticaPrompt<Model>[] = [];
     for (const choice of completion.choices) {
       if (
         choice.message.role === "assistant" &&

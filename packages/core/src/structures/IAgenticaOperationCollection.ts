@@ -1,3 +1,5 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaOperation } from "./IAgenticaOperation";
 
 /**
@@ -9,11 +11,11 @@ import { IAgenticaOperation } from "./IAgenticaOperation";
  *
  * @author Samchon
  */
-export interface IAgenticaOperationCollection {
+export interface IAgenticaOperationCollection<Model extends ILlmSchema.Model> {
   /**
    * List of every operations.
    */
-  array: IAgenticaOperation[];
+  array: IAgenticaOperation<Model>[];
 
   /**
    * Divided operations.
@@ -30,14 +32,14 @@ export interface IAgenticaOperationCollection {
    * Otherwise, if the {@link IAgenticaConfig.capacity} has not been
    * configured, this `divided` property would be the `undefined` value.
    */
-  divided?: IAgenticaOperation[][] | undefined;
+  divided?: IAgenticaOperation<Model>[][] | undefined;
 
   /**
    * Flat dictionary of operations.
    *
    * Dictionary of operations with their {@link IAgenticaOperation.name}.
    */
-  flat: Map<string, IAgenticaOperation>;
+  flat: Map<string, IAgenticaOperation<Model>>;
 
   /**
    * Group dictionary of operations.
@@ -46,5 +48,5 @@ export interface IAgenticaOperationCollection {
    * {@link IAgenticaOperation.controller.name} and
    * {@link IAgenticaOperation.function.name}.
    */
-  group: Map<string, Map<string, IAgenticaOperation>>;
+  group: Map<string, Map<string, IAgenticaOperation<Model>>>;
 }

@@ -12,13 +12,13 @@ export async function test_base_event(): Promise<void | false> {
   let textCount = 0;
 
   // initialize agent
-  const agent: Agentica = new Agentica({
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
     provider: {
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: TestGlobal.env.CHATGPT_API_KEY,
       }),
-      type: "chatgpt",
     },
     controllers: [],
   });

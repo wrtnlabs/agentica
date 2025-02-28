@@ -1,13 +1,17 @@
 import { Agentica, IAgenticaOperation, IAgenticaPrompt } from "@agentica/core";
-import { ILlmFunction } from "@samchon/openapi";
+import { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 import typia from "typia";
 
 import { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
 export namespace AgenticaBenchmarkPredicator {
-  export const isNext = async (agent: Agentica): Promise<string | null> => {
-    const last: IAgenticaPrompt | undefined = agent.getPromptHistories().at(-1);
+  export const isNext = async <Model extends ILlmSchema.Model>(
+    agent: Agentica<Model>,
+  ): Promise<string | null> => {
+    const last: IAgenticaPrompt<Model> | undefined = agent
+      .getPromptHistories()
+      .at(-1);
     if (last?.type !== "text" || last.role !== "assistant") return null;
 
     const consent: ILlmFunction<"chatgpt"> = typia.llm.application<
@@ -69,18 +73,20 @@ export namespace AgenticaBenchmarkPredicator {
    * @returns `true` if the called operations match the expected operations,
    * otherwise `false`.
    */
-  export const success = (props: {
+  export const success = <Model extends ILlmSchema.Model>(props: {
     /**
      * Expected operations to be called.
      *
      * For 'allOf' within an 'array', the next expected element starts checking from the element that follows the last called element in 'allOf'.
      */
-    expected: IAgenticaBenchmarkExpected;
+    expected: IAgenticaBenchmarkExpected<Model>;
 
     /**
      * Specified operations.
      */
-    operations: Array<IAgenticaOperation | IAgenticaPrompt.IExecute>;
+    operations: Array<
+      IAgenticaOperation<Model> | IAgenticaPrompt.IExecute<Model>
+    >;
 
     /**
      * If it's `false`, check the array and let it go even if there's something wrong between them.
@@ -90,8 +96,8 @@ export namespace AgenticaBenchmarkPredicator {
     strict?: boolean;
   }): boolean => successInner(props).result;
 
-  const successInner = (
-    props: Parameters<typeof success>[0],
+  const successInner = <Model extends ILlmSchema.Model>(
+    props: Parameters<typeof success<Model>>[0],
   ):
     | {
         result: true;
@@ -101,8 +107,10 @@ export namespace AgenticaBenchmarkPredicator {
         result: false;
       } => {
     const call = (
-      expected: IAgenticaBenchmarkExpected,
-      overrideOperations?: Array<IAgenticaOperation | IAgenticaPrompt.IExecute>,
+      expected: IAgenticaBenchmarkExpected<Model>,
+      overrideOperations?: Array<
+        IAgenticaOperation<Model> | IAgenticaPrompt.IExecute<Model>
+      >,
     ) =>
       successInner({
         expected,

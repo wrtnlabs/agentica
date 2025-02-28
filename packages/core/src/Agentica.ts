@@ -1,3 +1,4 @@
+import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
 import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
@@ -44,21 +45,21 @@ import { IAgenticaTokenUsage } from "./structures/IAgenticaTokenUsage";
  *
  * @author Samchon
  */
-export class Agentica {
+export class Agentica<Model extends ILlmSchema.Model> {
   // THE OPERATIONS
-  private readonly operations_: IAgenticaOperationCollection;
+  private readonly operations_: IAgenticaOperationCollection<Model>;
 
   // STACK
-  private readonly stack_: IAgenticaOperationSelection[];
-  private readonly prompt_histories_: IAgenticaPrompt[];
+  private readonly stack_: IAgenticaOperationSelection<Model>[];
+  private readonly prompt_histories_: IAgenticaPrompt<Model>[];
   private readonly listeners_: Map<string, Set<Function>>;
 
   // STATUS
   private readonly token_usage_: IAgenticaTokenUsage;
   private ready_: boolean;
   private readonly executor_: (
-    ctx: IAgenticaContext,
-  ) => Promise<IAgenticaPrompt[]>;
+    ctx: IAgenticaContext<Model>,
+  ) => Promise<IAgenticaPrompt<Model>[]>;
 
   /* -----------------------------------------------------------
     CONSTRUCTOR
@@ -68,7 +69,7 @@ export class Agentica {
    *
    * @param props Properties to construct the agent
    */
-  public constructor(private readonly props: IAgenticaProps) {
+  public constructor(private readonly props: IAgenticaProps<Model>) {
     // OPERATIONS
     this.operations_ = AgenticaOperationComposer.compose({
       controllers: props.controllers,
@@ -97,7 +98,7 @@ export class Agentica {
   /**
    * @internal
    */
-  public clone(): Agentica {
+  public clone(): Agentica<Model> {
     return new Agentica({
       ...this.props,
       histories: this.props.histories?.slice(),
@@ -119,7 +120,7 @@ export class Agentica {
    * @param content The content to talk
    * @returns List of newly created chat prompts
    */
-  public async conversate(content: string): Promise<IAgenticaPrompt[]> {
+  public async conversate(content: string): Promise<IAgenticaPrompt<Model>[]> {
     const prompt: IAgenticaPrompt.IText<"user"> = {
       type: "text",
       role: "user",
@@ -127,7 +128,7 @@ export class Agentica {
     };
     await this.dispatch(prompt);
 
-    const newbie: IAgenticaPrompt[] = await this.executor_(
+    const newbie: IAgenticaPrompt<Model>[] = await this.executor_(
       this.getContext({
         prompt,
         usage: this.token_usage_,
@@ -140,7 +141,7 @@ export class Agentica {
   /**
    * Get configuration.
    */
-  public getConfig(): IAgenticaConfig | undefined {
+  public getConfig(): IAgenticaConfig<Model> | undefined {
     return this.props.config;
   }
 
@@ -157,7 +158,7 @@ export class Agentica {
    * Get list of controllers, which are the collection of functions that
    * the "Super A.I. Chatbot" can execute.
    */
-  public getControllers(): ReadonlyArray<IAgenticaController> {
+  public getControllers(): ReadonlyArray<IAgenticaController<Model>> {
     return this.props.controllers;
   }
 
@@ -169,7 +170,7 @@ export class Agentica {
    *
    * @returns
    */
-  public getOperations(): ReadonlyArray<IAgenticaOperation> {
+  public getOperations(): ReadonlyArray<IAgenticaOperation<Model>> {
     return this.operations_.array;
   }
 
@@ -180,7 +181,7 @@ export class Agentica {
    *
    * @returns List of chat prompts
    */
-  public getPromptHistories(): IAgenticaPrompt[] {
+  public getPromptHistories(): IAgenticaPrompt<Model>[] {
     return this.prompt_histories_;
   }
 
@@ -202,8 +203,8 @@ export class Agentica {
   public getContext(props: {
     prompt: IAgenticaPrompt.IText<"user">;
     usage: IAgenticaTokenUsage;
-  }): IAgenticaContext {
-    const dispatch = (event: IAgenticaEvent) => this.dispatch(event);
+  }): IAgenticaContext<Model> {
+    const dispatch = (event: IAgenticaEvent<Model>) => this.dispatch(event);
     return {
       // APPLICATION
       operations: this.operations_,
@@ -272,7 +273,9 @@ export class Agentica {
    */
   public on<Type extends IAgenticaEvent.Type>(
     type: Type,
-    listener: (event: IAgenticaEvent.Mapper[Type]) => void | Promise<void>,
+    listener: (
+      event: IAgenticaEvent.Mapper<Model>[Type],
+    ) => void | Promise<void>,
   ): this {
     __map_take(this.listeners_, type, () => new Set()).add(listener);
     return this;
@@ -288,7 +291,9 @@ export class Agentica {
    */
   public off<Type extends IAgenticaEvent.Type>(
     type: Type,
-    listener: (event: IAgenticaEvent.Mapper[Type]) => void | Promise<void>,
+    listener: (
+      event: IAgenticaEvent.Mapper<Model>[Type],
+    ) => void | Promise<void>,
   ): this {
     const set = this.listeners_.get(type);
     if (set) {
@@ -298,7 +303,7 @@ export class Agentica {
     return this;
   }
 
-  private async dispatch<Event extends IAgenticaEvent>(
+  private async dispatch<Event extends IAgenticaEvent<Model>>(
     event: Event,
   ): Promise<void> {
     const set = this.listeners_.get(event.type);

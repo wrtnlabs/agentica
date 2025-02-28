@@ -1,3 +1,5 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaConfig } from "../structures/IAgenticaConfig";
 import { IAgenticaController } from "../structures/IAgenticaController";
 import { IAgenticaOperation } from "../structures/IAgenticaOperation";
@@ -5,10 +7,10 @@ import { IAgenticaOperationCollection } from "../structures/IAgenticaOperationCo
 import { __map_take } from "./__map_take";
 
 export namespace AgenticaOperationComposer {
-  export const compose = (props: {
-    controllers: IAgenticaController[];
-    config?: IAgenticaConfig | undefined;
-  }): IAgenticaOperationCollection => {
+  export const compose = <Model extends ILlmSchema.Model>(props: {
+    controllers: IAgenticaController<Model>[];
+    config?: IAgenticaConfig<Model> | undefined;
+  }): IAgenticaOperationCollection<Model> => {
     const unique: boolean =
       props.controllers.length === 1 ||
       (() => {
@@ -22,17 +24,17 @@ export namespace AgenticaOperationComposer {
     const naming = (func: string, ci: number) =>
       unique ? func : `_${ci}_${func}`;
 
-    const array: IAgenticaOperation[] = props.controllers
+    const array: IAgenticaOperation<Model>[] = props.controllers
       .map((controller, ci) =>
         controller.protocol === "http"
           ? controller.application.functions.map(
               (func) =>
                 ({
                   protocol: "http",
-                  controller,
+                  controller: controller,
                   function: func,
                   name: naming(func.name, ci),
-                }) satisfies IAgenticaOperation.IHttp,
+                }) satisfies IAgenticaOperation.IHttp<Model>,
             )
           : controller.application.functions.map(
               (func) =>
@@ -41,11 +43,11 @@ export namespace AgenticaOperationComposer {
                   controller,
                   function: func,
                   name: naming(func.name, ci),
-                }) satisfies IAgenticaOperation.IClass,
+                }) satisfies IAgenticaOperation.IClass<Model>,
             ),
       )
       .flat();
-    const divided: IAgenticaOperation[][] | undefined =
+    const divided: IAgenticaOperation<Model>[][] | undefined =
       !!props.config?.capacity && array.length > props.config.capacity
         ? divideOperations({
             array,
@@ -53,8 +55,11 @@ export namespace AgenticaOperationComposer {
           })
         : undefined;
 
-    const flat: Map<string, IAgenticaOperation> = new Map();
-    const group: Map<string, Map<string, IAgenticaOperation>> = new Map();
+    const flat: Map<string, IAgenticaOperation<Model>> = new Map();
+    const group: Map<
+      string,
+      Map<string, IAgenticaOperation<Model>>
+    > = new Map();
     for (const item of array) {
       flat.set(item.name, item);
       __map_take(group, item.controller.name, () => new Map()).set(
@@ -70,13 +75,13 @@ export namespace AgenticaOperationComposer {
     };
   };
 
-  const divideOperations = (props: {
-    array: IAgenticaOperation[];
+  const divideOperations = <Model extends ILlmSchema.Model>(props: {
+    array: IAgenticaOperation<Model>[];
     capacity: number;
-  }): IAgenticaOperation[][] => {
+  }): IAgenticaOperation<Model>[][] => {
     const size: number = Math.ceil(props.array.length / props.capacity);
     const capacity: number = Math.ceil(props.array.length / size);
-    const replica: IAgenticaOperation[] = props.array.slice();
+    const replica: IAgenticaOperation<Model>[] = props.array.slice();
     return new Array(size).fill(0).map(() => replica.splice(0, capacity));
   };
 }

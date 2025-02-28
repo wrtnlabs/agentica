@@ -1,3 +1,5 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaBenchmarkExpected } from "./IAgenticaBenchmarkExpected";
 
 /**
@@ -14,7 +16,9 @@ import { IAgenticaBenchmarkExpected } from "./IAgenticaBenchmarkExpected";
  *
  * @author Samchon
  */
-export interface IAgenticaSelectBenchmarkScenario {
+export interface IAgenticaSelectBenchmarkScenario<
+  Model extends ILlmSchema.Model,
+> {
   /**
    * Name of the scenario.
    *
@@ -35,5 +39,5 @@ export interface IAgenticaSelectBenchmarkScenario {
    * {@link text} conversation for the LLM (Large Language Model)
    * function selection.
    */
-  expected: IAgenticaBenchmarkExpected;
+  expected: IAgenticaBenchmarkExpected<Model>;
 }

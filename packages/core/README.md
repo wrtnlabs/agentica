@@ -6,13 +6,28 @@
 [![Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
 [![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
 
-The simplest **Agentic AI Library**, specialized in **LLM Function Calling**.
+The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
-`@agentica/core` is the simplest library specialized for LLM (Large Language Model) function calling. You can provide functions to call by *Swagger/OpenAPI* document or *TypeScript class type*, and it will make everything possible. *Super AI Chatbot* development, or *Multi Agent Orchestration*, all of them can be realized by the function calling.
+Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `@agentica/core`. Then `@agentica/core` will do everything with the function calling.
 
-For example, if you provide **Swagger document** of a Shopping Mall Server, `@agentica/core` will compose **Super AI Chatbot** application. In the chatbot application, customers can purchase products just by conversation texts. If you wanna automate the counseling or refunding process, you also can do it just by delivering the Swagger document.
+Look at the below demonstration, and feel how `@agentica/core` is easy and powerful.
 
-Also, the LLM function calling strategy is effective for the **Multi-Agent Orchestration**, and it is easier to develop than any other way. You don't need to learn any complicate framework and its specific paradigms and patterns. Just connect them through class, and deliver the **TypeScript class type**. `@agentica/agentica` will centralize and realize the multi-agent orchestration through function calling.
+```typescript
+import { Agentica } from "@agentica/core";
+import typia from "typia";
+
+const agent = new Agentica({
+  controllers: [
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```
 
 > https://github.com/user-attachments/assets/01604b53-aca4-41cb-91aa-3faf63549ea6
 >
@@ -58,9 +73,9 @@ const main = async (): Promise<void> => {
   }
 
   // CREATE AN AGENT WITH THE APPLICATION
-  const agent: Agentica = new Agentica({
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
     provider: {
-      type: "chatgpt",
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
@@ -152,9 +167,9 @@ const main = async (): Promise<void> => {
   const api: OpenAI = new OpenAI({
     apiKey: "YOUR_OPENAI_API_KEY",
   });
-  const agent: Agentica = new Agentica({
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
     provider: {
-      type: "chatgpt",
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
@@ -211,9 +226,9 @@ const main = async (): Promise<void> => {
   const api: OpenAI = new OpenAI({
     apiKey: "YOUR_OPENAI_API_KEY",
   });
-  const agent: Agentica = new Agentica({
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
     provider: {
-      type: "chatgpt",
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",

@@ -1,4 +1,5 @@
 import { IAgenticaOperation } from "@agentica/core";
+import { ILlmSchema } from "@samchon/openapi";
 
 /**
  * Expected operation determinant.
@@ -12,47 +13,56 @@ import { IAgenticaOperation } from "@agentica/core";
  *
  * @author Samchon
  */
-export type IAgenticaBenchmarkExpected =
-  | IAgenticaBenchmarkExpected.IAllOf
-  | IAgenticaBenchmarkExpected.IAnyOf
-  | IAgenticaBenchmarkExpected.IArray
-  | IAgenticaBenchmarkExpected.IStandalone;
+export type IAgenticaBenchmarkExpected<Model extends ILlmSchema.Model> =
+  | IAgenticaBenchmarkExpected.IAllOf<Model>
+  | IAgenticaBenchmarkExpected.IAnyOf<Model>
+  | IAgenticaBenchmarkExpected.IArray<Model>
+  | IAgenticaBenchmarkExpected.IStandalone<Model>;
 export namespace IAgenticaBenchmarkExpected {
   /**
    * All of them must meet the condition, but sequence is not important.
    */
-  export interface IAllOf {
+  export interface IAllOf<Model extends ILlmSchema.Model> {
     type: "allOf";
     allOf: Array<
-      Exclude<IAgenticaBenchmarkExpected, IAgenticaBenchmarkExpected.IAllOf>
+      Exclude<
+        IAgenticaBenchmarkExpected<Model>,
+        IAgenticaBenchmarkExpected.IAllOf<Model>
+      >
     >;
   }
 
   /**
    * At least one of them must meet the condition.
    */
-  export interface IAnyOf {
+  export interface IAnyOf<Model extends ILlmSchema.Model> {
     type: "anyOf";
     anyOf: Array<
-      Exclude<IAgenticaBenchmarkExpected, IAgenticaBenchmarkExpected.IAnyOf>
+      Exclude<
+        IAgenticaBenchmarkExpected<Model>,
+        IAgenticaBenchmarkExpected.IAnyOf<Model>
+      >
     >;
   }
 
   /**
    * All of them must meet the condition, and sequence is important.
    */
-  export interface IArray {
+  export interface IArray<Model extends ILlmSchema.Model> {
     type: "array";
     items: Array<
-      Exclude<IAgenticaBenchmarkExpected, IAgenticaBenchmarkExpected.IArray>
+      Exclude<
+        IAgenticaBenchmarkExpected<Model>,
+        IAgenticaBenchmarkExpected.IArray<Model>
+      >
     >;
   }
 
   /**
    * Standalone operation.
    */
-  export interface IStandalone {
+  export interface IStandalone<Model extends ILlmSchema.Model> {
     type: "standalone";
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperation<Model>;
   }
 }

@@ -39,7 +39,7 @@
   ],
   "dependencies": {
     "@agentica/core": "workspace:^",
-    "@samchon/openapi": "^2.4.3",
+    "@samchon/openapi": "^2.5.1",
     "@samchon/shopping-api": "^0.15.0",
     "chalk": "4.1.2",
     "openai": "^4.80.0",

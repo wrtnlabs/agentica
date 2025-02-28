@@ -1,3 +1,4 @@
+import { ILlmSchema } from "@samchon/openapi";
 import { Primitive } from "typia";
 
 import { IAgenticaConfig } from "./IAgenticaConfig";
@@ -26,7 +27,12 @@ import { IAgenticaProvider } from "./IAgenticaProvider";
  *
  * @author Samchon
  */
-export interface IAgenticaProps {
+export interface IAgenticaProps<Model extends ILlmSchema.Model> {
+  /**
+   * LLM schema model.
+   */
+  model: Model;
+
   /**
    * LLM service provider.
    */
@@ -35,7 +41,7 @@ export interface IAgenticaProps {
   /**
    * Controllers serving functions to call.
    */
-  controllers: IAgenticaController[];
+  controllers: IAgenticaController<Model>[];
 
   /**
    * Configuration of agent.
@@ -52,7 +58,7 @@ export interface IAgenticaProps {
    * - `systemPrompt`: default prompts written in markdown
    *   - https://github.com/samchon/nestia/tree/master/packages/agent/prompts
    */
-  config?: IAgenticaConfig;
+  config?: IAgenticaConfig<Model>;
 
   /**
    * Prompt histories.
@@ -60,5 +66,5 @@ export interface IAgenticaProps {
    * If you're starting the conversation from an existing session,
    * assign the previouis prompt histories to this property.
    */
-  histories?: Primitive<IAgenticaPrompt>[];
+  histories?: Primitive<IAgenticaPrompt<Model>>[];
 }

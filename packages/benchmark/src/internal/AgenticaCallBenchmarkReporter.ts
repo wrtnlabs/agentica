@@ -1,4 +1,5 @@
 import { IAgenticaTokenUsage } from "@agentica/core";
+import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaCallBenchmarkEvent } from "../structures/IAgenticaCallBenchmarkEvent";
 import { IAgenticaCallBenchmarkResult } from "../structures/IAgenticaCallBenchmarkResult";
@@ -7,11 +8,11 @@ import { AgenticaBenchmarkUtil } from "./AgenticaBenchmarkUtil";
 import { AgenticaPromptReporter } from "./AgenticaPromptReporter";
 
 export namespace AgenticaCallBenchmarkReporter {
-  export const markdown = (
-    result: IAgenticaCallBenchmarkResult,
+  export const markdown = <Model extends ILlmSchema.Model>(
+    result: IAgenticaCallBenchmarkResult<Model>,
   ): Record<string, string> =>
     Object.fromEntries([
-      ["./README.md", writeIndex(result)],
+      ["./README.md", writeIndex<Model>(result)],
       ...result.experiments
         .map((exp) => [
           [`./${exp.scenario.name}/README.md`, writeExperimentIndex(exp)],
@@ -23,8 +24,10 @@ export namespace AgenticaCallBenchmarkReporter {
         .flat(),
     ]);
 
-  const writeIndex = (result: IAgenticaCallBenchmarkResult): string => {
-    const events: IAgenticaCallBenchmarkEvent[] = result.experiments
+  const writeIndex = <Model extends ILlmSchema.Model>(
+    result: IAgenticaCallBenchmarkResult<Model>,
+  ): string => {
+    const events: IAgenticaCallBenchmarkEvent<Model>[] = result.experiments
       .map((r) => r.events)
       .flat();
     const average: number =
@@ -73,8 +76,8 @@ export namespace AgenticaCallBenchmarkReporter {
     ].join("\n");
   };
 
-  const writeExperimentIndex = (
-    exp: IAgenticaCallBenchmarkResult.IExperiment,
+  const writeExperimentIndex = <Model extends ILlmSchema.Model>(
+    exp: IAgenticaCallBenchmarkResult.IExperiment<Model>,
   ): string => {
     return [
       `# ${exp.scenario.name}`,
@@ -114,8 +117,8 @@ export namespace AgenticaCallBenchmarkReporter {
     ].join("\n");
   };
 
-  const writeExperimentEvent = (
-    event: IAgenticaCallBenchmarkEvent,
+  const writeExperimentEvent = <Model extends ILlmSchema.Model>(
+    event: IAgenticaCallBenchmarkEvent<Model>,
     index: number,
   ): string => {
     return [
@@ -165,9 +168,9 @@ export namespace AgenticaCallBenchmarkReporter {
     ].join("\n");
   };
 
-  const drawStatus = (
-    events: IAgenticaCallBenchmarkEvent[],
-    success: (e: IAgenticaCallBenchmarkEvent) => boolean,
+  const drawStatus = <Model extends ILlmSchema.Model>(
+    events: IAgenticaCallBenchmarkEvent<Model>[],
+    success: (e: IAgenticaCallBenchmarkEvent<Model>) => boolean,
   ): string => {
     const count: number = Math.floor(
       (events.filter(success).length / events.length) * 10,

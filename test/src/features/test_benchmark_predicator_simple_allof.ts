@@ -8,11 +8,11 @@ export const test_benchmark_predicator_simple_allof =
     //----
     // PREPARATIONS
     //----
-    const agent: Agentica = new Agentica({
+    const agent: Agentica<"chatgpt"> = new Agentica({
+      model: "chatgpt",
       provider: {
         model: "gpt-4o-mini",
         api: null!,
-        type: "chatgpt",
       },
       controllers: [
         {
@@ -31,7 +31,10 @@ export const test_benchmark_predicator_simple_allof =
       ],
     });
 
-    const find = (method: OpenApi.Method, path: string): IAgenticaOperation => {
+    const find = (
+      method: OpenApi.Method,
+      path: string,
+    ): IAgenticaOperation<"chatgpt"> => {
       const found = agent
         .getOperations()
         .find(

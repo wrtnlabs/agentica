@@ -1,10 +1,11 @@
+import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 
 export namespace ChatGptHistoryDecoder {
-  export const decode = (
-    history: IAgenticaPrompt,
+  export const decode = <Model extends ILlmSchema.Model>(
+    history: IAgenticaPrompt<Model>,
   ): OpenAI.ChatCompletionMessageParam[] => {
     // NO NEED TO DECODE DESCRIBE
     if (history.type === "describe") return [];

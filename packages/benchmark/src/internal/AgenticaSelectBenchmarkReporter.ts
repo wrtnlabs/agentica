@@ -1,4 +1,5 @@
 import { IAgenticaTokenUsage } from "@agentica/core";
+import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaSelectBenchmarkEvent } from "../structures/IAgenticaSelectBenchmarkEvent";
 import { IAgenticaSelectBenchmarkResult } from "../structures/IAgenticaSelectBenchmarkResult";
@@ -9,8 +10,8 @@ import { AgenticaBenchmarkUtil } from "./AgenticaBenchmarkUtil";
  * @internal
  */
 export namespace AgenticaSelectBenchmarkReporter {
-  export const markdown = (
-    result: IAgenticaSelectBenchmarkResult,
+  export const markdown = <Model extends ILlmSchema.Model>(
+    result: IAgenticaSelectBenchmarkResult<Model>,
   ): Record<string, string> =>
     Object.fromEntries([
       ["./README.md", writeIndex(result)],
@@ -25,8 +26,10 @@ export namespace AgenticaSelectBenchmarkReporter {
         .flat(),
     ]);
 
-  const writeIndex = (result: IAgenticaSelectBenchmarkResult): string => {
-    const events: IAgenticaSelectBenchmarkEvent[] = result.experiments
+  const writeIndex = <Model extends ILlmSchema.Model>(
+    result: IAgenticaSelectBenchmarkResult<Model>,
+  ): string => {
+    const events: IAgenticaSelectBenchmarkEvent<Model>[] = result.experiments
       .map((r) => r.events)
       .flat();
     const average: number =
@@ -84,8 +87,8 @@ export namespace AgenticaSelectBenchmarkReporter {
     ].join("\n");
   };
 
-  const writeExperimentIndex = (
-    exp: IAgenticaSelectBenchmarkResult.IExperiment,
+  const writeExperimentIndex = <Model extends ILlmSchema.Model>(
+    exp: IAgenticaSelectBenchmarkResult.IExperiment<Model>,
   ): string => {
     const aggregate: IAgenticaTokenUsage.IComponent = exp.usage.aggregate;
     return [
@@ -141,8 +144,8 @@ export namespace AgenticaSelectBenchmarkReporter {
     ].join("\n");
   };
 
-  const writeExperimentEvent = (
-    event: IAgenticaSelectBenchmarkEvent,
+  const writeExperimentEvent = <Model extends ILlmSchema.Model>(
+    event: IAgenticaSelectBenchmarkEvent<Model>,
     index: number,
   ): string => {
     return [

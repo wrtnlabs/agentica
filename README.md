@@ -8,7 +8,7 @@
 
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
-Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** document or **TypeScript class type** linearly to the `agentica`. Then `agentica` will do everything with the function calling.
+Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `agentica`. Then `agentica` will do everything with the function calling.
 
 Look at the below demonstration, and feel how `agentica` is easy and powerful.
 
@@ -16,7 +16,7 @@ Look at the below demonstration, and feel how `agentica` is easy and powerful.
 import { Agentica } from "@agentica/core";
 import typia from "typia";
 
-const agent: Agentica = new Agentica({
+const agent = new Agentica({
   controllers: [
     await fetch(
       "https://shopping-be.wrtn.ai/editor/swagger.json",
@@ -111,13 +111,11 @@ Claude
 Llama
 Gemini
 Agent==supports==>OpenAI
-Agent-.not yet.->Claude
-Agent-.not yet.->Llama
-Agent-.not yet.->Gemini
+Agent--by OpenAI SDK-->Claude
+Agent--by OpenAI SDK-->Llama
+Agent--by OpenAI SDK-->Gemini
 ```
 
-Currently, `@agentica/core` supports only OpenAI. 
+Currently, `@agentica/core` supports only OpenAI API/SDK.
 
-It is because `@agentica/core` is still in the POC (Proof of Concept) and demonstration stage. However, even nthough OpenAI is the most famous model in the AI world, `@agentica/core` have to support much more models for broad users.
-
-We're going to support much more models until 2025-04-30.
+It is because `@agentica/core` is still in the POC (Proof of Concept) and demonstration stage. However, even though OpenAI is the most famous model in the AI world, `@agentica/core` have to support much more models' API for broad users.
