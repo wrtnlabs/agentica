@@ -101,21 +101,3 @@ As I've concenstrated on POC (Proof of Concept) development on the early stage l
 Also, we will support dozens of useful add-on agents which can connect with `@agentica/core` by TypeScript class function calling. One of them is `@wrtnlabs/hive` which optimizes `selector` agent so that reducing LLM costs dramatically. The others would be OpenAI Vector Store handler and Postgres based RAG engine.
 
 With these `@agentica/core` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@agentica/core` makes the Multi agent system interaction super easily.
-
-### LLM Providers
-```mermaid
-flowchart
-Agent["<code>@agentica/core</code>"]
-OpenAI("<b><u>OpenAI</u></b>")
-Claude
-Llama
-Gemini
-Agent==supports==>OpenAI
-Agent--by OpenAI SDK-->Claude
-Agent--by OpenAI SDK-->Llama
-Agent--by OpenAI SDK-->Gemini
-```
-
-Currently, `@agentica/core` supports only OpenAI API/SDK.
-
-It is because `@agentica/core` is still in the POC (Proof of Concept) and demonstration stage. However, even though OpenAI is the most famous model in the AI world, `@agentica/core` have to support much more models' API for broad users.
