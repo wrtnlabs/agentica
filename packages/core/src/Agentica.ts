@@ -17,6 +17,13 @@ import { IAgenticaProps } from "./structures/IAgenticaProps";
 import { IAgenticaProvider } from "./structures/IAgenticaProvider";
 import { IAgenticaTokenUsage } from "./structures/IAgenticaTokenUsage";
 
+/**
+ * Defines a middleware function that processes the request context before passing control to the next middleware.
+ *
+ * - Each middleware receives the current `ctx` (context) and can modify it as needed.
+ * - The `next` function must be called to continue execution; if not called, the chain will stop at the current middleware.
+ * - Since `ctx` is shared, a middleware can modify response-related properties without intercepting the `next` function’s return value.
+ */
 type Middleware = (
   /**
    * The context object for the current request, containing relevant data
@@ -29,7 +36,8 @@ type Middleware = (
    *
    * - Must be called to continue execution; otherwise, the chain will stop.
    * - Returns a `Promise<void>`, so it should be awaited (`await next()`).
-   * - If not called, the current middleware will act as a termination point.
+   * - Middleware should not modify the return value of `next()`, as response modifications
+   *   should be done directly through `ctx`.
    */
   next: () => Promise<void>,
 ) => Promise<void> | void;
