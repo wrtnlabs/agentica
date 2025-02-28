@@ -160,7 +160,8 @@ export class Agentica {
     await this.dispatch(prompt);
     const context = this.getContext({ prompt, usage: this.token_usage_ });
 
-    const middlewares = this.middlewares_.get("conversate" as const);
+    const CONVERSATE = "conversate" as const;
+    const middlewares = this.middlewares_.get(CONVERSATE);
     if (middlewares) {
       await Array.from(middlewares).reduce((acc, cur) => {
         return this.middlewareCompose(acc, cur);
