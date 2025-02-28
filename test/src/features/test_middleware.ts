@@ -4,7 +4,9 @@ import OpenAI from "openai";
 
 import { TestGlobal } from "../TestGlobal";
 
-export async function test_middleware(): Promise<void> {
+export async function test_middleware(): Promise<void | false> {
+  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+
   //----
   // PREPARATIONS
   //----
