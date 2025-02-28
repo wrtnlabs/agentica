@@ -17,6 +17,18 @@ import { IAgenticaProps } from "./structures/IAgenticaProps";
 import { IAgenticaProvider } from "./structures/IAgenticaProvider";
 import { IAgenticaTokenUsage } from "./structures/IAgenticaTokenUsage";
 
+type Middleware = (
+  /**
+   *
+   */
+  input: IAgenticaContext,
+
+  /**
+   *
+   */
+  next: () => Promise<void>,
+) => any;
+
 /**
  * Nestia A.I. chatbot agent.
  *
@@ -52,6 +64,7 @@ export class Agentica {
   private readonly stack_: IAgenticaOperationSelection[];
   private readonly prompt_histories_: IAgenticaPrompt[];
   private readonly listeners_: Map<string, Set<Function>>;
+  private readonly middlewares_: Map<string, Set<Middleware>>;
 
   // STATUS
   private readonly token_usage_: IAgenticaTokenUsage;
@@ -78,6 +91,7 @@ export class Agentica {
     // STATUS
     this.stack_ = [];
     this.listeners_ = new Map();
+    this.middlewares_ = new Map();
     this.prompt_histories_ = (props.histories ?? []).map((input) =>
       AgenticaPromptTransformer.transform({
         operations: this.operations_.group,
@@ -140,13 +154,18 @@ export class Agentica {
       text: content,
     };
     await this.dispatch(prompt);
+    const context = this.getContext({ prompt, usage: this.token_usage_ });
 
-    const newbie: IAgenticaPrompt[] = await this.executor_(
-      this.getContext({
-        prompt,
-        usage: this.token_usage_,
-      }),
-    );
+    const middlewares = this.middlewares_.get("conversate" as const);
+    if (middlewares) {
+      await Array.from(middlewares).reduce((acc, cur) => {
+        return this.middlewareCompose(acc, cur);
+      })(context, async () => {
+        console.log("final");
+      });
+    }
+
+    const newbie: IAgenticaPrompt[] = await this.executor_(context);
     this.prompt_histories_.push(prompt, ...newbie);
     return [prompt, ...newbie];
   }
@@ -306,6 +325,22 @@ export class Agentica {
     }
   }
 
+  /**
+   * Registers a middleware function to be executed before {@link conversate user's conversation function} is called.
+   *
+   * - Middlewares are executed in the order they are registered.
+   * - Each middleware receives the context and a `next` function to pass control to the next middleware.
+   * - If a middleware does not call `next()`, execution will stop at that middleware.
+   * - To ensure proper async handling, use `await next()` when calling `next()`.
+   *
+   * @param middleware The middleware function to be added to the execution chain.
+   */
+  use(middleware: Middleware): void;
+  public use(middleware: Middleware) {
+    const type = "conversate" as const;
+    __map_take(this.middlewares_, type, () => new Set()).add(middleware);
+  }
+
   private async dispatch<Event extends IAgenticaEvent>(
     event: Event,
   ): Promise<void> {
@@ -318,5 +353,13 @@ export class Agentica {
           } catch {}
         }),
       );
+  }
+
+  private middlewareCompose(a: Middleware, b: Middleware): Middleware {
+    return async (ctx, next) => {
+      await a(ctx, async () => {
+        await b(ctx, next);
+      });
+    };
   }
 }
