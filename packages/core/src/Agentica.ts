@@ -32,7 +32,8 @@ type Middleware = (
    * - If not called, the current middleware will act as a termination point.
    */
   next: () => Promise<void>,
-) => any;
+) => Promise<void> | void;
+
 /**
  * Nestia A.I. chatbot agent.
  *
