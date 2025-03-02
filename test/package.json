@@ -16,7 +16,7 @@
     "@agentica/core": "workspace:^",
     "@agentica/rpc": "workspace:^",
     "@nestia/e2e": "^0.8.2",
-    "@samchon/openapi": "^2.4.3",
+    "@samchon/openapi": "^3.0.0",
     "@samchon/shopping-api": "^0.15.0",
     "chalk": "4.1.2",
     "dotenv": "^16.4.7",
@@ -24,7 +24,7 @@
     "openai": "^4.80.0",
     "tgrid": "^1.1.0",
     "tstl": "^3.0.0",
-    "typia": "^7.6.4"
+    "typia": "^8.0.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
