@@ -111,9 +111,9 @@ const main = async (): Promise<void> => {
       )
     ),
   });
-  const agent: Agentica = new Agentica({
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
     provider: {
-      type: "chatgpt",
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
@@ -185,9 +185,9 @@ export const ShoppingChatApplication = (
       </div>
     );
 
-  const agent: Agentica = new Agentica({
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
     provider: {
-      type: "chatgpt",
       model: "gpt-4o-mini",
       api: props.api,
     },

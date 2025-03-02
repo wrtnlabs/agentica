@@ -1,7 +1,10 @@
 import { IAgenticaPrompt } from "@agentica/core";
+import { ILlmSchema } from "@samchon/openapi";
 
 export namespace AgenticaPromptReporter {
-  export const markdown = (p: IAgenticaPrompt): string => {
+  export const markdown = <Model extends ILlmSchema.Model>(
+    p: IAgenticaPrompt<Model>,
+  ): string => {
     if (p.type === "text")
       return [`### Text (${p.role})`, p.text, ""].join("\n");
     else if (p.type === "select" || p.type === "cancel")

@@ -1,4 +1,8 @@
-import { IHttpLlmFunction, ILlmApplication } from "@samchon/openapi";
+import {
+  IHttpLlmFunction,
+  ILlmApplication,
+  ILlmSchema,
+} from "@samchon/openapi";
 import OpenAI from "openai";
 import typia, { IValidation } from "typia";
 import { v4 } from "uuid";
@@ -18,17 +22,16 @@ import { __IChatSelectFunctionsApplication } from "../structures/internal/__ICha
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptSelectFunctionAgent {
-  export const execute = async (
-    ctx: IAgenticaContext,
-  ): Promise<IAgenticaPrompt[]> => {
+  export const execute = async <Model extends ILlmSchema.Model>(
+    ctx: IAgenticaContext<Model>,
+  ): Promise<IAgenticaPrompt<Model>[]> => {
     if (ctx.operations.divided === undefined)
       return step(ctx, ctx.operations.array, 0);
 
-    const stacks: IAgenticaOperationSelection[][] = ctx.operations.divided.map(
-      () => [],
-    );
-    const events: IAgenticaEvent[] = [];
-    const prompts: IAgenticaPrompt[][] = await Promise.all(
+    const stacks: IAgenticaOperationSelection<Model>[][] =
+      ctx.operations.divided.map(() => []);
+    const events: IAgenticaEvent<Model>[] = [];
+    const prompts: IAgenticaPrompt<Model>[][] = await Promise.all(
       ctx.operations.divided.map((operations, i) =>
         step(
           {
@@ -62,7 +65,7 @@ export namespace ChatGptSelectFunctionAgent {
       );
 
     // RE-COLLECT SELECT FUNCTION EVENTS
-    const collection: IAgenticaPrompt.ISelect = {
+    const collection: IAgenticaPrompt.ISelect<Model> = {
       id: v4(),
       type: "select",
       operations: [],
@@ -72,8 +75,9 @@ export namespace ChatGptSelectFunctionAgent {
         collection.operations.push(
           AgenticaPromptFactory.selection({
             protocol: e.operation.protocol as "http",
-            controller: e.operation.controller as IAgenticaController.IHttp,
-            function: e.operation.function as IHttpLlmFunction<"chatgpt">,
+            controller: e.operation
+              .controller as IAgenticaController.IHttp<Model>,
+            function: e.operation.function as IHttpLlmFunction<Model>,
             reason: e.reason,
             name: e.operation.name,
           }),
@@ -86,12 +90,12 @@ export namespace ChatGptSelectFunctionAgent {
     return [collection];
   };
 
-  const step = async (
-    ctx: IAgenticaContext,
-    operations: IAgenticaOperation[],
+  const step = async <Model extends ILlmSchema.Model>(
+    ctx: IAgenticaContext<Model>,
+    operations: IAgenticaOperation<Model>[],
     retry: number,
     failures?: IFailure[],
-  ): Promise<IAgenticaPrompt[]> => {
+  ): Promise<IAgenticaPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -190,7 +194,7 @@ export namespace ChatGptSelectFunctionAgent {
     //----
     // PROCESS COMPLETION
     //----
-    const prompts: IAgenticaPrompt[] = [];
+    const prompts: IAgenticaPrompt<Model>[] = [];
     for (const choice of completion.choices) {
       // TOOL CALLING HANDLER
       if (choice.message.tool_calls)
@@ -202,23 +206,21 @@ export namespace ChatGptSelectFunctionAgent {
           );
           if (typia.is(input) === false) continue;
           else if (tc.function.name === "selectFunctions") {
-            const collection: IAgenticaPrompt.ISelect = {
+            const collection: IAgenticaPrompt.ISelect<Model> = {
               id: tc.id,
               type: "select",
               operations: [],
             };
             for (const reference of input.functions) {
-              const operation: IAgenticaOperation | null = await selectFunction(
-                ctx,
-                reference,
-              );
+              const operation: IAgenticaOperation<Model> | null =
+                await selectFunction(ctx, reference);
               if (operation !== null)
                 collection.operations.push(
                   AgenticaPromptFactory.selection({
                     protocol: operation.protocol as "http",
                     controller:
-                      operation.controller as IAgenticaController.IHttp,
-                    function: operation.function as IHttpLlmFunction<"chatgpt">,
+                      operation.controller as IAgenticaController.IHttp<Model>,
+                    function: operation.function as IHttpLlmFunction<Model>,
                     name: operation.name,
                     reason: reference.reason,
                   }),
@@ -245,20 +247,19 @@ export namespace ChatGptSelectFunctionAgent {
     return prompts;
   };
 
-  const selectFunction = async (
-    ctx: IAgenticaContext,
+  const selectFunction = async <Model extends ILlmSchema.Model>(
+    ctx: IAgenticaContext<Model>,
     reference: __IChatFunctionReference,
-  ): Promise<IAgenticaOperation | null> => {
-    const operation: IAgenticaOperation | undefined = ctx.operations.flat.get(
-      reference.name,
-    );
+  ): Promise<IAgenticaOperation<Model> | null> => {
+    const operation: IAgenticaOperation<Model> | undefined =
+      ctx.operations.flat.get(reference.name);
     if (operation === undefined) return null;
 
     ctx.stack.push(
       AgenticaPromptFactory.selection({
         protocol: operation.protocol as "http",
-        controller: operation.controller as IAgenticaController.IHttp,
-        function: operation.function as IHttpLlmFunction<"chatgpt">,
+        controller: operation.controller as IAgenticaController.IHttp<Model>,
+        function: operation.function as IHttpLlmFunction<Model>,
         name: reference.name,
         reason: reference.reason,
       }),

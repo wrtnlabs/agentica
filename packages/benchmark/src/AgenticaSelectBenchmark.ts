@@ -7,6 +7,7 @@ import {
 } from "@agentica/core";
 import { ChatGptSelectFunctionAgent } from "@agentica/core/src/chatgpt/ChatGptSelectFunctionAgent";
 import { AgenticaTokenUsageAggregator } from "@agentica/core/src/internal/AgenticaTokenUsageAggregator";
+import { ILlmSchema } from "@samchon/openapi";
 import { Semaphore } from "tstl";
 import { tags } from "typia";
 
@@ -33,19 +34,19 @@ import { IAgenticaSelectBenchmarkScenario } from "./structures/IAgenticaSelectBe
  *
  * @author Samchon
  */
-export class AgenticaSelectBenchmark {
-  private agent_: Agentica;
-  private scenarios_: IAgenticaSelectBenchmarkScenario[];
+export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
+  private agent_: Agentica<Model>;
+  private scenarios_: IAgenticaSelectBenchmarkScenario<Model>[];
   private config_: AgenticaSelectBenchmark.IConfig;
-  private histories_: IAgenticaPrompt[];
-  private result_: IAgenticaSelectBenchmarkResult | null;
+  private histories_: IAgenticaPrompt<Model>[];
+  private result_: IAgenticaSelectBenchmarkResult<Model> | null;
 
   /**
    * Initializer Constructor.
    *
    * @param props Properties of the selection benchmark
    */
-  public constructor(props: AgenticaSelectBenchmark.IProps) {
+  public constructor(props: AgenticaSelectBenchmark.IProps<Model>) {
     this.agent_ = props.agent;
     this.scenarios_ = props.scenarios.slice();
     this.config_ = {
@@ -73,23 +74,24 @@ export class AgenticaSelectBenchmark {
    * @returns Results of the function selection benchmark
    */
   public async execute(
-    listener?: (event: IAgenticaSelectBenchmarkEvent) => void,
-  ): Promise<IAgenticaSelectBenchmarkResult> {
+    listener?: (event: IAgenticaSelectBenchmarkEvent<Model>) => void,
+  ): Promise<IAgenticaSelectBenchmarkResult<Model>> {
     const started_at: Date = new Date();
     const semaphore: Semaphore = new Semaphore(this.config_.simultaneous);
-    const experiments: IAgenticaSelectBenchmarkResult.IExperiment[] =
+    const experiments: IAgenticaSelectBenchmarkResult.IExperiment<Model>[] =
       await Promise.all(
         this.scenarios_.map(async (scenario) => {
-          const events: IAgenticaSelectBenchmarkEvent[] = await Promise.all(
-            new Array(this.config_.repeat).fill(0).map(async () => {
-              await semaphore.acquire();
-              const e: IAgenticaSelectBenchmarkEvent =
-                await this.step(scenario);
-              await semaphore.release();
-              if (listener !== undefined) listener(e);
-              return e;
-            }),
-          );
+          const events: IAgenticaSelectBenchmarkEvent<Model>[] =
+            await Promise.all(
+              new Array(this.config_.repeat).fill(0).map(async () => {
+                await semaphore.acquire();
+                const e: IAgenticaSelectBenchmarkEvent<Model> =
+                  await this.step(scenario);
+                await semaphore.release();
+                if (listener !== undefined) listener(e);
+                return e;
+              }),
+            );
           return {
             scenario,
             events,
@@ -142,12 +144,12 @@ export class AgenticaSelectBenchmark {
   }
 
   private async step(
-    scenario: IAgenticaSelectBenchmarkScenario,
-  ): Promise<IAgenticaSelectBenchmarkEvent> {
+    scenario: IAgenticaSelectBenchmarkScenario<Model>,
+  ): Promise<IAgenticaSelectBenchmarkEvent<Model>> {
     const started_at: Date = new Date();
     try {
       const usage: IAgenticaTokenUsage = AgenticaTokenUsageAggregator.zero();
-      const prompts: IAgenticaPrompt[] =
+      const prompts: IAgenticaPrompt<Model>[] =
         await ChatGptSelectFunctionAgent.execute({
           ...this.agent_.getContext({
             prompt: {
@@ -161,8 +163,8 @@ export class AgenticaSelectBenchmark {
           stack: [],
           ready: () => true,
           dispatch: async () => {},
-        } satisfies IAgenticaContext);
-      const selected: IAgenticaOperationSelection[] = prompts
+        } satisfies IAgenticaContext<Model>);
+      const selected: IAgenticaOperationSelection<Model>[] = prompts
         .filter((p) => p.type === "select")
         .map((p) => p.operations)
         .flat();
@@ -185,8 +187,8 @@ export class AgenticaSelectBenchmark {
         started_at,
         completed_at: new Date(),
       } satisfies
-        | IAgenticaSelectBenchmarkEvent.ISuccess
-        | IAgenticaSelectBenchmarkEvent.IFailure;
+        | IAgenticaSelectBenchmarkEvent.ISuccess<Model>
+        | IAgenticaSelectBenchmarkEvent.IFailure<Model>;
     } catch (error) {
       return {
         type: "error",
@@ -194,7 +196,7 @@ export class AgenticaSelectBenchmark {
         error,
         started_at,
         completed_at: new Date(),
-      } satisfies IAgenticaSelectBenchmarkEvent.IError;
+      } satisfies IAgenticaSelectBenchmarkEvent.IError<Model>;
     }
   }
 }
@@ -202,16 +204,16 @@ export namespace AgenticaSelectBenchmark {
   /**
    * Properties of the {@link AgenticaSelectBenchmark} constructor.
    */
-  export interface IProps {
+  export interface IProps<Model extends ILlmSchema.Model> {
     /**
      * AI agent instance.
      */
-    agent: Agentica;
+    agent: Agentica<Model>;
 
     /**
      * List of scenarios what you expect.
      */
-    scenarios: IAgenticaSelectBenchmarkScenario[];
+    scenarios: IAgenticaSelectBenchmarkScenario<Model>[];
 
     /**
      * Configuration for the benchmark.

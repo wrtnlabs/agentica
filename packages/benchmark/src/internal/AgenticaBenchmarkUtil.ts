@@ -1,3 +1,5 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
 export namespace AgenticaBenchmarkUtil {
@@ -12,7 +14,9 @@ export namespace AgenticaBenchmarkUtil {
     return error;
   };
 
-  export const expectedToJson = (expected: IAgenticaBenchmarkExpected): any => {
+  export const expectedToJson = <Model extends ILlmSchema.Model>(
+    expected: IAgenticaBenchmarkExpected<Model>,
+  ): any => {
     if (expected.type === "standalone")
       return {
         type: expected.type,

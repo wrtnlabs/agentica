@@ -1,4 +1,4 @@
-import { IHttpLlmFunction } from "@samchon/openapi";
+import { IHttpLlmFunction, ILlmSchema } from "@samchon/openapi";
 import { ILlmFunctionOfValidate } from "typia";
 
 import { IAgenticaController } from "./IAgenticaController";
@@ -16,20 +16,20 @@ import { IAgenticaController } from "./IAgenticaController";
  *
  * @author Samchon
  */
-export type IAgenticaOperationSelection =
-  | IAgenticaOperationSelection.IHttp
-  | IAgenticaOperationSelection.IClass;
+export type IAgenticaOperationSelection<Model extends ILlmSchema.Model> =
+  | IAgenticaOperationSelection.IHttp<Model>
+  | IAgenticaOperationSelection.IClass<Model>;
 export namespace IAgenticaOperationSelection {
-  export type IHttp = IBase<
+  export type IHttp<Model extends ILlmSchema.Model> = IBase<
     "http",
-    IAgenticaController.IHttp,
-    IHttpLlmFunction<"chatgpt">
+    IAgenticaController.IHttp<Model>,
+    IHttpLlmFunction<Model>
   >;
 
-  export type IClass = IBase<
+  export type IClass<Model extends ILlmSchema.Model> = IBase<
     "class",
-    IAgenticaController.IClass,
-    ILlmFunctionOfValidate<"chatgpt">
+    IAgenticaController.IClass<Model>,
+    ILlmFunctionOfValidate<Model>
   >;
 
   interface IBase<Protocol, Controller, Function> {

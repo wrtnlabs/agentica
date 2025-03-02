@@ -1,3 +1,4 @@
+import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
 import { AgenticaSource } from "../typings/AgenticaSource";
@@ -13,25 +14,25 @@ import { IAgenticaPrompt } from "./IAgenticaPrompt";
  *
  * @author Samchon
  */
-export type IAgenticaEvent =
+export type IAgenticaEvent<Model extends ILlmSchema.Model> =
   | IAgenticaEvent.IInitialize
-  | IAgenticaEvent.ISelect
-  | IAgenticaEvent.ICancel
-  | IAgenticaEvent.ICall
-  | IAgenticaEvent.IExecute
-  | IAgenticaEvent.IDescribe
+  | IAgenticaEvent.ISelect<Model>
+  | IAgenticaEvent.ICancel<Model>
+  | IAgenticaEvent.ICall<Model>
+  | IAgenticaEvent.IExecute<Model>
+  | IAgenticaEvent.IDescribe<Model>
   | IAgenticaEvent.IText
   | IAgenticaEvent.IRequest
   | IAgenticaEvent.IResponse;
 export namespace IAgenticaEvent {
-  export type Type = IAgenticaEvent["type"];
-  export type Mapper = {
+  export type Type = IAgenticaEvent<any>["type"];
+  export type Mapper<Model extends ILlmSchema.Model> = {
     initialize: IInitialize;
-    select: ISelect;
-    cancel: ICancel;
-    call: ICall;
-    execute: IExecute;
-    describe: IDescribe;
+    select: ISelect<Model>;
+    cancel: ICancel<Model>;
+    call: ICall<Model>;
+    execute: IExecute<Model>;
+    describe: IDescribe<Model>;
     text: IText;
     request: IRequest;
     response: IResponse;
@@ -45,13 +46,14 @@ export namespace IAgenticaEvent {
   /**
    * Event of selecting a function to call.
    */
-  export interface ISelect extends IBase<"select"> {
+  export interface ISelect<Model extends ILlmSchema.Model>
+    extends IBase<"select"> {
     /**
      * Selected operation.
      *
      * Operation that has been selected to prepare LLM function calling.
      */
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperation<Model>;
 
     /**
      * Reason of selecting the function.
@@ -65,14 +67,15 @@ export namespace IAgenticaEvent {
   /**
    * Event of canceling a function calling.
    */
-  export interface ICancel extends IBase<"cancel"> {
+  export interface ICancel<Model extends ILlmSchema.Model>
+    extends IBase<"cancel"> {
     /**
      * Selected operation to cancel.
      *
      * Operation that has been selected to prepare LLM function calling,
      * but canceled due to no more required.
      */
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperation<Model>;
 
     /**
      * Reason of selecting the function.
@@ -90,7 +93,7 @@ export namespace IAgenticaEvent {
   /**
    * Event of calling a function.
    */
-  export interface ICall extends IBase<"call"> {
+  export interface ICall<Model extends ILlmSchema.Model> extends IBase<"call"> {
     /**
      * ID of the tool calling.
      */
@@ -99,7 +102,7 @@ export namespace IAgenticaEvent {
     /**
      * Target operation to call.
      */
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperation<Model>;
 
     /**
      * Arguments of the function calling.
@@ -114,7 +117,8 @@ export namespace IAgenticaEvent {
   /**
    * Event of function calling execution.
    */
-  export interface IExecute extends IBase<"execute"> {
+  export interface IExecute<Model extends ILlmSchema.Model>
+    extends IBase<"execute"> {
     /**
      * ID of the tool calling.
      */
@@ -123,7 +127,7 @@ export namespace IAgenticaEvent {
     /**
      * Target operation had called.
      */
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperation<Model>;
 
     /**
      * Arguments of the function calling.
@@ -141,13 +145,14 @@ export namespace IAgenticaEvent {
    *
    * Event describing return values of LLM function callings.
    */
-  export interface IDescribe extends IBase<"describe"> {
+  export interface IDescribe<Model extends ILlmSchema.Model>
+    extends IBase<"describe"> {
     /**
      * Executions of the LLM function calling.
      *
      * This prompt describes the return value of them.
      */
-    executions: IAgenticaPrompt.IExecute[];
+    executions: IAgenticaPrompt.IExecute<Model>[];
 
     /**
      * Description text.

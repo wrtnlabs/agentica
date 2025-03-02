@@ -1,3 +1,5 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaContext } from "../structures/IAgenticaContext";
 import { IAgenticaExecutor } from "../structures/IAgenticaExecutor";
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
@@ -9,9 +11,11 @@ import { ChatGptSelectFunctionAgent } from "./ChatGptSelectFunctionAgent";
 
 export namespace ChatGptAgent {
   export const execute =
-    (executor: Partial<IAgenticaExecutor> | null) =>
-    async (ctx: IAgenticaContext): Promise<IAgenticaPrompt[]> => {
-      const histories: IAgenticaPrompt[] = [];
+    <Model extends ILlmSchema.Model>(
+      executor: Partial<IAgenticaExecutor<Model>> | null,
+    ) =>
+    async (ctx: IAgenticaContext<Model>): Promise<IAgenticaPrompt<Model>[]> => {
+      const histories: IAgenticaPrompt<Model>[] = [];
 
       // FUNCTIONS ARE NOT LISTED YET
       if (ctx.ready() === false) {
@@ -45,13 +49,13 @@ export namespace ChatGptAgent {
       // FUNCTION CALLING LOOP
       while (true) {
         // EXECUTE FUNCTIONS
-        const prompts: IAgenticaPrompt[] = await (
+        const prompts: IAgenticaPrompt<Model>[] = await (
           executor?.call ?? ChatGptCallFunctionAgent.execute
         )(ctx);
         histories.push(...prompts);
 
         // EXPLAIN RETURN VALUES
-        const executes: IAgenticaPrompt.IExecute[] = prompts.filter(
+        const executes: IAgenticaPrompt.IExecute<Model>[] = prompts.filter(
           (prompt) => prompt.type === "execute",
         );
         for (const e of executes)

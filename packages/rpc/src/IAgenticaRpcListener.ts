@@ -1,4 +1,5 @@
 import { IAgenticaEvent } from "@agentica/core";
+import { ILlmSchema } from "@samchon/openapi";
 import { Primitive } from "typia";
 
 /**
@@ -43,7 +44,7 @@ import { Primitive } from "typia";
  *
  * @author Samchon
  */
-export interface IAgenticaRpcListener {
+export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
   /**
    * Describe the function executions' results.
    *
@@ -52,14 +53,14 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of a description of function execution results
    */
-  describe(evt: Primitive<IAgenticaEvent.IDescribe>): Promise<void>;
+  describe(evt: Primitive<IAgenticaEvent.IDescribe<Model>>): Promise<void>;
 
   /**
    * Text conversation message.
    *
    * @param evt Event of a text conversation message
    */
-  text(evt: Primitive<IAgenticaEvent.IText>): Promise<void>;
+  text(evt: IAgenticaEvent.IText): Promise<void>;
 
   /**
    * Initialize the AI agent.
@@ -69,7 +70,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of initialization
    */
-  initialize?(evt: Primitive<IAgenticaEvent.IInitialize>): Promise<void>;
+  initialize?(evt: IAgenticaEvent.IInitialize): Promise<void>;
 
   /**
    * Select a function to call.
@@ -78,7 +79,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of selecting a function to call
    */
-  select?(evt: Primitive<IAgenticaEvent.ISelect>): Promise<void>;
+  select?(evt: Primitive<IAgenticaEvent.ISelect<Model>>): Promise<void>;
 
   /**
    * Cancel a function to call.
@@ -87,7 +88,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of canceling a function to call
    */
-  cancel?(evt: Primitive<IAgenticaEvent.ICancel>): Promise<void>;
+  cancel?(evt: Primitive<IAgenticaEvent.ICancel<Model>>): Promise<void>;
 
   /**
    * Call a function.
@@ -107,7 +108,7 @@ export interface IAgenticaRpcListener {
    * @return New arguments if you want to modify, otherwise null or undefined
    */
   call?(
-    evt: Primitive<IAgenticaEvent.ICall>,
+    evt: Primitive<IAgenticaEvent.ICall<Model>>,
   ): Promise<object | null | undefined>;
 
   /**
@@ -117,5 +118,5 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of a function execution
    */
-  execute?(evt: Primitive<IAgenticaEvent.IExecute>): Promise<void>;
+  execute?(evt: IAgenticaEvent.IExecute<Model>): Promise<void>;
 }

@@ -68,9 +68,9 @@ const main = async (): Promise<void> => {
   );
 
   // COMPOSE CHAT AGENT
-  const agent: Agentica = new Agentica({
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
     provider: {
-      type: "chatgpt",
       api: new OpenAI({
         apiKey: TestGlobal.env.CHATGPT_API_KEY,
         baseURL: TestGlobal.env.CHATGPT_BASE_URL,
@@ -144,7 +144,8 @@ const main = async (): Promise<void> => {
         JSON.stringify(agent.getTokenUsage(), null, 2),
       );
     else {
-      const histories: IAgenticaPrompt[] = await agent.conversate(content);
+      const histories: IAgenticaPrompt<"chatgpt">[] =
+        await agent.conversate(content);
       for (const h of histories.slice(1))
         if (h.type === "text")
           trace(chalk.yellow("Text"), chalk.blueBright(h.role), "\n\n", h.text);

@@ -1,10 +1,12 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaOperationSelection } from "../structures/IAgenticaOperationSelection";
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 
 export namespace AgenticaPromptFactory {
-  export const execute = (
-    props: Omit<IAgenticaPrompt.IExecute, "toJSON">,
-  ): IAgenticaPrompt.IExecute =>
+  export const execute = <Model extends ILlmSchema.Model>(
+    props: Omit<IAgenticaPrompt.IExecute<Model>, "toJSON">,
+  ): IAgenticaPrompt.IExecute<Model> =>
     ({
       ...props,
       toJSON: () =>
@@ -13,11 +15,11 @@ export namespace AgenticaPromptFactory {
           controller: props.controller.name,
           function: props.function.name,
         }) as any,
-    }) as IAgenticaPrompt.IExecute;
+    }) as IAgenticaPrompt.IExecute<Model>;
 
-  export const selection = (
-    props: Omit<IAgenticaOperationSelection, "toJSON">,
-  ): IAgenticaOperationSelection =>
+  export const selection = <Model extends ILlmSchema.Model>(
+    props: Omit<IAgenticaOperationSelection<Model>, "toJSON">,
+  ): IAgenticaOperationSelection<Model> =>
     ({
       ...props,
       toJSON: () =>
@@ -26,5 +28,5 @@ export namespace AgenticaPromptFactory {
           controller: props.controller.name,
           function: props.function.name,
         }) as any,
-    }) as IAgenticaOperationSelection;
+    }) as IAgenticaOperationSelection<Model>;
 }

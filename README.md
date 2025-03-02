@@ -8,7 +8,7 @@
 
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
-Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** document or **TypeScript class type** linearly to the `agentica`. Then `agentica` will do everything with the function calling.
+Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `agentica`. Then `agentica` will do everything with the function calling.
 
 Look at the below demonstration, and feel how `agentica` is easy and powerful.
 
@@ -16,7 +16,7 @@ Look at the below demonstration, and feel how `agentica` is easy and powerful.
 import { Agentica } from "@agentica/core";
 import typia from "typia";
 
-const agent: Agentica = new Agentica({
+const agent = new Agentica({
   controllers: [
     await fetch(
       "https://shopping-be.wrtn.ai/editor/swagger.json",
@@ -101,23 +101,3 @@ As I've concenstrated on POC (Proof of Concept) development on the early stage l
 Also, we will support dozens of useful add-on agents which can connect with `@agentica/core` by TypeScript class function calling. One of them is `@wrtnlabs/hive` which optimizes `selector` agent so that reducing LLM costs dramatically. The others would be OpenAI Vector Store handler and Postgres based RAG engine.
 
 With these `@agentica/core` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@agentica/core` makes the Multi agent system interaction super easily.
-
-### LLM Providers
-```mermaid
-flowchart
-Agent["<code>@agentica/core</code>"]
-OpenAI("<b><u>OpenAI</u></b>")
-Claude
-Llama
-Gemini
-Agent==supports==>OpenAI
-Agent-.not yet.->Claude
-Agent-.not yet.->Llama
-Agent-.not yet.->Gemini
-```
-
-Currently, `@agentica/core` supports only OpenAI. 
-
-It is because `@agentica/core` is still in the POC (Proof of Concept) and demonstration stage. However, even nthough OpenAI is the most famous model in the AI world, `@agentica/core` have to support much more models for broad users.
-
-We're going to support much more models until 2025-04-30.

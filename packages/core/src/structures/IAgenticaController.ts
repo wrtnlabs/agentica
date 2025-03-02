@@ -3,6 +3,7 @@ import {
   IHttpLlmApplication,
   IHttpLlmFunction,
   IHttpResponse,
+  ILlmSchema,
 } from "@samchon/openapi";
 import { ILlmApplicationOfValidate, ILlmFunctionOfValidate } from "typia";
 
@@ -21,9 +22,9 @@ import { ILlmApplicationOfValidate, ILlmFunctionOfValidate } from "typia";
  *
  * @author Samchon
  */
-export type IAgenticaController =
-  | IAgenticaController.IHttp
-  | IAgenticaController.IClass;
+export type IAgenticaController<Model extends ILlmSchema.Model> =
+  | IAgenticaController.IHttp<Model>
+  | IAgenticaController.IClass<Model>;
 export namespace IAgenticaController {
   /**
    * HTTP controller.
@@ -31,7 +32,8 @@ export namespace IAgenticaController {
    * You can make it by {@link createHttpLlmApplication} function with
    * the Swagger or OpenAPI document.
    */
-  export interface IHttp extends IBase<"http", IHttpLlmApplication<"chatgpt">> {
+  export interface IHttp<Model extends ILlmSchema.Model>
+    extends IBase<"http", IHttpLlmApplication<Model>> {
     /**
      * Connection to the server.
      *
@@ -54,12 +56,12 @@ export namespace IAgenticaController {
       /**
        * Application schema.
        */
-      application: IHttpLlmApplication<"chatgpt">;
+      application: IHttpLlmApplication<Model>;
 
       /**
        * Function schema.
        */
-      function: IHttpLlmFunction<"chatgpt">;
+      function: IHttpLlmFunction<Model>;
 
       /**
        * Arguments of the function calling.
@@ -82,8 +84,8 @@ export namespace IAgenticaController {
    *
    * - https://typia.io/docs/llm/application
    */
-  export interface IClass
-    extends IBase<"class", ILlmApplicationOfValidate<"chatgpt">> {
+  export interface IClass<Model extends ILlmSchema.Model>
+    extends IBase<"class", ILlmApplicationOfValidate<Model>> {
     /**
      * Executor of the class function.
      *
@@ -97,12 +99,12 @@ export namespace IAgenticaController {
           /**
            * Target application schema.
            */
-          application: ILlmApplicationOfValidate<"chatgpt">;
+          application: ILlmApplicationOfValidate<Model>;
 
           /**
            * Target function schema.
            */
-          function: ILlmFunctionOfValidate<"chatgpt">;
+          function: ILlmFunctionOfValidate<Model>;
 
           /**
            * Arguments of the function calling.

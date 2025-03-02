@@ -1,4 +1,5 @@
 import { IAgenticaTokenUsage } from "@agentica/core";
+import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaSelectBenchmarkEvent } from "./IAgenticaSelectBenchmarkEvent";
 import { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmarkScenario";
@@ -20,11 +21,13 @@ import { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmarkScen
  *
  * @author Samchon
  */
-export interface IAgenticaSelectBenchmarkResult {
+export interface IAgenticaSelectBenchmarkResult<
+  Model extends ILlmSchema.Model,
+> {
   /**
    * Experiments for each scenario.
    */
-  experiments: IAgenticaSelectBenchmarkResult.IExperiment[];
+  experiments: IAgenticaSelectBenchmarkResult.IExperiment<Model>[];
 
   /**
    * Aggregated token usage information.
@@ -45,11 +48,11 @@ export namespace IAgenticaSelectBenchmarkResult {
   /**
    * Experiment result about a scenario.
    */
-  export interface IExperiment {
+  export interface IExperiment<Model extends ILlmSchema.Model> {
     /**
      * Expected scenario.
      */
-    scenario: IAgenticaSelectBenchmarkScenario;
+    scenario: IAgenticaSelectBenchmarkScenario<Model>;
 
     /**
      * Events occurred during the benchmark in the scenario.
@@ -59,7 +62,7 @@ export namespace IAgenticaSelectBenchmarkResult {
      * {@link AgenticaSelectBenchmark.IConfig.repeat repeat} count.
      * And the event is one of the repeated benchmark results.
      */
-    events: IAgenticaSelectBenchmarkEvent[];
+    events: IAgenticaSelectBenchmarkEvent<Model>[];
 
     /**
      * LLM token usage information.

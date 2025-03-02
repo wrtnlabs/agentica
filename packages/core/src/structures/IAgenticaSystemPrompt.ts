@@ -1,3 +1,5 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaConfig } from "./IAgenticaConfig";
 import { IAgenticaPrompt } from "./IAgenticaPrompt";
 
@@ -19,7 +21,7 @@ import { IAgenticaPrompt } from "./IAgenticaPrompt";
  *
  * @author Samchon
  */
-export interface IAgenticaSystemPrompt {
+export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
   /**
    * Common system prompt that would be used in every situation.
    *
@@ -27,7 +29,7 @@ export interface IAgenticaSystemPrompt {
    * @returns The common system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/common.md
    */
-  common?: (config?: IAgenticaConfig | undefined) => string;
+  common?: (config?: IAgenticaConfig<Model> | undefined) => string;
 
   /**
    * Initialize system prompt.
@@ -45,7 +47,7 @@ export interface IAgenticaSystemPrompt {
    * @returns initialize system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/initialize.md
    */
-  initialize?: (histories: IAgenticaPrompt[]) => string;
+  initialize?: (histories: IAgenticaPrompt<Model>[]) => string;
 
   /**
    * Select system prompt.
@@ -66,7 +68,7 @@ export interface IAgenticaSystemPrompt {
    * @returns select system promopt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/select.md
    */
-  select?: (histories: IAgenticaPrompt[]) => string;
+  select?: (histories: IAgenticaPrompt<Model>[]) => string;
 
   /**
    * Cancel system prompt.
@@ -83,7 +85,7 @@ export interface IAgenticaSystemPrompt {
    * @returns cancel system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/cancel.md
    */
-  cancel?: (histories: IAgenticaPrompt[]) => string;
+  cancel?: (histories: IAgenticaPrompt<Model>[]) => string;
 
   /**
    * Execute system prompt.
@@ -101,7 +103,7 @@ export interface IAgenticaSystemPrompt {
    * @returns execute system prompt
    * https://github.com/samchon/nestia/blob/master/packages/agent/prompts/execute.md
    */
-  execute?: (histories: IAgenticaPrompt[]) => string;
+  execute?: (histories: IAgenticaPrompt<Model>[]) => string;
 
   /**
    * Describe system prompt.
@@ -118,5 +120,5 @@ export interface IAgenticaSystemPrompt {
    * @returns describe system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/describe.md
    */
-  describe?: (histories: IAgenticaPrompt.IExecute[]) => string;
+  describe?: (histories: IAgenticaPrompt.IExecute<Model>[]) => string;
 }

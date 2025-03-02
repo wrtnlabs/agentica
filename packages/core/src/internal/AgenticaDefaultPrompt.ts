@@ -1,9 +1,13 @@
+import { ILlmSchema } from "@samchon/openapi";
+
 import { IAgenticaConfig } from "../structures/IAgenticaConfig";
 import { AgenticaSystemPrompt } from "./AgenticaSystemPrompt";
 import { Singleton } from "./Singleton";
 
 export namespace AgenticaDefaultPrompt {
-  export const write = (config?: IAgenticaConfig): string => {
+  export const write = <Model extends ILlmSchema.Model>(
+    config?: IAgenticaConfig<Model>,
+  ): string => {
     if (config?.systemPrompt?.common)
       return config?.systemPrompt?.common(config);
 

@@ -4,6 +4,7 @@ import {
   IChatGptSchema,
   IHttpMigrateRoute,
   IHttpResponse,
+  ILlmSchema,
 } from "@samchon/openapi";
 import OpenAI from "openai";
 import { IValidation } from "typia";
@@ -20,9 +21,9 @@ import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptCallFunctionAgent {
-  export const execute = async (
-    ctx: IAgenticaContext,
-  ): Promise<IAgenticaPrompt[]> => {
+  export const execute = async <Model extends ILlmSchema.Model>(
+    ctx: IAgenticaContext<Model>,
+  ): Promise<IAgenticaPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -79,8 +80,8 @@ export namespace ChatGptCallFunctionAgent {
     const closures: Array<
       () => Promise<
         Array<
-          | IAgenticaPrompt.IExecute
-          | IAgenticaPrompt.ICancel
+          | IAgenticaPrompt.IExecute<Model>
+          | IAgenticaPrompt.ICancel<Model>
           | IAgenticaPrompt.IText
         >
       >
@@ -88,14 +89,14 @@ export namespace ChatGptCallFunctionAgent {
     for (const choice of completion.choices) {
       for (const tc of choice.message.tool_calls ?? []) {
         if (tc.type === "function") {
-          const operation: IAgenticaOperation | undefined =
+          const operation: IAgenticaOperation<Model> | undefined =
             ctx.operations.flat.get(tc.function.name);
           if (operation === undefined) continue;
           closures.push(
             async (): Promise<
-              [IAgenticaPrompt.IExecute, IAgenticaPrompt.ICancel]
+              [IAgenticaPrompt.IExecute<Model>, IAgenticaPrompt.ICancel<Model>]
             > => {
-              const call: IAgenticaEvent.ICall = {
+              const call: IAgenticaEvent.ICall<Model> = {
                 type: "call",
                 id: tc.id,
                 operation,
@@ -108,7 +109,7 @@ export namespace ChatGptCallFunctionAgent {
                 });
               await ctx.dispatch(call);
 
-              const execute: IAgenticaPrompt.IExecute = await propagate(
+              const execute: IAgenticaPrompt.IExecute<Model> = await propagate(
                 ctx,
                 call,
                 0,
@@ -141,7 +142,7 @@ export namespace ChatGptCallFunctionAgent {
                       reason: "complete",
                     }),
                   ],
-                } satisfies IAgenticaPrompt.ICancel,
+                } satisfies IAgenticaPrompt.ICancel<Model>,
               ] as const;
             },
           );
@@ -164,11 +165,11 @@ export namespace ChatGptCallFunctionAgent {
     return (await Promise.all(closures.map((fn) => fn()))).flat();
   };
 
-  const propagate = async (
-    ctx: IAgenticaContext,
-    call: IAgenticaEvent.ICall,
+  const propagate = async <Model extends ILlmSchema.Model>(
+    ctx: IAgenticaContext<Model>,
+    call: IAgenticaEvent.ICall<Model>,
     retry: number,
-  ): Promise<IAgenticaPrompt.IExecute> => {
+  ): Promise<IAgenticaPrompt.IExecute<Model>> => {
     if (call.operation.protocol === "http") {
       //----
       // HTTP PROTOCOL
@@ -307,12 +308,12 @@ export namespace ChatGptCallFunctionAgent {
     }
   };
 
-  const correct = async (
-    ctx: IAgenticaContext,
-    call: IAgenticaEvent.ICall,
+  const correct = async <Model extends ILlmSchema.Model>(
+    ctx: IAgenticaContext<Model>,
+    call: IAgenticaEvent.ICall<Model>,
     retry: number,
     error: unknown,
-  ): Promise<IAgenticaPrompt.IExecute | null> => {
+  ): Promise<IAgenticaPrompt.IExecute<Model> | null> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -410,8 +411,8 @@ export namespace ChatGptCallFunctionAgent {
     );
   };
 
-  const fillHttpArguments = (props: {
-    operation: IAgenticaOperation;
+  const fillHttpArguments = <Model extends ILlmSchema.Model>(props: {
+    operation: IAgenticaOperation<Model>;
     arguments: object;
   }): void => {
     if (props.operation.protocol !== "http") return;
@@ -421,8 +422,10 @@ export namespace ChatGptCallFunctionAgent {
       route.operation().requestBody?.required === true &&
       (props.arguments as any).body === undefined &&
       isObject(
-        props.operation.function.parameters.$defs,
-        props.operation.function.parameters.properties.body!,
+        (props.operation.function.parameters as IChatGptSchema.IParameters)
+          .$defs,
+        (props.operation.function.parameters as IChatGptSchema.IParameters)
+          .properties.body!,
       )
     )
       (props.arguments as any).body = {};
