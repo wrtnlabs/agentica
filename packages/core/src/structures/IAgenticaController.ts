@@ -3,9 +3,10 @@ import {
   IHttpLlmApplication,
   IHttpLlmFunction,
   IHttpResponse,
+  ILlmApplication,
+  ILlmFunction,
   ILlmSchema,
 } from "@samchon/openapi";
-import { ILlmApplicationOfValidate, ILlmFunctionOfValidate } from "typia";
 
 /**
  * Controller of the Nestia Agent.
@@ -85,7 +86,7 @@ export namespace IAgenticaController {
    * - https://typia.io/docs/llm/application
    */
   export interface IClass<Model extends ILlmSchema.Model>
-    extends IBase<"class", ILlmApplicationOfValidate<Model>> {
+    extends IBase<"class", ILlmApplication<Model>> {
     /**
      * Executor of the class function.
      *
@@ -99,12 +100,12 @@ export namespace IAgenticaController {
           /**
            * Target application schema.
            */
-          application: ILlmApplicationOfValidate<Model>;
+          application: ILlmApplication<Model>;
 
           /**
            * Target function schema.
            */
-          function: ILlmFunctionOfValidate<Model>;
+          function: ILlmFunction<Model>;
 
           /**
            * Arguments of the function calling.

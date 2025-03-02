@@ -1,5 +1,9 @@
-import { IHttpLlmFunction, IHttpResponse, ILlmSchema } from "@samchon/openapi";
-import { ILlmFunctionOfValidate } from "typia";
+import {
+  IHttpLlmFunction,
+  IHttpResponse,
+  ILlmFunction,
+  ILlmSchema,
+} from "@samchon/openapi";
 
 import { IAgenticaController } from "./IAgenticaController";
 import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
@@ -81,7 +85,7 @@ export namespace IAgenticaPrompt {
     export type IClass<Model extends ILlmSchema.Model> = IBase<
       "class",
       IAgenticaController.IClass<Model>,
-      ILlmFunctionOfValidate<Model>,
+      ILlmFunction<Model>,
       any
     >;
     interface IBase<Protocol, Controller, Function, Value> {

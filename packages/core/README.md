@@ -179,7 +179,7 @@ const main = async (): Promise<void> => {
       {
         protocol: "class",
         name: "vectorStore",
-        application: typia.llm.applicationOfValidate<
+        application: typia.llm.application<
           BbsArticleService,
           "chatgpt"
         >(),
@@ -238,7 +238,7 @@ const main = async (): Promise<void> => {
       {
         protocol: "class",
         name: "vectorStore",
-        application: typia.llm.applicationOfValidate<
+        application: typia.llm.application<
           OpenAIVectorStoreAgent,
           "chatgpt"
         >(),
@@ -320,15 +320,15 @@ Such LLM (Large Language Model) function calling strategy separating `selector`,
 ### Validation Feedback
 ```typescript
 import { FunctionCall } from "pseudo";
-import { ILlmFunctionOfValidate, IValidation } from "typia";
+import { ILlmFunction, IValidation } from "typia";
 
 export const correctFunctionCall = (p: {
   call: FunctionCall;
-  functions: Array<ILlmFunctionOfValidate<"chatgpt">>;
+  functions: Array<ILlmFunction<"chatgpt">>;
   retry: (reason: string, errors?: IValidation.IError[]) => Promise<unknown>;
 }): Promise<unknown> => {
   // FIND FUNCTION
-  const func: ILlmFunctionOfValidate<"chatgpt"> | undefined =
+  const func: ILlmFunction<"chatgpt"> | undefined =
     p.functions.find((f) => f.name === p.call.name);
   if (func === undefined) {
     // never happened in my experience
@@ -360,7 +360,7 @@ The answer is not, and LLM (Large Language Model) vendors like OpenAI take a lot
 
 Therefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the most detailed validation errors, and let the LLM to retry the function calling referencing the validation errors.
 
-About the validation feedback, `@agentica/core` is utilizing [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.applicationOfValidate<Class, Model>()`](https://typia.io/docs/llm/application/#applicationofvalidate) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.
+About the validation feedback, `@agentica/core` is utilizing [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application/#application) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.
 
 Such validation feedback strategy and combination with `typia` runtime validator, `@agentica/core` has achieved the most ideal LLM function calling. In my experience, when using OpenAI's `gpt-4o-mini` model, it tends to construct invalid function calling arguments at the first trial about 50% of the time. By the way, if correct it through validation feedback with `typia`, success rate soars to 99%. And I've never had a failure when trying validation feedback twice.
 
@@ -404,7 +404,7 @@ flowchart
   end
 ```
 
-`@agentica/core` obtains LLM function calling schemas from both Swagger/OpenAPI documents and TypeScript class types. The TypeScript class type can be converted to LLM function calling schema by [`typia.llm.applicationOfValidate<Class, Model>()`](https://typia.io/docs/llm/application#applicationofvalidate) function. Then how about OpenAPI document? How Swagger document can be LLM function calling schema.
+`@agentica/core` obtains LLM function calling schemas from both Swagger/OpenAPI documents and TypeScript class types. The TypeScript class type can be converted to LLM function calling schema by [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application#application) function. Then how about OpenAPI document? How Swagger document can be LLM function calling schema.
 
 The secret is on the above diagram. 
 

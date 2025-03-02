@@ -174,6 +174,22 @@ export namespace ChatGptCallFunctionAgent {
       //----
       // HTTP PROTOCOL
       //----
+      // NESTED VALIDATOR
+      const check: IValidation<unknown> = call.operation.function.validate(
+        call.arguments,
+      );
+      if (
+        check.success === false &&
+        retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
+      ) {
+        const trial: IAgenticaPrompt.IExecute<Model> | null = await correct(
+          ctx,
+          call,
+          retry,
+          check.errors,
+        );
+        if (trial !== null) return trial;
+      }
       try {
         // CALL HTTP API
         const response: IHttpResponse = call.operation.controller.execute
