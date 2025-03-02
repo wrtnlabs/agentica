@@ -12,7 +12,7 @@ export const test_benchmark_select = async (): Promise<void | false> => {
 
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
+    vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: process.env.CHATGPT_API_KEY,

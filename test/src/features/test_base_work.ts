@@ -8,7 +8,7 @@ export async function test_base_work(): Promise<void | false> {
 
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
+    vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: TestGlobal.env.CHATGPT_API_KEY,

@@ -70,7 +70,7 @@ const main = async (): Promise<void> => {
   // COMPOSE CHAT AGENT
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
+    vendor: {
       api: new OpenAI({
         apiKey: TestGlobal.env.CHATGPT_API_KEY,
         baseURL: TestGlobal.env.CHATGPT_BASE_URL,

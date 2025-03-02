@@ -51,11 +51,11 @@ const main = async (): Promise<void> => {
   // CREATE AI AGENT
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
-      model: "gpt-4o-mini",
+    vendor: {
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
       }),
+      model: "gpt-4o-mini",
     },
     controllers: [
       {
@@ -193,11 +193,11 @@ const main = async (): Promise<void> => {
   // CREATE AI AGENT
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
-      model: "gpt-4o-mini",
+    vendor: {
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
       }),
+      model: "gpt-4o-mini",
     },
     controllers: [
       {

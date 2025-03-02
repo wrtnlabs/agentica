@@ -9,7 +9,7 @@ export * from "./structures/IAgenticaOperationCollection";
 export * from "./structures/IAgenticaOperationSelection";
 export * from "./structures/IAgenticaPrompt";
 export * from "./structures/IAgenticaProps";
-export * from "./structures/IAgenticaProvider";
+export * from "./structures/IAgenticaVendor";
 export * from "./structures/IAgenticaSystemPrompt";
 export * from "./structures/IAgenticaTokenUsage";
 export * from "./typings/AgenticaSource";

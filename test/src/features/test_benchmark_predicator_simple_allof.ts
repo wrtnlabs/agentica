@@ -10,7 +10,7 @@ export const test_benchmark_predicator_simple_allof =
     //----
     const agent: Agentica<"chatgpt"> = new Agentica({
       model: "chatgpt",
-      provider: {
+      vendor: {
         model: "gpt-4o-mini",
         api: null!,
       },

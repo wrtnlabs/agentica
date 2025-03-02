@@ -4,7 +4,7 @@ import { Primitive } from "typia";
 import { IAgenticaConfig } from "./IAgenticaConfig";
 import { IAgenticaController } from "./IAgenticaController";
 import { IAgenticaPrompt } from "./IAgenticaPrompt";
-import { IAgenticaProvider } from "./IAgenticaProvider";
+import { IAgenticaVendor } from "./IAgenticaVendor";
 
 /**
  * Properties of the Nestia Agent.
@@ -14,7 +14,7 @@ import { IAgenticaProvider } from "./IAgenticaProvider";
  * there're everything to prepare to create a Super A.I. chatbot
  * performing the LLM (Large Language Model) function calling.
  *
- * At first, you have to specify the LLM service {@link provider} like
+ * At first, you have to specify the LLM service {@link vendor} like
  * OpenAI with its API key and client API. And then, you have to define
  * the {@link controllers} serving the functions to call. The controllers
  * are separated by two protocols; HTTP API and TypeScript class. At last,
@@ -34,9 +34,9 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
   model: Model;
 
   /**
-   * LLM service provider.
+   * LLM service vendor.
    */
-  provider: IAgenticaProvider;
+  vendor: IAgenticaVendor;
 
   /**
    * Controllers serving functions to call.

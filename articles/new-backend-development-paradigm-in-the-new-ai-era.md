@@ -59,7 +59,7 @@ flowchart
 
 I made a library [`@samchon/openapi`](https://github.com/samchon/openapi) converting Swagger document to the LLM function calling schemas.
 
-It supports every versions of Swagger/OpenAPI specifications, and also supports LLM function calling schemas of the most LLM providers like {OpenAI, Claude, gemini, and Llama}. For the efficient and accrurate conversion process, `@samchon/openapi` has OpenAPI v3.1 emended specification for intermediate purpose. The LLM function calling schema conversion starts from the OpenAPI v3.1 emended specification.
+It supports every versions of Swagger/OpenAPI specifications, and also supports LLM function calling schemas of the most LLM vendors like {OpenAI, Claude, gemini, and Llama}. For the efficient and accrurate conversion process, `@samchon/openapi` has OpenAPI v3.1 emended specification for intermediate purpose. The LLM function calling schema conversion starts from the OpenAPI v3.1 emended specification.
 
 Therefore, the first thing what should do is composing the OpenAPI v3.1 emended specified document by the calling the `OpenApi.convert()` function. And then, compose the `IHttpLlmApplication` typed structure by calling the `HttpLlm.application()` function with target model and emended OpenAPI document.
 
@@ -113,11 +113,11 @@ const main = async (): Promise<void> => {
   });
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
-      model: "gpt-4o-mini",
+    vendor: {
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
       }),
+      model: "gpt-4o-mini",
     },
     controllers: [
       {
@@ -187,9 +187,9 @@ export const ShoppingChatApplication = (
 
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
-      model: "gpt-4o-mini",
+    vendor: {
       api: props.api,
+      model: "gpt-4o-mini",
     },
     controllers: [
       {
