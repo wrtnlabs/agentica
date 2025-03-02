@@ -1,0 +1,68 @@
+import { IAgenticaOperationSelection } from "@agentica/core";
+import GradingIcon from "@mui/icons-material/Grading";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Chip,
+  Collapse,
+} from "@mui/material";
+import { ILlmSchema } from "@samchon/openapi";
+import { useState } from "react";
+
+import { MarkdownViewer } from "../../components/MarkdownViewer";
+
+export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
+  selection,
+}: AgenticaChatSelectMessageMovie.IProps<Model>) => {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <Card
+      elevation={3}
+      style={{
+        marginTop: 15,
+        marginBottom: 15,
+        marginRight: "15%",
+      }}
+    >
+      <CardContent>
+        <Chip
+          icon={<GradingIcon />}
+          label="Function Selector"
+          variant="outlined"
+          color="warning"
+        />
+        <br />
+        <br />
+        Operation:
+        {selection.protocol === "http" ? (
+          <ul>
+            <li>{selection.function.method.toUpperCase()}</li>
+            <li>{selection.function.path}</li>
+          </ul>
+        ) : (
+          <ul>
+            <li>{selection.function.name}</li>
+          </ul>
+        )}
+        <MarkdownViewer>{selection.reason}</MarkdownViewer>
+      </CardContent>
+      <CardActions style={{ textAlign: "right" }}>
+        <Button onClick={() => setExpanded(!expanded)}>
+          {expanded ? "Hide Function Description" : "Show Function Description"}
+        </Button>
+      </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <MarkdownViewer>{selection.function.description}</MarkdownViewer>
+        </CardContent>
+      </Collapse>
+    </Card>
+  );
+};
+export namespace AgenticaChatSelectMessageMovie {
+  export interface IProps<Model extends ILlmSchema.Model> {
+    selection: IAgenticaOperationSelection<Model>;
+  }
+}

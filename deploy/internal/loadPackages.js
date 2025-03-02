@@ -5,11 +5,16 @@ const loadPackages = () => {
   const directory = fs
     .readdirSync(packages)
     .filter((bucket) => bucket !== "cli");
-  return directory.filter((bucket) => {
-    const stat = fs.lstatSync(`${packages}/${bucket}`);
-    return (
-      stat.isDirectory() && fs.existsSync(`${packages}/${bucket}/package.json`)
+  return directory
+    .filter((bucket) => {
+      const stat = fs.lstatSync(`${packages}/${bucket}`);
+      return (
+        stat.isDirectory() &&
+        fs.existsSync(`${packages}/${bucket}/package.json`)
+      );
+    })
+    .sort((a, b) =>
+      a === "chat" ? 1 : b === "chat" ? -1 : a.localeCompare(b),
     );
-  });
 };
 module.exports = { loadPackages };
