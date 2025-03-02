@@ -20,9 +20,9 @@ export namespace AgenticaBenchmarkPredicator {
     >().functions[0]!;
     const result: OpenAI.ChatCompletion = await agent[
       "props"
-    ].provider.api.chat.completions.create(
+    ].vendor.api.chat.completions.create(
       {
-        model: agent["props"].provider.model,
+        model: agent["props"].vendor.model,
         messages: [
           {
             role: "system",
@@ -52,7 +52,7 @@ export namespace AgenticaBenchmarkPredicator {
         tool_choice: "required",
         parallel_tool_calls: false,
       },
-      agent["props"].provider.options,
+      agent["props"].vendor.options,
     );
     const toolCall: OpenAI.ChatCompletionMessageToolCall | undefined = (
       result.choices[0]?.message.tool_calls ?? []

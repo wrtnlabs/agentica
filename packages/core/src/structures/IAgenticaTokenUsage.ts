@@ -10,9 +10,9 @@
  * information, and does not contain any price or cost information. It is
  * because the price or cost can be changed by below reasons.
  *
- * - Type of {@link IAgenticaProps.provider LLM provider}
- * - {@link IAgenticaProvider.model} in the LLM provider.
- * - Just by a policy change of the LLM provider company.
+ * - Type of {@link IAgenticaProps.vendor LLM vendor}
+ * - {@link IAgenticaVendor.model} in the LLM vendor.
+ * - Just by a policy change of the LLM vendor company.
  *
  * @author Samchon
  */

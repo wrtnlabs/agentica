@@ -176,7 +176,7 @@ export namespace IAgenticaEvent {
   }
 
   /**
-   * Request event of LLM provider API.
+   * Request event of LLM vendor API.
    */
   export interface IRequest extends IBase<"request"> {
     /**
@@ -196,7 +196,7 @@ export namespace IAgenticaEvent {
   }
 
   /**
-   * Response event of LLM provider API.
+   * Response event of LLM vendor API.
    */
   export interface IResponse extends IBase<"response"> {
     /**
@@ -215,7 +215,7 @@ export namespace IAgenticaEvent {
     options?: OpenAI.RequestOptions | undefined;
 
     /**
-     * Return value from the LLM provider API.
+     * Return value from the LLM vendor API.
      */
     value: OpenAI.ChatCompletion;
   }

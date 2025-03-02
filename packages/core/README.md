@@ -75,11 +75,11 @@ const main = async (): Promise<void> => {
   // CREATE AN AGENT WITH THE APPLICATION
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
-      model: "gpt-4o-mini",
+    vendor: {
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
       }),
+      model: "gpt-4o-mini",
     },
     controllers: [
       {
@@ -169,11 +169,11 @@ const main = async (): Promise<void> => {
   });
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
-      model: "gpt-4o-mini",
+    vendor: {
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
       }),
+      model: "gpt-4o-mini",
     },
     controllers: [
       {
@@ -228,11 +228,11 @@ const main = async (): Promise<void> => {
   });
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
-    provider: {
-      model: "gpt-4o-mini",
+    context: {
       api: new OpenAI({
         apiKey: "YOUR_OPENAI_API_KEY",
       }),
+      model: "gpt-4o-mini",
     },
     controllers: [
       {
@@ -356,7 +356,7 @@ export const correctFunctionCall = (p: {
 
 Is LLM function calling perfect? 
 
-The answer is not, and LLM (Large Language Model) providers like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an `Array<string>` type, LLM often fills it just by a `string` typed value.
+The answer is not, and LLM (Large Language Model) vendors like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an `Array<string>` type, LLM often fills it just by a `string` typed value.
 
 Therefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the most detailed validation errors, and let the LLM to retry the function calling referencing the validation errors.
 
@@ -410,7 +410,7 @@ The secret is on the above diagram.
 
 In the OpenAPI specification, there are three versions with different definitions. And even in the same version, there are too much ambiguous and duplicated expressions. To resolve these problems, [`@samchon/openapi`](https://github.com/samchon/openapi) is transforming every OpenAPI documents to v3.1 emended specification. The `@samchon/openapi`'s emended v3.1 specification has removed every ambiguous and duplicated expressions for clarity.
 
-With the v3.1 emended OpenAPI document, `@samchon/openapi` converts it to a migration schema that is near to the function structure. And as the last step, the migration schema will be transformed to a specific LLM provider's function calling schema. LLM function calling schemas are composed like this way.
+With the v3.1 emended OpenAPI document, `@samchon/openapi` converts it to a migration schema that is near to the function structure. And as the last step, the migration schema will be transformed to a specific LLM vendor's function calling schema. LLM function calling schemas are composed like this way.
 
 > **Why do not directly convert, but intermediate?**
 >

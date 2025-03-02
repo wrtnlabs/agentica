@@ -25,7 +25,7 @@ import { IAgenticaPrompt } from "./IAgenticaPrompt";
  *   - {@link ChatGptCancelFunctionAgent}
  *
  * Also, as its name is context, it contains every information that
- * is required to interact with the AI provider like OpenAI. It
+ * is required to interact with the AI vendor like OpenAI. It
  * contains every operations for LLM function calling, and
  * configuration used for the agent construction. And it contains
  * the prompt histories, and facade controller functions for

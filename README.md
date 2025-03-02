@@ -17,7 +17,7 @@ import { Agentica } from "@agentica/core";
 import typia from "typia";
 
 const agent = new Agentica({
-  controllers: [
+  providers: [
     await fetch(
       "https://shopping-be.wrtn.ai/editor/swagger.json",
     ).then(r => r.json()),

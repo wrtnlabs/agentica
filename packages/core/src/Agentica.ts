@@ -15,8 +15,8 @@ import { IAgenticaOperationCollection } from "./structures/IAgenticaOperationCol
 import { IAgenticaOperationSelection } from "./structures/IAgenticaOperationSelection";
 import { IAgenticaPrompt } from "./structures/IAgenticaPrompt";
 import { IAgenticaProps } from "./structures/IAgenticaProps";
-import { IAgenticaProvider } from "./structures/IAgenticaProvider";
 import { IAgenticaTokenUsage } from "./structures/IAgenticaTokenUsage";
+import { IAgenticaVendor } from "./structures/IAgenticaVendor";
 
 /**
  * Nestia A.I. chatbot agent.
@@ -33,7 +33,7 @@ import { IAgenticaTokenUsage } from "./structures/IAgenticaTokenUsage";
  *
  * - Constructors
  *   - {@link IAgenticaProps}
- *   - {@link IAgenticaProvider}
+ *   - {@link IAgenticaVendor}
  *   - {@link IAgenticaController}
  *   - {@link IAgenticaConfig}
  *   - {@link IAgenticaSystemPrompt}
@@ -146,10 +146,10 @@ export class Agentica<Model extends ILlmSchema.Model> {
   }
 
   /**
-   * Get LLM Provider.
+   * Get LLM vendor.
    */
-  public getProvider(): IAgenticaProvider {
-    return this.props.provider;
+  public getVendor(): IAgenticaVendor {
+    return this.props.vendor;
   }
 
   /**
@@ -225,15 +225,15 @@ export class Agentica<Model extends ILlmSchema.Model> {
           source: kind,
           body: {
             ...body,
-            model: this.props.provider.model,
+            model: this.props.vendor.model,
           },
-          options: this.props.provider.options,
+          options: this.props.vendor.options,
         };
         await dispatch(event);
 
         // completion
         const completion: OpenAI.ChatCompletion =
-          await this.props.provider.api.chat.completions.create(
+          await this.props.vendor.api.chat.completions.create(
             event.body,
             event.options,
           );

@@ -24,7 +24,7 @@ export const test_base_websocket = async (): Promise<void | false> => {
   await server.open(port, async (acceptor) => {
     const agent: Agentica<"chatgpt"> = new Agentica({
       model: "chatgpt",
-      provider: {
+      vendor: {
         model: "gpt-4o-mini",
         api: new OpenAI({
           apiKey: TestGlobal.env.CHATGPT_API_KEY,
