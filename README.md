@@ -68,6 +68,10 @@ Until that, please satisfy with README document of each module.
     - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#setup)
     - [Server Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#server-application)
     - [Client Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#client-application)
+  - [NestJS Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#nestjs-application)
+    - [Bootstrap](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#bootstrap)
+    - [API Controller](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#api-controller)
+    - [Software Development Kit](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#software-development-kit)
   - [Principles](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#principles)
     - [Remote Procedure Call](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#remote-procedure-call)
 
