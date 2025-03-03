@@ -128,7 +128,7 @@ You can integrate `@agentica` with [NestJS Framework](https://nestjs.com) utiliz
 At first, create a boilerplate project of NestJS combined with Nestia by running `npx nesta start` command. And then install `@agentica/rpc` with its dependency packages.
 
 ```typescript
-import { WebSocketAcceptor } from "@nestia/core";
+import { WebSocketAdaptor } from "@nestia/core";
 import { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
@@ -144,7 +144,7 @@ export class MyBackend {
     //----
     // MOUNT CONTROLLERS
     this.application_ = await NestFactory.create(MyModule, { logger: false });
-    WebSocketAcceptor.upgrade(this.application_);
+    WebSocketAdaptor.upgrade(this.application_);
     ...
   }
 }
