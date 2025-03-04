@@ -270,18 +270,18 @@ Just develop a TypeScript class which contains agent feature like Vector Store, 
 sequenceDiagram
 actor User
 actor Agent
-participant Planner
+participant Caller
 participant Describer
 activate User
 User-->>Agent: Conversate:<br/>user says
 activate Agent
-Agent->>Planner: Deliver conversation text
-activate Planner
+Agent->>Caller: Deliver conversation text
+activate Caller
 deactivate User
-Note over Planner: Select or remove candidate functions
+Note over Caller: Select or remove candidate functions
 alt No candidate
-  Planner->>Agent: Talk like plain LLM
-  deactivate Planner
+  Caller->>Agent: Talk like plain LLM
+  deactivate Caller
   Agent->>User: Conversate:<br/>agent says
   activate User
   deactivate User
@@ -289,12 +289,12 @@ end
 deactivate Agent
 loop Candidate functions exist
   activate Agent
-  Agent->>Planner: Deliver conversation text
-  activate Planner
+  Agent->>Caller: Deliver conversation text
+  activate Caller
   alt Contexts are enough
-    Note over Planner: Call fulfilled functions
-    Planner->>Describer: Function call histories
-    deactivate Planner
+    Note over Caller: Call fulfilled functions
+    Caller->>Describer: Function call histories
+    deactivate Caller
     activate Describer
     Describer->>Agent: Describe function calls
     deactivate Describer
@@ -303,7 +303,7 @@ loop Candidate functions exist
     deactivate User
   else Contexts are not enough
     break
-      Planner->>Agent: Request more information
+      Caller->>Agent: Request more information
     end
     Agent->>User: Conversate:<br/>agent requests
     activate User
@@ -313,12 +313,12 @@ loop Candidate functions exist
 end
 ```
 
-When user says, `@agentica/micro` delivers the conversation text to the `planner` agent, which selects a function from the context.  
-If the `planner` agent does not find suitable function to select, it operates like a plain LLM model.
+When user says, `@agentica/micro` delivers the conversation text to the `caller` agent, which selects a function from the context.  
+If the `caller` agent does not find suitable function to select, it operates like a plain LLM model.
 
 Then, `@agentica/micro` executes the single selected function and passes the result to the `describer` agent, which explains the function call outcome.
 
-On the other hand, if the context is insufficient, the `planner` functions as a plain LLM and requests additional information.
+On the other hand, if the context is insufficient, the `caller` functions as a plain LLM and requests additional information.
 
 
 ### Validation Feedback
