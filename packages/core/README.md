@@ -52,19 +52,17 @@ By the way, as `typia` is a transformer library analyzing TypeScript source code
 ### Chat with Backend Server
 ```typescript
 import { IHttpLlmApplication } from "@samchon/openapi";
-import { Agentica, createHttpApplication } from "@agentica/core";
+import { Agentica, createHttpLlmApplication } from "@agentica/core";
 import OpenAI from "openai";
 import { IValidation } from "typia";
 
 const main = async (): Promise<void> => {
   // LOAD SWAGGER DOCUMENT, AND CONVERT TO LLM APPLICATION SCHEMA
   const application: IValidation<IHttpLlmApplication<"chatgpt">> =
-    createHttpApplication({
+    createHttpLlmApplication({
       model: "chatgpt",
-      document: OpenApi.convert(
-        await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(
-          (r) => r.json()
-        )
+      document: await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(
+        (r) => r.json()
       ),
     });
   if (application.success === false) {
