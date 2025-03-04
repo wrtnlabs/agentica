@@ -42,6 +42,8 @@ type Middleware = (
   next: () => Promise<void>,
 ) => Promise<void> | void;
 
+const CONVERSATE = "conversate" as const;
+
 /**
  * Nestia A.I. chatbot agent.
  *
@@ -169,7 +171,6 @@ export class Agentica {
     await this.dispatch(prompt);
     const context = this.getContext({ prompt, usage: this.token_usage_ });
 
-    const CONVERSATE = "conversate" as const;
     const middlewares = this.middlewares_.get(CONVERSATE);
     if (middlewares) {
       await Array.from(middlewares).reduce((acc, cur) => {
@@ -349,8 +350,7 @@ export class Agentica {
    */
   use(middleware: Middleware): void;
   public use(middleware: Middleware) {
-    const type = "conversate" as const;
-    __map_take(this.middlewares_, type, () => new Set()).add(middleware);
+    __map_take(this.middlewares_, CONVERSATE, () => new Set()).add(middleware);
   }
 
   private async dispatch<Event extends IAgenticaEvent>(
