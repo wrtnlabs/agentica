@@ -168,9 +168,13 @@ export class Agentica {
       role: "user",
       text: content,
     };
-    await this.dispatch(prompt);
     const context = this.getContext({ prompt, usage: this.token_usage_ });
 
+    // EXECUTE
+    const newbie: IAgenticaPrompt[] = await this.executor_(context);
+
+    // MIDDLEWARES
+    this.prompt_histories_.push(prompt, ...newbie);
     const middlewares = this.middlewares_.get(CONVERSATE);
     if (middlewares) {
       await Array.from(middlewares).reduce((acc, cur) => {
@@ -178,8 +182,8 @@ export class Agentica {
       })(context, async () => {});
     }
 
-    const newbie: IAgenticaPrompt[] = await this.executor_(context);
-    this.prompt_histories_.push(prompt, ...newbie);
+    // DISPATCH EVENT
+    await this.dispatch(prompt);
     return [prompt, ...newbie];
   }
 
