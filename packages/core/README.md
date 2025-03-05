@@ -261,7 +261,7 @@ Just develop a TypeScript class which contains agent feature like Vector Store, 
 
 Use the [@agentica/pg-selector](../pg-selector/README.md)
 
-Just initilize and set the config  
+Just initialize and set the config  
 when use this adapter, you should run the [connector-hive](https://github.com/wrtnlabs/connector-hive)  
 
 ```typescript
