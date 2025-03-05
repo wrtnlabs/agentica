@@ -1,6 +1,6 @@
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
 import { Agentica, IAgenticaOperation } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-selector";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import fs from "fs";
@@ -9,7 +9,7 @@ import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_call_pg_selector = async (): Promise<
+export const test_benchmark_call_pg_vector_selector = async (): Promise<
   void | false
 > => {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;

@@ -259,14 +259,14 @@ Just develop a TypeScript class which contains agent feature like Vector Store, 
 
 ### If you want drastically improves function selection speed
 
-Use the [@agentica/pg-selector](../pg-selector/README.md)
+Use the [@agentica/pg-vector-selector](../pg-vector-selector/README.md)
 
 Just initialize and set the config  
 when use this adapter, you should run the [connector-hive](https://github.com/wrtnlabs/connector-hive)  
 
 ```typescript
 import { Agentica } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-selector";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 
 import typia from "typia";
 
