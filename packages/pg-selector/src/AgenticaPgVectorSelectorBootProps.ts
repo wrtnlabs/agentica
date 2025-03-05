@@ -5,7 +5,7 @@ export interface IAgenticaPgVectorSelectorBootProps {
 
   /**
    * @internal
-   * @TODO apply optio
+   * @TODO apply options
    */
   _options?: {
     cache?: {
