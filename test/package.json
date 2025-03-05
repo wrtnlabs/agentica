@@ -15,7 +15,7 @@
     "@agentica/benchmark": "workspace:^",
     "@agentica/core": "workspace:^",
     "@agentica/rpc": "workspace:^",
-    "@agentica/pg-selector": "workspace:^",
+    "@agentica/pg-vector-selector": "workspace:^",
     "@nestia/e2e": "^0.8.2",
     "@samchon/openapi": "^3.0.0",
     "@samchon/shopping-api": "^0.16.0",
