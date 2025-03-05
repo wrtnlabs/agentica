@@ -18,4 +18,9 @@ Take the shopping cart to the order
 
 -------------
 
-I'll pay it with cash, and my address is (country: South Korea, city/province: Seoul, department: Wrtn Apartment, and possession is 101-1411)
+I'll pay it with cash, and my address is:
+
+  - country: South Korea
+  - city/province: Seoul
+  - department: Wrtn Apartment
+  - possession: 101-1411

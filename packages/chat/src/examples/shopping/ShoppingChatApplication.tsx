@@ -57,7 +57,9 @@ export const ShoppingChatApplication = (
       locale: props.locale,
     },
   });
-  return <AgenticaChatApplication agent={agent} />;
+  return (
+    <AgenticaChatApplication agent={agent} title="Agentica Shopping Chatbot" />
+  );
 };
 export namespace ShoppingChatApplication {
   export interface IProps {

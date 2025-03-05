@@ -30,6 +30,7 @@ import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
 
 export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   agent,
+  title,
 }: AgenticaChatMovie.IProps<Model>) => {
   //----
   // VARIABLES
@@ -239,7 +240,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
       <AppBar ref={upperDivRef} position="relative" component="div">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Agentica Chatbot
+            {title ?? "Agentica Chatbot"}
           </Typography>
           {isMobile ? (
             <>
@@ -324,6 +325,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
 export namespace AgenticaChatMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
     agent: Agentica<Model>;
+    title?: string;
   }
 }
 
