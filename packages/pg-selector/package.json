@@ -60,7 +60,7 @@
     "vitest": "^3.0.6"
   },
   "dependencies": {
-    "@wrtnlabs/connector-hive-api": "^1.4.0"
+    "@wrtnlabs/connector-hive-api": "^1.4.1"
   },
   "peerDependencies": {
     "@agentica/core": "workspace:^"
