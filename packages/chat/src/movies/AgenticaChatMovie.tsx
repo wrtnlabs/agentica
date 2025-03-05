@@ -176,6 +176,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     link.download = "nestia-chat-screenshot.png";
     link.href = dataUrl;
     link.click();
+    link.remove();
   };
 
   //----
