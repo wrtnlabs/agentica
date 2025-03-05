@@ -1,6 +1,6 @@
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
 import { Agentica, IAgenticaOperation } from "@agentica/core";
-import { PgSelector } from "@agentica/pg-selector";
+import { AgenticaPgVectorSelector } from "@agentica/pg-selector";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
 import fs from "fs";
 import OpenAI from "openai";
@@ -25,9 +25,11 @@ export const test_benchmark_select_pg_selector = async (): Promise<
   const connection: IHttpConnection = {
     host: `https://shopping-be.wrtn.ai`,
   };
-  const { selectorExecute } = PgSelector.boot<"chatgpt">(
-    `http://localhost:${TestGlobal.connectorHivePort}`,
-  );
+  const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">({
+    connectorHiveConnection: {
+      host: `http://localhost:${TestGlobal.connectorHivePort}`,
+    },
+  });
 
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",

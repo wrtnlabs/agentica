@@ -1,6 +1,6 @@
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
 import { Agentica, IAgenticaOperation } from "@agentica/core";
-import { PgSelector } from "@agentica/pg-selector";
+import { AgenticaPgVectorSelector } from "@agentica/pg-selector";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import fs from "fs";
@@ -44,9 +44,11 @@ export const test_benchmark_call_pg_selector = async (): Promise<
   );
 
   // CREATE AI AGENT
-  const { selectorExecute } = PgSelector.boot<"chatgpt">(
-    `http://localhost:${TestGlobal.connectorHivePort}`,
-  );
+  const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">({
+    connectorHiveConnection: {
+      host: `http://localhost:${TestGlobal.connectorHivePort}`,
+    },
+  });
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
     vendor: {
