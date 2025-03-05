@@ -20,7 +20,8 @@ export namespace AgenticaTokenUsageAggregator {
 
     // PROMPT
     component.input.total += props.completionUsage.prompt_tokens;
-
+    component.input.total +=
+      props.completionUsage.prompt_tokens_details?.audio_tokens ?? 0;
     component.input.cached +=
       props.completionUsage.prompt_tokens_details?.cached_tokens ?? 0;
 
