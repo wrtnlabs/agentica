@@ -1,9 +1,7 @@
 {
   "name": "@agentica/pg-selector",
   "version": "0.1.0",
-  "main": "lib/index.js",
-  "module": "lib/index.mjs",
-  "typings": "lib/index.d.ts",
+  "main": "src/index.ts",
   "description": "Super A.I. Chatbot agent by Swagger Document",
   "scripts": {
     "build": "tsc && rollup -c",
