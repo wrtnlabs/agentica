@@ -1,5 +1,5 @@
 {
-  "name": "@agentica/connector-hive-adapter",
+  "name": "@agentica/pg-selector",
   "version": "0.1.0",
   "main": "lib/index.js",
   "module": "lib/index.mjs",

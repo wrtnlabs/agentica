@@ -1,14 +1,15 @@
-import { AgenticaSelectBenchmark } from "@agentica/benchmark";
-import { ConnectorHiveAdapter } from "@agentica/connector-hive-adapter";
+import { AgenticaCallBenchmark } from "@agentica/benchmark";
 import { Agentica, IAgenticaOperation } from "@agentica/core";
+import { PgSelector } from "@agentica/pg-selector";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
+import ShoppingApi from "@samchon/shopping-api";
 import fs from "fs";
 import OpenAI from "openai";
 import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_select_connector_hive_adapter = async (): Promise<
+export const test_benchmark_call_pg_selector = async (): Promise<
   void | false
 > => {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
@@ -21,14 +22,31 @@ export const test_benchmark_select_connector_hive_adapter = async (): Promise<
   ) {
     return false;
   }
-
+  // HANDLESHAKE WITH SHOPPING BACKEND
   const connection: IHttpConnection = {
     host: `https://shopping-be.wrtn.ai`,
   };
-  const { selectorExecute } = ConnectorHiveAdapter.boot<"chatgpt">(
-    `http://localhost:${TestGlobal.connectorHivePort}`,
+  await ShoppingApi.functional.shoppings.customers.authenticate.create(
+    connection,
+    {
+      channel_code: "samchon",
+      external_user: null,
+      href: "http://localhost:3000/@agentica/core/test_benchmark_call",
+      referrer: "http://localhost:3000/NodeJS",
+    },
+  );
+  await ShoppingApi.functional.shoppings.customers.authenticate.activate(
+    connection,
+    {
+      mobile: "821012345678",
+      name: "John Doe",
+    },
   );
 
+  // CREATE AI AGENT
+  const { selectorExecute } = PgSelector.boot<"chatgpt">(
+    `http://localhost:${TestGlobal.connectorHivePort}`,
+  );
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
     vendor: {
@@ -57,6 +75,7 @@ export const test_benchmark_select_connector_hive_adapter = async (): Promise<
     },
   });
 
+  // DO BENCHMARK
   const find = (
     method: OpenApi.Method,
     path: string,
@@ -72,8 +91,8 @@ export const test_benchmark_select_connector_hive_adapter = async (): Promise<
     if (!found) throw new Error(`Operation not found: ${method} ${path}`);
     return found;
   };
-  const benchmark: AgenticaSelectBenchmark<"chatgpt"> =
-    new AgenticaSelectBenchmark({
+  const benchmark: AgenticaCallBenchmark<"chatgpt"> = new AgenticaCallBenchmark(
+    {
       agent,
       config: {
         repeat: 4,
@@ -135,11 +154,13 @@ export const test_benchmark_select_connector_hive_adapter = async (): Promise<
           },
         },
       ],
-    });
+    },
+  );
   await benchmark.execute();
 
+  // REPORT
   const docs: Record<string, string> = benchmark.report();
-  const root: string = `${TestGlobal.ROOT}/docs/benchmarks/select`;
+  const root: string = `${TestGlobal.ROOT}/docs/benchmarks/call`;
 
   await rmdir(root);
   for (const [key, value] of Object.entries(docs)) {

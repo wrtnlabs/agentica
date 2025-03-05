@@ -20,7 +20,7 @@ const useEmbeddedContext = <SchemaModel extends ILlmSchema.Model>() => {
   ] as const;
 };
 
-export namespace ConnectorHiveAdapter {
+export namespace PgSelector {
   export const boot = <SchemaModel extends ILlmSchema.Model>(
     connectorHiveHost: string,
 
