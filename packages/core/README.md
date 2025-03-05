@@ -257,6 +257,50 @@ In the `@agentica/core`, you can implement multi-agent orchestration super easil
 Just develop a TypeScript class which contains agent feature like Vector Store, and just deliver the TypeScript class type to the `@agentica/core` like above. The `@agentica/core` will centralize and realize the multi-agent orchestration by LLM function calling strategy to the TypeScript class.
 
 
+### If you want drastically improves function selection speed
+
+Use the [@agentica/pg-selector](../pg-selector/README.md)
+
+Just initilize and set the config  
+when use this adapter, you should run the [connector-hive](https://github.com/wrtnlabs/connector-hive)  
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { PgSelector } from "@agentica/pg-selector";
+
+import typia from "typia";
+
+
+// Initialize with connector-hive server
+const { selectorExecute } = PgSelector.boot<"chatgpt">(
+  'https://your-connector-hive-server.com'
+);
+
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: process.env.CHATGPT_API_KEY,
+    }),
+  },
+  controllers: [
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+  config: {
+    executor: {
+      select: selectorExecute,
+    }
+  }
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```
 
 
 ## Principles
