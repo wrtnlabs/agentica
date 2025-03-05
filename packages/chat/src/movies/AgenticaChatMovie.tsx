@@ -171,8 +171,8 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   const capture = async () => {
     if (bodyContainerRef.current === null) return;
 
-    const dataUrl = await toPng(bodyContainerRef.current);
-    var link = document.createElement("a");
+    const dataUrl = await toPng(bodyContainerRef.current, {});
+    const link = document.createElement("a");
     link.download = "nestia-chat-screenshot.png";
     link.href = dataUrl;
     link.click();
@@ -199,6 +199,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
           width: "100%",
           minHeight: "100%",
           backgroundColor: "lightblue",
+          margin: 0,
         }}
         ref={bodyContainerRef}
       >
