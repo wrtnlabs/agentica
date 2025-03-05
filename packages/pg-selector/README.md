@@ -11,13 +11,13 @@ A library that significantly accelerates AI function selection through vector em
 
 ```typescript
 import { Agentica } from "@agentica/core";
-import { ConnectorHiveAdapter } from "@agentica/pg-selector";
+import { PgSelector } from "@agentica/pg-selector";
 
 import typia from "typia";
 
 
 // Initialize with connector-hive server
-const { selectorExecute } = ConnectorHiveAdapter.boot<"chatgpt">(
+const { selectorExecute } = PgSelector.boot<"chatgpt">(
   'https://your-connector-hive-server.com'
 );
 
@@ -67,9 +67,9 @@ To use pg-selector, you need:
 First, initialize the library with your connector-hive server:
 
 ```typescript
-import { ConnectorHiveAdapter } from 'pg-selector';
+import { PgSelector } from 'pg-selector';
 
-const { selectorExecute } = ConnectorHiveAdapter.boot<YourSchemaModel>(
+const { selectorExecute } = PgSelector.boot<YourSchemaModel>(
   'https://your-connector-hive-server.com'
 );
 ```
