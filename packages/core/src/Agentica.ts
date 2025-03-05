@@ -1,5 +1,6 @@
 import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
+import { Stream } from "openai/streaming";
 
 import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
@@ -126,7 +127,16 @@ export class Agentica<Model extends ILlmSchema.Model> {
       role: "user",
       text: content,
     };
-    await this.dispatch(prompt);
+    await this.dispatch({
+      ...prompt,
+      stream: new ReadableStream({
+        start: (controller) => {
+          controller.enqueue(content);
+          controller.close();
+        },
+      }),
+      join: () => Promise.resolve(content),
+    });
 
     const newbie: IAgenticaPrompt<Model>[] = await this.executor_(
       this.getContext({
@@ -226,17 +236,25 @@ export class Agentica<Model extends ILlmSchema.Model> {
           body: {
             ...body,
             model: this.props.vendor.model,
+            stream: true,
           },
           options: this.props.vendor.options,
         };
         await dispatch(event);
 
         // completion
-        const completion: OpenAI.ChatCompletion =
+        const completion: Stream<OpenAI.ChatCompletionChunk> =
           await this.props.vendor.api.chat.completions.create(
             event.body,
             event.options,
           );
+          completion.
+
+        const reader = completion.toReadableStream().getReader();
+
+        reader.closed.then((v) => {
+          console.log("closed", v);
+        });
         AgenticaTokenUsageAggregator.aggregate({
           kind,
           completion,

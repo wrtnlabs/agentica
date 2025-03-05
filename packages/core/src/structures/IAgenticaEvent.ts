@@ -41,6 +41,7 @@ export namespace IAgenticaEvent {
   /**
    * Event of initializing the chatbot.
    */
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface IInitialize extends IBase<"initialize"> {}
 
   /**
@@ -155,9 +156,14 @@ export namespace IAgenticaEvent {
     executions: IAgenticaPrompt.IExecute<Model>[];
 
     /**
-     * Description text.
+     * Description text stream.
      */
-    text: string;
+    stream: ReadableStream<string>;
+
+    /**
+     * Get the description text.
+     */
+    join: () => Promise<string>;
   }
 
   /**
@@ -170,9 +176,14 @@ export namespace IAgenticaEvent {
     role: "assistant" | "user";
 
     /**
-     * The text content.
+     * The text content stream.
      */
-    text: string;
+    stream: ReadableStream<string>;
+
+    /**
+     * Get the description text.
+     */
+    join: () => Promise<string>;
   }
 
   /**
@@ -187,7 +198,7 @@ export namespace IAgenticaEvent {
     /**
      * Request body.
      */
-    body: OpenAI.ChatCompletionCreateParamsNonStreaming;
+    body: OpenAI.ChatCompletionCreateParamsStreaming;
 
     /**
      * Options for the request.
