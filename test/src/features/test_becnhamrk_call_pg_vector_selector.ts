@@ -9,7 +9,7 @@ import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_call_pg_selector = async (): Promise<
+export const test_benchmark_call_pg_vector_selector = async (): Promise<
   void | false
 > => {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
