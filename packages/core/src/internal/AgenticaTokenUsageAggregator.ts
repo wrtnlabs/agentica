@@ -1,14 +1,14 @@
-import OpenAI from "openai";
+import { CompletionUsage } from "openai/resources";
 
 import { IAgenticaTokenUsage } from "../structures/IAgenticaTokenUsage";
 
 export namespace AgenticaTokenUsageAggregator {
   export const aggregate = (props: {
     kind: Exclude<keyof IAgenticaTokenUsage, "aggregate">;
-    completion: OpenAI.ChatCompletion;
+    completionUsage: CompletionUsage;
     usage: IAgenticaTokenUsage;
   }): void => {
-    if (!props.completion.usage) return;
+    if (!props.completionUsage) return;
 
     //----
     // COMPONENT
@@ -16,32 +16,37 @@ export namespace AgenticaTokenUsageAggregator {
     const component: IAgenticaTokenUsage.IComponent = props.usage[props.kind];
 
     // TOTAL
-    component.total += props.completion.usage.total_tokens;
+    component.total += props.completionUsage.total_tokens;
 
     // PROMPT
-    component.input.total += props.completion.usage.prompt_tokens;
-    props.completion.usage.prompt_tokens_details?.audio_tokens ?? 0;
+    component.input.total += props.completionUsage.prompt_tokens;
+
     component.input.cached +=
-      props.completion.usage.prompt_tokens_details?.cached_tokens ?? 0;
+      props.completionUsage.prompt_tokens_details?.cached_tokens ?? 0;
 
     // COMPLETION
-    component.output.total += props.completion.usage.total_tokens;
+    component.output.total += props.completionUsage.total_tokens;
     component.output.accepted_prediction +=
-      props.completion.usage.completion_tokens_details
+      props.completionUsage.completion_tokens_details
         ?.accepted_prediction_tokens ?? 0;
     component.output.reasoning +=
-      props.completion.usage.completion_tokens_details?.reasoning_tokens ?? 0;
+      props.completionUsage.completion_tokens_details?.reasoning_tokens ?? 0;
     component.output.rejected_prediction +=
-      props.completion.usage.completion_tokens_details
+      props.completionUsage.completion_tokens_details
         ?.rejected_prediction_tokens ?? 0;
 
     //----
     // RE-AGGREGATE
     //----
     const sum = (getter: (comp: IAgenticaTokenUsage.IComponent) => number) =>
-      Object.entries(props.usage)
+      (
+        Object.entries(props.usage) as [
+          keyof IAgenticaTokenUsage,
+          IAgenticaTokenUsage.IComponent,
+        ][]
+      )
         .filter(([key]) => key !== "aggregate")
-        .map(([_, comp]) => getter(comp))
+        .map(([, comp]) => getter(comp))
         .reduce((a, b) => a + b, 0);
     const aggregate: IAgenticaTokenUsage.IComponent = props.usage.aggregate;
     aggregate.total = sum((comp) => comp.total);
