@@ -49,7 +49,7 @@ const Application = () => {
       <hr />
       <List sx={{ width: "100%", maxWidth: 720, bgcolor: "background.paper" }}>
         <Section
-          href="./playground.html"
+          href="./playground/"
           title="Agentica Playground"
           summary="Test your backend server's AI chatbot"
           icon={<FeaturedPlayListIcon />}
@@ -64,7 +64,7 @@ const Application = () => {
         />
         <Divider variant="inset" component="li" />
         <Section
-          href="./shopping.html"
+          href="./shopping/"
           title="Shopping AI Chatbot"
           summary="AI chatbot by Swagger document"
           icon={<AddShoppingCartIcon />}
@@ -93,21 +93,21 @@ const Application = () => {
         />
         <Divider variant="inset" component="li" />
         <Section
-          href="./bbs.html"
+          href="./bbs/"
           title="BBS AI Chatbot"
           summary="AI chatbot by TypeScript Class"
           icon={<DescriptionIcon />}
           description={
             <React.Fragment>
               <p>
-                BBS (Bullet-in Board System) AI chatbot posting articles just
-                by conversation texts.
+                BBS (Bullet-in Board System) AI chatbot posting articles just by
+                conversation texts.
               </p>
               <p>
                 This example project has been developed to demonstrate{" "}
-                <code>{"typia.llm.application<App, Model>()"}</code> function 
-                which can generate LLM (Large Language Model) function
-                calling application schema from a TypeScript class type.
+                <code>{"typia.llm.application<App, Model>()"}</code> function
+                which can generate LLM (Large Language Model) function calling
+                application schema from a TypeScript class type.
               </p>
               <p>
                 If you've developed a TypeScript facade class, then you can chat

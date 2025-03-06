@@ -237,11 +237,14 @@ export class Agentica<Model extends ILlmSchema.Model> {
             event.body,
             event.options,
           );
-        AgenticaTokenUsageAggregator.aggregate({
-          kind,
-          completion,
-          usage: props.usage,
-        });
+
+        if (completion.usage) {
+          AgenticaTokenUsageAggregator.aggregate({
+            kind,
+            completionUsage: completion.usage,
+            usage: props.usage,
+          });
+        }
         await dispatch({
           type: "response",
           source: kind,

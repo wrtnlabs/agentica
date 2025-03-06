@@ -22,8 +22,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { ILlmSchema } from "@samchon/openapi";
-import html2canvas from "html2canvas";
-import fileDownload from "js-file-download";
+import { toPng } from "html-to-image";
 import React, { useEffect, useRef, useState } from "react";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
@@ -31,6 +30,7 @@ import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
 
 export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   agent,
+  title,
 }: AgenticaChatMovie.IProps<Model>) => {
   //----
   // VARIABLES
@@ -171,20 +171,13 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
 
   const capture = async () => {
     if (bodyContainerRef.current === null) return;
-    const canvas: HTMLCanvasElement = await html2canvas(
-      bodyContainerRef.current,
-      {
-        scrollX: 0,
-        scrollY: 0,
-        width: bodyContainerRef.current.scrollWidth,
-        height: bodyContainerRef.current.scrollHeight,
-        useCORS: true,
-      },
-    );
-    canvas.toBlob((blob) => {
-      if (blob === null) return;
-      fileDownload(blob, "nestia-chat-screenshot.png");
-    });
+
+    const dataUrl = await toPng(bodyContainerRef.current, {});
+    const link = document.createElement("a");
+    link.download = "nestia-chat-screenshot.png";
+    link.href = dataUrl;
+    link.click();
+    link.remove();
   };
 
   //----
@@ -193,22 +186,30 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   const theme: Theme = useTheme();
   const isMobile: boolean = useMediaQuery(theme.breakpoints.down("lg"));
   const bodyMovie = (): JSX.Element => (
-    <Container
-      ref={bodyContainerRef}
-      maxWidth={false}
+    <div
       style={{
-        marginBottom: 15,
-        paddingBottom: 50,
-        width: isMobile ? "100%" : `calc(100% - ${SIDE_WIDTH}px)`,
+        overflowY: "auto",
         height: "100%",
-        overflowY: "scroll",
+        width: isMobile ? "100%" : `calc(100% - ${SIDE_WIDTH}px)`,
+        margin: 0,
         backgroundColor: "lightblue",
       }}
     >
-      {histories
-        .map((prompt) => <AgenticaChatMessageMovie prompt={prompt} />)
-        .filter((elem) => elem !== null)}
-    </Container>
+      <Container
+        style={{
+          paddingBottom: 50,
+          width: "100%",
+          minHeight: "100%",
+          backgroundColor: "lightblue",
+          margin: 0,
+        }}
+        ref={bodyContainerRef}
+      >
+        {histories
+          .map((prompt) => <AgenticaChatMessageMovie prompt={prompt} />)
+          .filter((elem) => elem !== null)}
+      </Container>
+    </div>
   );
   const sideMovie = (): JSX.Element => (
     <div
@@ -239,7 +240,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
       <AppBar ref={upperDivRef} position="relative" component="div">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Agentica Chatbot
+            {title ?? "Agentica Chatbot"}
           </Typography>
           {isMobile ? (
             <>
@@ -324,6 +325,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
 export namespace AgenticaChatMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
     agent: Agentica<Model>;
+    title?: string;
   }
 }
 
