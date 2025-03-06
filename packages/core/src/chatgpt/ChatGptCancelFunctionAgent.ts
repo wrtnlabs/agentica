@@ -19,6 +19,7 @@ import { IAgenticaOperationSelection } from "../structures/IAgenticaOperationSel
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 import { __IChatCancelFunctionsApplication } from "../structures/internal/__IChatCancelFunctionsApplication";
 import { __IChatFunctionReference } from "../structures/internal/__IChatFunctionReference";
+import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptCancelFunctionAgent {
@@ -118,7 +119,7 @@ export namespace ChatGptCancelFunctionAgent {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("cancel", {
+    const completionStream = await ctx.request("cancel", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -188,6 +189,15 @@ export namespace ChatGptCancelFunctionAgent {
       tool_choice: "auto",
       parallel_tool_calls: true,
     });
+
+    const reader = completionStream.getReader();
+    const chunks: OpenAI.ChatCompletionChunk[] = [];
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const completion = ChatGptCompletionMessageUtil.merge(chunks);
 
     //----
     // VALIDATION

@@ -7,6 +7,7 @@ import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { IAgenticaContext } from "../structures/IAgenticaContext";
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 import { __IChatInitialApplication } from "../structures/internal/__IChatInitialApplication";
+import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptInitializeFunctionAgent {
@@ -16,7 +17,7 @@ export namespace ChatGptInitializeFunctionAgent {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("initialize", {
+    const completionStream = await ctx.request("initialize", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -53,6 +54,15 @@ export namespace ChatGptInitializeFunctionAgent {
       parallel_tool_calls: false,
     });
 
+    const reader = completionStream.getReader();
+    const chunks: OpenAI.ChatCompletionChunk[] = [];
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const completion = ChatGptCompletionMessageUtil.merge(chunks);
+
     //----
     // PROCESS COMPLETION
     //----
@@ -61,12 +71,14 @@ export namespace ChatGptInitializeFunctionAgent {
       if (
         choice.message.role === "assistant" &&
         !!choice.message.content?.length
-      )
+      ) {
+        // @TODO this logic should call the dispatch function
         prompts.push({
           type: "text",
           role: "assistant",
           text: choice.message.content,
         });
+      }
     }
     if (
       completion.choices.some(

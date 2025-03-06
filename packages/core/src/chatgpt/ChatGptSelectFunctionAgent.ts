@@ -11,6 +11,7 @@ import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaPromptFactory } from "../internal/AgenticaPromptFactory";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
+import { StreamUtil } from "../internal/StreamUtil";
 import { IAgenticaContext } from "../structures/IAgenticaContext";
 import { IAgenticaController } from "../structures/IAgenticaController";
 import { IAgenticaEvent } from "../structures/IAgenticaEvent";
@@ -19,6 +20,7 @@ import { IAgenticaOperationSelection } from "../structures/IAgenticaOperationSel
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 import { __IChatFunctionReference } from "../structures/internal/__IChatFunctionReference";
 import { __IChatSelectFunctionsApplication } from "../structures/internal/__IChatSelectFunctionsApplication";
+import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptSelectFunctionAgent {
@@ -99,7 +101,7 @@ export namespace ChatGptSelectFunctionAgent {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("select", {
+    const completionStream = await ctx.request("select", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -170,6 +172,14 @@ export namespace ChatGptSelectFunctionAgent {
       parallel_tool_calls: false,
     });
 
+    const reader = completionStream.getReader();
+    const chunks: OpenAI.ChatCompletionChunk[] = [];
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    const completion = ChatGptCompletionMessageUtil.merge(chunks);
     //----
     // VALIDATION
     //----
@@ -241,7 +251,11 @@ export namespace ChatGptSelectFunctionAgent {
           text: choice.message.content,
         };
         prompts.push(text);
-        await ctx.dispatch(text);
+        await ctx.dispatch({
+          ...text,
+          stream: StreamUtil.to(text.text),
+          join: () => Promise.resolve(text.text),
+        });
       }
     }
     return prompts;

@@ -1,10 +1,13 @@
 import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
+import { Stream } from "openai/streaming";
 
 import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
+import { ChatGptCompletionMessageUtil } from "./chatgpt/ChatGptCompletionMessageUtil";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
 import { AgenticaPromptTransformer } from "./internal/AgenticaPromptTransformer";
 import { AgenticaTokenUsageAggregator } from "./internal/AgenticaTokenUsageAggregator";
+import { StreamUtil } from "./internal/StreamUtil";
 import { __map_take } from "./internal/__map_take";
 import { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import { IAgenticaContext } from "./structures/IAgenticaContext";
@@ -126,7 +129,11 @@ export class Agentica<Model extends ILlmSchema.Model> {
       role: "user",
       text: content,
     };
-    await this.dispatch(prompt);
+    await this.dispatch({
+      ...prompt,
+      stream: StreamUtil.to(content),
+      join: () => Promise.resolve(content),
+    });
 
     const newbie: IAgenticaPrompt<Model>[] = await this.executor_(
       this.getContext({
@@ -226,33 +233,59 @@ export class Agentica<Model extends ILlmSchema.Model> {
           body: {
             ...body,
             model: this.props.vendor.model,
+            stream: true,
           },
           options: this.props.vendor.options,
         };
         await dispatch(event);
 
         // completion
-        const completion: OpenAI.ChatCompletion =
+        const completion: Stream<OpenAI.ChatCompletionChunk> =
           await this.props.vendor.api.chat.completions.create(
             event.body,
             event.options,
           );
 
-        if (completion.usage) {
-          AgenticaTokenUsageAggregator.aggregate({
-            kind,
-            completionUsage: completion.usage,
-            usage: props.usage,
-          });
-        }
+        const [streamForEvent, temporaryStream] = (
+          completion.toReadableStream() as ReadableStream<OpenAI.ChatCompletionChunk>
+        ).tee();
+        const [streamForAggregate, streamForReturn] = temporaryStream.tee();
+
+        void (async () => {
+          const reader = streamForAggregate.getReader();
+          while (true) {
+            const chunk = await reader.read();
+            if (chunk.done) break;
+            if (chunk.value.usage) {
+              AgenticaTokenUsageAggregator.aggregate({
+                kind,
+                completionUsage: chunk.value.usage,
+                usage: props.usage,
+              });
+            }
+          }
+        })();
+
         await dispatch({
           type: "response",
           source: kind,
+          stream: streamForEvent,
           body: event.body,
           options: event.options,
-          value: completion,
+          join: async () => {
+            const chunks: OpenAI.ChatCompletionChunk[] = [];
+            const reader = streamForEvent.getReader();
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+            }
+
+            return ChatGptCompletionMessageUtil.merge(chunks);
+          },
         });
-        return completion;
+
+        return streamForReturn;
       },
       initialize: async () => {
         this.ready_ = true;
