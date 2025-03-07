@@ -1,0 +1,179 @@
+---
+title: Agentica > Guide Documents > Setup
+---
+import { Tabs } from 'nextra/components'
+
+## Boilerplate
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
+```bash filename="Terminal"
+npx agentica start <directory> 
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+npx agentica start <directory> --manager pnpm
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+# YARN BERRY IS NOT SUPPORTED
+npx agentica start <directory> --manager yarn
+```
+  </Tabs.Tab>
+</Tabs>
+
+You can start `@agentica` development from boilerplate composition CLI.
+
+If you run `npx agentica start <directory>` command, the CLI (Command Line Interface) prompt will ask what type of package manager you want to adapt, and which type of project you wanna create. And then it will fill some useful controllers (embedded functions) into the project.
+
+```bash filename="Terminal"
+$ npx agentica start my-project-directory
+
+----------------------------------------
+ Agentica Setup Wizard
+----------------------------------------
+? Package Manager (use arrow keys)
+  > npm
+    pnpm
+    yarn (berry is not supported)
+? Project Type
+     NodeJS Agent Server
+   > NestJS Agent Server
+     React Client Application
+     Standalone Application
+? Embedded Controllers (multi-selectable)
+   > Nothing
+     Google Calendar
+     Google News
+     Github
+     Reddit
+     Slack
+     ...
+```
+
+About the project types, there are four options you can choose. 
+
+The first **NodeJS server** is an Agentic AI server built in NodeJS with WebSocket protocol. And the second **NestJS server** is the same thing with NodeJS server, but composing backend server with [NestJS](https://nestjs.com) and [Nestia](https://nestia.io). The third React client application is a frontend application built in React connecting to the previous WebSocket server.
+
+When you've determined the project type as "NodeJS server" or "NestJS server", the CLI will ask you to select embedded controllers. The embedded controllers are the pre-built functions you can use in your agent like "Google Calender" or "Github" cases. You can embed multiple pre-built controllers unless you select "Nothing".
+
+> [!WARNING]
+>
+> Standalone frontend application.
+>
+> The last standalone option constructs a frontend application that composing the agent in the frontend environment without any backend server interaction. 
+>
+> It must be not for production, but only for the testing environment. If you distribute the standalone to the production, your LLM API key would be exposed to the public.
+
+
+
+
+## Core Library
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
+```bash filename="Terminal"
+npm install @agentica/core @samchon/openapi typia
+npx typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+pnpm install @agentica/core @samchon/openapi typia
+pnpm typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+# YARN BERRY IS NOT SUPPORTED
+yarn add @agentica/core @samchon/openapi typia
+yarn typia setup
+```
+  </Tabs.Tab>
+</Tabs>
+
+To install `@agentica/core`, you also have to install [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://github.com/samchon/typia).
+
+`@samchon/openapi` is an OpenAPI specification library which can convert Swagger/OpenAPI document to LLM function calling schema. And `typia` is a transformer (compiler) library which can compose LLM function calling schema from a TypeScript class type.
+
+By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`. 
+
+If you're not using non-standard TypeScript compiler (not `tsc`) or developing the agent in the frontend environment, you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) too.
+
+
+
+
+## WebSocket Protocol
+### NodeJS Server
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
+```bash filename="Terminal"
+npm install @agentica/core @samchon/openapi typia
+npm install @agentica/rpc tgrid
+npx typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+pnpm install @agentica/core @samchon/openapi typia
+pnpm install @agentica/rpc tgrid
+pnpm typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+# YARN BERRY IS NOT SUPPORTED
+yarn add @agentica/core @samchon/openapi typia
+yarn add @agentica/rpc tgrid
+yarn typia setup
+```
+  </Tabs.Tab>
+</Tabs>
+
+### NestJS Server
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
+```bash filename="Terminal"
+npm install -D nestia
+npx nestia setup
+
+npm install @agentica/core @samchon/openapi
+npm install @agentica/rpc tgrid
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+pnpm install -D nestia
+pnpm nestia setup
+
+pnpm install @agentica/core @samchon/openapi
+pnpm install @agentica/rpc tgrid
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+# YARN BERRY IS NOT SUPPORTED
+yarn add -D nestia
+yarn nestia setup
+
+yarn install @agentica/core @samchon/openapi
+yarn install @agentica/rpc tgrid
+```
+  </Tabs.Tab>
+</Tabs>
+
+### Client Application
+```bash filename="Terminal"
+npm install @agentica/rpc tgrid
+```
+
+
+
+
+## Standalone Application
+```bash filename="Terminal"
+npm install @agentica/core @samchon/openapi typia
+npx typia setup
+
+npm install -D unplugin-typia
+```

@@ -1,2 +1,7 @@
+.next/
 typedoc-json/
+
 public/api/
+public/playground/
+public/robots.txt
+public/sitemap*.xml
