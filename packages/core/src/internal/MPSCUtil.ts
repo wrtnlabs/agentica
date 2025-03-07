@@ -35,9 +35,8 @@ export namespace MPSCUtil {
 
     enqueue(item: T) {
       this.queue.push(item);
-
       if (this.resolvers.length > 0) {
-        this.resolvers.shift()?.({ value: item, done: false });
+        this.resolvers.shift()?.({ value: this.queue.shift()!, done: false });
       }
     }
 
@@ -46,7 +45,6 @@ export namespace MPSCUtil {
         return { value: this.queue.shift()!, done: false };
       }
       if (this.closed) return { value: undefined, done: true };
-
       return new Promise((resolve) => this.resolvers.push(resolve));
     }
 

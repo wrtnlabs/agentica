@@ -48,6 +48,23 @@ export async function test_async_queue_base(): Promise<void | false> {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const duplicatedResult: false | IteratorResult<string, undefined> =
+    (await Promise.race([
+      emptyQueue.dequeue(),
+      new Promise((resolve) => setTimeout(resolve, 0, false)),
+    ])) as any;
+
+  if (
+    duplicatedResult !== false &&
+    duplicatedResult.value === "delayed item" &&
+    duplicatedResult.done === false
+  ) {
+    throw new Error(
+      `Duplicated dequeue test failed: Expected {value: "delayed item", done: false}, got ${JSON.stringify(duplicatedResult)}`,
+    );
+  }
+
   // Test case 3: Close queue
   const closeQueue = new MPSCUtil.AsyncQueue<number>();
   closeQueue.enqueue(42);

@@ -41,7 +41,6 @@ export namespace StreamUtil {
 
     return new ReadableStream<R>({
       pull: async (controller) => {
-        console.log("pull", new Error().stack);
         const { done, value } = await reader.read();
         if (!done) {
           controller.enqueue(transformer(value));

@@ -41,7 +41,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   const streamContentPieces: string[] = [];
   let describeEventReceived = false;
   let describeStreamProcessed = false;
-
+  let describeJoinResult: string | undefined;
   // 계산기 컨트롤러 생성
   const calculatorController: IAgenticaController<"chatgpt"> = {
     protocol: "class",
@@ -82,48 +82,45 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   agent.on("describe", async (event) => {
     events.push(event);
     describeEventReceived = true;
-    console.log(4);
     // describe 이벤트의 스트림 처리
-    if (event.stream) {
-      describeStreamProcessed = true;
-      const reader = event.stream.getReader();
-      console.log(2);
-      while (true) {
-        const { done, value } = await reader.read().catch((e) => {
-          console.error(e);
-          return { done: true, value: undefined };
-        });
-        console.log(done, value);
-        if (done) break;
 
-        // 스트림 청크에서 텍스트 콘텐츠 추출
-        try {
-          console.log(value);
-          if (typeof value === "string") {
-            // 문자열인 경우 직접 저장
-            streamContentPieces.push(value);
-          } else {
-            console.error(value);
-            throw new Error(
-              "describe 스트림 처리 중 오류: value가 String이 아님, 즉 스트림이 String stream이 아님",
-            );
-          }
-        } catch (err) {
-          console.error("describe 스트림 처리 중 오류:", err);
+    describeStreamProcessed = true;
+    describeJoinResult = await event.join();
+
+    const reader = event.stream.getReader();
+    while (true) {
+      const { done, value } = await reader.read().catch((e) => {
+        console.error(e);
+        return { done: true, value: undefined };
+      });
+      if (done) break;
+
+      // 스트림 청크에서 텍스트 콘텐츠 추출
+      try {
+        if (typeof value === "string") {
+          // 문자열인 경우 직접 저장
+          streamContentPieces.push(value);
+        } else {
+          console.error(value);
+          throw new Error(
+            "describe 스트림 처리 중 오류: value가 String이 아님, 즉 스트림이 String stream이 아님",
+          );
         }
+      } catch (err) {
+        console.error("describe 스트림 처리 중 오류:", err);
       }
+    }
 
-      // 스트림에서 콘텐츠를 받았는지 확인
-      if (streamContentPieces.length === 0) {
-        throw new Error("describe 스트림에서 콘텐츠가 수신되지 않았습니다");
-      }
+    // 스트림에서 콘텐츠를 받았는지 확인
+    if (streamContentPieces.length === 0) {
+      throw new Error("describe 스트림에서 콘텐츠가 수신되지 않았습니다");
     }
   });
 
   // 테스트를 위한 숫자 설정
   const a = 5123123123;
   const b = 3412342134;
-  console.log(1);
+
   // 대화 시작 - 함수 호출을 유도하면서 추가 설명 요청
   const result: IAgenticaPrompt<"chatgpt">[] = await agent.conversate(
     `${a}와 ${b}를 더해주세요. 그리고 덧셈이 무엇인지 간단히 설명해주세요. calculator를 사용하세요.`,
@@ -163,11 +160,11 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   const combinedStreamContent = streamContentPieces.join("");
   if (
     combinedStreamContent.length === 0 ||
-    !aiResponse?.text.includes(combinedStreamContent.substring(0, 10))
+    aiResponse?.text !== combinedStreamContent ||
+    combinedStreamContent !== describeJoinResult
   ) {
-    console.log("text:", aiResponse?.text, "combined:", combinedStreamContent);
     throw new Error(
-      "describe 스트림 콘텐츠가 최종 응답 콘텐츠와 일치하지 않습니다",
+      "describe 스트림 콘텐츠와 최종 응답 콘텐츠, 그리고 join 결과가 일치하지 않습니다",
     );
   }
 
@@ -183,8 +180,9 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   }
 
   // calculator 도구 호출이 포함되어 있는지 확인
+
   const hasCalculatorExecution = describeEvent.executions.some(
-    (execution) => execution.name === "calculator",
+    (execution) => execution.name === "add" || execution.name === "subtract",
   );
   if (!hasCalculatorExecution) {
     throw new Error(

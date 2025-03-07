@@ -44,46 +44,54 @@ export namespace ChatGptDescribeFunctionAgent {
       Promise<OpenAI.ChatCompletion>
     >(completionStream, async (accPromise, chunk) => {
       const acc = await accPromise;
-
-      const registerContext = async (
+      const registerContext = (
         choices: OpenAI.ChatCompletionChunk.Choice[],
       ) => {
         for (const choice of choices) {
-          if (choice.delta.content) {
-            if (describeContext[choice.index]) {
-              describeContext[choice.index]!.content += choice.delta.content;
-            } else {
-              const { consumer, produce, close, waitClose } =
-                MPSCUtil.create<string>();
-
-              describeContext[choice.index] = {
-                content: choice.delta.content,
-                consumer,
-                produce,
-                close,
-                waitClose,
-              };
-
-              await ctx.dispatch({
-                type: "describe",
-                executions: histories,
-                stream: consumer,
-                join: async () => {
-                  await waitClose();
-                  return describeContext[choice.index]!.content;
-                },
-              });
-            }
+          if (choice.finish_reason) {
+            describeContext[choice.index]!.close();
+            continue;
           }
+          if (!choice.delta.content) {
+            continue;
+          }
+
+          if (describeContext[choice.index]) {
+            describeContext[choice.index]!.content += choice.delta.content;
+            describeContext[choice.index]!.produce(choice.delta.content);
+            continue;
+          }
+
+          const { consumer, produce, close, waitClose } =
+            MPSCUtil.create<string>();
+
+          describeContext[choice.index] = {
+            content: choice.delta.content,
+            consumer,
+            produce,
+            close,
+            waitClose,
+          };
+          produce(choice.delta.content);
+
+          void ctx.dispatch({
+            type: "describe",
+            executions: histories,
+            stream: consumer,
+            join: async () => {
+              await waitClose();
+              return describeContext[choice.index]!.content;
+            },
+          });
         }
       };
 
       if (acc.object === "chat.completion.chunk") {
-        await registerContext([acc, chunk].flatMap((acc) => acc.choices));
+        registerContext([acc, chunk].flatMap((acc) => acc.choices));
         return ChatGptCompletionMessageUtil.merge([acc, chunk]);
       }
 
-      await registerContext(chunk.choices);
+      registerContext(chunk.choices);
       return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
     });
 
