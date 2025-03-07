@@ -1,6 +1,4 @@
 import { ILlmSchema } from "@samchon/openapi";
-import OpenAI from "openai";
-import { Stream } from "openai/streaming";
 
 import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
 import { ChatGptCompletionMessageUtil } from "./chatgpt/ChatGptCompletionMessageUtil";
