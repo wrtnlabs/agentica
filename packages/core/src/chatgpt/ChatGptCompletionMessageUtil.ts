@@ -4,10 +4,20 @@ import {
   ChatCompletionMessage,
   ChatCompletionMessageToolCall,
 } from "openai/resources";
+import { json } from "typia";
 
+import { ByteArrayUtil } from "../internal/ByteArrayUtil";
 import { ChatGptUsageAggregator } from "./ChatGptUsageAggregator";
 
 export namespace ChatGptCompletionMessageUtil {
+  export const transformCompletionChunk = (
+    source: string | Uint8Array,
+  ): ChatCompletionChunk => {
+    const str =
+      source instanceof Uint8Array ? ByteArrayUtil.toUtf8(source) : source;
+    return json.assertParse<ChatCompletionChunk>(str);
+  };
+
   export const accumulate = (
     origin: ChatCompletion,
     chunk: ChatCompletionChunk,
@@ -29,10 +39,22 @@ export namespace ChatGptCompletionMessageUtil {
 
         logprobs: choice.logprobs ?? null,
         message: {
+          tool_calls: choice.delta.tool_calls
+            ? choice.delta.tool_calls.reduce((acc, cur) => {
+                acc[cur.index] = {
+                  id: cur.id ?? "",
+                  type: "function",
+                  function: {
+                    name: cur.function?.name ?? "",
+                    arguments: cur.function?.arguments ?? "",
+                  },
+                };
+                return acc;
+              }, [] as ChatCompletionMessageToolCall[])
+            : undefined,
           content: choice.delta.content ?? null,
           refusal: choice.delta.refusal ?? null,
           role: "assistant",
-          tool_calls: undefined,
         } satisfies ChatCompletionMessage,
       };
     });
@@ -101,7 +123,8 @@ export namespace ChatGptCompletionMessageUtil {
     }
 
     if (cur.delta.tool_calls) {
-      const toolCalls = acc.message.tool_calls ?? [];
+      acc.message.tool_calls ??= [];
+      const toolCalls = acc.message.tool_calls;
 
       cur.delta.tool_calls.forEach((toolCall) => {
         const existingToolCall = toolCalls[toolCall.index];

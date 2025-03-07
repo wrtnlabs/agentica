@@ -246,8 +246,10 @@ export class Agentica<Model extends ILlmSchema.Model> {
             event.options,
           );
 
-        const [streamForEvent, temporaryStream] = (
-          completion.toReadableStream() as ReadableStream<OpenAI.ChatCompletionChunk>
+        const [streamForEvent, temporaryStream] = StreamUtil.transform(
+          completion.toReadableStream() as ReadableStream<Uint8Array>,
+          (value) =>
+            ChatGptCompletionMessageUtil.transformCompletionChunk(value),
         ).tee();
         const [streamForAggregate, streamForReturn] = temporaryStream.tee();
 
