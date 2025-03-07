@@ -1,6 +1,7 @@
 .next/
 typedoc-json/
 
+out/
 public/api/
 public/playground/
 public/robots.txt
