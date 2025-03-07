@@ -26,7 +26,7 @@ export namespace MPSCUtil {
     };
   };
 
-  class AsyncQueue<T> {
+  export class AsyncQueue<T> {
     private queue: T[] = [];
     private resolvers: ((value: IteratorResult<T, undefined>) => void)[] = [];
     private closeResolvers: (() => void)[] = [];
@@ -35,6 +35,10 @@ export namespace MPSCUtil {
 
     enqueue(item: T) {
       this.queue.push(item);
+
+      if (this.resolvers.length > 0) {
+        this.resolvers.shift()?.({ value: item, done: false });
+      }
     }
 
     async dequeue(): Promise<IteratorResult<T, undefined>> {
