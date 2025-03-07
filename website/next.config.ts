@@ -8,6 +8,11 @@ const withNextra = nextra({
 export default withNextra({
   // ... Other Next.js config options
   basePath: "/agentica",
+  output: "export",
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
   nextThemes: {
     theme: "dark",
   },
