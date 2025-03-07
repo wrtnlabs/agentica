@@ -89,13 +89,7 @@ export namespace ChatGptCallFunctionAgent {
       >
     > = [];
 
-    const reader = completionStream.getReader();
-    const chunks: OpenAI.ChatCompletionChunk[] = [];
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
+    const chunks = await StreamUtil.readAll(completionStream);
     const completion = ChatGptCompletionMessageUtil.merge(chunks);
 
     for (const choice of completion.choices) {
@@ -421,13 +415,7 @@ export namespace ChatGptCallFunctionAgent {
       parallel_tool_calls: false,
     });
 
-    const reader = completionStream.getReader();
-    const chunks: OpenAI.ChatCompletionChunk[] = [];
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
+    const chunks = await StreamUtil.readAll(completionStream);
     const completion = ChatGptCompletionMessageUtil.merge(chunks);
     //----
     // PROCESS COMPLETION

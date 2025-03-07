@@ -4,6 +4,7 @@ import typia from "typia";
 
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
+import { StreamUtil } from "../internal/StreamUtil";
 import { IAgenticaContext } from "../structures/IAgenticaContext";
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 import { __IChatInitialApplication } from "../structures/internal/__IChatInitialApplication";
@@ -54,15 +55,8 @@ export namespace ChatGptInitializeFunctionAgent {
       parallel_tool_calls: false,
     });
 
-    const reader = completionStream.getReader();
-    const chunks: OpenAI.ChatCompletionChunk[] = [];
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
+    const chunks = await StreamUtil.readAll(completionStream);
     const completion = ChatGptCompletionMessageUtil.merge(chunks);
-
     //----
     // PROCESS COMPLETION
     //----

@@ -218,7 +218,7 @@ export namespace IAgenticaEvent {
     /**
      * Request body.
      */
-    body: OpenAI.ChatCompletionCreateParams;
+    body: OpenAI.ChatCompletionCreateParamsStreaming;
 
     /**
      * Options for the request.

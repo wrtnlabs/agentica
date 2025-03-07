@@ -240,17 +240,17 @@ export class Agentica<Model extends ILlmSchema.Model> {
         await dispatch(event);
 
         // completion
-        const completion: Stream<OpenAI.ChatCompletionChunk> =
-          await this.props.vendor.api.chat.completions.create(
-            event.body,
-            event.options,
-          );
+        const completion = await this.props.vendor.api.chat.completions.create(
+          event.body,
+          event.options,
+        );
 
         const [streamForEvent, temporaryStream] = StreamUtil.transform(
           completion.toReadableStream() as ReadableStream<Uint8Array>,
           (value) =>
             ChatGptCompletionMessageUtil.transformCompletionChunk(value),
         ).tee();
+
         const [streamForAggregate, streamForReturn] = temporaryStream.tee();
 
         void (async () => {
@@ -275,14 +275,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
           body: event.body,
           options: event.options,
           join: async () => {
-            const chunks: OpenAI.ChatCompletionChunk[] = [];
-            const reader = streamForEvent.getReader();
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              chunks.push(value);
-            }
-
+            const chunks = await StreamUtil.readAll(streamForEvent);
             return ChatGptCompletionMessageUtil.merge(chunks);
           },
         });

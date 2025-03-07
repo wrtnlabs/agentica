@@ -11,6 +11,7 @@ import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaPromptFactory } from "../internal/AgenticaPromptFactory";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
+import { StreamUtil } from "../internal/StreamUtil";
 import { IAgenticaContext } from "../structures/IAgenticaContext";
 import { IAgenticaController } from "../structures/IAgenticaController";
 import { IAgenticaEvent } from "../structures/IAgenticaEvent";
@@ -190,13 +191,7 @@ export namespace ChatGptCancelFunctionAgent {
       parallel_tool_calls: true,
     });
 
-    const reader = completionStream.getReader();
-    const chunks: OpenAI.ChatCompletionChunk[] = [];
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
+    const chunks = await StreamUtil.readAll(completionStream);
     const completion = ChatGptCompletionMessageUtil.merge(chunks);
 
     //----
