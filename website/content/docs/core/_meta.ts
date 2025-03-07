@@ -1,8 +1,9 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
-  index: "Outline",
-  swagger: "Swagger Chatbot",
-  class: "TS Class Chatbot",
+  index: "Agentic AI",
+  config: "Configurations",
+  event: "Event Structures",
+  history: "Prompt Histories",
 };
 export default meta;

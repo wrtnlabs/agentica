@@ -10,19 +10,19 @@ const meta: MetaRecord = {
     title: "📖 Features",
   },
   core: {
-    title: "Core Framework",
+    title: "Core Library",
     theme: {
       collapsed: false,
     },
   },
   websocket: {
-    title: "WebSocket Module",
+    title: "WebSocket Protocol",
     theme: {
       collapsed: false,
     },
   },
   plugins: {
-    title: "Plugin Libraries",
+    title: "Plugin Modules",
     theme: {
       collapsed: false,
     },

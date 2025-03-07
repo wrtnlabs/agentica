@@ -38,18 +38,18 @@ $ npx agentica start my-project-directory
     pnpm
     yarn (berry is not supported)
 ? Project Type
-     NodeJS Agent Server
-   > NestJS Agent Server
-     React Client Application
-     Standalone Application
+    NodeJS Agent Server
+  > NestJS Agent Server
+    React Client Application
+    Standalone Application
 ? Embedded Controllers (multi-selectable)
-   > Nothing
-     Google Calendar
-     Google News
-     Github
-     Reddit
-     Slack
-     ...
+    (none)
+    Google Calendar
+    Google News
+  > Github
+    Reddit
+    Slack
+    ...
 ```
 
 About the project types, there are four options you can choose. 
@@ -72,19 +72,19 @@ When you've determined the project type as "NodeJS server" or "NestJS server", t
 ## Core Library
 <Tabs items={['npm', 'pnpm', 'yarn']}>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 npm install @agentica/core @samchon/openapi typia
 npx typia setup
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 pnpm install @agentica/core @samchon/openapi typia
 pnpm typia setup
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 # YARN BERRY IS NOT SUPPORTED
 yarn add @agentica/core @samchon/openapi typia
 yarn typia setup
@@ -107,21 +107,21 @@ If you're not using non-standard TypeScript compiler (not `tsc`) or developing t
 ### NodeJS Server
 <Tabs items={['npm', 'pnpm', 'yarn']}>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 npm install @agentica/core @samchon/openapi typia
 npm install @agentica/rpc tgrid
 npx typia setup
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 pnpm install @agentica/core @samchon/openapi typia
 pnpm install @agentica/rpc tgrid
 pnpm typia setup
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 # YARN BERRY IS NOT SUPPORTED
 yarn add @agentica/core @samchon/openapi typia
 yarn add @agentica/rpc tgrid
@@ -130,42 +130,59 @@ yarn typia setup
   </Tabs.Tab>
 </Tabs>
 
+When developing [#WebSocket server in NodeJS environment](/docs/websocket/nodejs), you need to install `tgrid` and `@agentica/rpc` packages additionally.
+
+[`tgrid`](https://tgrid.com) is an RPC (Remote Procedure Call) framework supporting websocket protocol, and `@agentica/rpc` is a wrapper library of `@agentica/core` following the RPC paradigm of the `tgrid`.
+
 ### NestJS Server
 <Tabs items={['npm', 'pnpm', 'yarn']}>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
+npm install @agentica/core @samchon/openapi
+npm install @nestjs/common @nestjs/core @nestjs/platform-express
+npm install @agentica/rpc tgrid
+
 npm install -D nestia
 npx nestia setup
-
-npm install @agentica/core @samchon/openapi
-npm install @agentica/rpc tgrid
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
+pnpm install @agentica/core @samchon/openapi
+pnpm install @nestjs/common @nestjs/core @nestjs/platform-express
+pnpm install @agentica/rpc tgrid
+
 pnpm install -D nestia
 pnpm nestia setup
-
-pnpm install @agentica/core @samchon/openapi
-pnpm install @agentica/rpc tgrid
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 # YARN BERRY IS NOT SUPPORTED
+yarn add @agentica/core @samchon/openapi
+yarn add @nestjs/common @nestjs/core @nestjs/platform-express
+yarn add @agentica/rpc tgrid
+
 yarn add -D nestia
 yarn nestia setup
-
-yarn install @agentica/core @samchon/openapi
-yarn install @agentica/rpc tgrid
 ```
   </Tabs.Tab>
 </Tabs>
 
+If you want to develop [#WebSocket server in NestJS framework](/docs/websocket/nestjs), you can do it with [`nestia`](https://nestia.io).
+
+Install `@agentica/rpc`, [`tgrid`](https://tgrid.com) and NestJS packages first.
+
+And then setup `nestia` with `npx nestia setup` command. It will setup every required packages for the WebSocket server in NestJS environment.
+
 ### Client Application
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 npm install @agentica/rpc tgrid
 ```
+
+Client application does noot require many packages.
+
+Just install `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages.
 
 
 
@@ -175,5 +192,19 @@ npm install @agentica/rpc tgrid
 npm install @agentica/core @samchon/openapi typia
 npx typia setup
 
-npm install -D unplugin-typia
+npm install -D @ryoppippi/unplugin-typia
 ```
+
+If you want to develop a standalone application which does everything in the frontend environment without any backend server interaction, you need to install above additional packages.
+
+At first, [`@samchon/openapi`](https://github.com/samchon/openapi) is an OpenAPI specification library which can convert Swagger/OpenAPI document to LLM function calling schema. And [`typia`](https://typia.io) is a transformer (compiler) library which can compose LLM function calling schema from a TypeScript class type.
+
+By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`.
+
+Also, as frontend environment tends to use non-standard TypeScript compiler (not `tsc`) like `Vite`, you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) package additionally following its setup guide document.
+
+> [!WARNING]
+>
+> Standalone application, it must be not for production, but only for the testing environment. 
+>
+> If you distribute the standalone to the production, your LLM API key would be exposed to the public.
