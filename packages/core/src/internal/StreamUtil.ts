@@ -10,7 +10,7 @@ export namespace StreamUtil {
     return result;
   };
 
-  export const reduce = async <T, R>(
+  export const reduce = async <T, R = T>(
     stream: ReadableStream<T>,
     reducer: (acc: T | R, cur: T) => R,
     initial?: R,
