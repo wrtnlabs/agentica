@@ -1,7 +1,7 @@
 const cp = require("child_process");
 const deploy = require("gh-pages");
 
-cp.execSync("node ./typedoc", {
+cp.execSync("npm run build", {
   stdio: "inherit",
   cwd: __dirname,
 });
@@ -16,5 +16,5 @@ deploy.publish(
       console.log(err);
       process.exit(-1);
     } else clear();
-  }
+  },
 );

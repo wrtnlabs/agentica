@@ -19,12 +19,15 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      - name: Install dependencies
+      - name: Root
         run: pnpm install
-      - name: Build TypeDoc
-        run: node website/build/typedoc.js
+      - name: Website
+        run: |
+          npm install
+          npm run build
+        working-directory: website
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
           branch: gh-pages
-          folder: ./website/public
+          folder: ./website/out

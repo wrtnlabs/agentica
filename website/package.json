@@ -1,0 +1,37 @@
+{
+  "name": "@agentica/webite",
+  "version": "0.0.0",
+  "description": "Agentica Website",
+  "scripts": {
+    "dev": "next",
+    "build": "node build/typedoc && node build/playground && next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wrtnlabs/agentica"
+  },
+  "keywords": [
+    "agentica",
+    "website"
+  ],
+  "author": "Wrtn Technologies",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wrtnlabs/agentica/issues"
+  },
+  "homepage": "https://wrtnlabs.io/agentica",
+  "dependencies": {
+    "@theguild/remark-mermaid": "^0.2.0",
+    "next": "^15.2.1",
+    "nextra": "^4.2.16",
+    "nextra-theme-docs": "^4.2.16",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.9",
+    "@types/react": "^19.0.10",
+    "next-sitemap": "^4.2.3"
+  }
+}
