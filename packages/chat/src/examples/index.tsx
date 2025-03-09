@@ -45,12 +45,12 @@ const Section = (props: {
 const Application = () => {
   return (
     <React.Fragment>
-      <Typography variant="h4">Agentica Chatbot Examples</Typography>
+      <Typography variant="h4">Agentica Playground</Typography>
       <hr />
       <List sx={{ width: "100%", maxWidth: 720, bgcolor: "background.paper" }}>
         <Section
-          href="./playground/"
-          title="Agentica Playground"
+          href="./uploader/"
+          title="Swagger Uploader"
           summary="Test your backend server's AI chatbot"
           icon={<FeaturedPlayListIcon />}
           description={

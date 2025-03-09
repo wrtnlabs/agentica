@@ -1,0 +1,41 @@
+---
+title: Agentica > Guide Documents > WebSocket Protocol > Client Application
+---
+
+## Setup
+```bash filename="Terminal"
+npm install @agentica/rpc tgrid
+```
+
+
+
+## Development
+```typescript filenam="client/src/main.ts" showLineNumbers
+import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
+import { Driver, WebSocketConnector } from "tgrid";
+
+const connector: WebSocketConnector<
+  null,
+  IAgenticaRpcListener<"chatgpt">,
+  IAgenticaRpcService<"chatgpt">
+> = new WebSocketConnector(null, {
+  text: async (evt) => {
+    console.log(evt.role, evt.text);
+  },
+  select: async (evt) => {
+    console.log("selector", evt.operation, evt.reason);
+  },
+  execute: async (evt) => {
+    console.log("execute", evt.operation, evt.arguments, evt.value);
+  },
+  describe: async (evt) => {
+    console.log("describer", evt.text);
+  },
+});
+await connector.connect("ws://localhost:3001");
+
+const driver: Driver<IAgenticaRpcService> = connector.getDriver();
+await driver.conversate("Hello, what you can do?");
+
+await connector.close();
+```

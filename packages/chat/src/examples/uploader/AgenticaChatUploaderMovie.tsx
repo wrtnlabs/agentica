@@ -1,6 +1,6 @@
+import { createHttpLlmApplication } from "@agentica/core";
 import { OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
 import { IHttpLlmApplication } from "@samchon/openapi";
-import { createHttpLlmApplication } from "@agentica/core";
 import { load } from "js-yaml";
 import React from "react";
 // @ts-ignore
@@ -9,8 +9,8 @@ import FileUpload from "react-mui-fileuploader";
 import { ExtendedFileProps } from "react-mui-fileuploader/dist/types/index.types";
 import { IValidation } from "typia";
 
-export const AgenticaChatPlaygroundFileUploadMovie = (
-  props: AgenticaChatPlaygroundFileUploadMovie.IProps,
+export const AgenticaChatUploaderMovie = (
+  props: AgenticaChatUploaderMovie.IProps,
 ) => {
   const [elements, setElements] = React.useState<ExtendedFileProps[]>([]);
   const onChange = async (array: ExtendedFileProps[]) => {
@@ -67,7 +67,7 @@ export const AgenticaChatPlaygroundFileUploadMovie = (
     />
   );
 };
-export namespace AgenticaChatPlaygroundFileUploadMovie {
+export namespace AgenticaChatUploaderMovie {
   export interface IProps {
     onChange: (
       application: IHttpLlmApplication<"chatgpt"> | null,

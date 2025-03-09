@@ -33,20 +33,20 @@ export default async function RootLayout(props) {
     >
       <Head
         backgroundColor={{
-          dark: "rgb(15, 23, 42)",
+          dark: "rgb(9, 15, 27)",
           light: "rgb(254, 252, 232)",
         }}
-        color={{
-          hue: { dark: 120, light: 0 },
-          saturation: { dark: 100, light: 100 },
-        }}
+        // color={{
+        //   hue: { dark: 120, light: 0 },
+        //   saturation: { dark: 100, light: 100 },
+        // }}
       >
         {/* ICONS */}
-        <link rel="manifest" href="/favicon/site.webmanifest" />
+        <link rel="manifest" href="/agentica/favicon/site.webmanifest" />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/favicon/apple-touch-icon.png"
+          href="/agentica/favicon/apple-touch-icon.png"
         />
         {[16, 32].map((size) => (
           <link
@@ -54,7 +54,7 @@ export default async function RootLayout(props) {
             rel="icon"
             type="image/png"
             sizes={`${size}x${size}`}
-            href={`/favicon/favicon-${size}x${size}.png`}
+            href={`/agentica/favicon/favicon-${size}x${size}.png`}
           />
         ))}
         {/* OG */}

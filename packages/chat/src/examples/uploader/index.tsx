@@ -1,9 +1,9 @@
 import { createRoot } from "react-dom/client";
 
-import { AgenticaChatPlaygroundApplication } from "./AgenticaChatPlaygroundApplication";
+import { AgenticaChatUploaderApplication } from "./AgenticaChatPlaygroundApplication";
 
 createRoot(window.document.getElementById("root")!).render(
-  <AgenticaChatPlaygroundApplication
+  <AgenticaChatUploaderApplication
     style={{
       width: "calc(100% - 30px)",
       height: "calc(100% - 30px)",
