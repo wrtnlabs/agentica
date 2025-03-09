@@ -38,50 +38,53 @@ await agent.conversate("I wanna buy MacBook Pro");
 
 
 
-## Guide Documents
-### 🏠 Home
-Preparing detailed guide documents.
+## Playground
+You can experience how typia works by playground website:
 
-Until that, please satisfy with README document of each module.
+💻 https://wrtnlabs.io/agentica/playground
+
+
+
+## Guide Documents
+Check out the document in the [website](https://wrtnlabs.io/agentica):
+
+### 🏠 Home
+- [🚀 Getting Started](https://wrtnlabs.io/agentica/docs)
+- [📦 Setup](https://wrtnlabs.io/agentica/docs/setup)
+- 🔍 Concepts
+  - [Function Calling](https://wrtnlabs.io/agentica/docs/concepts/function-calling)
+  - [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
+  - [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
 
 ### 📖 Features
-- **Core Library**
-  - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/core)
-  - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/core#how-to-use)
-    - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/core#setup)
-    - [Chat with Backend Server](https://github.com/wrtnlabs/agentica/tree/main/packages/core#chat-with-backend-server)
-    - [Chat with TypeScript Class](https://github.com/wrtnlabs/agentica/tree/main/packages/core#chat-with-typescript-class)
-    - [Multi Agent Orchestration](https://github.com/wrtnlabs/agentica/tree/main/packages/core#multi-agent-orchestration)
-  - [Principles](https://github.com/wrtnlabs/agentica/tree/main/packages/core#principles)
-    - [Agent Strategy](https://github.com/wrtnlabs/agentica/tree/main/packages/core#agent-strategy)
-    - [Validation Feedback](https://github.com/wrtnlabs/agentica/tree/main/packages/core#validation-feedback)
-    - [OpenAPI Specification](https://github.com/wrtnlabs/agentica/tree/main/packages/core#openapi-specification)
-- **Benchmark Program**
-  - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc)
-  - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#how-to-use)
-    - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#setup)
-    - [Server Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#server-application)
-    - [Client Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#client-application)
-- **WebSocket RPC**
-  - [Introduction](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#introduction)
-  - [How to Use](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#how-to-use)
-    - [Setup](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#setup)
-    - [Server Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#server-application)
-    - [Client Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#client-application)
-  - [NestJS Application](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#nestjs-application)
-    - [Bootstrap](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#bootstrap)
-    - [API Controller](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#api-controller)
-    - [Software Development Kit](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#software-development-kit)
-  - [Principles](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#principles)
-    - [Remote Procedure Call](https://github.com/wrtnlabs/agentica/tree/main/packages/rpc#remote-procedure-call)
+- **📚 Core Library**
+  - [Agentic AI](https://wrtnlabs.io/agentica/docs/core)
+  - [TypeScript Class Chatbot](https://wrtnlabs.io/agentica/docs/core/class)
+  - [Swagger/OpenApi Chatbot](https://wrtnlabs.io/agentica/docs/core/swagger)
+  - [Configurations](https://wrtnlabs.io/agentica/docs/core/configurations)
+  - [Event Handling](https://wrtnlabs.io/agentica/docs/core/event)
+  - [Prompt Histories](https://wrtnlabs.io/agentica/docs/core/history)
+- **📡 WebSocket Protocol**
+  - [Remote Procedure Call](https://wrtnlabs.io/agentica/docs/websocket)
+  - [NestJS Server](https://wrtnlabs.io/agentica/docs/websocket/nestjs)
+  - [NodeJS Server](https://wrtnlabs.io/agentica/docs/websocket/nodejs)
+  - [Client Application](https://wrtnlabs.io/agentica/docs/websocket/client)
+- **🌉 Plugin Modules**
+  - [Benchmark Program](https://wrtnlabs.io/agentica/docs/plugins/benchmark)
+  - [OpenAI Vector Store](https://wrtnlabs.io/agentica/docs/plugins/openai-vector-store)
+  - [PG Vector Selector](https://wrtnlabs.io/agentica/docs/plugins/pg-vector-selector)
 
-### Appendix
-  - [API Documents](http://wrtnlabs.github.io/agentica/api)
-  - [⇲ Benchmark Result](https://github.com/wrtnlabs/agentica/tree/main/test/examples/benchmarks/select)
+### 🔗 Appendix
+- [📅 Roadmap](https://wrtnlabs.io/agentica/docs/roadmap)
+- 📊 Related Projects
+  - [Agent OS](https://wrtnlabs.io/agentica/docs/related/os)
+  - [AutoView](https://wrtnlabs.io/agentica/docs/related/autoview)
+- [⇲ API Documents](https://wrtnlabs.io/agentica/api)
 
 
 
 
+<!-- 
 ## Roadmap
 ### Guide Documents
 In here README document, `@agentica/core` is introducing its key concepts, principles, and demonstrating some examples. 
@@ -104,4 +107,4 @@ As I've concenstrated on POC (Proof of Concept) development on the early stage l
 
 Also, we will support dozens of useful add-on agents which can connect with `@agentica/core` by TypeScript class function calling. One of them is `@wrtnlabs/hive` which optimizes `selector` agent so that reducing LLM costs dramatically. The others would be OpenAI Vector Store handler and Postgres based RAG engine.
 
-With these `@agentica/core` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@agentica/core` makes the Multi agent system interaction super easily.
+With these `@agentica/core` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@agentica/core` makes the Multi agent system interaction super easily. -->

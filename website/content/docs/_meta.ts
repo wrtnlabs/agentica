@@ -3,26 +3,31 @@ import type { MetaRecord } from "nextra";
 const meta: MetaRecord = {
   index: "🚀 Getting Started",
   setup: "📦 Setup",
-  "function-calling": "⛲ Function Calling",
+  concepts: {
+    title: "🔍 Concepts",
+    theme: {
+      collapsed: false,
+    },
+  },
 
   "-- features": {
     type: "separator",
-    title: "📖 Features",
+    title: "📖Features",
   },
   core: {
-    title: "Core Library",
+    title: "📚 Core Library",
     theme: {
       collapsed: false,
     },
   },
   websocket: {
-    title: "WebSocket Protocol",
+    title: "📡 WebSocket Protocol",
     theme: {
       collapsed: false,
     },
   },
   plugins: {
-    title: "Plugin Modules",
+    title: "🌉 Plugin Modules",
     theme: {
       collapsed: false,
     },
@@ -32,12 +37,16 @@ const meta: MetaRecord = {
     type: "separator",
     title: "🔗 Appendix",
   },
-  os: "Agent OS",
-  autoview: "AutoView",
-  roadmap: "Roadmap",
+  roadmap: "📅 Roadmap",
+  related: {
+    title: "📊 Related Projects",
+    theme: {
+      collapsed: false,
+    },
+  },
   api: {
     title: "⇲ API Documents",
-    href: "../api",
+    href: "/api",
   },
 };
 export default meta;

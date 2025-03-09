@@ -1,5 +1,5 @@
 ---
-title: Agentica > Guide Documents > Function Calling
+title: Agentica > Guide Documents > Concepts > Function Calling
 ---
 
 ## LLM Function Calling
@@ -87,7 +87,7 @@ Is LLM Function Calling perfect? No, absolutely not.
 
 LLM (Large Language Model) service vendor like OpenAI takes a lot of type level mistakes when composing the arguments of function calling or structured output. Even though target schema is super simple like `Array<string>` type, LLM often fills it just by a `string` typed value.
 
-In my experience, OpenAI `GPT-4o-mini` (`8b` parameters) is taking about 70% of type level mistakes when filling the arguments of function calling to Shopping Mall service. To overcome the imperfection of such LLM function calling, `@agentia` is using validation feedback strategy.
+In my experience, OpenAI `gpt-4o-mini` (`8b` parameters) is taking about 70% of type level mistakes when filling the arguments of function calling to Shopping Mall service. To overcome the imperfection of such LLM function calling, `@agentia` is using validation feedback strategy.
 
 The key concept of validation feedback strategy is, let LLM function calling to construct invalid typed arguments first, and informing detailed type errors to the LLM, so that induce LLM to emend the wrong typed arguments at the next turn.
 

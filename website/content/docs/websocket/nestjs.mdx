@@ -1,0 +1,64 @@
+---
+title: Agentica > Guide Documents > WebSocket Protocol > NestJS Server
+---
+
+## Setup
+```bash filename="Terminal" copy
+npm install @agentica/core @samchon/openapi
+npm install @nestjs/common @nestjs/core @nestjs/platform-express
+npm install @agentica/rpc tgrid
+
+npm install -D nestia
+npx nestia setup
+```
+
+
+
+## Bootstrap
+```typescript filename="nestj/src/main.ts" showLineNumbers
+import { WebSocketAdaptor } from "@nestia/core";
+import { INestApplication } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+
+import { MyModule } from "./MyModule";
+
+const app: INestApplication = await NestFactory.create(MyModule);
+await WebSocketAdaptor.upgrade(app);
+await app.listen(3_001, "0.0.0.0");
+```
+
+
+
+## API Controller
+```typescript filename="nestjs/src/chat.controller.ts" showLineNumbers
+import { AgenticaRpcService, IAgenticaRpcListener } from "@agentica/rpc";
+import { WebSocketRoute } from "@nestia/core";
+import { Controller } from "@nestjs/common";
+import { WebSocketAcceptor } from "tgrid";
+
+@Controller("chat")
+export class ChatController {
+  @WebSocketRoute()
+  public async start(
+    // @WebSocketRoute.Param("id") id: string,
+    @WebSocketRoute.Acceptor()
+    acceptor: WebSocketAcceptor<
+      null, // header
+      AgenticaRpcService<"chatgpt">,
+      IAgenticaRpcListener<"chatgpt">
+    >,
+  ): Promise<void> {
+    const agent: Agentica<"chatgpt"> = new Agentica({ ... });
+    const service: AgenticaRpcService<"chatgpt"> = 
+      new AgenticaRpcService({
+        agent,
+        listener: acceptor.getDriver(),
+      });
+    await acceptor.accept(service);
+  }
+}
+```
+
+
+
+## Software Development Kit

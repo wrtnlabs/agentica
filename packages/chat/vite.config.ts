@@ -14,10 +14,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: path.resolve(__dirname, "index.html"),
-        "playground/index.html": path.resolve(
-          __dirname,
-          "playground/index.html",
-        ),
+        "uploader/index.html": path.resolve(__dirname, "uploader/index.html"),
         "shopping/index.html": path.resolve(__dirname, "shopping/index.html"),
         "bbs/index": path.resolve(__dirname, "bbs/index.html"),
       },

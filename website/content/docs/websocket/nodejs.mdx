@@ -1,0 +1,38 @@
+---
+title: Agentica > Guide Documents > WebSocket Protocol > NodeJS Server
+---
+
+## Setup
+```bash filename="Terminal" copy
+npm install @agentica/core @samchon/openapi typia
+npm install @agentica/rpc tgrid
+npx typia setup
+```
+
+
+
+## Development
+```typescript filename="nodejs/src/main.ts" showLineNumbers
+import { Agentica } from "@agentica/core";
+import {
+  AgenticaRpcService,
+  IAgenticaRpcListener,
+  IAgenticaRpcService,
+} from "@agentica/rpc";
+import { WebSocketServer } from "tgrid";
+
+const server: WebSocketServer<
+  null,
+  IAgenticaRpcService<"chatgpt">,
+  IAgenticaRpcListener<"chatgpt">
+> = new WebSocketServer();
+await server.open(3_001, async (acceptor) => {
+  const agent: Agentica<"chatgpt"> = new Agentica({ ... });
+  const service: AgenticaRpcService<"chatgpt"> = 
+    new AgenticaRpcService({
+      agent,
+      listener: acceptor.getDriver(),
+    });
+  await acceptor.accept(service);
+});
+```

@@ -17,10 +17,10 @@ import JsonInput from "react-json-editor-ajrm";
 import locale from "react-json-editor-ajrm/locale/en.js";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
-import { AgenticaChatPlaygroundFileUploadMovie } from "./AgenticaChatPlaygroundFileUploadMovie";
+import { AgenticaChatUploaderMovie } from "./AgenticaChatUploaderMovie";
 
-export const AgenticaChatPlaygroundApplication = (
-  props: AgenticaChatPlaygroundApplication.IProps,
+export const AgenticaChatUploaderApplication = (
+  props: AgenticaChatUploaderApplication.IProps,
 ) => {
   // PARAMETERS
   const [host, setHost] = useState("http://localhost:37001");
@@ -83,7 +83,7 @@ export const AgenticaChatPlaygroundApplication = (
 
   return (
     <div style={props.style}>
-      <AgenticaChatPlaygroundFileUploadMovie onChange={handleApplication} />
+      <AgenticaChatUploaderMovie onChange={handleApplication} />
       <br />
       <FormControl fullWidth>
         <Typography variant="h6">HTTP Connection</Typography>
@@ -162,7 +162,7 @@ export const AgenticaChatPlaygroundApplication = (
     </div>
   );
 };
-export namespace AgenticaChatPlaygroundApplication {
+export namespace AgenticaChatUploaderApplication {
   export interface IProps {
     style?: React.CSSProperties;
     onError?: (error: string) => void;
