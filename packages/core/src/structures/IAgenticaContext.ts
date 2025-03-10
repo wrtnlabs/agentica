@@ -119,8 +119,8 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
    */
   request: (
     source: AgenticaSource,
-    body: Omit<OpenAI.ChatCompletionCreateParamsNonStreaming, "model">,
-  ) => Promise<OpenAI.ChatCompletion>;
+    body: Omit<OpenAI.ChatCompletionCreateParamsStreaming, "model" | "stream">,
+  ) => Promise<ReadableStream<OpenAI.Chat.Completions.ChatCompletionChunk>>;
 
   /**
    * Initialize the agent.

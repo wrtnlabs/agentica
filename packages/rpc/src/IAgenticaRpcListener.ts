@@ -60,7 +60,7 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    *
    * @param evt Event of a text conversation message
    */
-  text(evt: IAgenticaEvent.IText): Promise<void>;
+  text(evt: Primitive<IAgenticaEvent.IText>): Promise<void>;
 
   /**
    * Initialize the AI agent.
