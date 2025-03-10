@@ -2,4 +2,60 @@
 title: Agentica > Guide Documents > Plugin Modules > PG Vector Selector
 ---
 
-@todo SunRabbit
+This library was created to enable even faster function selection.
+
+In the existing Agentica, the Selector could take 1 to 2 seconds, but this library was developed to further reduce search time by leveraging Vector Semantic Search.
+
+## Installation
+
+```bash
+npm install @agentica/pg-vector-selector
+```
+
+## Usage
+
+Just replace the existing `executor.select` with the `selectorExecute` function.
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+
+import typia from "typia";
+
+
+// Initialize with connector-hive server
+const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
+  'https://your-connector-hive-server.com'
+);
+
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: process.env.CHATGPT_API_KEY,
+    }),
+  },
+  controllers: [
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+  config: {
+    executor: {
+      select: selectorExecute,
+    }
+  }
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```
+
+But this library depends on the `connector-hive` server.
+
+You need to install the `connector-hive` server and to run it.
+
+Connector-Hive: https://github.com/wrtnlabs/connector-hive
