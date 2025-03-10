@@ -68,7 +68,7 @@ export const agent = new Agentica({
     // Generate import statements for selected services
     const serviceImports = input.services
       .map(
-        (service: any) =>
+        (service) =>
           `import { ${capitalize(
             service,
           )}Service } from "@wrtnlabs/connector-${service}";`,

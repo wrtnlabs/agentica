@@ -2,6 +2,7 @@ import chalk from "chalk";
 import fs from "fs/promises";
 import inquirer from "inquirer";
 import path from "path";
+import typia from "typia";
 
 import { Connector } from "../bases/Connector";
 import { Package } from "../bases/Package";
@@ -34,6 +35,14 @@ export namespace AgenticaStart {
 
     const questions = getQuestions({ services: availableServices });
     const answers = await inquirer.prompt(questions);
+
+    const validAnswers = typia.assert<{
+      packageManager: "npm" | "yarn" | "pnpm";
+      openAIKey: string;
+      // projectType: string;
+      services: string[];
+    }>(answers);
+
     const {
       packageManager,
       openAIKey,
@@ -42,9 +51,8 @@ export namespace AgenticaStart {
     }: {
       packageManager: "npm" | "yarn" | "pnpm";
       openAIKey: string;
-      // projectType: string;
       services: string[];
-    } = answers as any;
+    } = validAnswers;
 
     // Create project folder
     const { projectPath } = createProjectDirectory({ projectName });

@@ -8,6 +8,7 @@
     "nestia": "bin/index.js"
   },
   "scripts": {
+    "prepare": "ts-patch install",
     "build": "rimraf bin && tsc",
     "dev": "rimraf bin && tsc --watch",
     "start:dev": "ts-node src/index.ts"
@@ -54,6 +55,8 @@
     "@types/node": "^18.19.76",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.2"
+    "ts-patch": "^3.3.0",
+    "typescript": "~5.8.2",
+    "typia": "^8.0.0"
   }
 }
