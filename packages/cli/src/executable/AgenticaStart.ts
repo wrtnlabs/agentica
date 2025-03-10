@@ -1,20 +1,30 @@
-import inquirer from "inquirer";
+import chalk from "chalk";
 import fs from "fs";
+import inquirer from "inquirer";
 import path from "path";
-import { getNpmPackages } from "../utils/getNpmPackages";
-import { getQuestions } from "../utils/getQuestions";
-import { createProjectDirectory } from "../utils/createProjectDirectory";
+
 import { Connector } from "../bases/Connector";
 import { Package } from "../bases/Package";
 import { Tsconfig } from "../bases/Tsconfig";
+import { createProjectDirectory } from "../utils/createProjectDirectory";
+import { getNpmPackages } from "../utils/getNpmPackages";
+import { getQuestions } from "../utils/getQuestions";
 
 export namespace AgenticaStart {
   export async function execute(input: { projectName: string }) {
     const { projectName } = input;
 
+    // Check if project already exists
+    if (fs.existsSync(path.join(process.cwd(), projectName))) {
+      console.error(
+        `❌ Project ${chalk.redBright(projectName)} already exists`,
+      );
+      return;
+    }
+
     // Get connector package names from npm and sort alphabetically
     const availableServices = (await getNpmPackages()).sort((a, b) =>
-      a.name.localeCompare(b.name)
+      a.name.localeCompare(b.name),
     );
 
     const questions = getQuestions({ services: availableServices });
