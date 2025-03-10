@@ -31,12 +31,13 @@ export namespace Package {
     (packageManager: Manager) =>
     (input: { projectPath: string; services: string[] }) => {
       const installCmd = (pkg: string) => {
-        if (packageManager === "npm") {
-          return `npm install ${pkg}`;
-        } else if (packageManager === "yarn") {
-          return `yarn add ${pkg}`;
-        } else {
-          return `pnpm add ${pkg}`;
+        switch (packageManager) {
+          case "npm":
+            return `npm install ${pkg}`;
+          case "yarn":
+            return `yarn add ${pkg}`;
+          case "pnpm":
+            return `pnpm add ${pkg}`;
         }
       };
 

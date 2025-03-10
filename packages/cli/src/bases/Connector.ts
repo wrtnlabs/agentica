@@ -40,12 +40,11 @@ export const agent = new Agentica({
   export const create =
     (code: Code) =>
     (input: { services: string[] }): string => {
-      if (code === "import") {
-        return createImport(input);
-      } else if (code === "connector") {
-        return createConnector(input);
-      } else {
-        throw new Error("Invalid code");
+      switch (code) {
+        case "import":
+          return createImport(input);
+        case "connector":
+          return createConnector(input);
       }
     };
 
@@ -71,8 +70,8 @@ export const agent = new Agentica({
       .map(
         (service: any) =>
           `import { ${capitalize(
-            service
-          )}Service } from "@wrtnlabs/connector-${service}";`
+            service,
+          )}Service } from "@wrtnlabs/connector-${service}";`,
       )
       .join("\n");
 
