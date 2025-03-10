@@ -60,8 +60,14 @@ export class AgenticaRpcService<Model extends ILlmSchema.Model>
     const { agent, listener } = props;
 
     // ESSENTIAL LISTENERS
-    agent.on("text", (evt) => listener.text(primitive(evt)));
-    agent.on("describe", (evt) => listener.describe(primitive(evt)));
+    agent.on("text", async (evt) =>
+      listener.text(Object.assign(primitive(evt), { text: await evt.join() })),
+    );
+    agent.on("describe", async (evt) =>
+      listener.describe(
+        Object.assign(primitive(evt), { text: await evt.join() }),
+      ),
+    );
 
     // OPTIONAL LISTENERS
     agent.on("initialize", (evt) => listener.initialize!(primitive(evt)));
@@ -71,7 +77,7 @@ export class AgenticaRpcService<Model extends ILlmSchema.Model>
       const args: object | null | undefined = await listener.call!(
         primitive(evt),
       );
-      if (!!args) evt.arguments = args;
+      if (args) evt.arguments = args;
     });
     agent.on("execute", (evt) => listener.execute!(primitive(evt as any)));
   }

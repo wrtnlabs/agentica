@@ -13,11 +13,13 @@ import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaPromptFactory } from "../internal/AgenticaPromptFactory";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
+import { StreamUtil } from "../internal/StreamUtil";
 import { IAgenticaContext } from "../structures/IAgenticaContext";
 import { IAgenticaEvent } from "../structures/IAgenticaEvent";
 import { IAgenticaOperation } from "../structures/IAgenticaOperation";
 import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
+import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptCallFunctionAgent {
@@ -27,7 +29,7 @@ export namespace ChatGptCallFunctionAgent {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("call", {
+    const completionStream = await ctx.request("call", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -86,6 +88,10 @@ export namespace ChatGptCallFunctionAgent {
         >
       >
     > = [];
+
+    const chunks = await StreamUtil.readAll(completionStream);
+    const completion = ChatGptCompletionMessageUtil.merge(chunks);
+
     for (const choice of completion.choices) {
       for (const tc of choice.message.tool_calls ?? []) {
         if (tc.type === "function") {
@@ -158,7 +164,11 @@ export namespace ChatGptCallFunctionAgent {
             role: "assistant",
             text: choice.message.content!,
           };
-          await ctx.dispatch(value);
+          await ctx.dispatch({
+            ...value,
+            stream: StreamUtil.to(value.text),
+            join: () => Promise.resolve(value.text),
+          });
           return [value];
         });
     }
@@ -333,7 +343,7 @@ export namespace ChatGptCallFunctionAgent {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("call", {
+    const completionStream = await ctx.request("call", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -405,6 +415,8 @@ export namespace ChatGptCallFunctionAgent {
       parallel_tool_calls: false,
     });
 
+    const chunks = await StreamUtil.readAll(completionStream);
+    const completion = ChatGptCompletionMessageUtil.merge(chunks);
     //----
     // PROCESS COMPLETION
     //----

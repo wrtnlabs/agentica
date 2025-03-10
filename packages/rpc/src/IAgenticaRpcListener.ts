@@ -53,14 +53,16 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    *
    * @param evt Event of a description of function execution results
    */
-  describe(evt: Primitive<IAgenticaEvent.IDescribe<Model>>): Promise<void>;
+  describe(
+    evt: Primitive<IAgenticaEvent.IDescribe<Model>> & { text: string },
+  ): Promise<void>;
 
   /**
    * Text conversation message.
    *
    * @param evt Event of a text conversation message
    */
-  text(evt: IAgenticaEvent.IText): Promise<void>;
+  text(evt: Primitive<IAgenticaEvent.IText> & { text: string }): Promise<void>;
 
   /**
    * Initialize the AI agent.
