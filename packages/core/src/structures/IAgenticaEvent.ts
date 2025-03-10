@@ -16,11 +16,11 @@ import { IAgenticaPrompt } from "./IAgenticaPrompt";
  */
 export type IAgenticaEvent<Model extends ILlmSchema.Model> =
   | IAgenticaEvent.IInitialize
-  | IAgenticaEvent.ISelect<Model>
-  | IAgenticaEvent.ICancel<Model>
-  | IAgenticaEvent.ICall<Model>
-  | IAgenticaEvent.IExecute<Model>
-  | IAgenticaEvent.IDescribe<Model>
+  | IAgenticaEvent.ISelect
+  | IAgenticaEvent.ICancel
+  | IAgenticaEvent.ICall
+  | IAgenticaEvent.IExecute
+  | IAgenticaEvent.IDescribe
   | IAgenticaEvent.IText
   | IAgenticaEvent.IRequest
   | IAgenticaEvent.IResponse;
@@ -47,36 +47,22 @@ export namespace IAgenticaEvent {
   /**
    * Event of selecting a function to call.
    */
-  export interface ISelect<Model extends ILlmSchema.Model>
-    extends IBase<"select"> {
-    /**
-     * Selected operation.
-     *
-     * Operation that has been selected to prepare LLM function calling.
-     */
-    operation: IAgenticaOperation<Model>;
-
-    /**
-     * Reason of selecting the function.
-     *
-     * The A.I. chatbot will fill this property describing why the function
-     * has been selected.
-     */
+  export interface ISelect extends IBase<"select"> {
     reason: string;
+    operation: IAgenticaOperation;
   }
 
   /**
    * Event of canceling a function calling.
    */
-  export interface ICancel<Model extends ILlmSchema.Model>
-    extends IBase<"cancel"> {
+  export interface ICancel extends IBase<"cancel"> {
     /**
      * Selected operation to cancel.
      *
      * Operation that has been selected to prepare LLM function calling,
      * but canceled due to no more required.
      */
-    operation: IAgenticaOperation<Model>;
+    operation: IAgenticaOperation;
 
     /**
      * Reason of selecting the function.
@@ -94,7 +80,7 @@ export namespace IAgenticaEvent {
   /**
    * Event of calling a function.
    */
-  export interface ICall<Model extends ILlmSchema.Model> extends IBase<"call"> {
+  export interface ICall extends IBase<"call"> {
     /**
      * ID of the tool calling.
      */
@@ -103,7 +89,7 @@ export namespace IAgenticaEvent {
     /**
      * Target operation to call.
      */
-    operation: IAgenticaOperation<Model>;
+    operation: IAgenticaOperation;
 
     /**
      * Arguments of the function calling.
@@ -118,8 +104,7 @@ export namespace IAgenticaEvent {
   /**
    * Event of function calling execution.
    */
-  export interface IExecute<Model extends ILlmSchema.Model>
-    extends IBase<"execute"> {
+  export interface IExecute extends IBase<"execute"> {
     /**
      * ID of the tool calling.
      */
@@ -128,7 +113,7 @@ export namespace IAgenticaEvent {
     /**
      * Target operation had called.
      */
-    operation: IAgenticaOperation<Model>;
+    operation: IAgenticaOperation;
 
     /**
      * Arguments of the function calling.
@@ -146,8 +131,7 @@ export namespace IAgenticaEvent {
    *
    * Event describing return values of LLM function callings.
    */
-  export interface IDescribe<Model extends ILlmSchema.Model>
-    extends IBase<"describe"> {
+  export interface IDescribe extends IBase<"describe"> {
     /**
      * Executions of the LLM function calling.
      *
@@ -175,15 +159,17 @@ export namespace IAgenticaEvent {
      */
     role: "assistant" | "user";
 
-    /**
-     * Description text stream.
-     */
-    stream: ReadableStream<string>;
+    text: string;
 
-    /**
-     * Get the description text.
-     */
-    join: () => Promise<string>;
+    // /**
+    //  * Description text stream.
+    //  */
+    // stream: ReadableStream<string>;
+
+    // /**
+    //  * Get the description text.
+    //  */
+    // join: () => Promise<string>;
   }
 
   /**

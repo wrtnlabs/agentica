@@ -1,9 +1,5 @@
-import { IHttpLlmFunction, ILlmFunction, ILlmSchema } from "@samchon/openapi";
-
-import { IAgenticaController } from "./IAgenticaController";
-
 /**
- * Operation information in the Nestia Agent.
+ * Operation information in the Agentica Agent.
  *
  * `IAgenticaOperation` is a type represents an operation that would
  * be selected by the A.I. chatbot of {@link Agentica} class to
@@ -17,47 +13,24 @@ import { IAgenticaController } from "./IAgenticaController";
  *
  * @author Samchon
  */
-export type IAgenticaOperation<Model extends ILlmSchema.Model> =
-  | IAgenticaOperation.IHttp<Model>
-  | IAgenticaOperation.IClass<Model>;
-export namespace IAgenticaOperation {
+export interface IAgenticaOperation {
   /**
-   * HTTP API operation.
+   * Protocol discriminator.
    */
-  export type IHttp<Model extends ILlmSchema.Model> = IBase<
-    "http",
-    IAgenticaController.IHttp<Model>,
-    IHttpLlmFunction<Model>
-  >;
+  protocol: "class" | "http";
 
   /**
-   * TypeScript class operation.
+   * Belonged controller of the target function.
    */
-  export type IClass<Model extends ILlmSchema.Model> = IBase<
-    "class",
-    IAgenticaController.IClass<Model>,
-    ILlmFunction<Model>
-  >;
+  controller: string;
 
-  interface IBase<Protocol, Application, Function> {
-    /**
-     * Protocol discriminator.
-     */
-    protocol: Protocol;
+  /**
+   * Target function to call.
+   */
+  function: string;
 
-    /**
-     * Belonged controller of the target function.
-     */
-    controller: Application;
-
-    /**
-     * Target function to call.
-     */
-    function: Function;
-
-    /**
-     * Identifier name.
-     */
-    name: string;
-  }
+  /**
+   * Identifier name.
+   */
+  name: string;
 }

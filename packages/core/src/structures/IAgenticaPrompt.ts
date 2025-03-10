@@ -1,11 +1,4 @@
-import {
-  IHttpLlmFunction,
-  IHttpResponse,
-  ILlmFunction,
-  ILlmSchema,
-} from "@samchon/openapi";
-
-import { IAgenticaController } from "./IAgenticaController";
+import { IAgenticaOperation } from "./IAgenticaOperation";
 import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
 
 /**
@@ -24,20 +17,19 @@ import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
  *
  * @author Samchon
  */
-export type IAgenticaPrompt<Model extends ILlmSchema.Model> =
+export type IAgenticaPrompt =
   | IAgenticaPrompt.IText
-  | IAgenticaPrompt.ISelect<Model>
-  | IAgenticaPrompt.ICancel<Model>
-  | IAgenticaPrompt.IExecute<Model>
-  | IAgenticaPrompt.IDescribe<Model>;
+  | IAgenticaPrompt.ISelect
+  | IAgenticaPrompt.ICancel
+  | IAgenticaPrompt.IExecute
+  | IAgenticaPrompt.IDescribe;
 export namespace IAgenticaPrompt {
   /**
    * Select prompt.
    *
    * Selection prompt about candidate functions to call.
    */
-  export interface ISelect<Model extends ILlmSchema.Model>
-    extends IBase<"select"> {
+  export interface ISelect extends IBase<"select"> {
     /**
      * ID of the LLM tool call result.
      */
@@ -46,7 +38,7 @@ export namespace IAgenticaPrompt {
     /**
      * Operations that have been selected.
      */
-    operations: IAgenticaOperationSelection<Model>[];
+    selections: IAgenticaOperationSelection[];
   }
 
   /**
@@ -54,8 +46,7 @@ export namespace IAgenticaPrompt {
    *
    * Cancellation prompt about the candidate functions to be discarded.
    */
-  export interface ICancel<Model extends ILlmSchema.Model>
-    extends IBase<"cancel"> {
+  export interface ICancel extends IBase<"cancel"> {
     /**
      * ID of the LLM tool call result.
      */
@@ -64,7 +55,7 @@ export namespace IAgenticaPrompt {
     /**
      * Operations that have been cancelled.
      */
-    operations: IAgenticaOperationSelection<Model>[];
+    selections: IAgenticaOperationSelection[];
   }
 
   /**
@@ -72,68 +63,26 @@ export namespace IAgenticaPrompt {
    *
    * Execution prompt about the LLM function calling.
    */
-  export type IExecute<Model extends ILlmSchema.Model> =
-    | IExecute.IHttp<Model>
-    | IExecute.IClass<Model>;
-  export namespace IExecute {
-    export type IHttp<Model extends ILlmSchema.Model> = IBase<
-      "http",
-      IAgenticaController.IHttp<Model>,
-      IHttpLlmFunction<Model>,
-      IHttpResponse
-    >;
-    export type IClass<Model extends ILlmSchema.Model> = IBase<
-      "class",
-      IAgenticaController.IClass<Model>,
-      ILlmFunction<Model>,
-      any
-    >;
-    interface IBase<Protocol, Controller, Function, Value> {
-      /**
-       * Discriminator type.
-       */
-      type: "execute";
+  export interface IExecute extends IBase<"execute"> {
+    /**
+     * ID of the LLM tool call result.
+     */
+    id: string;
 
-      /**
-       * Protocol discriminator.
-       */
-      protocol: Protocol;
+    /**
+     * Target operation to call.
+     */
+    operation: IAgenticaOperation;
 
-      /**
-       * Belonged controller of the target function.
-       */
-      controller: Controller;
+    /**
+     * Arguments of the LLM function calling.
+     */
+    arguments: Record<string, any>;
 
-      /**
-       * Target function to call.
-       */
-      function: Function;
-
-      /**
-       * ID of the LLM tool call result.
-       */
-      id: string;
-
-      /**
-       * Identifier name of the function.
-       *
-       * If {@link Agentica} has multiple {@link IAgenticaController}s,
-       * the `name` can be different from target function's name.
-       */
-      name: string;
-
-      /**
-       * Arguments of the LLM function calling.
-       */
-      arguments: object;
-
-      /**
-       * Return value.
-       */
-      value: Value;
-
-      toJSON(): Omit<IBase<Protocol, string, string, Value>, "toJSON">;
-    }
+    /**
+     * Return value.
+     */
+    value: any;
   }
 
   /**
@@ -141,14 +90,13 @@ export namespace IAgenticaPrompt {
    *
    * Description prompt about the return value of the LLM function calling.
    */
-  export interface IDescribe<Model extends ILlmSchema.Model>
-    extends IBase<"describe"> {
+  export interface IDescribe extends IBase<"describe"> {
     /**
      * Executions of the LLM function calling.
      *
      * This prompt describes the return value of them.
      */
-    executions: IExecute<Model>[];
+    executions: IExecute[];
 
     /**
      * Description text.

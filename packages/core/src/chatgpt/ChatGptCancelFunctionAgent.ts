@@ -70,11 +70,11 @@ export namespace ChatGptCancelFunctionAgent {
     const collection: IAgenticaPrompt.ICancel<Model> = {
       id: v4(),
       type: "cancel",
-      operations: [],
+      selections: [],
     };
     for (const e of events)
       if (e.type === "select") {
-        collection.operations.push(
+        collection.selections.push(
           AgenticaPromptFactory.selection({
             protocol: e.operation.protocol as "http",
             controller: e.operation
@@ -232,13 +232,13 @@ export namespace ChatGptCancelFunctionAgent {
             const collection: IAgenticaPrompt.ICancel<Model> = {
               id: tc.id,
               type: "cancel",
-              operations: [],
+              selections: [],
             };
             for (const reference of input.functions) {
               const operation = await cancelFunction(ctx, reference);
-              if (operation !== null) collection.operations.push(operation);
+              if (operation !== null) collection.selections.push(operation);
             }
-            if (collection.operations.length !== 0) prompts.push(collection);
+            if (collection.selections.length !== 0) prompts.push(collection);
           }
         }
     }

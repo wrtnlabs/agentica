@@ -1,12 +1,13 @@
 import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
+import { AgenticaOperationSelection } from "../prompts/AgenticaOperationSelection";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { AgenticaSource } from "../typings/AgenticaSource";
 import { IAgenticaConfig } from "./IAgenticaConfig";
 import { IAgenticaEvent } from "./IAgenticaEvent";
 import { IAgenticaOperationCollection } from "./IAgenticaOperationCollection";
-import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
-import { IAgenticaPrompt } from "./IAgenticaPrompt";
 
 /**
  * Context of the Nestia A.I. agent.
@@ -68,14 +69,14 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
   /**
    * Prompt histories.
    */
-  histories: IAgenticaPrompt<Model>[];
+  histories: AgenticaPrompt<Model>[];
 
   /**
    * Stacked operations.
    *
    * In other words, list of candidate operations for the LLM function calling.
    */
-  stack: IAgenticaOperationSelection<Model>[];
+  stack: AgenticaOperationSelection<Model>[];
 
   /**
    * Text prompt of the user.
@@ -83,7 +84,7 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
    * Text conversation written the by user through the
    * {@link Agentica.conversate} function.
    */
-  prompt: IAgenticaPrompt.IText<"user">;
+  prompt: AgenticaTextPrompt<"user">;
 
   /**
    * Whether the agent is ready.

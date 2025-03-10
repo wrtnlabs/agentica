@@ -1,6 +1,4 @@
-import { IHttpLlmFunction, ILlmFunction, ILlmSchema } from "@samchon/openapi";
-
-import { IAgenticaController } from "./IAgenticaController";
+import { IAgenticaOperation } from "./IAgenticaOperation";
 
 /**
  * Nestia agent operation selection.
@@ -15,54 +13,7 @@ import { IAgenticaController } from "./IAgenticaController";
  *
  * @author Samchon
  */
-export type IAgenticaOperationSelection<Model extends ILlmSchema.Model> =
-  | IAgenticaOperationSelection.IHttp<Model>
-  | IAgenticaOperationSelection.IClass<Model>;
-export namespace IAgenticaOperationSelection {
-  export type IHttp<Model extends ILlmSchema.Model> = IBase<
-    "http",
-    IAgenticaController.IHttp<Model>,
-    IHttpLlmFunction<Model>
-  >;
-
-  export type IClass<Model extends ILlmSchema.Model> = IBase<
-    "class",
-    IAgenticaController.IClass<Model>,
-    ILlmFunction<Model>
-  >;
-
-  interface IBase<Protocol, Controller, Function> {
-    /**
-     * Discriminator protocol.
-     */
-    protocol: Protocol;
-
-    /**
-     * Belonged controller of the target function.
-     */
-    controller: Controller;
-
-    /**
-     * Target function.
-     *
-     * Function that has been selected to prepare LLM function calling,
-     * or canceled due to no more required.
-     */
-    function: Function;
-
-    /**
-     * Identifier name of the target function.
-     *
-     * If {@link Agentica} has multiple {@link IAgenticaController}s,
-     * the `name` can be different from target function's name.
-     */
-    name: string;
-
-    /**
-     * The reason of the function selection or cancellation.
-     */
-    reason: string;
-
-    toJSON(): Omit<IBase<Protocol, string, string>, "toJSON">;
-  }
+export interface IAgenticaOperationSelection {
+  reason: string;
+  operation: IAgenticaOperation;
 }

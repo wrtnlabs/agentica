@@ -142,7 +142,7 @@ export namespace ChatGptCallFunctionAgent {
                 {
                   type: "cancel",
                   id: call.id,
-                  operations: [
+                  selections: [
                     AgenticaPromptFactory.selection({
                       ...call.operation,
                       reason: "complete",
