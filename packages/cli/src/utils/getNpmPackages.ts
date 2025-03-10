@@ -1,13 +1,13 @@
-import fetch from "node-fetch";
+import axios from "axios";
 
 export const getNpmPackages = async (): Promise<
   { name: string; value: string }[]
 > => {
   try {
-    const response = await fetch(
+    const response = await axios.get(
       "https://registry.npmjs.org/-/v1/search?text=scope:@wrtnlabs&size=1000",
     );
-    const data: any = await response.json();
+    const data: any = response.data;
 
     return data.objects
       .map((pkg: any) => pkg.package.name)
