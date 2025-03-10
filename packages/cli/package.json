@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "rimraf bin && tsc",
-    "dev": "rimraf bin && tsc --watch"
+    "dev": "rimraf bin && tsc --watch",
+    "start:dev": "ts-node src/index.ts"
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",
@@ -40,15 +41,18 @@
     "src"
   ],
   "dependencies": {
+    "chalk": "^5.4.1",
     "commander": "^10.0.0",
     "comment-json": "^4.2.3",
     "inquirer": "^8.2.5",
+    "node-fetch": "^3.3.2",
     "package-manager-detector": "^0.2.0"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.3",
     "@types/node": "^18.19.76",
     "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.2"
   }
 }
