@@ -2,4 +2,130 @@
 title: Agentica > Guide Documents > Plugin Modules > PG Vector Selector
 ---
 
-@todo SunRabbit
+# PG Vector Selector
+This library was created to enable even faster function selection.
+
+In the existing Agentica, the Selector could take 1 to 2 seconds, but this library was developed to further reduce search time by leveraging Vector Semantic Search.
+
+## Installation
+
+```bash
+npm install @agentica/pg-vector-selector
+```
+
+## Usage
+
+Just replace the existing `executor.select` with the `selectorExecute` function.
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+
+import typia from "typia";
+
+
+// Initialize with connector-hive server
+const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
+  'https://your-connector-hive-server.com'
+);
+
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: process.env.CHATGPT_API_KEY,
+    }),
+  },
+  controllers: [
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+  config: {
+    executor: {
+      select: selectorExecute,
+    }
+  }
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```
+
+But this library depends on the `connector-hive` server.
+
+You need to install the `connector-hive` server and to run it.
+
+Connector-Hive: https://github.com/wrtnlabs/connector-hive
+
+### How to run connector-hive
+
+If you don't have postgres server with vector extension installed, you can use docker to run it.
+
+```bash
+docker run -d \
+  --name postgres-vector \
+  -e POSTGRES_USER=your_user \
+  -e POSTGRES_PASSWORD=your_password \
+  -e POSTGRES_DB=your_database \
+  -p 5432:5432 \
+  pgvector/pgvector
+```
+
+Then, we will fill the next environment variables files
+
+```env
+// .env
+PROJECT_API_PORT=37001
+DATABASE_URL=postgresql://your_user:your_password@host.docker.internal:5432/your_database
+COHERE_API_KEY=your_cohere_api_key
+API_KEY=your_optional_api_key  # Optional: If set, all requests except GET /health must include this key
+```
+
+and run the next command
+```bash
+docker pull ghcr.io/wrtnlabs/connector-hive:latest && \
+docker run -d \
+  --name connector-hive \
+  --env-file .env \
+  -p 37001:37001 \
+  ghcr.io/wrtnlabs/connector-hive:latest
+```
+
+Good!
+
+Now, you can use the `connector-hive` server with the `pg-vector-selector` library.
+
+```typescript
+const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
+  'http://localhost:37001'
+);
+
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: process.env.CHATGPT_API_KEY,
+    }),
+  },
+  controllers: [
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+  config: {
+    executor: {
+      select: selectorExecute,
+    }
+  }
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```
