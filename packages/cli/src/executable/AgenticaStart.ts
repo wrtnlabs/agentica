@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import fs from "fs";
+import fs from "fs/promises";
 import inquirer from "inquirer";
 import path from "path";
 
@@ -15,7 +15,12 @@ export namespace AgenticaStart {
     const { projectName } = input;
 
     // Check if project already exists
-    if (fs.existsSync(path.join(process.cwd(), projectName))) {
+    if (
+      await fs
+        .access(path.join(process.cwd(), projectName))
+        .then(() => true)
+        .catch(() => false)
+    ) {
       console.error(
         `❌ Project ${chalk.redBright(projectName)} already exists`,
       );
@@ -52,12 +57,12 @@ export namespace AgenticaStart {
 
     // Create .env file
     const envContent = `OPEN_AI_API_KEY=${openAIKey}\n`;
-    fs.writeFileSync(path.join(projectPath, ".env"), envContent);
+    await fs.writeFile(path.join(projectPath, ".env"), envContent);
     console.log("✅ .env created");
 
     // Create Agentica code
     const agenticaCode = Connector.createAll({ services });
-    fs.writeFileSync(path.join(projectPath, "agent.ts"), agenticaCode);
+    await fs.writeFile(path.join(projectPath, "agent.ts"), agenticaCode);
     console.log("✅ agent.ts created");
 
     // Run package installation

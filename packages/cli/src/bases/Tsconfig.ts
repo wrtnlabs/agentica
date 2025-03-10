@@ -1,9 +1,11 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
 export namespace Tsconfig {
-  export const create = (input: { projectPath: string }): void => {
-    fs.writeFileSync(path.join(input.projectPath, "tsconfig.json"), tsconfig);
+  export const create = async (input: {
+    projectPath: string;
+  }): Promise<void> => {
+    await fs.writeFile(path.join(input.projectPath, "tsconfig.json"), tsconfig);
     console.log("✅ tsconfig.json created");
   };
 

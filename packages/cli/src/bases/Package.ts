@@ -1,14 +1,14 @@
 import { execSync } from "child_process";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
 export namespace Package {
   export type Manager = "npm" | "yarn" | "pnpm";
 
-  export const create = (input: {
+  export const create = async (input: {
     projectName: string;
     projectPath: string;
-  }): void => {
+  }): Promise<void> => {
     const packageJson = {
       name: input.projectName,
       version: "0.0.1",
@@ -20,7 +20,7 @@ export namespace Package {
       },
     };
 
-    fs.writeFileSync(
+    await fs.writeFile(
       path.join(input.projectPath, "package.json"),
       JSON.stringify(packageJson, null, 2),
     );
