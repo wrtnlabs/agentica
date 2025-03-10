@@ -61,8 +61,9 @@ export namespace AgenticaStart {
     console.log("✅ .env created");
 
     // Create Agentica code
+    await fs.mkdir(path.join(projectPath, "src"), { recursive: false });
     const agenticaCode = Connector.createAll({ services });
-    await fs.writeFile(path.join(projectPath, "agent.ts"), agenticaCode);
+    await fs.writeFile(path.join(projectPath, "src/agent.ts"), agenticaCode);
     console.log("✅ agent.ts created");
 
     // Run package installation
