@@ -34,7 +34,7 @@ export default async function RootLayout(props) {
       <Head
         backgroundColor={{
           dark: "rgb(9, 15, 27)",
-          light: "rgb(254, 252, 232)",
+          light: "rgb(250, 250, 250)",
         }}
         // color={{
         //   hue: { dark: 120, light: 0 },
