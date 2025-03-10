@@ -2,6 +2,7 @@ import chalk from "chalk";
 import fs from "fs/promises";
 import inquirer from "inquirer";
 import path from "path";
+import prettier from "prettier";
 import typia from "typia";
 
 import { Connector } from "../bases/Connector";
@@ -71,7 +72,14 @@ export namespace AgenticaStart {
     // Create Agentica code
     await fs.mkdir(path.join(projectPath, "src"), { recursive: false });
     const agenticaCode = Connector.createAll({ services });
-    await fs.writeFile(path.join(projectPath, "src/agent.ts"), agenticaCode);
+    const formattedAgenticaCode = await prettier.format(agenticaCode, {
+      parser: "typescript",
+    });
+
+    await fs.writeFile(
+      path.join(projectPath, "src/agent.ts"),
+      formattedAgenticaCode,
+    );
     console.log("✅ agent.ts created");
 
     // Run package installation
