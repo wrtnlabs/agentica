@@ -1,7 +1,7 @@
 import { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaOperation } from "../context/AgenticaOperation";
-import { IAgenticaEvent } from "../json/IAgenticaEvent";
+import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaCallEvent<
@@ -18,7 +18,7 @@ export class AgenticaCallEvent<
     this.arguments = props.arguments;
   }
 
-  public toJSON(): IAgenticaEvent.ICall {
+  public toJSON(): IAgenticaEventJson.ICall {
     return {
       type: "call",
       id: this.id,

@@ -1,6 +1,6 @@
 import { IHttpLlmFunction, ILlmFunction, ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaOperation } from "../json/IAgenticaOperation";
+import { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
 import { IAgenticaController } from "../structures/IAgenticaController";
 
 /**
@@ -61,6 +61,6 @@ export namespace AgenticaOperation {
     /**
      * Convert to primitive JSON object.
      */
-    toJSON(): IAgenticaOperation;
+    toJSON(): IAgenticaOperationJson;
   }
 }

@@ -1,6 +1,6 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
+import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { IAgenticaConfig } from "./IAgenticaConfig";
 import { IAgenticaController } from "./IAgenticaController";
 import { IAgenticaVendor } from "./IAgenticaVendor";
@@ -65,5 +65,5 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
    * If you're starting the conversation from an existing session,
    * assign the previouis prompt histories to this property.
    */
-  histories?: IAgenticaPrompt[];
+  histories?: IAgenticaPromptJson[];
 }

@@ -1,5 +1,5 @@
-import { IAgenticaOperation } from "./IAgenticaOperation";
-import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
+import { IAgenticaOperationJson } from "./IAgenticaOperationJson";
+import { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
 
 /**
  * Nestia A.I. chatbot prompt.
@@ -17,13 +17,13 @@ import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
  *
  * @author Samchon
  */
-export type IAgenticaPrompt =
-  | IAgenticaPrompt.IText
-  | IAgenticaPrompt.ISelect
-  | IAgenticaPrompt.ICancel
-  | IAgenticaPrompt.IExecute
-  | IAgenticaPrompt.IDescribe;
-export namespace IAgenticaPrompt {
+export type IAgenticaPromptJson =
+  | IAgenticaPromptJson.IText
+  | IAgenticaPromptJson.ISelect
+  | IAgenticaPromptJson.ICancel
+  | IAgenticaPromptJson.IExecute
+  | IAgenticaPromptJson.IDescribe;
+export namespace IAgenticaPromptJson {
   /**
    * Select prompt.
    *
@@ -38,7 +38,7 @@ export namespace IAgenticaPrompt {
     /**
      * Operations that have been selected.
      */
-    selections: IAgenticaOperationSelection[];
+    selections: IAgenticaOperationSelectionJson[];
   }
 
   /**
@@ -55,7 +55,7 @@ export namespace IAgenticaPrompt {
     /**
      * Operations that have been cancelled.
      */
-    selections: IAgenticaOperationSelection[];
+    selections: IAgenticaOperationSelectionJson[];
   }
 
   /**
@@ -72,7 +72,7 @@ export namespace IAgenticaPrompt {
     /**
      * Target operation to call.
      */
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperationJson;
 
     /**
      * Arguments of the LLM function calling.

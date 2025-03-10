@@ -1,12 +1,12 @@
 import { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
+import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaSelectPrompt<
   Model extends ILlmSchema.Model,
-> extends AgenticaPromptBase<"select", IAgenticaPrompt.ISelect> {
+> extends AgenticaPromptBase<"select", IAgenticaPromptJson.ISelect> {
   public readonly id: string;
   public readonly selections: AgenticaOperationSelection<Model>[];
 
@@ -16,7 +16,7 @@ export class AgenticaSelectPrompt<
     this.selections = props.selections;
   }
 
-  public toJSON(): IAgenticaPrompt.ISelect {
+  public toJSON(): IAgenticaPromptJson.ISelect {
     return {
       type: this.type,
       id: this.id,

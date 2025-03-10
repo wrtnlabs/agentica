@@ -1,13 +1,13 @@
 import { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaOperation } from "../context/AgenticaOperation";
-import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
+import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaExecutePrompt<
   Model extends ILlmSchema.Model,
   Protocol extends "http" | "class" = any,
-> extends AgenticaPromptBase<"execute", IAgenticaPrompt.IExecute> {
+> extends AgenticaPromptBase<"execute", IAgenticaPromptJson.IExecute> {
   public readonly id: string;
   public readonly operation: Protocol extends "http"
     ? AgenticaOperation.Http<Model>
@@ -25,7 +25,7 @@ export class AgenticaExecutePrompt<
     this.value = props.value;
   }
 
-  public toJSON(): IAgenticaPrompt.IExecute {
+  public toJSON(): IAgenticaPromptJson.IExecute {
     return {
       type: this.type,
       id: this.id,

@@ -1,6 +1,6 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaOperationSelection } from "../json/IAgenticaOperationSelection";
+import { IAgenticaOperationSelectionJson } from "../json/IAgenticaOperationSelectionJson";
 import { AgenticaOperation } from "./AgenticaOperation";
 
 export class AgenticaOperationSelection<Model extends ILlmSchema.Model> {
@@ -12,7 +12,7 @@ export class AgenticaOperationSelection<Model extends ILlmSchema.Model> {
     this.reason = props.reason;
   }
 
-  public toJSON(): IAgenticaOperationSelection {
+  public toJSON(): IAgenticaOperationSelectionJson {
     return {
       operation: this.operation.toJSON(),
       reason: this.reason,

@@ -1,6 +1,6 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaEvent } from "../json/IAgenticaEvent";
+import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
@@ -29,10 +29,10 @@ export class AgenticaDescribeEvent<
     return this.join_();
   }
 
-  public toJSON(): IAgenticaEvent.IDescribe {
+  public toJSON(): IAgenticaEventJson.IDescribe {
     return {
       type: "describe",
-      executions: this.executes.map((e) => e.toJSON()),
+      executes: this.executes.map((e) => e.toJSON()),
       text: this.text,
       done: this.done,
     };

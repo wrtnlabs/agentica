@@ -1,7 +1,7 @@
 import { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { IAgenticaEvent } from "../json/IAgenticaEvent";
+import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaCancelEvent<
@@ -14,7 +14,7 @@ export class AgenticaCancelEvent<
     this.selection = props.selection;
   }
 
-  public toJSON(): IAgenticaEvent.ICancel {
+  public toJSON(): IAgenticaEventJson.ICancel {
     return {
       type: "cancel",
       selection: this.selection.toJSON(),

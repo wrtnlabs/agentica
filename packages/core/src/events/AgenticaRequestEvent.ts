@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-import { IAgenticaEvent } from "../json/IAgenticaEvent";
+import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 import { AgenticaEventSource } from "./AgenticaEventSource";
 
@@ -16,7 +16,7 @@ export class AgenticaRequestEvent extends AgenticaEventBase<"request"> {
     this.options = props.options;
   }
 
-  public toJSON(): IAgenticaEvent.IRequest {
+  public toJSON(): IAgenticaEventJson.IRequest {
     return {
       type: "request",
       source: this.source,

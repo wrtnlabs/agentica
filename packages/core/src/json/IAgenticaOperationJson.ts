@@ -13,7 +13,7 @@
  *
  * @author Samchon
  */
-export interface IAgenticaOperation {
+export interface IAgenticaOperationJson {
   /**
    * Protocol discriminator.
    */

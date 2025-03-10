@@ -1,12 +1,12 @@
 import { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
+import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaCancelPrompt<
   Model extends ILlmSchema.Model,
-> extends AgenticaPromptBase<"cancel", IAgenticaPrompt.ICancel> {
+> extends AgenticaPromptBase<"cancel", IAgenticaPromptJson.ICancel> {
   public readonly id: string;
   public readonly selections: AgenticaOperationSelection<Model>[];
 
@@ -16,7 +16,7 @@ export class AgenticaCancelPrompt<
     this.selections = props.selections;
   }
 
-  public toJSON(): IAgenticaPrompt.ICancel {
+  public toJSON(): IAgenticaPromptJson.ICancel {
     return {
       type: this.type,
       id: this.id,

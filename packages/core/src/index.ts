@@ -6,11 +6,11 @@ export * from "./structures/IAgenticaProps";
 export * from "./structures/IAgenticaVendor";
 export * from "./structures/IAgenticaSystemPrompt";
 
-export * from "./json/IAgenticaEvent";
-export * from "./json/IAgenticaOperation";
-export * from "./json/IAgenticaOperationSelection";
-export * from "./json/IAgenticaPrompt";
-export * from "./json/IAgenticaTokenUsage";
+export * from "./json/IAgenticaEventJson";
+export * from "./json/IAgenticaOperationJson";
+export * from "./json/IAgenticaOperationSelectionJson";
+export * from "./json/IAgenticaPromptJson";
+export * from "./json/IAgenticaTokenUsageJson";
 
 // CONTEXT
 export * from "./context/AgenticaContext";

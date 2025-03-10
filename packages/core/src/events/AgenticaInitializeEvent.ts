@@ -1,4 +1,4 @@
-import { IAgenticaEvent } from "../json/IAgenticaEvent";
+import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaInitializeEvent extends AgenticaEventBase<"initialize"> {
@@ -6,7 +6,7 @@ export class AgenticaInitializeEvent extends AgenticaEventBase<"initialize"> {
     super("initialize");
   }
 
-  public toJSON(): IAgenticaEvent.IInitialize {
+  public toJSON(): IAgenticaEventJson.IInitialize {
     return {
       type: "initialize",
     };

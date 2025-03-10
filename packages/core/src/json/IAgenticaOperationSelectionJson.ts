@@ -1,4 +1,4 @@
-import { IAgenticaOperation } from "./IAgenticaOperation";
+import { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 
 /**
  * Nestia agent operation selection.
@@ -13,7 +13,7 @@ import { IAgenticaOperation } from "./IAgenticaOperation";
  *
  * @author Samchon
  */
-export interface IAgenticaOperationSelection {
+export interface IAgenticaOperationSelectionJson {
   reason: string;
-  operation: IAgenticaOperation;
+  operation: IAgenticaOperationJson;
 }

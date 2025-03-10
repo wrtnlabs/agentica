@@ -1,4 +1,4 @@
-import { IAgenticaEvent } from "../json/IAgenticaEvent";
+import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaTextEvent extends AgenticaEventBase<"text"> {
@@ -25,7 +25,7 @@ export class AgenticaTextEvent extends AgenticaEventBase<"text"> {
     return this.join_();
   }
 
-  public toJSON(): IAgenticaEvent.IText {
+  public toJSON(): IAgenticaEventJson.IText {
     return {
       type: "text",
       role: this.role,

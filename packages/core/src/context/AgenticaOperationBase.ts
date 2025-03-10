@@ -1,4 +1,4 @@
-import { IAgenticaOperation } from "../json/IAgenticaOperation";
+import { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
 
 export abstract class AgenticaOperationBase<
   Protocol extends "http" | "class",
@@ -34,7 +34,7 @@ export abstract class AgenticaOperationBase<
     this.name = props.name;
   }
 
-  public toJSON(): IAgenticaOperation {
+  public toJSON(): IAgenticaOperationJson {
     return {
       protocol: this.protocol,
       controller: this.controller.constructor.name,

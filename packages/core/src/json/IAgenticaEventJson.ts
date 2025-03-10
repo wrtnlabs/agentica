@@ -1,32 +1,30 @@
-import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
 import { AgenticaEventSource } from "../events/AgenticaEventSource";
-import { IAgenticaOperation } from "./IAgenticaOperation";
-import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
-import { IAgenticaPrompt } from "./IAgenticaPrompt";
+import { IAgenticaOperationJson } from "./IAgenticaOperationJson";
+import { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
+import { IAgenticaPromptJson } from "./IAgenticaPromptJson";
 
 /**
  * Nestia A.I. chatbot event.
  *
- * `IAgenticaEvent` is an union type of all possible events that can
+ * `IAgenticaEventJson` is an union type of all possible events that can
  * be emitted by the A.I. chatbot of the {@link Agentica} class. You
  * can discriminate the subtype by checking the {@link type} property.
  *
  * @author Samchon
  */
-export type IAgenticaEvent<Model extends ILlmSchema.Model> =
-  | IAgenticaEvent.IInitialize
-  | IAgenticaEvent.ISelect
-  | IAgenticaEvent.ICancel
-  | IAgenticaEvent.ICall
-  | IAgenticaEvent.IExecute
-  | IAgenticaEvent.IDescribe
-  | IAgenticaEvent.IText
-  | IAgenticaEvent.IRequest
-  | IAgenticaEvent.IResponse;
-export namespace IAgenticaEvent {
-  export type Type = IAgenticaEvent<any>["type"];
+export type IAgenticaEventJson =
+  | IAgenticaEventJson.ICall
+  | IAgenticaEventJson.ICancel
+  | IAgenticaEventJson.IDescribe
+  | IAgenticaEventJson.IExecute
+  | IAgenticaEventJson.IInitialize
+  | IAgenticaEventJson.IRequest
+  | IAgenticaEventJson.ISelect
+  | IAgenticaEventJson.IText;
+export namespace IAgenticaEventJson {
+  export type Type = IAgenticaEventJson["type"];
   export type Mapper = {
     initialize: IInitialize;
     select: ISelect;
@@ -36,7 +34,6 @@ export namespace IAgenticaEvent {
     describe: IDescribe;
     text: IText;
     request: IRequest;
-    response: IResponse;
   };
 
   /**
@@ -49,14 +46,14 @@ export namespace IAgenticaEvent {
    * Event of selecting a function to call.
    */
   export interface ISelect extends IBase<"select"> {
-    selection: IAgenticaOperationSelection;
+    selection: IAgenticaOperationSelectionJson;
   }
 
   /**
    * Event of canceling a function calling.
    */
   export interface ICancel extends IBase<"cancel"> {
-    selection: IAgenticaOperationSelection;
+    selection: IAgenticaOperationSelectionJson;
   }
 
   /**
@@ -71,7 +68,7 @@ export namespace IAgenticaEvent {
     /**
      * Target operation to call.
      */
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperationJson;
 
     /**
      * Arguments of the function calling.
@@ -95,7 +92,7 @@ export namespace IAgenticaEvent {
     /**
      * Target operation had called.
      */
-    operation: IAgenticaOperation;
+    operation: IAgenticaOperationJson;
 
     /**
      * Arguments of the function calling.
@@ -119,7 +116,7 @@ export namespace IAgenticaEvent {
      *
      * This prompt describes the return value of them.
      */
-    executions: IAgenticaPrompt.IExecute[];
+    executes: IAgenticaPromptJson.IExecute[];
 
     /**
      * Description text.
@@ -170,35 +167,6 @@ export namespace IAgenticaEvent {
      * Options for the request.
      */
     options?: OpenAI.RequestOptions | undefined;
-  }
-
-  /**
-   * Response event of LLM vendor API.
-   */
-  export interface IResponse extends IBase<"response"> {
-    /**
-     * The source agent of the response.
-     */
-    source: AgenticaEventSource;
-
-    /**
-     * Request body.
-     */
-    body: OpenAI.ChatCompletionCreateParamsStreaming;
-
-    /**
-     * Options for the request.
-     */
-    options?: OpenAI.RequestOptions | undefined;
-    /**
-     * The text content stream.
-     */
-    stream: ReadableStream<OpenAI.ChatCompletionChunk>;
-
-    /**
-     * Get the description text.
-     */
-    join: () => Promise<OpenAI.ChatCompletion>;
   }
 
   interface IBase<Type extends string> {

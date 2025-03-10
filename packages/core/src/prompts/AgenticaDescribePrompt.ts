@@ -1,12 +1,12 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
+import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaDescribePrompt<
   Model extends ILlmSchema.Model,
-> extends AgenticaPromptBase<"describe", IAgenticaPrompt.IDescribe> {
+> extends AgenticaPromptBase<"describe", IAgenticaPromptJson.IDescribe> {
   /**
    * Executions of the LLM function calling.
    *
@@ -25,7 +25,7 @@ export class AgenticaDescribePrompt<
     this.text = props.text;
   }
 
-  public toJSON(): IAgenticaPrompt.IDescribe {
+  public toJSON(): IAgenticaPromptJson.IDescribe {
     return {
       type: this.type,
       executions: this.executions.map((e) => e.toJSON()),

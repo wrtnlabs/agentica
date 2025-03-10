@@ -1,12 +1,12 @@
 /**
  * Token usage information from the A.I. chatbot.
  *
- * `IAgenticaTokenUsage` is a structure representing the token usage
+ * `IAgenticaTokenUsageJson` is a structure representing the token usage
  * information from the {@link Agentica} class. And you can get the
  * token usage information by calling the {@link Agentica.getTokenUsage}
  * method.
  *
- * For reference, `IAgenticaTokenUsage` provides only the token usage
+ * For reference, `IAgenticaTokenUsageJson` provides only the token usage
  * information, and does not contain any price or cost information. It is
  * because the price or cost can be changed by below reasons.
  *
@@ -16,38 +16,38 @@
  *
  * @author Samchon
  */
-export interface IAgenticaTokenUsage {
+export interface IAgenticaTokenUsageJson {
   /**
    * Aggregated token usage.
    */
-  aggregate: IAgenticaTokenUsage.IComponent;
+  aggregate: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token uasge of initializer agent.
    */
-  initialize: IAgenticaTokenUsage.IComponent;
+  initialize: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function selector agent.
    */
-  select: IAgenticaTokenUsage.IComponent;
+  select: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function canceler agent.
    */
-  cancel: IAgenticaTokenUsage.IComponent;
+  cancel: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function caller agent.
    */
-  call: IAgenticaTokenUsage.IComponent;
+  call: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function calling describer agent.
    */
-  describe: IAgenticaTokenUsage.IComponent;
+  describe: IAgenticaTokenUsageJson.IComponent;
 }
-export namespace IAgenticaTokenUsage {
+export namespace IAgenticaTokenUsageJson {
   export interface IComponent {
     /**
      * Total token usage.

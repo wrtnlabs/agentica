@@ -1,39 +1,39 @@
 import typia from "typia";
 
-import { IAgenticaTokenUsage } from "../json/IAgenticaTokenUsage";
+import { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
 
-export class AgenticaTokenUsage implements IAgenticaTokenUsage {
+export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
   /**
    * Aggregated token usage.
    */
-  public readonly aggregate: IAgenticaTokenUsage.IComponent;
+  public readonly aggregate: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token uasge of initializer agent.
    */
-  public readonly initialize: IAgenticaTokenUsage.IComponent;
+  public readonly initialize: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function selector agent.
    */
-  public readonly select: IAgenticaTokenUsage.IComponent;
+  public readonly select: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function canceler agent.
    */
-  public readonly cancel: IAgenticaTokenUsage.IComponent;
+  public readonly cancel: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function caller agent.
    */
-  public readonly call: IAgenticaTokenUsage.IComponent;
+  public readonly call: IAgenticaTokenUsageJson.IComponent;
 
   /**
    * Token usage of function calling describer agent.
    */
-  public readonly describe: IAgenticaTokenUsage.IComponent;
+  public readonly describe: IAgenticaTokenUsageJson.IComponent;
 
-  public constructor(props?: IAgenticaTokenUsage) {
+  public constructor(props?: IAgenticaTokenUsageJson) {
     if (props === undefined) {
       const zero = AgenticaTokenUsage.zero();
       this.aggregate = zero.aggregate;
@@ -52,10 +52,10 @@ export class AgenticaTokenUsage implements IAgenticaTokenUsage {
     }
   }
 
-  public increment(y: IAgenticaTokenUsage): void {
+  public increment(y: IAgenticaTokenUsageJson): void {
     const increment = (
-      x: IAgenticaTokenUsage.IComponent,
-      y: IAgenticaTokenUsage.IComponent,
+      x: IAgenticaTokenUsageJson.IComponent,
+      y: IAgenticaTokenUsageJson.IComponent,
     ): void => {
       x.total += y.total;
       x.input.total += y.input.total;
@@ -73,12 +73,12 @@ export class AgenticaTokenUsage implements IAgenticaTokenUsage {
     increment(this.describe, y.describe);
   }
 
-  public toJSON(): IAgenticaTokenUsage {
-    return typia.misc.clone<IAgenticaTokenUsage>(this);
+  public toJSON(): IAgenticaTokenUsageJson {
+    return typia.misc.clone<IAgenticaTokenUsageJson>(this);
   }
 
   public static zero(): AgenticaTokenUsage {
-    const component = (): IAgenticaTokenUsage.IComponent => ({
+    const component = (): IAgenticaTokenUsageJson.IComponent => ({
       total: 0,
       input: {
         total: 0,

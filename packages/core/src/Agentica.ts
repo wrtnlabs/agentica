@@ -13,7 +13,6 @@ import { AgenticaInitializeEvent } from "./events/AgenticaInitializeEvent";
 import { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import { AgenticaTextEvent } from "./events/AgenticaTextEvent";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
-import { AgenticaPromptTransformer } from "./internal/AgenticaPromptTransformer";
 import { StreamUtil } from "./internal/StreamUtil";
 import { __map_take } from "./internal/__map_take";
 import { AgenticaPrompt } from "./prompts/AgenticaPrompt";
@@ -22,6 +21,7 @@ import { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import { IAgenticaController } from "./structures/IAgenticaController";
 import { IAgenticaProps } from "./structures/IAgenticaProps";
 import { IAgenticaVendor } from "./structures/IAgenticaVendor";
+import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
 
 /**
  * Nestia A.I. chatbot agent.
@@ -44,9 +44,9 @@ import { IAgenticaVendor } from "./structures/IAgenticaVendor";
  *   - {@link IAgenticaSystemPrompt}
  * - Accessors
  *   - {@link IAgenticaOperation}
- *   - {@link IAgenticaPrompt}
- *   - {@link IAgenticaEvent}
- *   - {@link IAgenticaTokenUsage}
+ *   - {@link IAgenticaPromptJson}
+ *   - {@link IAgenticaEventJson}
+ *   - {@link IAgenticaTokenUsageJson}
  *
  * @author Samchon
  */
@@ -87,7 +87,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     this.prompt_histories_ = (props.histories ?? []).map((input) =>
       AgenticaPromptTransformer.transform({
         operations: this.operations_.group,
-        input,
+        prompt: input,
       }),
     );
 
@@ -120,7 +120,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    *
    * When the user's conversation implies the A.I. chatbot to execute a
    * function calling, the returned chat prompts will contain the
-   * function calling information like {@link IAgenticaPrompt.IExecute}.
+   * function calling information like {@link IAgenticaPromptJson.IExecute}.
    *
    * @param content The content to talk
    * @returns List of newly created chat prompts

@@ -1,9 +1,9 @@
-import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
+import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaTextPrompt<
   Role extends "assistant" | "user" = "assistant" | "user",
-> extends AgenticaPromptBase<"text", IAgenticaPrompt.IText> {
+> extends AgenticaPromptBase<"text", IAgenticaPromptJson.IText> {
   public readonly role: Role;
   public readonly text: string;
 
@@ -13,7 +13,7 @@ export class AgenticaTextPrompt<
     this.text = props.text;
   }
 
-  public toJSON(): IAgenticaPrompt.IText<Role> {
+  public toJSON(): IAgenticaPromptJson.IText<Role> {
     return {
       type: this.type,
       role: this.role,
