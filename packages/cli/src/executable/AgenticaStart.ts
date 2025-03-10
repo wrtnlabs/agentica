@@ -33,7 +33,7 @@ export namespace AgenticaStart {
     );
 
     const questions = getQuestions({ services: availableServices });
-    const answers = await inquirer.prompt(questions as any);
+    const answers = await inquirer.prompt(questions);
     const {
       packageManager,
       openAIKey,

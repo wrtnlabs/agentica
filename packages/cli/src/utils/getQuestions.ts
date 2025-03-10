@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { QuestionCollection } from "inquirer";
 
 export interface GetQuestionsInput {
   services: {
@@ -7,7 +8,9 @@ export interface GetQuestionsInput {
   }[];
 }
 
-export const getQuestions = (input: GetQuestionsInput) => {
+export const getQuestions = (
+  input: GetQuestionsInput,
+): QuestionCollection[] => {
   return [
     {
       type: "list",
