@@ -92,12 +92,8 @@ export class AgenticaRpcService<Model extends ILlmSchema.Model>
   /**
    * @inheritDoc
    */
-  public async getControllers(): Promise<
-    Primitive<IAgenticaController<Model>>[]
-  > {
-    return this.props.agent.getControllers() satisfies ReadonlyArray<
-      IAgenticaController<Model>
-    > as Primitive<IAgenticaController<Model>>[];
+  public async getControllers(): Promise<IAgenticaController<Model>[]> {
+    return this.props.agent.getControllers() as IAgenticaController<Model>[];
   }
 }
 export namespace AgenticaRpcService {

@@ -1,11 +1,11 @@
 import { CompletionUsage } from "openai/resources";
-import { Primitive } from "typia";
 
+import { IAgenticaTokenUsageJson } from "../../json/IAgenticaTokenUsageJson";
 import { AgenticaTokenUsage } from "../AgenticaTokenUsage";
 
 export namespace AgenticaTokenUsageAggregator {
   export const aggregate = (props: {
-    kind: Exclude<keyof Primitive<AgenticaTokenUsage>, "aggregate">;
+    kind: Exclude<keyof IAgenticaTokenUsageJson, "aggregate">;
     completionUsage: CompletionUsage;
     usage: AgenticaTokenUsage;
   }): void => {

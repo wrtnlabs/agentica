@@ -34,7 +34,7 @@ export const test_base_websocket = async (): Promise<void | false> => {
     await acceptor.accept(
       new AgenticaRpcService({
         agent,
-        listener: (acceptor as any).getDriver(),
+        listener: acceptor.getDriver(),
       }),
     );
   });
@@ -57,9 +57,7 @@ export const test_base_websocket = async (): Promise<void | false> => {
   });
   await connector.connect(`ws://localhost:${port}`);
 
-  const driver: Driver<IAgenticaRpcService<"chatgpt">> = (
-    connector as any
-  ).getDriver();
+  const driver: Driver<IAgenticaRpcService<"chatgpt">> = connector.getDriver();
   await driver.conversate("What can you do?");
   await connector.close();
 
