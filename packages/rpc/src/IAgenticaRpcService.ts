@@ -1,6 +1,5 @@
 import { IAgenticaController } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
-import { Primitive } from "typia";
 
 /**
  * RPC interface of AI agent service.
@@ -37,5 +36,5 @@ export interface IAgenticaRpcService<Model extends ILlmSchema.Model> {
    * Get controllers, collection of functions that would be
    * called by the AI chatbot.
    */
-  getControllers(): Promise<Primitive<IAgenticaController<Model>[]>>;
+  getControllers(): Promise<IAgenticaController<Model>[]>;
 }

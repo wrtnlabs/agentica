@@ -1,5 +1,4 @@
 import { IAgenticaEventJson } from "@agentica/core";
-import { Primitive } from "typia";
 
 /**
  * RPC interface of AI agent listener.
@@ -52,18 +51,14 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of a description of function execution results
    */
-  describe(
-    evt: Primitive<IAgenticaEventJson.IDescribe> & { text: string },
-  ): Promise<void>;
+  describe(evt: IAgenticaEventJson.IDescribe): Promise<void>;
 
   /**
    * Text conversation message.
    *
    * @param evt Event of a text conversation message
    */
-  text(
-    evt: Primitive<IAgenticaEventJson.IText> & { text: string },
-  ): Promise<void>;
+  text(evt: IAgenticaEventJson.IText): Promise<void>;
 
   /**
    * Initialize the AI agent.
@@ -82,7 +77,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of selecting a function to call
    */
-  select?(evt: Primitive<IAgenticaEventJson.ISelect>): Promise<void>;
+  select?(evt: IAgenticaEventJson.ISelect): Promise<void>;
 
   /**
    * Cancel a function to call.
@@ -91,7 +86,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of canceling a function to call
    */
-  cancel?(evt: Primitive<IAgenticaEventJson.ICancel>): Promise<void>;
+  cancel?(evt: IAgenticaEventJson.ICancel): Promise<void>;
 
   /**
    * Call a function.
@@ -110,9 +105,7 @@ export interface IAgenticaRpcListener {
    * @param evt Event of a function calling
    * @return New arguments if you want to modify, otherwise null or undefined
    */
-  call?(
-    evt: Primitive<IAgenticaEventJson.ICall>,
-  ): Promise<object | null | undefined>;
+  call?(evt: IAgenticaEventJson.ICall): Promise<object | null | undefined>;
 
   /**
    * Executition of a function.
