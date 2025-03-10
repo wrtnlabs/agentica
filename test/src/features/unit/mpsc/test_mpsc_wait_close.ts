@@ -1,54 +1,54 @@
 import { MPSCUtil } from "@agentica/core/src/internal/MPSCUtil";
 
 export async function test_mpsc_wait_close(): Promise<void | false> {
-  // 테스트 1: 기본 waitClose 기능
+  // Test 1: Basic waitClose functionality
   const { consumer, produce, close, waitClose } = MPSCUtil.create<string>();
   const reader = consumer.getReader();
 
-  produce("메시지");
+  produce("message");
   const readResult = await reader.read();
 
-  if (readResult.value !== "메시지" || readResult.done !== false) {
+  if (readResult.value !== "message" || readResult.done !== false) {
     throw new Error(
-      `기본 waitClose 테스트 실패: 예상 {value: "메시지", done: false}, 받음 ${JSON.stringify(
+      `Basic waitClose test failed: Expected {value: "message", done: false}, received ${JSON.stringify(
         readResult,
       )}`,
     );
   }
 
-  // waitClose 호출 후 close 실행
+  // Call waitClose then execute close
   const closePromise = waitClose();
   close();
-  await closePromise; // close 시 resolve 되어야 함
+  await closePromise; // Should resolve when closed
 
   const afterClose = await reader.read();
   if (afterClose.done !== true) {
     throw new Error(
-      `waitClose 종료 테스트 실패: 예상 {done: true}, 받음 ${JSON.stringify(
+      `waitClose completion test failed: Expected {done: true}, received ${JSON.stringify(
         afterClose,
       )}`,
     );
   }
 
-  // 테스트 2: 이미 닫힌 큐에서 waitClose 호출
+  // Test 2: Call waitClose on already closed queue
   const { close: close2, waitClose: waitClose2 } = MPSCUtil.create<number>();
 
-  close2(); // 먼저 닫기
+  close2(); // Close first
   const alreadyClosedPromise = waitClose2();
-  // 이미 닫혀있으므로 즉시 resolve 되어야 함
+  // Should resolve immediately since already closed
   await alreadyClosedPromise;
 
-  // 테스트 3: 여러 번 waitClose 호출
+  // Test 3: Multiple waitClose calls
   const { close: close3, waitClose: waitClose3 } = MPSCUtil.create<number>();
 
-  // 여러 waitClose 프로미스 생성
+  // Create multiple waitClose promises
   const waitPromises = [waitClose3(), waitClose3(), waitClose3()];
 
-  // 모든 프로미스가 resolve 되어야 함
+  // All promises should resolve
   close3();
   await Promise.all(waitPromises);
 
-  // 테스트 4: waitClose가 다른 작업을 차단하지 않는지 확인
+  // Test 4: Verify waitClose doesn't block other operations
   const {
     consumer: consumer4,
     produce: produce4,
@@ -57,27 +57,27 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   } = MPSCUtil.create<string>();
   const reader4 = consumer4.getReader();
 
-  // waitClose 호출
+  // Call waitClose
   const waitPromise4 = waitClose4();
 
-  // 값 생산과 소비가 계속 작동하는지 확인
-  produce4("첫번째");
-  produce4("두번째");
+  // Check if value production and consumption still work
+  produce4("first");
+  produce4("second");
 
   const read1 = await reader4.read();
   const read2 = await reader4.read();
 
-  if (read1.value !== "첫번째" || read1.done !== false) {
+  if (read1.value !== "first" || read1.done !== false) {
     throw new Error(
-      `waitClose 차단 테스트 실패: 예상 {value: "첫번째", done: false}, 받음 ${JSON.stringify(
+      `waitClose blocking test failed: Expected {value: "first", done: false}, received ${JSON.stringify(
         read1,
       )}`,
     );
   }
 
-  if (read2.value !== "두번째" || read2.done !== false) {
+  if (read2.value !== "second" || read2.done !== false) {
     throw new Error(
-      `waitClose 차단 테스트 실패: 예상 {value: "두번째", done: false}, 받음 ${JSON.stringify(
+      `waitClose blocking test failed: Expected {value: "second", done: false}, received ${JSON.stringify(
         read2,
       )}`,
     );
@@ -89,13 +89,13 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   const afterClose4 = await reader4.read();
   if (afterClose4.done !== true) {
     throw new Error(
-      `waitClose 차단 종료 테스트 실패: 예상 {done: true}, 받음 ${JSON.stringify(
+      `waitClose blocking completion test failed: Expected {done: true}, received ${JSON.stringify(
         afterClose4,
       )}`,
     );
   }
 
-  // 테스트 5: 비동기 close 이후 waitClose 해결
+  // Test 5: waitClose resolution after async close
   const {
     consumer: consumer5,
     produce: produce5,
@@ -106,22 +106,22 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
 
   produce5(100);
 
-  // waitClose 호출
+  // Call waitClose
   const waitPromise5 = waitClose5();
 
-  // 비동기 close 수행
+  // Perform async close
   setTimeout(() => {
     close5();
   }, 50);
 
-  // waitClose가 resolve 되길 기다림
+  // Wait for waitClose to resolve
   await waitPromise5;
   await reader5.read();
 
   const afterClose5 = await reader5.read();
   if (afterClose5.done !== true) {
     throw new Error(
-      `비동기 close 테스트 실패: 예상 {done: true}, 받음 ${JSON.stringify(
+      `Async close test failed: Expected {done: true}, received ${JSON.stringify(
         afterClose5,
       )}`,
     );
