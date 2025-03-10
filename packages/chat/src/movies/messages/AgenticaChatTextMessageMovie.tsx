@@ -1,4 +1,4 @@
-import { IAgenticaPrompt } from "@agentica/core";
+import { AgenticaTextPrompt } from "@agentica/core";
 import FaceIcon from "@mui/icons-material/Face";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
@@ -41,6 +41,6 @@ export const AgenticaChatTextMessageMovie = ({
 };
 export namespace AgenticaChatTextMessageMovie {
   export interface IProps {
-    prompt: IAgenticaPrompt.IText;
+    prompt: AgenticaTextPrompt;
   }
 }

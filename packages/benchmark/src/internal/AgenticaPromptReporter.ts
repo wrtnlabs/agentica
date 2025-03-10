@@ -26,7 +26,7 @@ export namespace AgenticaPromptReporter {
     else if (p.type === "describe")
       return [
         "### Describe",
-        ...p.executions.map((e) => `  - ${e.operation.name}`),
+        ...p.executes.map((e) => `  - ${e.operation.name}`),
         "",
         ...p.text.split("\n").map((s) => `> ${s}`),
         "",

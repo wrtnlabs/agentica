@@ -1,6 +1,7 @@
 import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
@@ -36,6 +37,13 @@ export class AgenticaDescribeEvent<
       text: this.text,
       done: this.done,
     };
+  }
+
+  public toPrompt(): AgenticaDescribePrompt<Model> {
+    return new AgenticaDescribePrompt({
+      executes: this.executes,
+      text: this.text,
+    });
   }
 
   private readonly done_: () => boolean;

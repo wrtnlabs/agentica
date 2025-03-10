@@ -112,7 +112,7 @@ export namespace ChatGptDescribeFunctionAgent {
       .map(
         (content) =>
           new AgenticaDescribePrompt({
-            executions: histories,
+            executes: histories,
             text: content,
           }),
       );

@@ -1,9 +1,11 @@
 import {
   Agentica,
-  IAgenticaEvent,
-  IAgenticaOperationSelection,
-  IAgenticaPrompt,
-  IAgenticaTokenUsage,
+  AgenticaDescribeEvent,
+  AgenticaOperationSelection,
+  AgenticaPrompt,
+  AgenticaSelectEvent,
+  AgenticaTextEvent,
+  AgenticaTokenUsage,
 } from "@agentica/core";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
@@ -45,16 +47,16 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   // STATES
   const [error, setError] = useState<Error | null>(null);
   const [text, setText] = useState("");
-  const [histories, setHistories] = useState<IAgenticaPrompt<Model>[]>(
+  const [histories, setHistories] = useState<AgenticaPrompt<Model>[]>(
     agent.getPromptHistories().slice(),
   );
-  const [tokenUsage, setTokenUsage] = useState<IAgenticaTokenUsage>(
+  const [tokenUsage, setTokenUsage] = useState<AgenticaTokenUsage>(
     JSON.parse(JSON.stringify(agent.getTokenUsage())),
   );
   const [height, setHeight] = useState(122);
   const [enabled, setEnabled] = useState(true);
   const [selections, setSelections] = useState<
-    IAgenticaOperationSelection<Model>[]
+    AgenticaOperationSelection<Model>[]
   >([]);
   const [openSide, setOpenSide] = useState(false);
 
@@ -62,33 +64,21 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   // EVENT INTERACTIONS
   //----
   // EVENT LISTENERS
-  const handleText = (evt: IAgenticaEvent.IText) => {
-    histories.push(evt);
+  const handleText = async (event: AgenticaTextEvent) => {
+    await event.join(); // @todo Jaxtyn: streaming
+    histories.push(event.toPrompt());
     setHistories(histories);
   };
-  const handleDescribe = (evt: IAgenticaEvent.IDescribe<Model>) => {
-    histories.push(evt);
+  const handleDescribe = async (event: AgenticaDescribeEvent<Model>) => {
+    await event.join(); // @todo Jaxtyn: streaming
+    histories.push(event.toPrompt());
     setHistories(histories);
   };
-  const handleSelect = (evt: IAgenticaEvent.ISelect<Model>) => {
-    histories.push({
-      type: "select",
-      id: "something",
-      operations: [
-        {
-          ...evt.operation,
-          reason: evt.reason,
-          toJSON: () => ({}) as any,
-        } satisfies IAgenticaOperationSelection<Model>,
-      ],
-    });
+  const handleSelect = (evevnt: AgenticaSelectEvent<Model>) => {
+    histories.push(evevnt.toPrompt());
     setHistories(histories);
 
-    selections.push({
-      ...evt.operation,
-      reason: evt.reason,
-      toJSON: () => ({}) as any,
-    } satisfies IAgenticaOperationSelection<Model>);
+    selections.push(evevnt.selection);
     setSelections(selections);
   };
 
@@ -148,21 +138,21 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     setTokenUsage(agent.getTokenUsage());
     setEnabled(true);
 
-    const selections: IAgenticaOperationSelection<Model>[] = agent
+    const selections: AgenticaOperationSelection<Model>[] = agent
       .getPromptHistories()
       .filter((h) => h.type === "select")
-      .map((h) => h.operations)
+      .map((h) => h.selections)
       .flat();
     for (const cancel of agent
       .getPromptHistories()
       .filter((h) => h.type === "cancel")
-      .map((h) => h.operations)
+      .map((h) => h.selections)
       .flat()) {
       const index: number = selections.findIndex(
         (s) =>
-          s.protocol === cancel.protocol &&
-          s.controller.name === cancel.controller.name &&
-          s.function.name === cancel.function.name,
+          s.operation.protocol === cancel.operation.protocol &&
+          s.operation.controller.name === cancel.operation.controller.name &&
+          s.operation.function.name === cancel.operation.function.name,
       );
       if (index !== -1) selections.splice(index, 1);
     }

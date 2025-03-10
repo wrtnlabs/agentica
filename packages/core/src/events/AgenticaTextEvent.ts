@@ -1,4 +1,5 @@
 import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaTextEvent extends AgenticaEventBase<"text"> {
@@ -32,6 +33,13 @@ export class AgenticaTextEvent extends AgenticaEventBase<"text"> {
       text: this.text,
       done: this.done,
     };
+  }
+
+  public toPrompt(): AgenticaTextPrompt {
+    return new AgenticaTextPrompt({
+      role: this.role,
+      text: this.text,
+    });
   }
 
   private readonly done_: () => boolean;

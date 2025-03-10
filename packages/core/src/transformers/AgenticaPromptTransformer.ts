@@ -107,7 +107,7 @@ export namespace AgenticaPromptTransformer {
   }): AgenticaDescribePrompt<Model> =>
     new AgenticaDescribePrompt({
       text: props.prompt.text,
-      executions: props.prompt.executions.map((next) =>
+      executes: props.prompt.executions.map((next) =>
         transformExecute({
           operations: props.operations,
           prompt: next,

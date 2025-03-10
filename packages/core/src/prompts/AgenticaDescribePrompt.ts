@@ -12,7 +12,7 @@ export class AgenticaDescribePrompt<
    *
    * This prompt describes the return value of them.
    */
-  public readonly executions: AgenticaExecutePrompt<Model>[];
+  public readonly executes: AgenticaExecutePrompt<Model>[];
 
   /**
    * Description text.
@@ -21,21 +21,21 @@ export class AgenticaDescribePrompt<
 
   public constructor(props: AgenticaDescribePrompt.IProps<Model>) {
     super("describe");
-    this.executions = props.executions;
+    this.executes = props.executes;
     this.text = props.text;
   }
 
   public toJSON(): IAgenticaPromptJson.IDescribe {
     return {
       type: this.type,
-      executions: this.executions.map((e) => e.toJSON()),
+      executions: this.executes.map((e) => e.toJSON()),
       text: this.text,
     };
   }
 }
 export namespace AgenticaDescribePrompt {
   export interface IProps<Model extends ILlmSchema.Model> {
-    executions: AgenticaExecutePrompt<Model>[];
+    executes: AgenticaExecutePrompt<Model>[];
     text: string;
   }
 }

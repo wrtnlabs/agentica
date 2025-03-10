@@ -2,6 +2,7 @@ import { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaOperation } from "../context/AgenticaOperation";
 import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaExecuteEvent<
@@ -28,6 +29,15 @@ export class AgenticaExecuteEvent<
       arguments: this.arguments,
       value: this.value,
     };
+  }
+
+  public toPrompt(): AgenticaExecutePrompt<Model> {
+    return new AgenticaExecutePrompt({
+      id: this.id,
+      operation: this.operation,
+      arguments: this.arguments,
+      value: this.value,
+    });
   }
 }
 export namespace AgenticaExecuteEvent {
