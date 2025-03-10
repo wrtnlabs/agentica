@@ -1,12 +1,13 @@
 import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
-import { AgenticaSource } from "../typings/AgenticaSource";
-import { IAgenticaConfig } from "./IAgenticaConfig";
-import { IAgenticaEvent } from "./IAgenticaEvent";
-import { IAgenticaOperationCollection } from "./IAgenticaOperationCollection";
-import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
-import { IAgenticaPrompt } from "./IAgenticaPrompt";
+import { AgenticaEvent } from "../events/AgenticaEvent";
+import { AgenticaEventSource } from "../events/AgenticaEventSource";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import { IAgenticaConfig } from "../structures/IAgenticaConfig";
+import { AgenticaOperationCollection } from "./AgenticaOperationCollection";
+import { AgenticaOperationSelection } from "./AgenticaOperationSelection";
 
 /**
  * Context of the Nestia A.I. agent.
@@ -39,7 +40,7 @@ import { IAgenticaPrompt } from "./IAgenticaPrompt";
  *
  * @author Samchon
  */
-export interface IAgenticaContext<Model extends ILlmSchema.Model> {
+export interface AgenticaContext<Model extends ILlmSchema.Model> {
   //----
   // APPLICATION
   //----
@@ -50,7 +51,7 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
    * groups composed by the divide and conquer rule for the
    * efficient operation selection if configured.
    */
-  operations: IAgenticaOperationCollection<Model>;
+  operations: AgenticaOperationCollection<Model>;
 
   /**
    * Configuration of the agent.
@@ -68,14 +69,14 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
   /**
    * Prompt histories.
    */
-  histories: IAgenticaPrompt<Model>[];
+  histories: AgenticaPrompt<Model>[];
 
   /**
    * Stacked operations.
    *
    * In other words, list of candidate operations for the LLM function calling.
    */
-  stack: IAgenticaOperationSelection<Model>[];
+  stack: AgenticaOperationSelection<Model>[];
 
   /**
    * Text prompt of the user.
@@ -83,7 +84,7 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
    * Text conversation written the by user through the
    * {@link Agentica.conversate} function.
    */
-  prompt: IAgenticaPrompt.IText<"user">;
+  prompt: AgenticaTextPrompt<"user">;
 
   /**
    * Whether the agent is ready.
@@ -91,7 +92,7 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
    * Returns a boolean value indicates whether the agent is ready to
    * perform the function calling.
    *
-   * If the agent has called the {@link IAgenticaContext.initialize},
+   * If the agent has called the {@link AgenticaContext.initialize},
    * it returns `true`. Otherwise the {@link initialize} has never been
    * called, returns `false`.
    */
@@ -108,7 +109,7 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
    *
    * @param event Event to deliver
    */
-  dispatch: (event: IAgenticaEvent<Model>) => Promise<void>;
+  dispatch: (event: AgenticaEvent<Model>) => Promise<void>;
 
   /**
    * Request to the OpenAI server.
@@ -118,7 +119,7 @@ export interface IAgenticaContext<Model extends ILlmSchema.Model> {
    * @returns Response from the OpenAI server
    */
   request: (
-    source: AgenticaSource,
+    source: AgenticaEventSource,
     body: Omit<OpenAI.ChatCompletionCreateParamsStreaming, "model" | "stream">,
   ) => Promise<ReadableStream<OpenAI.Chat.Completions.ChatCompletionChunk>>;
 

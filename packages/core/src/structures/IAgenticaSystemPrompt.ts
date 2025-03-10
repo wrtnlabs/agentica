@@ -1,7 +1,8 @@
 import { ILlmSchema } from "@samchon/openapi";
 
+import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import { IAgenticaConfig } from "./IAgenticaConfig";
-import { IAgenticaPrompt } from "./IAgenticaPrompt";
 
 /**
  * System prompt collection of the A.I. chatbot.
@@ -41,13 +42,13 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, the `initialize` system prompt would be used. You can
    * customize the `initialize` system prompt by assigning this function
-   * with the given {@link IAgenticaPrompt histories} parameter.
+   * with the given {@link AgenticaPrompt histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns initialize system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/initialize.md
    */
-  initialize?: (histories: IAgenticaPrompt<Model>[]) => string;
+  initialize?: (histories: AgenticaPrompt<Model>[]) => string;
 
   /**
    * Select system prompt.
@@ -58,7 +59,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `select` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link IAgenticaPrompt histories} parameter.
+   * {@link AgenticaPrompt histories} parameter.
    *
    * Note that, the `"select"` means only the function selection. It does
    * not contain the filling argument or executing the function. It
@@ -68,7 +69,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns select system promopt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/select.md
    */
-  select?: (histories: IAgenticaPrompt<Model>[]) => string;
+  select?: (histories: AgenticaPrompt<Model>[]) => string;
 
   /**
    * Cancel system prompt.
@@ -79,13 +80,13 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `cancel` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link IAgenticaPrompt histories} parameter.
+   * {@link AgenticaPrompt histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns cancel system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/cancel.md
    */
-  cancel?: (histories: IAgenticaPrompt<Model>[]) => string;
+  cancel?: (histories: AgenticaPrompt<Model>[]) => string;
 
   /**
    * Execute system prompt.
@@ -97,13 +98,13 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `execute` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link IAgenticaPrompt histories} parameter.
+   * {@link AgenticaPrompt histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns execute system prompt
    * https://github.com/samchon/nestia/blob/master/packages/agent/prompts/execute.md
    */
-  execute?: (histories: IAgenticaPrompt<Model>[]) => string;
+  execute?: (histories: AgenticaPrompt<Model>[]) => string;
 
   /**
    * Describe system prompt.
@@ -114,11 +115,11 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `describe` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link IAgenticaPrompt histories} parameter.
+   * {@link AgenticaPrompt histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns describe system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/describe.md
    */
-  describe?: (histories: IAgenticaPrompt.IExecute<Model>[]) => string;
+  describe?: (histories: AgenticaExecutePrompt<Model>[]) => string;
 }

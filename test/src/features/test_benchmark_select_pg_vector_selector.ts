@@ -1,5 +1,5 @@
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
-import { Agentica, IAgenticaOperation } from "@agentica/core";
+import { Agentica, AgenticaOperation } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
 import fs from "fs";
@@ -62,7 +62,7 @@ export const test_benchmark_select_pg_vector_selector = async (): Promise<
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): IAgenticaOperation<"chatgpt"> => {
+  ): AgenticaOperation<"chatgpt"> => {
     const found = agent
       .getOperations()
       .find(

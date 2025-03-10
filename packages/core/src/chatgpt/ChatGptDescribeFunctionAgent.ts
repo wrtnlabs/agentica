@@ -1,20 +1,22 @@
 import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
+import { AgenticaContext } from "../context/AgenticaContext";
+import { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { MPSCUtil } from "../internal/MPSCUtil";
 import { StreamUtil } from "../internal/StreamUtil";
-import { IAgenticaContext } from "../structures/IAgenticaContext";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
+import { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
+import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptDescribeFunctionAgent {
   export const execute = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-    histories: IAgenticaPrompt.IExecute<Model>[],
-  ): Promise<IAgenticaPrompt.IDescribe<Model>[]> => {
+    ctx: AgenticaContext<Model>,
+    histories: AgenticaExecutePrompt<Model>[],
+  ): Promise<AgenticaDescribePrompt<Model>[]> => {
     if (histories.length === 0) return [];
     const completionStream = await ctx.request("describe", {
       messages: [
@@ -62,7 +64,7 @@ export namespace ChatGptDescribeFunctionAgent {
             continue;
           }
 
-          const { consumer, produce, close, waitClose } =
+          const { consumer, produce, close, waitClose, done } =
             MPSCUtil.create<string>();
 
           describeContext[choice.index] = {
@@ -71,18 +73,22 @@ export namespace ChatGptDescribeFunctionAgent {
             produce,
             close,
             waitClose,
+            done,
           };
           produce(choice.delta.content);
 
-          void ctx.dispatch({
-            type: "describe",
-            executions: histories,
-            stream: consumer,
-            join: async () => {
-              await waitClose();
-              return describeContext[choice.index]!.content;
-            },
-          });
+          void ctx.dispatch(
+            new AgenticaDescribeEvent({
+              executes: histories,
+              stream: consumer,
+              done,
+              get: () => describeContext[choice.index]?.content ?? "",
+              join: async () => {
+                await waitClose();
+                return describeContext[choice.index]!.content;
+              },
+            }),
+          );
         }
       };
 
@@ -96,7 +102,7 @@ export namespace ChatGptDescribeFunctionAgent {
     });
 
     if (!completion) throw new Error("No completion received");
-    const descriptions: IAgenticaPrompt.IDescribe<Model>[] = completion.choices
+    const descriptions: AgenticaDescribePrompt<Model>[] = completion.choices
       .map((choice) =>
         choice.message.role === "assistant" && !!choice.message.content?.length
           ? choice.message.content
@@ -105,11 +111,10 @@ export namespace ChatGptDescribeFunctionAgent {
       .filter((str) => str !== null)
       .map(
         (content) =>
-          ({
-            type: "describe",
-            executions: histories,
+          new AgenticaDescribePrompt({
+            executes: histories,
             text: content,
-          }) satisfies IAgenticaPrompt.IDescribe<Model>,
+          }),
       );
     return descriptions;
   };

@@ -1,4 +1,4 @@
-import { IAgenticaTokenUsage } from "@agentica/core";
+import { AgenticaTokenUsage } from "@agentica/core";
 import {
   Table,
   TableBody,
@@ -54,7 +54,7 @@ export const AgenticaChatTokenUsageSideMovie = (
 };
 export namespace AgenticaChatTokenUsageSideMovie {
   export interface IProps {
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
   }
 }
 
@@ -64,7 +64,7 @@ interface IPrice {
   completion: number;
 }
 
-const compute = (usage: IAgenticaTokenUsage): IPrice => {
+const compute = (usage: AgenticaTokenUsage): IPrice => {
   const prompt: number =
     (usage.aggregate.input.total - usage.aggregate.input.cached) *
       (2.5 / 1_000_000) +

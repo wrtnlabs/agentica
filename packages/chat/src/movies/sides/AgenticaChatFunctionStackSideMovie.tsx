@@ -1,4 +1,4 @@
-import { IAgenticaOperationSelection } from "@agentica/core";
+import { AgenticaOperationSelection } from "@agentica/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -11,7 +11,9 @@ import React from "react";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export const AgenticaChatFunctionStackSideMovie = <Model extends ILlmSchema.Model>(
+export const AgenticaChatFunctionStackSideMovie = <
+  Model extends ILlmSchema.Model,
+>(
   props: AgenticaChatFunctionStackSideMovie.IProps<Model>,
 ) => {
   return (
@@ -22,9 +24,9 @@ export const AgenticaChatFunctionStackSideMovie = <Model extends ILlmSchema.Mode
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography component="h6">
-              {select.protocol === "http"
-                ? `${select.function.method.toUpperCase()} ${select.function.path}`
-                : select.function.name}
+              {select.operation.protocol === "http"
+                ? `${select.operation.function.method.toUpperCase()} ${select.operation.function.path}`
+                : select.operation.function.name}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -32,7 +34,9 @@ export const AgenticaChatFunctionStackSideMovie = <Model extends ILlmSchema.Mode
             {select.reason}
             <br />
             <br />
-            <MarkdownViewer>{select.function.description}</MarkdownViewer>
+            <MarkdownViewer>
+              {select.operation.function.description}
+            </MarkdownViewer>
           </AccordionDetails>
         </Accordion>
       ))}
@@ -41,6 +45,6 @@ export const AgenticaChatFunctionStackSideMovie = <Model extends ILlmSchema.Mode
 };
 export namespace AgenticaChatFunctionStackSideMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    selections: IAgenticaOperationSelection<Model>[];
+    selections: AgenticaOperationSelection<Model>[];
   }
 }

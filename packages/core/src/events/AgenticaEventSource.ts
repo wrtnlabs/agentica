@@ -1,4 +1,4 @@
-export type AgenticaSource =
+export type AgenticaEventSource =
   | "initialize"
   | "select"
   | "cancel"

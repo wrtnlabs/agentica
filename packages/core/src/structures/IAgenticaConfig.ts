@@ -1,8 +1,8 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaContext } from "./IAgenticaContext";
+import { AgenticaContext } from "../context/AgenticaContext";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import { IAgenticaExecutor } from "./IAgenticaExecutor";
-import { IAgenticaPrompt } from "./IAgenticaPrompt";
 import { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
 
 /**
@@ -119,5 +119,5 @@ export interface IAgenticaConfig<Model extends ILlmSchema.Model> {
    */
   executor?:
     | Partial<IAgenticaExecutor<Model>>
-    | ((ctx: IAgenticaContext<Model>) => Promise<IAgenticaPrompt<Model>[]>);
+    | ((ctx: AgenticaContext<Model>) => Promise<AgenticaPrompt<Model>[]>);
 }

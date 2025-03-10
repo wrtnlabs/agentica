@@ -1,4 +1,9 @@
-import { Agentica, IAgenticaEvent, IAgenticaPrompt } from "@agentica/core";
+import {
+  Agentica,
+  AgenticaPrompt,
+  AgenticaRequestEvent,
+  AgenticaResponseEvent,
+} from "@agentica/core";
 import OpenAI from "openai";
 
 import { TestGlobal } from "../TestGlobal";
@@ -25,7 +30,7 @@ export async function test_base_streaming(): Promise<void | false> {
   let textEventReceived = false;
 
   // Add event listeners to track streaming events
-  agent.on("request", (event: IAgenticaEvent.IRequest) => {
+  agent.on("request", (event: AgenticaRequestEvent) => {
     requestEventFired = true;
     // Verify request is configured for streaming
     if (event.body.stream !== true) {
@@ -33,7 +38,7 @@ export async function test_base_streaming(): Promise<void | false> {
     }
   });
 
-  agent.on("response", async (event: IAgenticaEvent.IResponse) => {
+  agent.on("response", async (event: AgenticaResponseEvent) => {
     responseEventFired = true;
     // Test the stream
     const reader = event.stream.getReader();
@@ -57,7 +62,7 @@ export async function test_base_streaming(): Promise<void | false> {
   });
 
   // Execute the conversation
-  const result: IAgenticaPrompt<"chatgpt">[] = await agent.conversate(
+  const result: AgenticaPrompt<"chatgpt">[] = await agent.conversate(
     "Explain what streaming is in 3 short sentences.",
   );
 

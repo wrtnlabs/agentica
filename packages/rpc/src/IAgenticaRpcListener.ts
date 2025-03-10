@@ -1,5 +1,4 @@
-import { IAgenticaEvent } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
+import { IAgenticaEventJson } from "@agentica/core";
 import { Primitive } from "typia";
 
 /**
@@ -9,7 +8,7 @@ import { Primitive } from "typia";
  * provided from the client to server through the RPC (Remote Procedure Call)
  * paradigm in the websocket protocol.
  *
- * It has defined the event listener functions of {@link IAgenticaEvent}
+ * It has defined the event listener functions of {@link AgenticaEvent}
  * types. If you skip some event typed functions' implementations,
  * the skipped event would be ignored.
  *
@@ -44,7 +43,7 @@ import { Primitive } from "typia";
  *
  * @author Samchon
  */
-export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
+export interface IAgenticaRpcListener {
   /**
    * Describe the function executions' results.
    *
@@ -54,7 +53,7 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    * @param evt Event of a description of function execution results
    */
   describe(
-    evt: Primitive<IAgenticaEvent.IDescribe<Model>> & { text: string },
+    evt: Primitive<IAgenticaEventJson.IDescribe> & { text: string },
   ): Promise<void>;
 
   /**
@@ -62,7 +61,9 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    *
    * @param evt Event of a text conversation message
    */
-  text(evt: Primitive<IAgenticaEvent.IText> & { text: string }): Promise<void>;
+  text(
+    evt: Primitive<IAgenticaEventJson.IText> & { text: string },
+  ): Promise<void>;
 
   /**
    * Initialize the AI agent.
@@ -72,7 +73,7 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    *
    * @param evt Event of initialization
    */
-  initialize?(evt: IAgenticaEvent.IInitialize): Promise<void>;
+  initialize?(evt: IAgenticaEventJson.IInitialize): Promise<void>;
 
   /**
    * Select a function to call.
@@ -81,7 +82,7 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    *
    * @param evt Event of selecting a function to call
    */
-  select?(evt: Primitive<IAgenticaEvent.ISelect<Model>>): Promise<void>;
+  select?(evt: Primitive<IAgenticaEventJson.ISelect>): Promise<void>;
 
   /**
    * Cancel a function to call.
@@ -90,7 +91,7 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    *
    * @param evt Event of canceling a function to call
    */
-  cancel?(evt: Primitive<IAgenticaEvent.ICancel<Model>>): Promise<void>;
+  cancel?(evt: Primitive<IAgenticaEventJson.ICancel>): Promise<void>;
 
   /**
    * Call a function.
@@ -98,7 +99,7 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    * Informs a function calling from the AI agent server to client.
    *
    * This event comes before the function execution, so that if you return
-   * a different value from the original {@link IAgenticaEvent.ICall.arguments},
+   * a different value from the original {@link IAgenticaEventJson.ICall.arguments},
    * you can modify the arguments of the function calling.
    *
    * Otherwise you do not return anything (`undefined`) or `null` value, the
@@ -110,7 +111,7 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    * @return New arguments if you want to modify, otherwise null or undefined
    */
   call?(
-    evt: Primitive<IAgenticaEvent.ICall<Model>>,
+    evt: Primitive<IAgenticaEventJson.ICall>,
   ): Promise<object | null | undefined>;
 
   /**
@@ -120,5 +121,5 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
    *
    * @param evt Event of a function execution
    */
-  execute?(evt: IAgenticaEvent.IExecute<Model>): Promise<void>;
+  execute?(evt: IAgenticaEventJson.IExecute): Promise<void>;
 }

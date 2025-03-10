@@ -113,7 +113,7 @@ export namespace AgenticaRpcService {
     /**
      * Listener to be binded on the agent.
      */
-    listener: IAgenticaRpcListener<Model>;
+    listener: IAgenticaRpcListener;
   }
 }
 

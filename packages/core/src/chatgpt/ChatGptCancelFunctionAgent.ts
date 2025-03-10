@@ -1,39 +1,34 @@
-import {
-  IHttpLlmFunction,
-  ILlmApplication,
-  ILlmSchema,
-} from "@samchon/openapi";
+import { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 import typia, { IValidation } from "typia";
 import { v4 } from "uuid";
 
+import { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import { AgenticaContext } from "../context/AgenticaContext";
+import { AgenticaOperation } from "../context/AgenticaOperation";
+import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import { __IChatCancelFunctionsApplication } from "../context/internal/__IChatCancelFunctionsApplication";
+import { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
+import { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
+import { AgenticaEvent } from "../events/AgenticaEvent";
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
-import { AgenticaPromptFactory } from "../internal/AgenticaPromptFactory";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
-import { IAgenticaContext } from "../structures/IAgenticaContext";
-import { IAgenticaController } from "../structures/IAgenticaController";
-import { IAgenticaEvent } from "../structures/IAgenticaEvent";
-import { IAgenticaOperation } from "../structures/IAgenticaOperation";
-import { IAgenticaOperationSelection } from "../structures/IAgenticaOperationSelection";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
-import { __IChatCancelFunctionsApplication } from "../structures/internal/__IChatCancelFunctionsApplication";
-import { __IChatFunctionReference } from "../structures/internal/__IChatFunctionReference";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptCancelFunctionAgent {
   export const execute = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-  ): Promise<IAgenticaPrompt.ICancel<Model>[]> => {
+    ctx: AgenticaContext<Model>,
+  ): Promise<AgenticaCancelPrompt<Model>[]> => {
     if (ctx.operations.divided === undefined)
       return step(ctx, ctx.operations.array, 0);
 
-    const stacks: IAgenticaOperationSelection<Model>[][] =
+    const stacks: AgenticaOperationSelection<Model>[][] =
       ctx.operations.divided.map(() => []);
-    const events: IAgenticaEvent<Model>[] = [];
-    const prompts: IAgenticaPrompt.ICancel<Model>[][] = await Promise.all(
+    const events: AgenticaEvent<Model>[] = [];
+    const prompts: AgenticaCancelPrompt<Model>[][] = await Promise.all(
       ctx.operations.divided.map((operations, i) =>
         step(
           {
@@ -60,63 +55,56 @@ export namespace ChatGptCancelFunctionAgent {
           .map(
             (s) =>
               ctx.operations.group
-                .get(s.controller.name)!
-                .get(s.function.name)!,
+                .get(s.operation.controller.name)!
+                .get(s.operation.function.name)!,
           ),
         0,
       );
 
     // RE-COLLECT SELECT FUNCTION EVENTS
-    const collection: IAgenticaPrompt.ICancel<Model> = {
+    const collection: AgenticaCancelPrompt<Model> = new AgenticaCancelPrompt({
       id: v4(),
-      type: "cancel",
-      operations: [],
-    };
+      selections: [],
+    });
     for (const e of events)
       if (e.type === "select") {
-        collection.operations.push(
-          AgenticaPromptFactory.selection({
-            protocol: e.operation.protocol as "http",
-            controller: e.operation
-              .controller as IAgenticaController.IHttp<Model>,
-            function: e.operation.function as IHttpLlmFunction<Model>,
-            reason: e.reason,
-            name: e.operation.name,
-          }),
-        );
+        collection.selections.push(e.selection);
         await cancelFunction(ctx, {
-          name: e.operation.name,
-          reason: e.reason,
+          name: e.selection.operation.name,
+          reason: e.selection.reason,
         });
       }
     return [collection];
   };
 
   export const cancelFunction = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
+    ctx: AgenticaContext<Model>,
     reference: __IChatFunctionReference,
-  ): Promise<IAgenticaOperationSelection<Model> | null> => {
+  ): Promise<AgenticaOperationSelection<Model> | null> => {
     const index: number = ctx.stack.findIndex(
-      (item) => item.name === reference.name,
+      (item) => item.operation.name === reference.name,
     );
     if (index === -1) return null;
 
-    const item: IAgenticaOperationSelection<Model> = ctx.stack[index]!;
+    const item: AgenticaOperationSelection<Model> = ctx.stack[index]!;
     ctx.stack.splice(index, 1);
-    await ctx.dispatch({
-      type: "cancel",
-      operation: item,
-      reason: reference.reason,
-    });
+    await ctx.dispatch(
+      new AgenticaCancelEvent({
+        selection: new AgenticaOperationSelection({
+          operation: item.operation,
+          reason: reference.reason,
+        }),
+      }),
+    );
     return item;
   };
 
   const step = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-    operations: IAgenticaOperation<Model>[],
+    ctx: AgenticaContext<Model>,
+    operations: AgenticaOperation<Model>[],
     retry: number,
     failures?: IFailure[],
-  ): Promise<IAgenticaPrompt.ICancel<Model>[]> => {
+  ): Promise<AgenticaCancelPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -218,7 +206,7 @@ export namespace ChatGptCancelFunctionAgent {
     //----
     // PROCESS COMPLETION
     //----
-    const prompts: IAgenticaPrompt.ICancel<Model>[] = [];
+    const prompts: AgenticaCancelPrompt<Model>[] = [];
     for (const choice of completion.choices) {
       // TOOL CALLING HANDLER
       if (choice.message.tool_calls)
@@ -229,16 +217,16 @@ export namespace ChatGptCancelFunctionAgent {
           );
           if (typia.is(input) === false) continue;
           else if (tc.function.name === "cancelFunctions") {
-            const collection: IAgenticaPrompt.ICancel<Model> = {
-              id: tc.id,
-              type: "cancel",
-              operations: [],
-            };
+            const collection: AgenticaCancelPrompt<Model> =
+              new AgenticaCancelPrompt({
+                id: tc.id,
+                selections: [],
+              });
             for (const reference of input.functions) {
               const operation = await cancelFunction(ctx, reference);
-              if (operation !== null) collection.operations.push(operation);
+              if (operation !== null) collection.selections.push(operation);
             }
-            if (collection.operations.length !== 0) prompts.push(collection);
+            if (collection.selections.length !== 0) prompts.push(collection);
           }
         }
     }

@@ -1,11 +1,12 @@
 import { IHttpLlmFunction, ILlmFunction, ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaController } from "./IAgenticaController";
+import { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
+import { IAgenticaController } from "../structures/IAgenticaController";
 
 /**
- * Operation information in the Nestia Agent.
+ * Operation information in the Agentica Agent.
  *
- * `IAgenticaOperation` is a type represents an operation that would
+ * `AgenticaOperation` is a type represents an operation that would
  * be selected by the A.I. chatbot of {@link Agentica} class to
  * perform the LLM (Large Language Model) function calling.
  *
@@ -17,29 +18,26 @@ import { IAgenticaController } from "./IAgenticaController";
  *
  * @author Samchon
  */
-export type IAgenticaOperation<Model extends ILlmSchema.Model> =
-  | IAgenticaOperation.IHttp<Model>
-  | IAgenticaOperation.IClass<Model>;
-export namespace IAgenticaOperation {
-  /**
-   * HTTP API operation.
-   */
-  export type IHttp<Model extends ILlmSchema.Model> = IBase<
+export type AgenticaOperation<Model extends ILlmSchema.Model> =
+  | AgenticaOperation.Class<Model>
+  | AgenticaOperation.Http<Model>;
+export namespace AgenticaOperation {
+  export type Class<Model extends ILlmSchema.Model> = Base<
+    "class",
+    IAgenticaController.IClass<Model>,
+    ILlmFunction<Model>
+  >;
+  export type Http<Model extends ILlmSchema.Model> = Base<
     "http",
     IAgenticaController.IHttp<Model>,
     IHttpLlmFunction<Model>
   >;
 
-  /**
-   * TypeScript class operation.
-   */
-  export type IClass<Model extends ILlmSchema.Model> = IBase<
-    "class",
-    IAgenticaController.IClass<Model>,
-    ILlmFunction<Model>
-  >;
-
-  interface IBase<Protocol, Application, Function> {
+  interface Base<
+    Protocol extends "http" | "class",
+    Controller extends object,
+    Function extends object,
+  > {
     /**
      * Protocol discriminator.
      */
@@ -48,7 +46,7 @@ export namespace IAgenticaOperation {
     /**
      * Belonged controller of the target function.
      */
-    controller: Application;
+    controller: Controller;
 
     /**
      * Target function to call.
@@ -59,5 +57,10 @@ export namespace IAgenticaOperation {
      * Identifier name.
      */
     name: string;
+
+    /**
+     * Convert to primitive JSON object.
+     */
+    toJSON(): IAgenticaOperationJson;
   }
 }

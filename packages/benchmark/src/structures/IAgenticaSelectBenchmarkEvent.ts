@@ -1,7 +1,7 @@
 import {
-  IAgenticaOperationSelection,
-  IAgenticaPrompt,
-  IAgenticaTokenUsage,
+  AgenticaOperationSelection,
+  AgenticaTextPrompt,
+  AgenticaTokenUsage,
 } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
@@ -45,17 +45,17 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Usage of the token during the benchmark.
      */
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
 
     /**
      * Selected operations in the benchmark.
      */
-    selected: IAgenticaOperationSelection<Model>[];
+    selected: AgenticaOperationSelection<Model>[];
 
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: IAgenticaPrompt.IText<"assistant">[];
+    assistantPrompts: AgenticaTextPrompt<"assistant">[];
   }
 
   /**
@@ -69,17 +69,17 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Usage of the token during the benchmark.
      */
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
 
     /**
      * Selected operations in the benchmark.
      */
-    selected: IAgenticaOperationSelection<Model>[];
+    selected: AgenticaOperationSelection<Model>[];
 
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: IAgenticaPrompt.IText<"assistant">[];
+    assistantPrompts: AgenticaTextPrompt<"assistant">[];
   }
 
   /**
