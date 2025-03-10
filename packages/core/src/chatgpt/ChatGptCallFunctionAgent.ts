@@ -9,23 +9,29 @@ import {
 import OpenAI from "openai";
 import { IValidation } from "typia";
 
+import { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import { AgenticaContext } from "../context/AgenticaContext";
+import { AgenticaOperation } from "../context/AgenticaOperation";
+import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
+import { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
+import { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
-import { AgenticaPromptFactory } from "../internal/AgenticaPromptFactory";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
-import { IAgenticaContext } from "../structures/IAgenticaContext";
-import { IAgenticaEvent } from "../structures/IAgenticaEvent";
-import { IAgenticaOperation } from "../structures/IAgenticaOperation";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
+import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptCallFunctionAgent {
   export const execute = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-  ): Promise<IAgenticaPrompt<Model>[]> => {
+    ctx: AgenticaContext<Model>,
+  ): Promise<AgenticaPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -53,14 +59,14 @@ export namespace ChatGptCallFunctionAgent {
       ],
       // STACKED FUNCTIONS
       tools: ctx.stack.map(
-        (op) =>
+        (s) =>
           ({
             type: "function",
             function: {
-              name: op.name,
-              description: op.function.description,
-              parameters: (op.function.separated
-                ? (op.function.separated.llm ??
+              name: s.operation.name,
+              description: s.operation.function.description,
+              parameters: (s.operation.function.separated
+                ? (s.operation.function.separated.llm ??
                   ({
                     type: "object",
                     properties: {},
@@ -68,7 +74,7 @@ export namespace ChatGptCallFunctionAgent {
                     additionalProperties: false,
                     $defs: {},
                   } satisfies IChatGptSchema.IParameters))
-                : op.function.parameters) as Record<string, any>,
+                : s.operation.function.parameters) as Record<string, any>,
             },
           }) as OpenAI.ChatCompletionTool,
       ),
@@ -82,9 +88,9 @@ export namespace ChatGptCallFunctionAgent {
     const closures: Array<
       () => Promise<
         Array<
-          | IAgenticaPrompt.IExecute<Model>
-          | IAgenticaPrompt.ICancel<Model>
-          | IAgenticaPrompt.IText
+          | AgenticaExecutePrompt<Model>
+          | AgenticaCancelPrompt<Model>
+          | AgenticaTextPrompt
         >
       >
     > = [];
@@ -95,19 +101,18 @@ export namespace ChatGptCallFunctionAgent {
     for (const choice of completion.choices) {
       for (const tc of choice.message.tool_calls ?? []) {
         if (tc.type === "function") {
-          const operation: IAgenticaOperation<Model> | undefined =
+          const operation: AgenticaOperation<Model> | undefined =
             ctx.operations.flat.get(tc.function.name);
           if (operation === undefined) continue;
           closures.push(
             async (): Promise<
-              [IAgenticaPrompt.IExecute<Model>, IAgenticaPrompt.ICancel<Model>]
+              [AgenticaExecutePrompt<Model>, AgenticaCancelPrompt<Model>]
             > => {
-              const call: IAgenticaEvent.ICall<Model> = {
-                type: "call",
+              const call: AgenticaCallEvent<Model> = new AgenticaCallEvent({
                 id: tc.id,
                 operation,
                 arguments: JSON.parse(tc.function.arguments),
-              };
+              });
               if (call.operation.protocol === "http")
                 fillHttpArguments({
                   operation: call.operation,
@@ -115,40 +120,43 @@ export namespace ChatGptCallFunctionAgent {
                 });
               await ctx.dispatch(call);
 
-              const execute: IAgenticaPrompt.IExecute<Model> = await propagate(
+              const execute: AgenticaExecutePrompt<Model> = await propagate(
                 ctx,
                 call,
                 0,
               );
-              await ctx.dispatch({
-                type: "execute",
-                id: call.id,
-                operation: call.operation,
-                arguments: execute.arguments,
-                value: execute.value,
-              });
+              await ctx.dispatch(
+                new AgenticaExecuteEvent({
+                  id: call.id,
+                  operation: call.operation,
+                  arguments: execute.arguments,
+                  value: execute.value,
+                }),
+              );
 
               await ChatGptCancelFunctionAgent.cancelFunction(ctx, {
                 name: call.operation.name,
                 reason: "completed",
               });
-              await ctx.dispatch({
-                type: "cancel",
-                operation: call.operation,
-                reason: "complete",
-              });
+              await ctx.dispatch(
+                new AgenticaCancelEvent({
+                  selection: new AgenticaOperationSelection({
+                    operation: call.operation,
+                    reason: "complete",
+                  }),
+                }),
+              );
               return [
                 execute,
-                {
-                  type: "cancel",
+                new AgenticaCancelPrompt({
                   id: call.id,
                   selections: [
-                    AgenticaPromptFactory.selection({
-                      ...call.operation,
+                    new AgenticaOperationSelection({
+                      operation: call.operation,
                       reason: "complete",
                     }),
                   ],
-                } satisfies IAgenticaPrompt.ICancel<Model>,
+                }),
               ] as const;
             },
           );
@@ -159,16 +167,19 @@ export namespace ChatGptCallFunctionAgent {
         !!choice.message.content?.length
       )
         closures.push(async () => {
-          const value: IAgenticaPrompt.IText = {
-            type: "text",
+          const value: AgenticaTextPrompt = new AgenticaTextPrompt({
             role: "assistant",
             text: choice.message.content!,
-          };
-          await ctx.dispatch({
-            ...value,
-            stream: StreamUtil.to(value.text),
-            join: () => Promise.resolve(value.text),
           });
+          await ctx.dispatch(
+            new AgenticaTextEvent({
+              role: "assistant",
+              get: () => value.text,
+              done: () => true,
+              stream: StreamUtil.to(value.text),
+              join: () => Promise.resolve(value.text),
+            }),
+          );
           return [value];
         });
     }
@@ -176,10 +187,10 @@ export namespace ChatGptCallFunctionAgent {
   };
 
   const propagate = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-    call: IAgenticaEvent.ICall<Model>,
+    ctx: AgenticaContext<Model>,
+    call: AgenticaCallEvent<Model>,
     retry: number,
-  ): Promise<IAgenticaPrompt.IExecute<Model>> => {
+  ): Promise<AgenticaExecutePrompt<Model>> => {
     if (call.operation.protocol === "http") {
       //----
       // HTTP PROTOCOL
@@ -192,7 +203,7 @@ export namespace ChatGptCallFunctionAgent {
         check.success === false &&
         retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
       ) {
-        const trial: IAgenticaPrompt.IExecute<Model> | null = await correct(
+        const trial: AgenticaExecutePrompt<Model> | null = await correct(
           ctx,
           call,
           retry,
@@ -227,26 +238,18 @@ export namespace ChatGptCallFunctionAgent {
           (success === false
             ? await correct(ctx, call, retry, response.body)
             : null) ??
-          (await AgenticaPromptFactory.execute({
-            type: "execute",
-            protocol: "http",
-            controller: call.operation.controller,
-            function: call.operation.function,
+          new AgenticaExecutePrompt({
+            operation: call.operation,
             id: call.id,
-            name: call.operation.name,
             arguments: call.arguments,
             value: response,
-          }))
+          })
         );
       } catch (error) {
         // DISPATCH ERROR
-        return AgenticaPromptFactory.execute({
-          type: "execute",
-          protocol: "http",
-          controller: call.operation.controller,
-          function: call.operation.function,
+        return new AgenticaExecutePrompt({
+          operation: call.operation,
           id: call.id,
-          name: call.operation.name,
           arguments: call.arguments,
           value: {
             status: 500,
@@ -275,13 +278,9 @@ export namespace ChatGptCallFunctionAgent {
           (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
             ? await correct(ctx, call, retry, check.errors)
             : null) ??
-          AgenticaPromptFactory.execute({
-            type: "execute",
-            protocol: "class",
-            controller: call.operation.controller,
-            function: call.operation.function,
+          new AgenticaExecutePrompt({
             id: call.id,
-            name: call.operation.name,
+            operation: call.operation,
             arguments: call.arguments,
             value: {
               name: "TypeGuardError",
@@ -302,24 +301,16 @@ export namespace ChatGptCallFunctionAgent {
             : await (call.operation.controller.execute as any)[
                 call.operation.function.name
               ](call.arguments);
-        return AgenticaPromptFactory.execute({
-          type: "execute",
-          protocol: "class",
-          controller: call.operation.controller,
-          function: call.operation.function,
+        return new AgenticaExecutePrompt({
           id: call.id,
-          name: call.operation.name,
+          operation: call.operation,
           arguments: call.arguments,
           value,
         });
       } catch (error) {
-        return AgenticaPromptFactory.execute({
-          type: "execute",
-          protocol: "class",
-          controller: call.operation.controller,
-          function: call.operation.function,
+        return new AgenticaExecutePrompt({
           id: call.id,
-          name: call.operation.name,
+          operation: call.operation,
           arguments: call.arguments,
           value:
             error instanceof Error
@@ -335,11 +326,11 @@ export namespace ChatGptCallFunctionAgent {
   };
 
   const correct = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-    call: IAgenticaEvent.ICall<Model>,
+    ctx: AgenticaContext<Model>,
+    call: AgenticaCallEvent<Model>,
     retry: number,
     error: unknown,
-  ): Promise<IAgenticaPrompt.IExecute<Model> | null> => {
+  ): Promise<AgenticaExecutePrompt<Model> | null> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -429,18 +420,17 @@ export namespace ChatGptCallFunctionAgent {
     if (toolCall === undefined) return null;
     return propagate(
       ctx,
-      {
+      new AgenticaCallEvent({
         id: toolCall.id,
-        type: "call",
         operation: call.operation,
         arguments: JSON.parse(toolCall.function.arguments),
-      },
+      }),
       retry,
     );
   };
 
   const fillHttpArguments = <Model extends ILlmSchema.Model>(props: {
-    operation: IAgenticaOperation<Model>;
+    operation: AgenticaOperation<Model>;
     arguments: object;
   }): void => {
     if (props.operation.protocol !== "http") return;

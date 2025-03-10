@@ -1,8 +1,9 @@
 import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
-import { AgenticaSource } from "../typings/AgenticaSource";
+import { AgenticaEventSource } from "../events/AgenticaEventSource";
 import { IAgenticaOperation } from "./IAgenticaOperation";
+import { IAgenticaOperationSelection } from "./IAgenticaOperationSelection";
 import { IAgenticaPrompt } from "./IAgenticaPrompt";
 
 /**
@@ -26,13 +27,13 @@ export type IAgenticaEvent<Model extends ILlmSchema.Model> =
   | IAgenticaEvent.IResponse;
 export namespace IAgenticaEvent {
   export type Type = IAgenticaEvent<any>["type"];
-  export type Mapper<Model extends ILlmSchema.Model> = {
+  export type Mapper = {
     initialize: IInitialize;
-    select: ISelect<Model>;
-    cancel: ICancel<Model>;
-    call: ICall<Model>;
-    execute: IExecute<Model>;
-    describe: IDescribe<Model>;
+    select: ISelect;
+    cancel: ICancel;
+    call: ICall;
+    execute: IExecute;
+    describe: IDescribe;
     text: IText;
     request: IRequest;
     response: IResponse;
@@ -48,33 +49,14 @@ export namespace IAgenticaEvent {
    * Event of selecting a function to call.
    */
   export interface ISelect extends IBase<"select"> {
-    reason: string;
-    operation: IAgenticaOperation;
+    selection: IAgenticaOperationSelection;
   }
 
   /**
    * Event of canceling a function calling.
    */
   export interface ICancel extends IBase<"cancel"> {
-    /**
-     * Selected operation to cancel.
-     *
-     * Operation that has been selected to prepare LLM function calling,
-     * but canceled due to no more required.
-     */
-    operation: IAgenticaOperation;
-
-    /**
-     * Reason of selecting the function.
-     *
-     * The A.I. chatbot will fill this property describing why the function
-     * has been cancelled.
-     *
-     * For reference, if the A.I. chatbot successfully completes the LLM
-     * function calling, the reason of the function cancellation will be
-     * "complete".
-     */
-    reason: string;
+    selection: IAgenticaOperationSelection;
   }
 
   /**
@@ -98,7 +80,7 @@ export namespace IAgenticaEvent {
      * the backend server's request. Therefore, be careful when you're
      * trying to modify this property.
      */
-    arguments: object;
+    arguments: Record<string, any>;
   }
 
   /**
@@ -137,17 +119,17 @@ export namespace IAgenticaEvent {
      *
      * This prompt describes the return value of them.
      */
-    executions: IAgenticaPrompt.IExecute<Model>[];
+    executions: IAgenticaPrompt.IExecute[];
 
     /**
-     * Description text stream.
+     * Description text.
      */
-    stream: ReadableStream<string>;
+    text: string;
 
     /**
-     * Get the description text.
+     * Whether the streaming is completed or not.
      */
-    join: () => Promise<string>;
+    done: boolean;
   }
 
   /**
@@ -159,17 +141,15 @@ export namespace IAgenticaEvent {
      */
     role: "assistant" | "user";
 
+    /**
+     * Conversation text.
+     */
     text: string;
 
-    // /**
-    //  * Description text stream.
-    //  */
-    // stream: ReadableStream<string>;
-
-    // /**
-    //  * Get the description text.
-    //  */
-    // join: () => Promise<string>;
+    /**
+     * Whether the streaming is completed or not.
+     */
+    done: boolean;
   }
 
   /**
@@ -179,7 +159,7 @@ export namespace IAgenticaEvent {
     /**
      * The source agent of the request.
      */
-    source: AgenticaSource;
+    source: AgenticaEventSource;
 
     /**
      * Request body.
@@ -199,7 +179,7 @@ export namespace IAgenticaEvent {
     /**
      * The source agent of the response.
      */
-    source: AgenticaSource;
+    source: AgenticaEventSource;
 
     /**
      * Request body.

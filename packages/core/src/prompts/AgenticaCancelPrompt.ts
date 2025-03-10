@@ -1,7 +1,7 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
-import { AgenticaOperationSelection } from "./AgenticaOperationSelection";
+import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaCancelPrompt<

@@ -1,16 +1,16 @@
 import { ILlmSchema } from "@samchon/openapi";
 
+import { AgenticaOperation } from "../context/AgenticaOperation";
+import { AgenticaOperationCollection } from "../context/AgenticaOperationCollection";
 import { IAgenticaConfig } from "../structures/IAgenticaConfig";
 import { IAgenticaController } from "../structures/IAgenticaController";
-import { IAgenticaOperation } from "../structures/IAgenticaOperation";
-import { IAgenticaOperationCollection } from "../structures/IAgenticaOperationCollection";
 import { __map_take } from "./__map_take";
 
 export namespace AgenticaOperationComposer {
   export const compose = <Model extends ILlmSchema.Model>(props: {
     controllers: IAgenticaController<Model>[];
     config?: IAgenticaConfig<Model> | undefined;
-  }): IAgenticaOperationCollection<Model> => {
+  }): AgenticaOperationCollection<Model> => {
     const unique: boolean =
       props.controllers.length === 1 ||
       (() => {
@@ -24,7 +24,7 @@ export namespace AgenticaOperationComposer {
     const naming = (func: string, ci: number) =>
       unique ? func : `_${ci}_${func}`;
 
-    const array: IAgenticaOperation<Model>[] = props.controllers
+    const array: AgenticaOperation<Model>[] = props.controllers
       .map((controller, ci) =>
         controller.protocol === "http"
           ? controller.application.functions.map(
@@ -34,7 +34,13 @@ export namespace AgenticaOperationComposer {
                   controller: controller,
                   function: func,
                   name: naming(func.name, ci),
-                }) satisfies IAgenticaOperation.IHttp<Model>,
+                  toJSON: () => ({
+                    protocol: "http",
+                    controller: controller.name,
+                    function: func.name,
+                    name: naming(func.name, ci),
+                  }),
+                }) satisfies AgenticaOperation.Http<Model>,
             )
           : controller.application.functions.map(
               (func) =>
@@ -43,11 +49,17 @@ export namespace AgenticaOperationComposer {
                   controller,
                   function: func,
                   name: naming(func.name, ci),
-                }) satisfies IAgenticaOperation.IClass<Model>,
+                  toJSON: () => ({
+                    protocol: "class",
+                    controller: controller.name,
+                    function: func.name,
+                    name: naming(func.name, ci),
+                  }),
+                }) satisfies AgenticaOperation.Class<Model>,
             ),
       )
       .flat();
-    const divided: IAgenticaOperation<Model>[][] | undefined =
+    const divided: AgenticaOperation<Model>[][] | undefined =
       !!props.config?.capacity && array.length > props.config.capacity
         ? divideOperations({
             array,
@@ -55,11 +67,8 @@ export namespace AgenticaOperationComposer {
           })
         : undefined;
 
-    const flat: Map<string, IAgenticaOperation<Model>> = new Map();
-    const group: Map<
-      string,
-      Map<string, IAgenticaOperation<Model>>
-    > = new Map();
+    const flat: Map<string, AgenticaOperation<Model>> = new Map();
+    const group: Map<string, Map<string, AgenticaOperation<Model>>> = new Map();
     for (const item of array) {
       flat.set(item.name, item);
       __map_take(group, item.controller.name, () => new Map()).set(
@@ -76,12 +85,12 @@ export namespace AgenticaOperationComposer {
   };
 
   const divideOperations = <Model extends ILlmSchema.Model>(props: {
-    array: IAgenticaOperation<Model>[];
+    array: AgenticaOperation<Model>[];
     capacity: number;
-  }): IAgenticaOperation<Model>[][] => {
+  }): AgenticaOperation<Model>[][] => {
     const size: number = Math.ceil(props.array.length / props.capacity);
     const capacity: number = Math.ceil(props.array.length / size);
-    const replica: IAgenticaOperation<Model>[] = props.array.slice();
+    const replica: AgenticaOperation<Model>[] = props.array.slice();
     return new Array(size).fill(0).map(() => replica.splice(0, capacity));
   };
 }

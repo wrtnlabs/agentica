@@ -1,6 +1,6 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaOperation } from "./IAgenticaOperation";
+import { AgenticaOperation } from "./AgenticaOperation";
 
 /**
  * Collection of operations used in the Nestia Agent.
@@ -11,11 +11,11 @@ import { IAgenticaOperation } from "./IAgenticaOperation";
  *
  * @author Samchon
  */
-export interface IAgenticaOperationCollection<Model extends ILlmSchema.Model> {
+export interface AgenticaOperationCollection<Model extends ILlmSchema.Model> {
   /**
    * List of every operations.
    */
-  array: IAgenticaOperation<Model>[];
+  array: AgenticaOperation<Model>[];
 
   /**
    * Divided operations.
@@ -32,14 +32,14 @@ export interface IAgenticaOperationCollection<Model extends ILlmSchema.Model> {
    * Otherwise, if the {@link IAgenticaConfig.capacity} has not been
    * configured, this `divided` property would be the `undefined` value.
    */
-  divided?: IAgenticaOperation<Model>[][] | undefined;
+  divided?: AgenticaOperation<Model>[][] | undefined;
 
   /**
    * Flat dictionary of operations.
    *
    * Dictionary of operations with their {@link IAgenticaOperation.name}.
    */
-  flat: Map<string, IAgenticaOperation<Model>>;
+  flat: Map<string, AgenticaOperation<Model>>;
 
   /**
    * Group dictionary of operations.
@@ -48,5 +48,5 @@ export interface IAgenticaOperationCollection<Model extends ILlmSchema.Model> {
    * {@link IAgenticaOperation.controller.name} and
    * {@link IAgenticaOperation.function.name}.
    */
-  group: Map<string, Map<string, IAgenticaOperation<Model>>>;
+  group: Map<string, Map<string, AgenticaOperation<Model>>>;
 }

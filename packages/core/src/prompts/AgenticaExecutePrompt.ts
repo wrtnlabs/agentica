@@ -1,7 +1,7 @@
 import { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
-import { AgenticaOperation } from "./AgenticaOperation";
+import { AgenticaOperation } from "../context/AgenticaOperation";
+import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaExecutePrompt<

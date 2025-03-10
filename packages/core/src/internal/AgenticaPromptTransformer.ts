@@ -1,42 +1,59 @@
 import { ILlmSchema } from "@samchon/openapi";
-import { Primitive } from "typia";
 
-import { IAgenticaOperation } from "../structures/IAgenticaOperation";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
-import { AgenticaPromptFactory } from "./AgenticaPromptFactory";
+import { AgenticaOperation } from "../context/AgenticaOperation";
+import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
+import { AgenticaCancelPrompt } from "../prompts/AgenticaCancelPrompt";
+import { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
+import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 
 export namespace AgenticaPromptTransformer {
   export const transform = <Model extends ILlmSchema.Model>(props: {
-    operations: Map<string, Map<string, IAgenticaOperation<Model>>>;
-    input: Primitive<IAgenticaPrompt<Model>>;
-  }): IAgenticaPrompt<Model> => {
+    operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+    input: IAgenticaPrompt;
+  }): AgenticaPrompt<Model> => {
     // TEXT
-    if (props.input.type === "text") return props.input;
+    if (props.input.type === "text") return new AgenticaTextPrompt(props.input);
     // SELECT & CANCEL
-    else if (props.input.type === "select" || props.input.type === "cancel")
-      return {
-        ...props.input,
-        operations: props.input.operations.map((func) =>
-          AgenticaPromptFactory.selection({
-            ...findOperation({
-              operations: props.operations,
-              input: func,
+    else if (props.input.type === "select")
+      return new AgenticaSelectPrompt({
+        id: props.input.id,
+        selections: props.input.selections.map(
+          (select) =>
+            new AgenticaOperationSelection({
+              operation: findOperation({
+                operations: props.operations,
+                input: select.operation,
+              }),
+              reason: select.reason,
             }),
-            reason: func.reason,
-          }),
         ),
-      } satisfies
-        | IAgenticaPrompt.ISelect<Model>
-        | IAgenticaPrompt.ICancel<Model>;
+      });
+    else if (props.input.type === "cancel")
+      return new AgenticaCancelPrompt({
+        id: props.input.id,
+        selections: props.input.selections.map(
+          (select) =>
+            new AgenticaOperationSelection({
+              operation: findOperation({
+                operations: props.operations,
+                input: select.operation,
+              }),
+              reason: select.reason,
+            }),
+        ),
+      });
     // EXECUTE
     else if (props.input.type === "execute")
       return transformExecute({
         operations: props.operations,
         input: props.input,
-      }) satisfies IAgenticaPrompt.IExecute<Model>;
+      });
     // DESCRIBE
-    return {
-      type: "describe",
+    return new AgenticaDescribePrompt({
       text: props.input.text,
       executions: props.input.executions.map((next) =>
         transformExecute({
@@ -44,43 +61,39 @@ export namespace AgenticaPromptTransformer {
           input: next,
         }),
       ),
-    } satisfies IAgenticaPrompt.IDescribe<Model>;
+    });
   };
 
   const transformExecute = <Model extends ILlmSchema.Model>(props: {
-    operations: Map<string, Map<string, IAgenticaOperation<Model>>>;
-    input: Primitive<IAgenticaPrompt.IExecute<Model>>;
-  }): IAgenticaPrompt.IExecute<Model> => {
-    const operation = findOperation({
+    operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+    input: IAgenticaPrompt.IExecute;
+  }): AgenticaExecutePrompt<Model> => {
+    const operation: AgenticaOperation<Model> = findOperation({
       operations: props.operations,
-      input: props.input,
+      input: props.input.operation,
     });
-    return AgenticaPromptFactory.execute({
-      type: "execute",
-      protocol: operation.protocol as "http",
-      controller: operation.controller,
-      function: operation.function,
+    return new AgenticaExecutePrompt({
       id: props.input.id,
-      name: props.input.name,
+      operation,
       arguments: props.input.arguments,
       value: props.input.value,
     });
   };
 
   const findOperation = <Model extends ILlmSchema.Model>(props: {
-    operations: Map<string, Map<string, IAgenticaOperation<Model>>>;
+    operations: Map<string, Map<string, AgenticaOperation<Model>>>;
     input: {
       controller: string;
       function: string;
     };
-  }): IAgenticaOperation.IHttp<Model> => {
-    const found: IAgenticaOperation<Model> | undefined = props.operations
+  }): AgenticaOperation<Model> => {
+    const found: AgenticaOperation<Model> | undefined = props.operations
       .get(props.input.controller)
       ?.get(props.input.function);
     if (found === undefined)
       throw new Error(
         `No operation found: (controller: ${props.input.controller}, function: ${props.input.function})`,
       );
-    return found as IAgenticaOperation.IHttp<Model>;
+    return found;
   };
 }

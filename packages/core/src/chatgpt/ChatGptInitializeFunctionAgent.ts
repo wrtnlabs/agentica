@@ -2,19 +2,20 @@ import { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 import typia from "typia";
 
+import { AgenticaContext } from "../context/AgenticaContext";
+import { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
-import { IAgenticaContext } from "../structures/IAgenticaContext";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
-import { __IChatInitialApplication } from "../structures/internal/__IChatInitialApplication";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptInitializeFunctionAgent {
   export const execute = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-  ): Promise<IAgenticaPrompt<Model>[]> => {
+    ctx: AgenticaContext<Model>,
+  ): Promise<AgenticaPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -60,18 +61,19 @@ export namespace ChatGptInitializeFunctionAgent {
     //----
     // PROCESS COMPLETION
     //----
-    const prompts: IAgenticaPrompt<Model>[] = [];
+    const prompts: AgenticaPrompt<Model>[] = [];
     for (const choice of completion.choices) {
       if (
         choice.message.role === "assistant" &&
         !!choice.message.content?.length
       ) {
         // @TODO this logic should call the dispatch function
-        prompts.push({
-          type: "text",
-          role: "assistant",
-          text: choice.message.content,
-        });
+        prompts.push(
+          new AgenticaTextPrompt({
+            role: "assistant",
+            text: choice.message.content,
+          }),
+        );
       }
     }
     if (

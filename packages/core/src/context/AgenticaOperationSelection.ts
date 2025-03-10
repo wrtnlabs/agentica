@@ -1,6 +1,6 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaOperationSelection } from "../structures/IAgenticaOperationSelection";
+import { IAgenticaOperationSelection } from "../json/IAgenticaOperationSelection";
 import { AgenticaOperation } from "./AgenticaOperation";
 
 export class AgenticaOperationSelection<Model extends ILlmSchema.Model> {

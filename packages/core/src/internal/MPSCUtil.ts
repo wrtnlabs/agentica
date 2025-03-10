@@ -1,12 +1,14 @@
 export namespace MPSCUtil {
-  export const create = <T>(): {
+  export interface Output<T> {
     consumer: ReadableStream<T>;
     produce: (chunk: T) => void;
     close: () => void;
     waitClose: () => Promise<void>;
-  } => {
-    const queue = new AsyncQueue<T>();
+    done: () => boolean;
+  }
 
+  export const create = <T>(): Output<T> => {
+    const queue = new AsyncQueue<T>();
     const consumer = new ReadableStream<T>({
       async pull(controller) {
         const { value, done } = await queue.dequeue();
@@ -17,11 +19,11 @@ export namespace MPSCUtil {
         }
       },
     });
-
     return {
       consumer,
       produce: (chunk: T) => queue.enqueue(chunk),
       close: () => queue.close(),
+      done: () => queue.done(),
       waitClose: () => queue.waitClose(),
     };
   };
@@ -46,6 +48,10 @@ export namespace MPSCUtil {
       }
       if (this.closed) return { value: undefined, done: true };
       return new Promise((resolve) => this.resolvers.push(resolve));
+    }
+
+    done() {
+      return this.closed;
     }
 
     close() {

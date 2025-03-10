@@ -1,4 +1,4 @@
-import { IAgenticaOperation } from "../structures/IAgenticaOperation";
+import { IAgenticaOperation } from "../json/IAgenticaOperation";
 
 export abstract class AgenticaOperationBase<
   Protocol extends "http" | "class",

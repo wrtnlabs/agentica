@@ -1,6 +1,6 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
+import { IAgenticaPrompt } from "../json/IAgenticaPrompt";
 import { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 

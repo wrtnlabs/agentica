@@ -1,39 +1,37 @@
-import {
-  IHttpLlmFunction,
-  ILlmApplication,
-  ILlmSchema,
-} from "@samchon/openapi";
+import { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 import typia, { IValidation } from "typia";
 import { v4 } from "uuid";
 
+import { AgenticaContext } from "../context/AgenticaContext";
+import { AgenticaOperation } from "../context/AgenticaOperation";
+import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
+import { __IChatSelectFunctionsApplication } from "../context/internal/__IChatSelectFunctionsApplication";
+import { AgenticaEvent } from "../events/AgenticaEvent";
+import { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
+import { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
-import { AgenticaPromptFactory } from "../internal/AgenticaPromptFactory";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
-import { IAgenticaContext } from "../structures/IAgenticaContext";
-import { IAgenticaController } from "../structures/IAgenticaController";
-import { IAgenticaEvent } from "../structures/IAgenticaEvent";
-import { IAgenticaOperation } from "../structures/IAgenticaOperation";
-import { IAgenticaOperationSelection } from "../structures/IAgenticaOperationSelection";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
-import { __IChatFunctionReference } from "../structures/internal/__IChatFunctionReference";
-import { __IChatSelectFunctionsApplication } from "../structures/internal/__IChatSelectFunctionsApplication";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptSelectFunctionAgent {
   export const execute = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-  ): Promise<IAgenticaPrompt<Model>[]> => {
+    ctx: AgenticaContext<Model>,
+  ): Promise<AgenticaPrompt<Model>[]> => {
     if (ctx.operations.divided === undefined)
       return step(ctx, ctx.operations.array, 0);
 
-    const stacks: IAgenticaOperationSelection<Model>[][] =
+    const stacks: AgenticaOperationSelection<Model>[][] =
       ctx.operations.divided.map(() => []);
-    const events: IAgenticaEvent<Model>[] = [];
-    const prompts: IAgenticaPrompt<Model>[][] = await Promise.all(
+    const events: AgenticaEvent<Model>[] = [];
+    const prompts: AgenticaPrompt<Model>[][] = await Promise.all(
       ctx.operations.divided.map((operations, i) =>
         step(
           {
@@ -60,44 +58,34 @@ export namespace ChatGptSelectFunctionAgent {
           .map(
             (s) =>
               ctx.operations.group
-                .get(s.controller.name)!
-                .get(s.function.name)!,
+                .get(s.operation.controller.name)!
+                .get(s.operation.function.name)!,
           ),
         0,
       );
 
     // RE-COLLECT SELECT FUNCTION EVENTS
-    const collection: IAgenticaPrompt.ISelect<Model> = {
+    const collection: AgenticaSelectPrompt<Model> = new AgenticaSelectPrompt({
       id: v4(),
-      type: "select",
-      operations: [],
-    };
+      selections: [],
+    });
     for (const e of events)
       if (e.type === "select") {
-        collection.operations.push(
-          AgenticaPromptFactory.selection({
-            protocol: e.operation.protocol as "http",
-            controller: e.operation
-              .controller as IAgenticaController.IHttp<Model>,
-            function: e.operation.function as IHttpLlmFunction<Model>,
-            reason: e.reason,
-            name: e.operation.name,
-          }),
-        );
+        collection.selections.push(e.selection);
         await selectFunction(ctx, {
-          name: e.operation.name,
-          reason: e.reason,
+          name: e.selection.operation.name,
+          reason: e.selection.reason,
         });
       }
     return [collection];
   };
 
   const step = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-    operations: IAgenticaOperation<Model>[],
+    ctx: AgenticaContext<Model>,
+    operations: AgenticaOperation<Model>[],
     retry: number,
     failures?: IFailure[],
-  ): Promise<IAgenticaPrompt<Model>[]> => {
+  ): Promise<AgenticaPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
@@ -198,7 +186,7 @@ export namespace ChatGptSelectFunctionAgent {
     //----
     // PROCESS COMPLETION
     //----
-    const prompts: IAgenticaPrompt<Model>[] = [];
+    const prompts: AgenticaPrompt<Model>[] = [];
     for (const choice of completion.choices) {
       // TOOL CALLING HANDLER
       if (choice.message.tool_calls)
@@ -210,27 +198,23 @@ export namespace ChatGptSelectFunctionAgent {
           );
           if (typia.is(input) === false) continue;
           else if (tc.function.name === "selectFunctions") {
-            const collection: IAgenticaPrompt.ISelect<Model> = {
-              id: tc.id,
-              type: "select",
-              operations: [],
-            };
+            const collection: AgenticaSelectPrompt<Model> =
+              new AgenticaSelectPrompt({
+                id: tc.id,
+                selections: [],
+              });
             for (const reference of input.functions) {
-              const operation: IAgenticaOperation<Model> | null =
+              const operation: AgenticaOperation<Model> | null =
                 await selectFunction(ctx, reference);
               if (operation !== null)
-                collection.operations.push(
-                  AgenticaPromptFactory.selection({
-                    protocol: operation.protocol as "http",
-                    controller:
-                      operation.controller as IAgenticaController.IHttp<Model>,
-                    function: operation.function as IHttpLlmFunction<Model>,
-                    name: operation.name,
+                collection.selections.push(
+                  new AgenticaOperationSelection({
+                    operation,
                     reason: reference.reason,
                   }),
                 );
             }
-            if (collection.operations.length !== 0) prompts.push(collection);
+            if (collection.selections.length !== 0) prompts.push(collection);
           }
         }
 
@@ -239,44 +223,44 @@ export namespace ChatGptSelectFunctionAgent {
         choice.message.role === "assistant" &&
         !!choice.message.content?.length
       ) {
-        const text: IAgenticaPrompt.IText = {
-          type: "text",
+        const text: AgenticaTextPrompt = new AgenticaTextPrompt({
           role: "assistant",
           text: choice.message.content,
-        };
-        prompts.push(text);
-        await ctx.dispatch({
-          ...text,
-          stream: StreamUtil.to(text.text),
-          join: () => Promise.resolve(text.text),
         });
+        prompts.push(text);
+        await ctx.dispatch(
+          new AgenticaTextEvent({
+            role: "assistant",
+            stream: StreamUtil.to(text.text),
+            join: () => Promise.resolve(text.text),
+            done: () => true,
+            get: () => text.text,
+          }),
+        );
       }
     }
     return prompts;
   };
 
   const selectFunction = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
+    ctx: AgenticaContext<Model>,
     reference: __IChatFunctionReference,
-  ): Promise<IAgenticaOperation<Model> | null> => {
-    const operation: IAgenticaOperation<Model> | undefined =
+  ): Promise<AgenticaOperation<Model> | null> => {
+    const operation: AgenticaOperation<Model> | undefined =
       ctx.operations.flat.get(reference.name);
     if (operation === undefined) return null;
 
-    ctx.stack.push(
-      AgenticaPromptFactory.selection({
-        protocol: operation.protocol as "http",
-        controller: operation.controller as IAgenticaController.IHttp<Model>,
-        function: operation.function as IHttpLlmFunction<Model>,
-        name: reference.name,
+    const selection: AgenticaOperationSelection<Model> =
+      new AgenticaOperationSelection({
+        operation,
         reason: reference.reason,
+      });
+    ctx.stack.push(selection);
+    void ctx.dispatch(
+      new AgenticaSelectEvent({
+        selection,
       }),
     );
-    await ctx.dispatch({
-      type: "select",
-      reason: reference.reason,
-      operation,
-    });
     return operation;
   };
 
