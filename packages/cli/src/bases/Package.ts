@@ -12,7 +12,7 @@ export namespace Package {
     const packageJson = {
       name: input.projectName,
       version: "0.0.1",
-      type: "module",
+      description: "",
       scripts: {
         build: "tsc",
         dev: `ts-node ${input.projectName}/cli.ts`,
@@ -22,7 +22,7 @@ export namespace Package {
 
     fs.writeFileSync(
       path.join(input.projectPath, "package.json"),
-      JSON.stringify(packageJson, null, 2)
+      JSON.stringify(packageJson, null, 2),
     );
     console.log("✅ package.json created");
   };
@@ -34,8 +34,8 @@ export namespace Package {
         packageManager === "npm"
           ? `npm install ${pkg}`
           : packageManager === "yarn"
-          ? `yarn add ${pkg}`
-          : `pnpm add ${pkg}`;
+            ? `yarn add ${pkg}`
+            : `pnpm add ${pkg}`;
 
       const dependencies = [
         "openai",
