@@ -82,6 +82,12 @@ export namespace IAgenticaSelectBenchmarkEvent {
     assistantPrompts: IAgenticaPrompt.IText<"assistant">[];
   }
 
+  /**
+   * Error event type.
+   *
+   * The `error` event type repsents that an error had been occurred
+   * during the benchmark testing.
+   */
   export interface IError<Model extends ILlmSchema.Model>
     extends IEventBase<"error", Model> {
     /**
