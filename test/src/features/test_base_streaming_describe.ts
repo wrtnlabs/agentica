@@ -1,8 +1,8 @@
 import {
   Agentica,
+  AgenticaEvent,
+  AgenticaPrompt,
   IAgenticaController,
-  IAgenticaEvent,
-  IAgenticaPrompt,
 } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
@@ -36,7 +36,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
 
   // 이벤트 추적을 위한 변수들
-  const events: IAgenticaEvent<"chatgpt">[] = [];
+  const events: AgenticaEvent<"chatgpt">[] = [];
   let functionCalled = false;
   const streamContentPieces: string[] = [];
   let describeEventReceived = false;
@@ -122,7 +122,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   const b = 3412342134;
 
   // 대화 시작 - 함수 호출을 유도하면서 추가 설명 요청
-  const result: IAgenticaPrompt<"chatgpt">[] = await agent.conversate(
+  const result: AgenticaPrompt<"chatgpt">[] = await agent.conversate(
     `${a}와 ${b}를 더해주세요. 그리고 덧셈이 무엇인지 간단히 설명해주세요. calculator를 사용하세요.`,
   );
 
@@ -175,14 +175,15 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   }
 
   // describe 이벤트에 executions 배열이 포함되어 있는지 확인
-  if (!describeEvent.executions || describeEvent.executions.length === 0) {
+  if (!describeEvent.executes || describeEvent.executes.length === 0) {
     throw new Error("describe 이벤트에 executions 정보가 없습니다");
   }
 
   // calculator 도구 호출이 포함되어 있는지 확인
 
-  const hasCalculatorExecution = describeEvent.executions.some(
-    (execution) => execution.name === "add" || execution.name === "subtract",
+  const hasCalculatorExecution = describeEvent.executes.some(
+    (exec) =>
+      exec.operation.name === "add" || exec.operation.name === "subtract",
   );
   if (!hasCalculatorExecution) {
     throw new Error(

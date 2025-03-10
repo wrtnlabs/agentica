@@ -1,4 +1,4 @@
-import { IAgenticaOperation } from "@agentica/core";
+import { AgenticaOperation } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
 /**
@@ -63,6 +63,6 @@ export namespace IAgenticaBenchmarkExpected {
    */
   export interface IStandalone<Model extends ILlmSchema.Model> {
     type: "standalone";
-    operation: IAgenticaOperation<Model>;
+    operation: AgenticaOperation<Model>;
   }
 }

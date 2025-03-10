@@ -100,6 +100,15 @@ export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
       describe: component(),
     });
   }
+
+  public static plus(
+    x: AgenticaTokenUsage,
+    y: AgenticaTokenUsage,
+  ): AgenticaTokenUsage {
+    const z: AgenticaTokenUsage = new AgenticaTokenUsage(x);
+    z.increment(y.toJSON());
+    return z;
+  }
 }
 export namespace AgenticaTokenUsage {
   export interface IComponent {

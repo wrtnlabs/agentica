@@ -9,7 +9,7 @@ export class AgenticaCallEvent<
 > extends AgenticaEventBase<"call"> {
   public readonly id: string;
   public readonly operation: AgenticaOperation<Model>;
-  public readonly arguments: Record<string, any>;
+  public arguments: Record<string, any>;
 
   public constructor(props: AgenticaCallEvent.IProps<Model>) {
     super("call");

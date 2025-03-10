@@ -1,4 +1,4 @@
-import { IAgenticaTokenUsage } from "@agentica/core";
+import { AgenticaTokenUsage } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaSelectBenchmarkEvent } from "./IAgenticaSelectBenchmarkEvent";
@@ -32,7 +32,7 @@ export interface IAgenticaSelectBenchmarkResult<
   /**
    * Aggregated token usage information.
    */
-  usage: IAgenticaTokenUsage;
+  usage: AgenticaTokenUsage;
 
   /**
    * Start time of the benchmark.
@@ -67,6 +67,6 @@ export namespace IAgenticaSelectBenchmarkResult {
     /**
      * LLM token usage information.
      */
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
   }
 }

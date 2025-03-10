@@ -1,12 +1,12 @@
 import {
   Agentica,
-  IAgenticaContext,
-  IAgenticaOperationSelection,
-  IAgenticaPrompt,
-  IAgenticaTokenUsage,
+  AgenticaContext,
+  AgenticaOperationSelection,
+  AgenticaPrompt,
+  AgenticaTextPrompt,
+  AgenticaTokenUsage,
 } from "@agentica/core";
 import { ChatGptSelectFunctionAgent } from "@agentica/core/src/chatgpt/ChatGptSelectFunctionAgent";
-import { AgenticaTokenUsageAggregator } from "@agentica/core/src/internal/AgenticaTokenUsageAggregator";
 import { ILlmSchema } from "@samchon/openapi";
 import { Semaphore } from "tstl";
 import { tags } from "typia";
@@ -38,7 +38,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
   private agent_: Agentica<Model>;
   private scenarios_: IAgenticaSelectBenchmarkScenario<Model>[];
   private config_: AgenticaSelectBenchmark.IConfig;
-  private histories_: IAgenticaPrompt<Model>[];
+  private histories_: AgenticaPrompt<Model>[];
   private result_: IAgenticaSelectBenchmarkResult<Model> | null;
 
   /**
@@ -98,10 +98,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
             usage: events
               .filter((e) => e.type !== "error")
               .map((e) => e.usage)
-              .reduce(
-                AgenticaTokenUsageAggregator.plus,
-                AgenticaTokenUsageAggregator.zero(),
-              ),
+              .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
           };
         }),
       );
@@ -111,10 +108,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
       completed_at: new Date(),
       usage: experiments
         .map((p) => p.usage)
-        .reduce(
-          AgenticaTokenUsageAggregator.plus,
-          AgenticaTokenUsageAggregator.zero(),
-        ),
+        .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
     });
   }
 
@@ -148,30 +142,29 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
   ): Promise<IAgenticaSelectBenchmarkEvent<Model>> {
     const started_at: Date = new Date();
     try {
-      const usage: IAgenticaTokenUsage = AgenticaTokenUsageAggregator.zero();
-      const prompts: IAgenticaPrompt<Model>[] =
+      const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
+      const prompts: AgenticaPrompt<Model>[] =
         await ChatGptSelectFunctionAgent.execute({
           ...this.agent_.getContext({
-            prompt: {
-              type: "text",
+            prompt: new AgenticaTextPrompt({
               role: "user",
               text: scenario.text,
-            },
+            }),
             usage,
           }),
           histories: this.histories_.slice(),
           stack: [],
           ready: () => true,
           dispatch: async () => {},
-        } satisfies IAgenticaContext<Model>);
-      const selected: IAgenticaOperationSelection<Model>[] = prompts
+        } satisfies AgenticaContext<Model>);
+      const selected: AgenticaOperationSelection<Model>[] = prompts
         .filter((p) => p.type === "select")
-        .map((p) => p.operations)
+        .map((p) => p.selections)
         .flat();
       return {
         type: AgenticaBenchmarkPredicator.success({
           expected: scenario.expected,
-          operations: selected,
+          operations: selected.map((s) => s.operation),
         })
           ? "success"
           : "failure",
@@ -181,8 +174,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         assistantPrompts: prompts
           .filter((p) => p.type === "text")
           .filter(
-            (p): p is IAgenticaPrompt.IText<"assistant"> =>
-              p.role === "assistant",
+            (p): p is AgenticaTextPrompt<"assistant"> => p.role === "assistant",
           ),
         started_at,
         completed_at: new Date(),

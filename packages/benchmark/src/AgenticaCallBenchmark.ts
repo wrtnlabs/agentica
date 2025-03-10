@@ -1,5 +1,4 @@
-import { Agentica } from "@agentica/core";
-import { AgenticaTokenUsageAggregator } from "@agentica/core/src/internal/AgenticaTokenUsageAggregator";
+import { Agentica, AgenticaTokenUsage } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 import { Semaphore } from "tstl";
 import { tags } from "typia";
@@ -93,10 +92,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
             usage: events
               .filter((e) => e.type !== "error")
               .map((e) => e.usage)
-              .reduce(
-                AgenticaTokenUsageAggregator.plus,
-                AgenticaTokenUsageAggregator.zero(),
-              ),
+              .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
           };
         }),
       );
@@ -106,10 +102,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       completed_at: new Date(),
       usage: experiments
         .map((p) => p.usage)
-        .reduce(
-          AgenticaTokenUsageAggregator.plus,
-          AgenticaTokenUsageAggregator.zero(),
-        ),
+        .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
     });
   }
 
@@ -147,7 +140,8 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         expected: scenario.expected,
         operations: agent
           .getPromptHistories()
-          .filter((p) => p.type === "execute"),
+          .filter((p) => p.type === "execute")
+          .map((p) => p.operation),
         strict: false,
       });
     const out = (): IAgenticaCallBenchmarkEvent<Model> => {
@@ -156,8 +150,9 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         operations: agent
           .getPromptHistories()
           .filter((p) => p.type === "select")
-          .map((p) => p.operations)
-          .flat(),
+          .map((p) => p.selections)
+          .flat()
+          .map((p) => p.operation),
         strict: false,
       });
       const call = success();

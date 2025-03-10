@@ -1,4 +1,4 @@
-import { Agentica, IAgenticaEvent } from "@agentica/core";
+import { Agentica, IAgenticaEventJson } from "@agentica/core";
 import {
   AgenticaRpcService,
   IAgenticaRpcListener,
@@ -8,7 +8,6 @@ import { TestValidator } from "@nestia/e2e";
 import OpenAI from "openai";
 import { Driver, WebSocketConnector, WebSocketServer } from "tgrid";
 import { randint } from "tstl";
-import { Primitive } from "typia";
 
 import { TestGlobal } from "../TestGlobal";
 
@@ -19,7 +18,7 @@ export const test_base_websocket = async (): Promise<void | false> => {
   const server: WebSocketServer<
     null,
     IAgenticaRpcService<"chatgpt">,
-    IAgenticaRpcListener<"chatgpt">
+    IAgenticaRpcListener
   > = new WebSocketServer();
   await server.open(port, async (acceptor) => {
     const agent: Agentica<"chatgpt"> = new Agentica({
@@ -40,10 +39,10 @@ export const test_base_websocket = async (): Promise<void | false> => {
     );
   });
 
-  const events: Primitive<IAgenticaEvent<"chatgpt">>[] = [];
+  const events: IAgenticaEventJson[] = [];
   const connector: WebSocketConnector<
     null,
-    IAgenticaRpcListener<"chatgpt">,
+    IAgenticaRpcListener,
     IAgenticaRpcService<"chatgpt">
   > = new WebSocketConnector(null, {
     describe: async (evt) => {
@@ -78,7 +77,5 @@ export const test_base_websocket = async (): Promise<void | false> => {
       type: "text",
       role: "assistant",
     },
-  ] satisfies Primitive<Partial<IAgenticaEvent<"chatgpt">>>[] as Primitive<
-    Partial<IAgenticaEvent<"chatgpt">>
-  >[])(events);
+  ])(events);
 };

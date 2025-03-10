@@ -1,4 +1,4 @@
-import { Agentica, IAgenticaController, IAgenticaEvent } from "@agentica/core";
+import { Agentica, AgenticaEvent, IAgenticaController } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -31,7 +31,7 @@ export async function test_base_work_describe(): Promise<void | false> {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
 
   // 이벤트 추적을 위한 변수들
-  const events: IAgenticaEvent<"chatgpt">[] = [];
+  const events: AgenticaEvent<"chatgpt">[] = [];
   let functionCalled = false;
 
   // 계산기 컨트롤러 생성
