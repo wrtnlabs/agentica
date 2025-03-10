@@ -30,12 +30,15 @@ export namespace Package {
   export const installPackage =
     (packageManager: Manager) =>
     (input: { projectPath: string; services: string[] }) => {
-      const installCmd = (pkg: string) =>
-        packageManager === "npm"
-          ? `npm install ${pkg}`
-          : packageManager === "yarn"
-            ? `yarn add ${pkg}`
-            : `pnpm add ${pkg}`;
+      const installCmd = (pkg: string) => {
+        if (packageManager === "npm") {
+          return `npm install ${pkg}`;
+        } else if (packageManager === "yarn") {
+          return `yarn add ${pkg}`;
+        } else {
+          return `pnpm add ${pkg}`;
+        }
+      };
 
       const dependencies = [
         "openai",
