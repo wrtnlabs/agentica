@@ -56,7 +56,7 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
    * - `locale`: your system's locale and timezone
    * - `timezone`: your system's timezone
    * - `systemPrompt`: default prompts written in markdown
-   *   - https://github.com/samchon/nestia/tree/master/packages/agent/prompts
+   *   - https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts
    */
   config?: IAgenticaConfig<Model>;
 
