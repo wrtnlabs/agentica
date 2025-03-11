@@ -1,7 +1,8 @@
 import {
-  IAgenticaContext,
-  IAgenticaOperation,
-  IAgenticaPrompt,
+  AgenticaContext,
+  AgenticaOperation,
+  AgenticaPrompt,
+  AgenticaTextPrompt,
 } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 import { HttpError, functional } from "@wrtnlabs/connector-hive-api";
@@ -9,10 +10,10 @@ import { HttpError, functional } from "@wrtnlabs/connector-hive-api";
 import { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
 
 const useEmbeddedContext = <SchemaModel extends ILlmSchema.Model>() => {
-  const set = new Set<IAgenticaContext<SchemaModel>>();
+  const set = new Set<AgenticaContext<SchemaModel>>();
   return [
-    (ctx: IAgenticaContext<SchemaModel>) => set.has(ctx),
-    (ctx: IAgenticaContext<SchemaModel>) => {
+    (ctx: AgenticaContext<SchemaModel>) => set.has(ctx),
+    (ctx: AgenticaContext<SchemaModel>) => {
       set.add(ctx);
     },
   ] as const;
@@ -25,7 +26,7 @@ export namespace AgenticaPgVectorSelector {
     const [isEmbeddedContext, setEmbeddedContext] =
       useEmbeddedContext<SchemaModel>();
     const connection = props.connectorHiveConnection;
-    const embedOperation = async (op: IAgenticaOperation<SchemaModel>) => {
+    const embedOperation = async (op: AgenticaOperation<SchemaModel>) => {
       const application = await functional.applications.by_names
         .getByName(connection, op.controller.name)
         .catch(async (e) => {
@@ -69,14 +70,14 @@ export namespace AgenticaPgVectorSelector {
       return { version, applicationId: application.id };
     };
 
-    const embedContext = async (ctx: IAgenticaContext<SchemaModel>) => {
+    const embedContext = async (ctx: AgenticaContext<SchemaModel>) => {
       await Promise.all(ctx.operations.array.map(embedOperation));
       setEmbeddedContext(ctx);
     };
 
     const selectorExecute = async (
-      ctx: IAgenticaContext<SchemaModel>,
-    ): Promise<IAgenticaPrompt<SchemaModel>[]> => {
+      ctx: AgenticaContext<SchemaModel>,
+    ): Promise<AgenticaPrompt<SchemaModel>[]> => {
       if (!isEmbeddedContext(ctx)) {
         await embedContext(ctx);
       }
@@ -91,13 +92,12 @@ export namespace AgenticaPgVectorSelector {
           },
         );
 
-      const text: IAgenticaPrompt.IText = {
-        type: "text",
+      const text: AgenticaTextPrompt = new AgenticaTextPrompt({
         role: "assistant",
         text: `I will use next tools because it is semantic search result: ${JSON.stringify(
           result.map((v) => v.name),
         )}`,
-      };
+      });
       return [text];
     };
 

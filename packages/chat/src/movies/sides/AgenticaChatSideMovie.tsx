@@ -1,7 +1,7 @@
 import {
+  AgenticaOperationSelection,
+  AgenticaTokenUsage,
   IAgenticaConfig,
-  IAgenticaOperationSelection,
-  IAgenticaTokenUsage,
   IAgenticaVendor,
 } from "@agentica/core";
 import { Typography } from "@mui/material";
@@ -58,8 +58,8 @@ export namespace AgenticaChatSideMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
     vendor: IAgenticaVendor;
     config: IAgenticaConfig<Model> | undefined;
-    usage: IAgenticaTokenUsage;
-    selections: IAgenticaOperationSelection<Model>[];
+    usage: AgenticaTokenUsage;
+    selections: AgenticaOperationSelection<Model>[];
     error: Error | null;
   }
 }

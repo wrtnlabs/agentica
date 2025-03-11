@@ -1,4 +1,4 @@
-import { IAgenticaPrompt, IAgenticaTokenUsage } from "@agentica/core";
+import { AgenticaPrompt, AgenticaTokenUsage } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaCallBenchmarkScenario } from "./IAgenticaCallBenchmarkScenario";
@@ -93,12 +93,12 @@ export namespace IAgenticaCallBenchmarkEvent {
      *
      * List of prompts occurred during the benchmark testing.
      */
-    prompts: IAgenticaPrompt<Model>[];
+    prompts: AgenticaPrompt<Model>[];
 
     /**
      * Usage of the token during the benchmark.
      */
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
 
     /**
      * When the benchmark testing started.

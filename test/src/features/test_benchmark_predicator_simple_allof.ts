@@ -1,5 +1,5 @@
 import { AgenticaBenchmarkPredicator } from "@agentica/benchmark/src/internal/AgenticaBenchmarkPredicator";
-import { Agentica, IAgenticaOperation } from "@agentica/core";
+import { Agentica, AgenticaOperation } from "@agentica/core";
 import { TestValidator } from "@nestia/e2e";
 import { HttpLlm, OpenApi } from "@samchon/openapi";
 
@@ -34,7 +34,7 @@ export const test_benchmark_predicator_simple_allof =
     const find = (
       method: OpenApi.Method,
       path: string,
-    ): IAgenticaOperation<"chatgpt"> => {
+    ): AgenticaOperation<"chatgpt"> => {
       const found = agent
         .getOperations()
         .find(

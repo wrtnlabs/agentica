@@ -1,7 +1,7 @@
 import {
-  IAgenticaOperationSelection,
-  IAgenticaPrompt,
-  IAgenticaTokenUsage,
+  AgenticaOperationSelection,
+  AgenticaTextPrompt,
+  AgenticaTokenUsage,
 } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
@@ -45,17 +45,17 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Usage of the token during the benchmark.
      */
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
 
     /**
      * Selected operations in the benchmark.
      */
-    selected: IAgenticaOperationSelection<Model>[];
+    selected: AgenticaOperationSelection<Model>[];
 
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: IAgenticaPrompt.IText<"assistant">[];
+    assistantPrompts: AgenticaTextPrompt<"assistant">[];
   }
 
   /**
@@ -69,19 +69,25 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Usage of the token during the benchmark.
      */
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
 
     /**
      * Selected operations in the benchmark.
      */
-    selected: IAgenticaOperationSelection<Model>[];
+    selected: AgenticaOperationSelection<Model>[];
 
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: IAgenticaPrompt.IText<"assistant">[];
+    assistantPrompts: AgenticaTextPrompt<"assistant">[];
   }
 
+  /**
+   * Error event type.
+   *
+   * The `error` event type repsents that an error had been occurred
+   * during the benchmark testing.
+   */
   export interface IError<Model extends ILlmSchema.Model>
     extends IEventBase<"error", Model> {
     /**

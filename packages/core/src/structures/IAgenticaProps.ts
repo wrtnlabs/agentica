@@ -1,9 +1,8 @@
 import { ILlmSchema } from "@samchon/openapi";
-import { Primitive } from "typia";
 
+import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { IAgenticaConfig } from "./IAgenticaConfig";
 import { IAgenticaController } from "./IAgenticaController";
-import { IAgenticaPrompt } from "./IAgenticaPrompt";
 import { IAgenticaVendor } from "./IAgenticaVendor";
 
 /**
@@ -66,5 +65,5 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
    * If you're starting the conversation from an existing session,
    * assign the previouis prompt histories to this property.
    */
-  histories?: Primitive<IAgenticaPrompt<Model>>[];
+  histories?: IAgenticaPromptJson[];
 }

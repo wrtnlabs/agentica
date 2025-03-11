@@ -1,5 +1,5 @@
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
-import { Agentica, IAgenticaOperation } from "@agentica/core";
+import { Agentica, AgenticaOperation } from "@agentica/core";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import fs from "fs";
@@ -60,7 +60,7 @@ export const test_benchmark_call = async (): Promise<void | false> => {
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): IAgenticaOperation<"chatgpt"> => {
+  ): AgenticaOperation<"chatgpt"> => {
     const found = agent
       .getOperations()
       .find(

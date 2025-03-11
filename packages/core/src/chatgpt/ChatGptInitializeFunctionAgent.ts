@@ -2,21 +2,24 @@ import { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 import typia from "typia";
 
+import { AgenticaContext } from "../context/AgenticaContext";
+import { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
-import { IAgenticaContext } from "../structures/IAgenticaContext";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
-import { __IChatInitialApplication } from "../structures/internal/__IChatInitialApplication";
+import { StreamUtil } from "../internal/StreamUtil";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
 export namespace ChatGptInitializeFunctionAgent {
   export const execute = async <Model extends ILlmSchema.Model>(
-    ctx: IAgenticaContext<Model>,
-  ): Promise<IAgenticaPrompt<Model>[]> => {
+    ctx: AgenticaContext<Model>,
+  ): Promise<AgenticaPrompt<Model>[]> => {
     //----
     // EXECUTE CHATGPT API
     //----
-    const completion: OpenAI.ChatCompletion = await ctx.request("initialize", {
+    const completionStream = await ctx.request("initialize", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -53,20 +56,25 @@ export namespace ChatGptInitializeFunctionAgent {
       parallel_tool_calls: false,
     });
 
+    const chunks = await StreamUtil.readAll(completionStream);
+    const completion = ChatGptCompletionMessageUtil.merge(chunks);
     //----
     // PROCESS COMPLETION
     //----
-    const prompts: IAgenticaPrompt<Model>[] = [];
+    const prompts: AgenticaPrompt<Model>[] = [];
     for (const choice of completion.choices) {
       if (
         choice.message.role === "assistant" &&
         !!choice.message.content?.length
-      )
-        prompts.push({
-          type: "text",
-          role: "assistant",
-          text: choice.message.content,
-        });
+      ) {
+        // @TODO this logic should call the dispatch function
+        prompts.push(
+          new AgenticaTextPrompt({
+            role: "assistant",
+            text: choice.message.content,
+          }),
+        );
+      }
     }
     if (
       completion.choices.some(

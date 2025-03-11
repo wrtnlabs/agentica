@@ -1,4 +1,4 @@
-import { Agentica, IAgenticaPrompt } from "@agentica/core";
+import { Agentica, AgenticaPrompt } from "@agentica/core";
 import {
   HttpLlm,
   IHttpConnection,
@@ -96,8 +96,8 @@ const main = async (): Promise<void> => {
   agent.on("select", (e) =>
     console.log(
       chalk.cyanBright("selected"),
-      e.operation.function.name,
-      e.reason,
+      e.selection.operation.function.name,
+      e.selection.reason,
     ),
   );
   agent.on("call", (e) =>
@@ -126,8 +126,8 @@ const main = async (): Promise<void> => {
   agent.on("cancel", (e) =>
     console.log(
       chalk.redBright("canceled"),
-      e.operation.function.name,
-      e.reason,
+      e.selection.operation.function.name,
+      e.selection.reason,
     ),
   );
 
@@ -144,7 +144,7 @@ const main = async (): Promise<void> => {
         JSON.stringify(agent.getTokenUsage(), null, 2),
       );
     else {
-      const histories: IAgenticaPrompt<"chatgpt">[] =
+      const histories: AgenticaPrompt<"chatgpt">[] =
         await agent.conversate(content);
       for (const h of histories.slice(1))
         if (h.type === "text")

@@ -1,4 +1,4 @@
-import { Agentica, IAgenticaOperation, IAgenticaPrompt } from "@agentica/core";
+import { Agentica, AgenticaOperation, AgenticaPrompt } from "@agentica/core";
 import { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 import typia from "typia";
@@ -9,7 +9,7 @@ export namespace AgenticaBenchmarkPredicator {
   export const isNext = async <Model extends ILlmSchema.Model>(
     agent: Agentica<Model>,
   ): Promise<string | null> => {
-    const last: IAgenticaPrompt<Model> | undefined = agent
+    const last: AgenticaPrompt<Model> | undefined = agent
       .getPromptHistories()
       .at(-1);
     if (last?.type !== "text" || last.role !== "assistant") return null;
@@ -84,9 +84,7 @@ export namespace AgenticaBenchmarkPredicator {
     /**
      * Specified operations.
      */
-    operations: Array<
-      IAgenticaOperation<Model> | IAgenticaPrompt.IExecute<Model>
-    >;
+    operations: Array<AgenticaOperation<Model>>;
 
     /**
      * If it's `false`, check the array and let it go even if there's something wrong between them.
@@ -108,9 +106,7 @@ export namespace AgenticaBenchmarkPredicator {
       } => {
     const call = (
       expected: IAgenticaBenchmarkExpected<Model>,
-      overrideOperations?: Array<
-        IAgenticaOperation<Model> | IAgenticaPrompt.IExecute<Model>
-      >,
+      overrideOperations?: Array<AgenticaOperation<Model>>,
     ) =>
       successInner({
         expected,
