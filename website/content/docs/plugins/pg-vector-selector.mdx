@@ -9,7 +9,7 @@ In the existing Agentica, the Selector could take 1 to 2 seconds, but this libra
 
 ## Installation
 
-```bash
+```bash copy
 npm install @agentica/pg-vector-selector
 ```
 
@@ -17,7 +17,7 @@ npm install @agentica/pg-vector-selector
 
 Just replace the existing `executor.select` with the `selectorExecute` function.
 
-```typescript
+```typescript copy
 import { Agentica } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 
@@ -65,7 +65,7 @@ Connector-Hive: https://github.com/wrtnlabs/connector-hive
 
 If you don't have postgres server with vector extension installed, you can use docker to run it.
 
-```bash
+```bash copy
 docker run -d \
   --name postgres-vector \
   -e POSTGRES_USER=your_user \
@@ -77,7 +77,7 @@ docker run -d \
 
 Then, we will fill the next environment variables files
 
-```env
+```env copy
 // .env
 PROJECT_API_PORT=37001
 DATABASE_URL=postgresql://your_user:your_password@host.docker.internal:5432/your_database
@@ -86,7 +86,7 @@ API_KEY=your_optional_api_key  # Optional: If set, all requests except GET /heal
 ```
 
 and run the next command
-```bash
+```bash copy
 docker pull ghcr.io/wrtnlabs/connector-hive:latest && \
 docker run -d \
   --name connector-hive \
@@ -99,7 +99,7 @@ Good!
 
 Now, you can use the `connector-hive` server with the `pg-vector-selector` library.
 
-```typescript
+```typescript filename="src/main.ts" copy
 const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
   'http://localhost:37001'
 );
