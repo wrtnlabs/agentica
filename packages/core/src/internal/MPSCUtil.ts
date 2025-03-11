@@ -3,7 +3,18 @@ export namespace MPSCUtil {
     consumer: ReadableStream<T>;
     produce: (chunk: T) => void;
     close: () => void;
-    waitClose: () => Promise<void>;
+    /**
+     * Wait until the producing is finished.
+     */
+    waitClosed: () => Promise<void>;
+    /**
+     * Wait until the consuming is finished.(finished producing and consuming)
+     */
+    waitUntilEmpty: () => Promise<void>;
+
+    /**
+     * Check if producing is done and consuming is finished.
+     */
     done: () => boolean;
   }
 
@@ -19,12 +30,14 @@ export namespace MPSCUtil {
         }
       },
     });
+
     return {
       consumer,
       produce: (chunk: T) => queue.enqueue(chunk),
       close: () => queue.close(),
       done: () => queue.done(),
-      waitClose: () => queue.waitClose(),
+      waitClosed: () => queue.waitClosed(),
+      waitUntilEmpty: () => queue.waitUntilEmpty(),
     };
   };
 
@@ -32,7 +45,7 @@ export namespace MPSCUtil {
     private queue: T[] = [];
     private resolvers: ((value: IteratorResult<T, undefined>) => void)[] = [];
     private closeResolvers: (() => void)[] = [];
-
+    private emptyResolvers: (() => void)[] = [];
     private closed = false;
 
     enqueue(item: T) {
@@ -46,12 +59,26 @@ export namespace MPSCUtil {
       if (this.queue.length > 0) {
         return { value: this.queue.shift()!, done: false };
       }
-      if (this.closed) return { value: undefined, done: true };
+      if (this.closed) {
+        if (this.emptyResolvers.length > 0) {
+          this.emptyResolvers.forEach((resolve) => resolve());
+          this.emptyResolvers = [];
+        }
+        return { value: undefined, done: true };
+      }
       return new Promise((resolve) => this.resolvers.push(resolve));
     }
 
-    done() {
+    isEmpty() {
+      return this.queue.length === 0;
+    }
+
+    isClosed() {
       return this.closed;
+    }
+
+    done() {
+      return this.isClosed() && this.isEmpty();
     }
 
     close() {
@@ -62,8 +89,17 @@ export namespace MPSCUtil {
       this.closeResolvers.forEach((resolve) => resolve());
     }
 
-    waitClose() {
-      if (this.closed) {
+    waitUntilEmpty() {
+      if (this.isEmpty()) {
+        return Promise.resolve();
+      }
+      return new Promise<void>((resolve) => {
+        this.emptyResolvers.push(resolve);
+      });
+    }
+
+    waitClosed() {
+      if (this.isClosed()) {
         return Promise.resolve();
       }
 

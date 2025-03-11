@@ -47,18 +47,18 @@ export async function test_mpsc_base(): Promise<void | false> {
     consumer: consumer2,
     produce: produce2,
     close: close2,
-    waitClose,
+    waitClosed,
   } = MPSCUtil.create<string>();
   const reader2 = consumer2.getReader();
   // Produce values first
   produce2("test");
   // Start waiting for close
-  const closePromise = waitClose();
+  const closePromise = waitClosed();
   // Read the value
   const readResult = await reader2.read();
   if (readResult.value !== "test" || readResult.done !== false) {
     throw new Error(
-      `MPSC waitClose test (read) failed: Expected {value: "test", done: false}, got ${JSON.stringify(
+      `MPSC waitClosed test (read) failed: Expected {value: "test", done: false}, got ${JSON.stringify(
         readResult,
       )}`,
     );
