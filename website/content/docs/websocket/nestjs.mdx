@@ -15,7 +15,7 @@ npx nestia setup
 
 
 ## Bootstrap
-```typescript filename="nestj/src/main.ts" showLineNumbers
+```typescript filename="nestjs/src/main.ts" showLineNumbers copy
 import { WebSocketAdaptor } from "@nestia/core";
 import { INestApplication } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
@@ -30,7 +30,7 @@ await app.listen(3_001, "0.0.0.0");
 
 
 ## API Controller
-```typescript filename="nestjs/src/chat.controller.ts" showLineNumbers
+```typescript filename="nestjs/src/chat.controller.ts" showLineNumbers copy
 import { AgenticaRpcService, IAgenticaRpcListener } from "@agentica/rpc";
 import { WebSocketRoute } from "@nestia/core";
 import { Controller } from "@nestjs/common";
