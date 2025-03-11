@@ -18,7 +18,7 @@ However, don't be afraid of WebSocket application development. Below is the exam
   "NestJS Server",
 ]}>
   <Tabs.Tab>
-```typescript filename="client/src/main.ts" showLineNumbers
+```typescript filename="client/src/main.ts" showLineNumbers copy
 import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
 import { Driver, WebSocketConnector } from "tgrid";
 
@@ -42,7 +42,7 @@ await driver.conversate("Hello, what you can do?");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript filename="nodejs/src/main.ts" showLineNumbers
+```typescript filename="nodejs/src/main.ts" showLineNumbers copy
 import { Agentica } from "@agentica/core";
 import {
   AgenticaRpcService,
@@ -68,7 +68,7 @@ await server.open(3_001, async (acceptor) => {
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript filename="nestjs/src/chat.controller.ts" showLineNumbers
+```typescript filename="nestjs/src/chat.controller.ts" showLineNumbers copy
 import { AgenticaRpcService, IAgenticaRpcListener } from "@agentica/rpc";
 import { WebSocketRoute } from "@nestia/core";
 import { Controller } from "@nestjs/common";
@@ -120,7 +120,7 @@ npx typia setup
 ```
 
 ### Client Application
-```bash filename="Terminal"
+```bash filename="Terminal" copy
 npm install @agentica/rpc tgrid
 ```
 
