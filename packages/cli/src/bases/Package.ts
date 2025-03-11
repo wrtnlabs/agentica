@@ -2,9 +2,9 @@ import { execSync } from "child_process";
 import fs from "fs/promises";
 import path from "path";
 
-export namespace Package {
-  export type Manager = "npm" | "yarn" | "pnpm";
+import { PackageManager } from "../utils/types/PackageManager";
 
+export namespace Package {
   export const create = async (input: {
     projectName: string;
     projectPath: string;
@@ -28,7 +28,7 @@ export namespace Package {
   };
 
   export const installPackage =
-    (packageManager: Manager) =>
+    (packageManager: PackageManager) =>
     (input: { projectPath: string; services: string[] }) => {
       const installCmd = (pkg: string) => {
         switch (packageManager) {
@@ -51,6 +51,13 @@ export namespace Package {
       ];
 
       const devDependencies = ["ts-node", "typescript"];
+
+      // install existing dependencies
+      console.log("🚀 Installing existing dependencies...");
+      execSync(`${packageManager} install`, {
+        cwd: input.projectPath,
+        stdio: "inherit",
+      });
 
       dependencies.forEach((dep) => {
         console.log(`🚀 Installing ${dep}...`);
