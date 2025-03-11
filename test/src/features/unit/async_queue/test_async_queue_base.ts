@@ -89,7 +89,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   const waitCloseQueue = new MPSCUtil.AsyncQueue<string>();
 
   // Start waiting for close
-  const closePromise = waitCloseQueue.waitClose();
+  const closePromise = waitCloseQueue.waitClosed();
 
   // Close after delay
   setTimeout(() => {
@@ -144,7 +144,7 @@ export async function test_async_queue_base(): Promise<void | false> {
     consumer: multiConsumer,
     produce: multiProduce,
     close: multiClose,
-    waitClose: multiWaitClose,
+    waitClosed: multiWaitClosed,
   } = MPSCUtil.create<string>();
   const multiReader = multiConsumer.getReader();
 
@@ -174,7 +174,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test waitClose functionality
-  const waitClosePromise = multiWaitClose();
+  const waitClosePromise = multiWaitClosed();
   multiClose();
   await waitClosePromise; // Should resolve when closed
 

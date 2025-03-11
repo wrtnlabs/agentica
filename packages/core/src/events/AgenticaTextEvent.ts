@@ -8,6 +8,11 @@ export class AgenticaTextEvent extends AgenticaEventBase<"text"> {
   public get text(): string {
     return this.get_();
   }
+
+  /**
+   * Check if the join method can return a response immediately.
+   * Returns true if the response is ready to be returned by the join method.
+   */
   public get done(): boolean {
     return this.done_();
   }

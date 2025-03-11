@@ -64,7 +64,7 @@ export namespace ChatGptDescribeFunctionAgent {
             continue;
           }
 
-          const { consumer, produce, close, waitClose, done } =
+          const { consumer, produce, close, waitClosed, waitUntilEmpty, done } =
             MPSCUtil.create<string>();
 
           describeContext[choice.index] = {
@@ -72,7 +72,8 @@ export namespace ChatGptDescribeFunctionAgent {
             consumer,
             produce,
             close,
-            waitClose,
+            waitClosed,
+            waitUntilEmpty,
             done,
           };
           produce(choice.delta.content);
@@ -84,7 +85,7 @@ export namespace ChatGptDescribeFunctionAgent {
               done,
               get: () => describeContext[choice.index]?.content ?? "",
               join: async () => {
-                await waitClose();
+                await waitClosed();
                 return describeContext[choice.index]!.content;
               },
             }),
