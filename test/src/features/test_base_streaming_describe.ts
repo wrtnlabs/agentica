@@ -9,23 +9,23 @@ import typia from "typia";
 
 import { TestGlobal } from "../TestGlobal";
 
-// 간단한 계산기 컨트롤러를 생성
+// Create a simple calculator controller
 class Calculator {
   /**
-   * 두 숫자를 더합니다.
+   * Add two numbers.
    *
-   * @param params 더할 두 숫자
-   * @returns 두 숫자의 합
+   * @param params Two numbers to add
+   * @returns Sum of the two numbers
    */
   public add(params: { a: number; b: number }): number {
     return params.a + params.b;
   }
 
   /**
-   * 첫 번째 숫자에서 두 번째 숫자를 뺍니다.
+   * Subtract the second number from the first number.
    *
-   * @param params 연산할 두 숫자
-   * @returns 뺄셈 결과
+   * @param params Two numbers to operate on
+   * @returns Result of subtraction
    */
   public subtract(params: { a: number; b: number }): number {
     return params.a - params.b;
@@ -35,14 +35,14 @@ class Calculator {
 export async function test_base_streaming_describe(): Promise<void | false> {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
 
-  // 이벤트 추적을 위한 변수들
+  // Variables for event tracking
   const events: AgenticaEvent<"chatgpt">[] = [];
   let functionCalled = false;
   const streamContentPieces: string[] = [];
   let describeEventReceived = false;
   let describeStreamProcessed = false;
   let describeJoinResult: string | undefined;
-  // 계산기 컨트롤러 생성
+  // Create calculator controller
   const calculatorController: IAgenticaController<"chatgpt"> = {
     protocol: "class",
     name: "calculator",
@@ -50,7 +50,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
     execute: new Calculator(),
   };
 
-  // Agentica 인스턴스 생성
+  // Create Agentica instance
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
     vendor: {
@@ -62,7 +62,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
     controllers: [calculatorController],
   });
 
-  // 이벤트 리스너 등록 - 도구 호출 관련 이벤트
+  // Register event listeners - tool call related events
   agent.on("select", (event) => {
     events.push(event);
   });
@@ -78,11 +78,11 @@ export async function test_base_streaming_describe(): Promise<void | false> {
     events.push(event);
   });
 
-  // describe 이벤트 리스너 추가
+  // Add describe event listener
   agent.on("describe", async (event) => {
     events.push(event);
     describeEventReceived = true;
-    // describe 이벤트의 스트림 처리
+    // Process describe event stream
 
     describeStreamProcessed = true;
     describeJoinResult = await event.join();
@@ -95,68 +95,68 @@ export async function test_base_streaming_describe(): Promise<void | false> {
       });
       if (done) break;
 
-      // 스트림 청크에서 텍스트 콘텐츠 추출
+      // Extract text content from stream chunks
       try {
         if (typeof value === "string") {
-          // 문자열인 경우 직접 저장
+          // If it's a string, store directly
           streamContentPieces.push(value);
         } else {
           console.error(value);
           throw new Error(
-            "describe 스트림 처리 중 오류: value가 String이 아님, 즉 스트림이 String stream이 아님",
+            "Error processing describe stream: value is not String, meaning stream is not String stream",
           );
         }
       } catch (err) {
-        console.error("describe 스트림 처리 중 오류:", err);
+        console.error("Error during describe stream processing:", err);
       }
     }
 
-    // 스트림에서 콘텐츠를 받았는지 확인
+    // Check if content was received from stream
     if (streamContentPieces.length === 0) {
-      throw new Error("describe 스트림에서 콘텐츠가 수신되지 않았습니다");
+      throw new Error("No content received from describe stream");
     }
   });
 
-  // 테스트를 위한 숫자 설정
+  // Set up numbers for testing
   const a = 5123123123;
   const b = 3412342134;
 
-  // 대화 시작 - 함수 호출을 유도하면서 추가 설명 요청
+  // Start conversation - induce function call while requesting additional explanation
   const result: AgenticaPrompt<"chatgpt">[] = await agent.conversate(
-    `${a}와 ${b}를 더해주세요. 그리고 덧셈이 무엇인지 간단히 설명해주세요. calculator를 사용하세요.`,
+    `Please add ${a} and ${b}. And briefly explain what addition is. Use calculator.`,
   );
 
-  // describe 이벤트 발생 확인
+  // Verify describe event occurred
   if (!describeEventReceived) {
-    throw new Error("describe 이벤트가 발생하지 않았습니다");
+    throw new Error("describe event did not occur");
   }
 
-  // describe 스트림 처리 확인
+  // Verify describe stream was processed
   if (!describeStreamProcessed) {
-    throw new Error("describe 이벤트의 스트림이 처리되지 않았습니다");
+    throw new Error("describe event stream was not processed");
   }
 
-  // 함수 호출 확인
+  // Verify function was called
   if (!functionCalled) {
-    throw new Error("대화 중 함수가 호출되지 않았습니다");
+    throw new Error("No function was called during conversation");
   }
 
-  // 실행 결과 확인
+  // Verify execution result
   const executeEvent = events.find((e) => e.type === "execute");
   if (!executeEvent) {
-    throw new Error("실행 이벤트를 찾을 수 없습니다");
+    throw new Error("Could not find execute event");
   }
 
   if (executeEvent.value !== a + b) {
     throw new Error(
-      `결과가 ${a + b}이어야 하는데, ${executeEvent.value}를 받았습니다`,
+      `Result should be ${a + b}, but received ${executeEvent.value}`,
     );
   }
 
-  // AI 응답 확인
+  // Verify AI response
   const aiResponse = result.find((prompt) => prompt.type === "describe");
 
-  // 스트림 콘텐츠와 최종 응답 콘텐츠 비교
+  // Compare stream content with final response content
   const combinedStreamContent = streamContentPieces.join("");
   if (
     combinedStreamContent.length === 0 ||
@@ -164,22 +164,22 @@ export async function test_base_streaming_describe(): Promise<void | false> {
     combinedStreamContent !== describeJoinResult
   ) {
     throw new Error(
-      "describe 스트림 콘텐츠와 최종 응답 콘텐츠, 그리고 join 결과가 일치하지 않습니다",
+      "describe stream content, final response content, and join result do not match",
     );
   }
 
-  // describe 이벤트 내용 확인
+  // Verify describe event content
   const describeEvent = events.find((e) => e.type === "describe");
   if (!describeEvent) {
-    throw new Error("describe 이벤트를 찾을 수 없습니다");
+    throw new Error("Could not find describe event");
   }
-
-  // describe 이벤트에 executions 배열이 포함되어 있는지 확인
+  console.log("describeEvent.done", describeEvent.done);
+  // Check if describe event includes executions array
   if (!describeEvent.executes || describeEvent.executes.length === 0) {
-    throw new Error("describe 이벤트에 executions 정보가 없습니다");
+    throw new Error("describe event has no executions information");
   }
 
-  // calculator 도구 호출이 포함되어 있는지 확인
+  // Check if calculator tool call is included
 
   const hasCalculatorExecution = describeEvent.executes.some(
     (exec) =>
@@ -187,20 +187,18 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   );
   if (!hasCalculatorExecution) {
     throw new Error(
-      "describe 이벤트에 calculator 도구 호출 정보가 포함되어 있지 않습니다",
+      "describe event does not include calculator tool call information",
     );
   }
 
-  // 스트림과 join 함수가 존재하는지 확인
+  // Verify stream and join function exist
   if (!describeEvent.stream || typeof describeEvent.join !== "function") {
-    throw new Error("describe 이벤트에 stream이나 join 함수가 없습니다");
+    throw new Error("describe event is missing stream or join function");
   }
 
-  // join 함수를 통해 텍스트 콘텐츠 확인
+  // Verify text content through join function
   const describeText = await describeEvent.join();
   if (!describeText || describeText.length < 5) {
-    throw new Error(
-      "describe 이벤트의 텍스트 내용이 너무 짧거나 비어 있습니다",
-    );
+    throw new Error("describe event text content is too short or empty");
   }
 }
