@@ -3,9 +3,18 @@ title: Agentica > Guide Documents > Plugin Modules > PG Vector Selector
 ---
 
 # PG Vector Selector
-This library was created to enable even faster function selection.
 
-In the existing Agentica, the Selector could take 1 to 2 seconds, but this library was developed to further reduce search time by leveraging Vector Semantic Search.
+## Introduction
+This library was created to enable even faster function selection in Agentica. While the existing Agentica Selector could take 1 to 2 seconds, this library significantly reduces search time by leveraging Vector Semantic Search technology.
+
+Vector Semantic Search embeds text in high-dimensional vector space to search based on semantic similarity, allowing for more accurate and faster function selection compared to simple keyword matching.
+
+Although there isn't a formal benchmark, we can see a significant reduction in test duration as shown below. The only difference between these two tests is the change in selector:
+
+```md filename="Test Result"
+- test_benchmark_call: 106,829 ms
+- test_benchmark_call_pg_vector_selector: 1,775 ms
+```
 
 ## Installation
 
@@ -48,22 +57,29 @@ const agent = new Agentica({
   ],
   config: {
     executor: {
-      select: selectorExecute,
+      select: selectorExecute, // Replace the existing selector
     }
   }
 });
 await agent.conversate("I wanna buy MacBook Pro");
 ```
 
-But this library depends on the `connector-hive` server.
+### How It Works
+`AgenticaPgVectorSelector` converts input text into vectors and uses PostgreSQL's pgvector extension to quickly find the most similar functions. The process works as follows:
 
-You need to install the `connector-hive` server and to run it.
+1. User input or conversation context is converted into vectors
+2. The system searches the database for function vectors most similar to the input
+3. The function with the highest similarity score is selected and executed
 
-Connector-Hive: https://github.com/wrtnlabs/connector-hive
+## Connector-Hive Server Setup
+
+This library depends on the `connector-hive` server. You need to install and run the `connector-hive` server.
+
+Connector-Hive repository: https://github.com/wrtnlabs/connector-hive
 
 ### How to run connector-hive
 
-If you don't have postgres server with vector extension installed, you can use docker to run it.
+If you don't have a PostgreSQL server with vector extension installed, you can use Docker to run it.
 
 ```bash copy
 docker run -d \
@@ -75,7 +91,7 @@ docker run -d \
   pgvector/pgvector
 ```
 
-Then, we will fill the next environment variables files
+Then, set up the environment variables file as follows:
 
 ```env copy
 // .env
@@ -85,7 +101,6 @@ COHERE_API_KEY=your_cohere_api_key
 API_KEY=your_optional_api_key  # Optional: If set, all requests except GET /health must include this key
 ```
 
-and run the next command
 ```bash copy
 docker pull ghcr.io/wrtnlabs/connector-hive:latest && \
 docker run -d \
@@ -95,11 +110,10 @@ docker run -d \
   ghcr.io/wrtnlabs/connector-hive:latest
 ```
 
-Good!
-
-Now, you can use the `connector-hive` server with the `pg-vector-selector` library.
+Now you can use the `connector-hive` server with the `pg-vector-selector` library:
 
 ```typescript filename="src/main.ts" copy
+// Connect to connector-hive server running on localhost
 const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
   'http://localhost:37001'
 );
@@ -127,5 +141,12 @@ const agent = new Agentica({
     }
   }
 });
+
+// Start conversation
 await agent.conversate("I wanna buy MacBook Pro");
 ```
+
+## Performance Comparison
+
+In typical use cases, PG Vector Selector is approximately 5-6 times faster than the traditional selector and provides more accurate function selection. The difference is especially notable for complex queries or large controller sets.
+
