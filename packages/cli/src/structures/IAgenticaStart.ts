@@ -29,5 +29,7 @@ export namespace IAgenticaStart {
       name: string;
       value: string;
     }[];
+
+    options: IOptions;
   }
 }

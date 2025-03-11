@@ -10,6 +10,7 @@ import { Connector } from "../bases/Connector";
 import { Package } from "../bases/Package";
 import { Tsconfig } from "../bases/Tsconfig";
 import { IAgenticaStart } from "../structures/IAgenticaStart";
+import { IAgenticaStartOption } from "../structures/IAgenticaStartOption";
 import { createProjectDirectory } from "../utils/createProjectDirectory";
 import { getNpmPackages } from "../utils/getNpmPackages";
 import { PackageManager } from "../utils/types/PackageManager";
@@ -19,8 +20,10 @@ export namespace AgenticaStart {
   /**
    * Execute `start` command.
    */
-  export async function execute(input: IAgenticaStart.IExecuteInput) {
-    const { projectName, options } = input;
+  export async function execute({
+    projectName,
+    options,
+  }: IAgenticaStart.IExecuteInput) {
     const projectPath = path.join(process.cwd(), projectName);
 
     // Check if project already exists
@@ -41,7 +44,7 @@ export namespace AgenticaStart {
       a.name.localeCompare(b.name),
     );
 
-    const questions = getQuestions({ services: availableServices }, options);
+    const questions = getQuestions({ services: availableServices, options });
     const answers = await inquirer.prompt(questions);
 
     const updatedAnswers = {
@@ -61,81 +64,21 @@ export namespace AgenticaStart {
     const { packageManager, openAIKey, projectType, services } = validAnswers;
 
     if (projectType === "standalone") {
-      // Create project directory
-      createProjectDirectory({ projectPath });
-
-      // Create package.json (without dependencies)
-      Package.create({ projectName, projectPath });
-
-      // Create tsconfig.json
-      Tsconfig.create({ projectPath });
-
-      await fs.mkdir(path.join(projectPath, "src"), { recursive: false });
-
-      // Create Agentica code
-      const agenticaCode = Connector.createAll({ services });
-      const formattedAgenticaCode = await prettier.format(agenticaCode, {
-        parser: "typescript",
+      await AgenticaStartOption.Project.standalone({
+        projectName,
+        projectPath,
+        openAIKey,
+        services,
       });
-      await fs.writeFile(
-        path.join(projectPath, "src/agent.ts"),
-        formattedAgenticaCode,
-      );
-      console.log("✅ agent.ts created");
-
-      // Create .env file
-      const envContent = `OPENAI_API_KEY=${openAIKey}\n`;
-      await fs.writeFile(path.join(projectPath, ".env"), envContent);
-      console.log("✅ .env created");
     } else {
       await clone(projectType, projectName);
 
-      // Create Agentica code
-      const importCode = Connector.create("import")({ services });
-      const connectorCode = Connector.create("connector")({ services });
-
-      // Modify index.ts: replace import and controller code
-      const indexFilePath = path.join(projectPath, "src/index.ts");
-      let indexFileContent = await fs.readFile(indexFilePath, "utf-8");
-
-      if (services.length !== 0) {
-        // Remove BbsArticleService import and controllers code
-        indexFileContent = indexFileContent.replace(
-          /import { BbsArticleService }.*;\n/g,
-          "",
-        );
-
-        indexFileContent = indexFileContent.replace(
-          /controllers:\s*\[[\s\S]*?\],\n/,
-          "controllers: [/// INSERT CONTROLLER HERE],\n",
-        );
-      }
-
-      // Insert importCode and connectorCode
-      indexFileContent = indexFileContent.replace(
-        "/// INSERT IMPORT HERE",
-        importCode,
-      );
-      indexFileContent = indexFileContent.replace(
-        "/// INSERT CONTROLLER HERE",
-        connectorCode,
-      );
-
-      const formattedIndexFileContent = await prettier.format(
-        indexFileContent,
-        {
-          parser: "typescript",
-        },
-      );
-
-      await fs.writeFile(indexFilePath, formattedIndexFileContent);
-
-      console.log("✅ Agentica code created");
-
-      // Add env to .env.local
-      const envContent = `\nOPENAI_API_KEY=${openAIKey}\n`;
-      await fs.appendFile(path.join(projectPath, ".env.local"), envContent);
-      console.log("✅ .env.local updated");
+      await AgenticaStartOption.Project.others({
+        projectName,
+        projectPath,
+        openAIKey,
+        services,
+      });
     }
 
     // Run package installation
@@ -158,7 +101,6 @@ export namespace AgenticaStart {
    */
   const getQuestions = (
     input: IAgenticaStart.IGetQuestionsInput,
-    options: IAgenticaStart.IOptions,
   ): QuestionCollection[] => {
     const questions = [
       {
@@ -174,7 +116,7 @@ export namespace AgenticaStart {
           },
         ],
       },
-      options.project
+      input.options.project
         ? null
         : {
             type: "list",
@@ -210,13 +152,17 @@ export namespace AgenticaStart {
         name: "openAIKey",
         message: "Please enter your OPENAI_API_KEY:",
       },
-    ];
+    ] satisfies (QuestionCollection | null)[];
 
     return questions.filter(
-      (question) => question !== null,
-    ) as QuestionCollection[];
+      (question): question is Exclude<typeof question, null> =>
+        question !== null,
+    );
   };
 
+  /**
+   * Git Clone from template repository.
+   */
   export const clone = async (
     type: ProjectOptionValue,
     directory: string,
@@ -236,4 +182,105 @@ export namespace AgenticaStart {
     cp.execSync("npx rimraf .git");
     cp.execSync("npx rimraf .github/dependabot.yml");
   };
+}
+
+/**
+ * Methods for Agentica start options.
+ */
+namespace AgenticaStartOption {
+  export namespace Project {
+    export const standalone = async (
+      input: IAgenticaStartOption.IProject,
+    ): Promise<void> => {
+      // Create project directory
+      createProjectDirectory({ projectPath: input.projectPath });
+
+      // Create package.json (without dependencies)
+      Package.create({
+        projectName: input.projectName,
+        projectPath: input.projectPath,
+      });
+
+      // Create tsconfig.json
+      Tsconfig.create({ projectPath: input.projectPath });
+
+      await fs.mkdir(path.join(input.projectPath, "src"), {
+        recursive: false,
+      });
+
+      // Create Agentica code
+      const agenticaCode = Connector.createAll({ services: input.services });
+      const formattedAgenticaCode = await prettier.format(agenticaCode, {
+        parser: "typescript",
+      });
+      await fs.writeFile(
+        path.join(input.projectPath, "src/agent.ts"),
+        formattedAgenticaCode,
+      );
+      console.log("✅ agent.ts created");
+
+      // Create .env file
+      const envContent = `OPENAI_API_KEY=${input.openAIKey}\n`;
+      await fs.writeFile(path.join(input.projectPath, ".env"), envContent);
+      console.log("✅ .env created");
+    };
+
+    export const others = async (
+      input: IAgenticaStartOption.IProject,
+    ): Promise<void> => {
+      // Create Agentica code
+      const importCode = Connector.create("import")({
+        services: input.services,
+      });
+      const connectorCode = Connector.create("connector")({
+        services: input.services,
+      });
+
+      // Modify index.ts: replace import and controller code
+      const indexFilePath = path.join(input.projectPath, "src/index.ts");
+      let indexFileContent = await fs.readFile(indexFilePath, "utf-8");
+
+      if (input.services.length !== 0) {
+        // Remove BbsArticleService import and controllers code
+        indexFileContent = indexFileContent.replace(
+          /import { BbsArticleService }.*;\n/g,
+          "",
+        );
+
+        indexFileContent = indexFileContent.replace(
+          /controllers:\s*\[[\s\S]*?\],\n/,
+          "controllers: [/// INSERT CONTROLLER HERE],\n",
+        );
+      }
+
+      // Insert importCode and connectorCode
+      indexFileContent = indexFileContent.replace(
+        "/// INSERT IMPORT HERE",
+        importCode,
+      );
+      indexFileContent = indexFileContent.replace(
+        "/// INSERT CONTROLLER HERE",
+        connectorCode,
+      );
+
+      const formattedIndexFileContent = await prettier.format(
+        indexFileContent,
+        {
+          parser: "typescript",
+        },
+      );
+
+      await fs.writeFile(indexFilePath, formattedIndexFileContent);
+
+      console.log("✅ Agentica code created");
+
+      // Add env to .env.local
+      const envContent = `\nOPENAI_API_KEY=${input.openAIKey}\n`;
+      await fs.appendFile(
+        path.join(input.projectPath, ".env.local"),
+        envContent,
+      );
+      console.log("✅ .env.local updated");
+    };
+  }
 }
