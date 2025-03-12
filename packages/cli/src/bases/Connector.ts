@@ -24,7 +24,7 @@ export const agent = new Agentica({
   model: "chatgpt",
   vendor: {
     api: new OpenAI({
-      apiKey: process.env.OPEN_AI_API_KEY!
+      apiKey: process.env.OPENAI_API_KEY!
     }),
     model: "gpt-4o-mini",
   },
