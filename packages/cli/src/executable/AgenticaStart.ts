@@ -64,7 +64,7 @@ export namespace AgenticaStart {
     const { packageManager, openAIKey, projectType, services } = validAnswers;
 
     if (projectType === "standalone") {
-      await AgenticaStartOption.Project.standalone({
+      await AgenticaStartOption.Project.execute("standalone")({
         projectName,
         projectPath,
         openAIKey,
@@ -73,7 +73,7 @@ export namespace AgenticaStart {
     } else if (projectType === "nodejs") {
       await clone(projectType, projectName);
 
-      await AgenticaStartOption.Project.nodejs({
+      await AgenticaStartOption.Project.execute("nodejs")({
         projectName,
         projectPath,
         openAIKey,
@@ -82,7 +82,7 @@ export namespace AgenticaStart {
     } else if (projectType === "nestjs") {
       await clone(projectType, projectName);
 
-      await AgenticaStartOption.Project.nestjs({
+      await AgenticaStartOption.Project.execute("nestjs")({
         projectName,
         projectPath,
         openAIKey,
@@ -195,7 +195,20 @@ export namespace AgenticaStart {
  */
 namespace AgenticaStartOption {
   export namespace Project {
-    export const standalone = async (
+    export const execute = (option: ProjectOptionValue) => {
+      switch (option) {
+        case "standalone":
+          return standalone;
+        case "nodejs":
+          return nodejs;
+        case "nestjs":
+          return nestjs;
+        default:
+          throw new Error(`Invalid project type: ${option}`);
+      }
+    };
+
+    const standalone = async (
       input: IAgenticaStartOption.IProject,
     ): Promise<void> => {
       // Create project directory
@@ -231,7 +244,7 @@ namespace AgenticaStartOption {
       console.log("✅ .env created");
     };
 
-    export const nodejs = async (
+    const nodejs = async (
       input: IAgenticaStartOption.IProject,
     ): Promise<void> => {
       // Create Agentica code
@@ -281,7 +294,7 @@ namespace AgenticaStartOption {
       console.log("✅ .env.local updated");
     };
 
-    export const nestjs = async (
+    const nestjs = async (
       input: IAgenticaStartOption.IProject,
     ): Promise<void> => {
       // Create Agentica code
