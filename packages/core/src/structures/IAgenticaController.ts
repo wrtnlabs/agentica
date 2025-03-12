@@ -30,7 +30,7 @@ export namespace IAgenticaController {
   /**
    * HTTP controller.
    *
-   * You can make it by {@link createHttpLlmApplication} function with
+   * You can make it by {@link validateHttpLlmApplication} function with
    * the Swagger or OpenAPI document.
    */
   export interface IHttp<Model extends ILlmSchema.Model>

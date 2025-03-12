@@ -1,4 +1,4 @@
-import { createHttpLlmApplication } from "@agentica/core";
+import { validateHttpLlmApplication } from "@agentica/core";
 import { OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
 import { IHttpLlmApplication } from "@samchon/openapi";
 import { load } from "js-yaml";
@@ -33,7 +33,7 @@ export const AgenticaChatUploaderMovie = (
         | OpenApiV3_1.IDocument =
         extension === "json" ? JSON.parse(content) : load(content);
       const application: IValidation<IHttpLlmApplication<"chatgpt">> =
-        createHttpLlmApplication({
+        validateHttpLlmApplication({
           model: "chatgpt",
           document,
           options: {
