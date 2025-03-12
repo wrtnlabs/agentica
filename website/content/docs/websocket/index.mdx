@@ -104,26 +104,107 @@ export class ChatController {
 
 ## Setup
 ### NodeJS Server
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
 ```bash filename="Terminal" copy
 npm install @agentica/core @samchon/openapi typia
 npm install @agentica/rpc tgrid
 npx typia setup
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+pnpm install @agentica/core @samchon/openapi typia
+pnpm install @agentica/rpc tgrid
+pnpm typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+# YARN BERRY IS NOT SUPPORTED
+yarn add @agentica/core @samchon/openapi typia
+yarn add @agentica/rpc tgrid
+yarn typia setup
+```
+  </Tabs.Tab>
+</Tabs>
+
+To develop NodeJS WebSocket server of AI chatbot, you need to install these packages.
+
+At first, you have to setup [`@agentica/core`](/docs/core), [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://typia.io) basically to construct agent. `@samchon/openapi` is a library defining LLM function calling schemas, and their converters from the Swagger/OpenAPI documents. And `typia` is a framework which can compose LLM function calling schemas from a TypeScript class type by compiler skills.
+
+At next, setup `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages. `tgrid` is a TypeScript based RPC (Remote Procedure Call) framework supporting WebSocket protocol, and `@agentica/rpc` is an wrapper module of `@agentica/core` following the WebSocket RPC.
+
+At last, run `npx typia setup` command. It's because `typia` is a transformer library analyzing TypeScript source code in the compilation level, and it needs additional setup process transforming TypeScript compiler via [`ts-patch`](https://github.com/nonara/ts-patch).
 
 ### NestJS Server
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
 ```bash filename="Terminal" copy
-npm install @agentica/core @samchon/openapi
 npm install @nestjs/common @nestjs/core @nestjs/platform-express
+npm install @agentica/core @samchon/openapi
 npm install @agentica/rpc tgrid
 
 npm install -D nestia
 npx nestia setup
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+pnpm install @nestjs/common @nestjs/core @nestjs/platform-express
+pnpm install @agentica/core @samchon/openapi
+pnpm install @agentica/rpc tgrid
+
+pnpm install -D nestia
+pnpm nestia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+# YARN BERRY IS NOT SUPPORTED
+yarn add @nestjs/common @nestjs/core @nestjs/platform-express
+yarn add @agentica/core @samchon/openapi
+yarn add @agentica/rpc tgrid
+
+yarn add -D nestia
+yarn nestia setup
+```
+  </Tabs.Tab>
+</Tabs>
+
+Install NestJS and `@agentica` packages, and then setup `nestia`.
+
+[`@nestia`](https://nestia.io) is a set of helper libraries for NestJS, enhancing type safety and productivity by combining with [`typia`](https://typia.io) which can compose LLM function calling schemas from a TypeScript class type by compiler skills.
+
+Also, `@nestia` makes NestJS to support the WebSocket protocol, so it is essential.
 
 ### Client Application
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
 ```bash filename="Terminal" copy
 npm install @agentica/rpc tgrid
+npm install @agentica/core @samchon/openapi
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+pnpm install @agentica/core @agentica/rpc tgrid
+pnpm install @agentica/core @samchon/openapi
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+yarn add @agentica/core @agentica/rpc tgrid
+yarn add @agentica/core @samchon/openapi
+```
+  </Tabs.Tab>
+</Tabs>
+
+Just install `@agentica/core`, `@samchon/openapi` packages.
+
+If you want to develop advanced features not only handling text contents but also manging LLM function calling schemas like [#Arguments Hooking](/docs/websocket/client/#arguments-hooking) case, you need to setup `@agentica/core` and [`@samchon/openapi`](https://samchon.github.io/openapi) packages too
+
+As client application does not generate LLM function calling schema, it does not need additional setup process for compiler transformation. 
 
 
 
