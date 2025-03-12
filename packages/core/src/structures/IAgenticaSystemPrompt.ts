@@ -18,7 +18,7 @@ import { IAgenticaConfig } from "./IAgenticaConfig";
  * would be used which are written in the below directory as markdown
  * documents.
  *
- * - https://github.com/samchon/nestia/tree/master/packages/agent/prompts
+ * - https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts
  *
  * @author Samchon
  */
@@ -28,7 +28,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * @param config Configuration of the agent
    * @returns The common system prompt
-   * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/common.md
+   * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/common.md
    */
   common?: (config?: IAgenticaConfig<Model> | undefined) => string;
 
@@ -46,7 +46,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * @param histories Histories of the previous prompts
    * @returns initialize system prompt
-   * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/initialize.md
+   * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/initialize.md
    */
   initialize?: (histories: AgenticaPrompt<Model>[]) => string;
 
@@ -67,7 +67,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * @param histories Histories of the previous prompts
    * @returns select system promopt
-   * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/select.md
+   * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/select.md
    */
   select?: (histories: AgenticaPrompt<Model>[]) => string;
 
@@ -84,7 +84,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * @param histories Histories of the previous prompts
    * @returns cancel system prompt
-   * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/cancel.md
+   * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/cancel.md
    */
   cancel?: (histories: AgenticaPrompt<Model>[]) => string;
 
@@ -102,7 +102,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * @param histories Histories of the previous prompts
    * @returns execute system prompt
-   * https://github.com/samchon/nestia/blob/master/packages/agent/prompts/execute.md
+   * https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/execute.md
    */
   execute?: (histories: AgenticaPrompt<Model>[]) => string;
 
@@ -119,7 +119,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * @param histories Histories of the previous prompts
    * @returns describe system prompt
-   * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/describe.md
+   * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/describe.md
    */
   describe?: (histories: AgenticaExecutePrompt<Model>[]) => string;
 }
