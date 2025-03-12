@@ -38,6 +38,14 @@ yarn nestia setup
   </Tabs.Tab>
 </Tabs>
 
+To develop NestJS WebSocket server of AI chatbot, you need to setup these packages.
+
+At first, install NestJS packages, [`@agentica/core`](/docs/core) and [`@samchon/openapi`](https://github.com/samchon/openapi). `@agentia/core` is the core library of Agentica Framework, and `@samchon/openapi` is a library defining LLM function calling schemas including their converters from the Swagger/OpenAPI documents.
+
+At next, install `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages. `tgrid` is a TypeScript based RPC (Remote Procedure Call) framework supporting WebSocket protocol, and `@agentica/rpc` is an wrapper module of `@agentica/core` following the WebSocket RPC.
+
+At last, install `nestia` package add *devDependencies*, and run `npx nestia setup` command. [`@nestia`](https://nestia.io) is a set of helper libraries for NestJS, enhancing type safety and productivity by combining with [`typia`](https://typia.io) which can compose LLM function calling schemas from a TypeScript class type by compiler skills. Also, `@nestia` makes NestJS to support the WebSocket protocol. 
+
 
 
 
@@ -106,6 +114,7 @@ When you've completed the acceptance, everything is completed. When client calls
 
 
 ## Software Development Kit
+### Outline
 <Tabs items={['npm', 'pnpm', 'yarn']}>
   <Tabs.Tab>
 ```bash filename="Terminal" copy
@@ -119,24 +128,324 @@ pnpm nestia sdk
   </Tabs.Tab>
   <Tabs.Tab>
 ```bash filename="Terminal" copy
+# YARN BERRY IS NOT SUPPORTED
 yarn nestia sdk
 ```
   </Tabs.Tab>
 </Tabs>
 
+Interaction library for client application built by [`@nestia/sdk`](https://nestia.io/docs/sdk/).
 
+If you configure `nestia.config.ts` file and run `npx nestia sdk` command, `@nestia/sdk` will generate an SDK (Software Development Kit) library for frontend application which can interact with the backend server, by analyzing your NestJS backend server source codes in the compilation level.
+
+With the SDK library, client application developer can interact with your backend server type safely and conveniently. No more manual interaction code writing is required. Let the client application developer to import the SDK library, and just call the functions embedded in the SDK library.
+
+![Software Development Kit Example](https://user-images.githubusercontent.com/13158709/215004990-368c589d-7101-404e-b81b-fbc936382f05.gif)
+
+### Configuration
+<Tabs items={[
+  <code>nestia.config.ts</code>, 
+  <code>INestiaConfig.ts</code>,
+]}>
+  <Tabs.Tab>
+```typescript copy filename="nestia.config.ts" showLineNumbers {8-17}
+import { INestiaConfig } from "@nestia/sdk";
+import { NestFactory } from "@nestjs/core";
+// import { FastifyAdapter } from "@nestjs/platform-fastify";
+
+import { YourModule } from "./src/YourModule";
+
+const NESTIA_CONFIG: INestiaConfig = {
+  input: async () => {
+    const app = await NestFactory.create(YourModule);
+    // const app = await NestFactory.create(YourModule, new FastifyAdapter());
+    // app.setGlobalPrefix("api");
+    // app.enableVersioning({
+    //     type: VersioningType.URI,
+    //     prefix: "v",
+    // })
+    return app;
+  },
+  output: "src/api",
+};
+export default NESTIA_CONFIG;
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript copy filename="INestiaConfig.ts" showLineNumbers {10-29}
+import type { INestApplication } from "@nestjs/common";
+import type { OpenApi } from "@samchon/openapi";
+
+/**
+ * Definition for the `nestia.config.ts` file.
+ *
+ * @author Jeongho Nam - https://github.com/samchon
+ */
+export interface INestiaConfig {
+  /**
+   * Accessor of controller classes.
+   *
+   * You can specify it within two ways
+   *
+   *   - Asynchronous function returning `INestApplication` instance
+   *   - Specify the path or directory of controller class files
+   */
+  input:
+    | (() => Promise<INestApplication>)
+    | INestiaConfig.IInput
+    | string[]
+    | string;
+
+  /**
+   * Output directory that SDK would be placed in.
+   *
+   * If not configured, you can't build the SDK library.
+   */
+  output?: string;
+
+  /**
+   * Building `swagger.json` is also possible.
+   *
+   * If not specified, you can't build the `swagger.json`.
+   */
+  swagger?: INestiaConfig.ISwaggerConfig;
+
+  /**
+   * Target directory that SDK distribution files would be placed in.
+   *
+   * If you configure this property and runs `npx nestia sdk` command,
+   * distribution environments for the SDK library would be generated.
+   *
+   * After the SDK library generation, move to the `distribute` directory,
+   * and runs `npm publish` command, then you can share SDK library with
+   * other client (frontend) developers.
+   *
+   * Recommend to use `"packages/api"` value.
+   */
+  distribute?: string;
+
+  /**
+   * Allow simulation mode.
+   *
+   * If you configure this property to be `true`, the SDK library would be contain
+   * simulation mode. In the simulation mode, the SDK library would not communicate
+   * with the real backend server, but just returns random mock-up data
+   * with requestion data validation.
+   *
+   * For reference, random mock-up data would be generated by `typia.random<T>()`
+   * function.
+   *
+   * @default false
+   */
+  simulate?: boolean;
+
+  /**
+   * Target directory that e2e test functions would be placed in.
+   *
+   * If you configure this property and runs `npx nestia e2e` command,
+   * `@nestia/sdk` will analyze your NestJS backend server code, and
+   * generates e2e test functions for every API endpoints.
+   *
+   * If not configured, you can't run `npx nestia e2e` command.
+   */
+  e2e?: string;
+
+  /**
+   * Whether to use propagation mode or not.
+   *
+   * If being configured, interaction functions of the SDK library would
+   * perform the propagation mode. The propagation mode means that never
+   * throwing exception even when status code is not 200 (or 201), but just
+   * returning the {@link IPropagation} typed instance, which can specify its body
+   * type through discriminated union determined by status code.
+   *
+   * @default false
+   */
+  propagate?: boolean;
+
+  /**
+   * Whether to clone DTO structures or not.
+   *
+   * If being configured, all of DTOs used in the backend server would be cloned
+   * into the `structures` directory, and the SDK library would be refer to the
+   * cloned DTOs instead of the original.
+   *
+   * @default false
+   */
+  clone?: boolean;
+
+  /**
+   * Whether to wrap DTO by primitive type.
+   *
+   * If you don't configure this property as `false`, all of DTOs in the
+   * SDK library would be automatically wrapped by {@link Primitive} type.
+   *
+   * For refenrece, if a DTO type be capsuled by the {@link Primitive} type,
+   * all of methods in the DTO type would be automatically erased. Also, if
+   * the DTO has a `toJSON()` method, the DTO type would be automatically
+   * converted to return type of the `toJSON()` method.
+   *
+   * @default true
+   */
+  primitive?: boolean;
+
+  /**
+   * Whether to assert parameter types or not.
+   *
+   * If you configure this property to be `true`, all of the function
+   * parameters of SDK library would be checked through
+   * [`typia.assert<T>()` function](https://typia.io/docs/validators/assert/).
+   *
+   * This option would make your SDK library compilation time a little bit slower,
+   * but would enahcne the type safety even in the runtime level.
+   *
+   * @default false
+   */
+  assert?: boolean;
+
+  /**
+   * Whether to optimize JSON string conversion 10x faster or not.
+   *
+   * If you configure this property to be `true`, the SDK library would utilize the
+   * [`typia.assertStringify<T>() function`](https://github.com/samchon/typia#enhanced-json)
+   * to boost up JSON serialization speed and ensure type safety.
+   *
+   * This option would make your SDK library compilation time a little bit slower,
+   * but would enhance JSON serialization speed 10x faster. Also, it can ensure type
+   * safety even in the runtime level.
+   *
+   * @default false
+   */
+  json?: boolean;
+}
+export namespace INestiaConfig {
+  /**
+   * List of files or directories to include or exclude to specifying the NestJS
+   * controllers.
+   */
+  export interface IInput {
+    /**
+     * List of files or directories containing the NestJS controller classes.
+     */
+    include: string[];
+
+    /**
+     * List of files or directories to be excluded.
+     */
+    exclude?: string[];
+  }
+
+  /**
+   * Building `swagger.json` is also possible.
+   */
+  export interface ISwaggerConfig {
+    /**
+     * Output path of the `swagger.json`.
+     *
+     * If you've configured only directory, the file name would be the `swagger.json`.
+     * Otherwise you've configured the full path with file name and extension, the
+     * `swagger.json` file would be renamed to it.
+     */
+    output: string;
+
+    /**
+     * OpenAPI version.
+     *
+     * If you configure this property to be `2.0` or `3.0`, the newly generated
+     * `swagger.json` file would follow the specified OpenAPI version. The newly
+     * generated `swagger.json` file would be downgraded from the OpenAPI v3.1
+     * specification by {@link OpenApi.downgrade} method.
+     *
+     * @default 3.1
+     */
+    openapi?: "2.0" | "3.0" | "3.1";
+
+    /**
+     * API information.
+     *
+     * If omitted, `package.json` content would be used instead.
+     */
+    info?: Partial<OpenApi.IDocument.IInfo>;
+
+    /**
+     * List of server addresses.
+     */
+    servers?: OpenApi.IServer[];
+
+    /**
+     * Security schemes.
+     *
+     * When generating `swagger.json` file through `nestia`, if your controllers or
+     * theirs methods have a security key which is not enrolled in here property,
+     * it would be an error.
+     */
+    security?: Record<string, OpenApi.ISecurityScheme>;
+
+    /**
+     * List of tag names with description.
+     *
+     * It is possible to omit this property or skip some tag name even if
+     * the tag name is used in the API routes. In that case, the tag name
+     * would be used without description.
+     *
+     * Of course, if you've written a comment like `@tag {name} {description}`,
+     * you can entirely replace this property specification.
+     */
+    tags?: OpenApi.IDocument.ITag[];
+
+    /**
+     * Decompose query DTO.
+     *
+     * If you configure this property to be `true`, the query DTO would be decomposed
+     * into individual query parameters per each property. Otherwise you set it to be
+     * `false`, the query DTO would be one object type which contains all of query
+     * parameters.
+     *
+     * @default false
+     */
+    decompose?: boolean;
+
+    /**
+     * Operation ID generator.
+     *
+     * @param props Properties of the API endpoint.
+     * @returns Operation ID.
+     */
+    operationId?(props: {
+      class: string;
+      function: string;
+      method: "HEAD" | "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+      path: string;
+    }): string;
+  }
+}
+```
+  </Tabs.Tab>
+</Tabs>
+
+Make `nestia.config.ts` file in the root scope of your NestJS backend server, and configure like above. 
+
+You have to configure two things, property `input` and `output`. Write a callback function mounting an NestJS application instance with your module specification to the `input` property, and write destination directory path to the `output` property.
+
+After that, just run `npx nestia sdk` command, then SDK library would be generated.
+
+
+
+
+### Demonstration
 <Tabs items={["Main Program", "SDK Library"]}>
   <Tabs.Tab>
 ```typescript filename="client/src/main.ts" showLineNumbers copy
-import api from "@ORGANIZATION/PROJECT-api";
+import { IAgenticaRpcListener } from "@agentica/rpc";
+import api, { IConnection } from "@ORGANIZATION/PROJECT-api";
 
 const { connector, driver } = await api.functional.chat.start(
   {
     host: "http://localhost:30001",
-  },
+  } satisfies IConnection,
   {
     text: async (evt) => {
-    console.log(evt.role, evt.text);
+      console.log(evt.role, evt.text);
     },
     select: async (evt) => {
       console.log("selector", evt.selection);
@@ -147,7 +456,7 @@ const { connector, driver } = await api.functional.chat.start(
     describe: async (evt) => {
       console.log("describer", evt.text);
     },
-  },
+  } satisfies IAgenticaRpcListener,
 );
 
 await driver.conversate("Hello, what can you do?");
@@ -206,3 +515,7 @@ export namespace start {
 ```
   </Tabs.Tab>
 </Tabs>
+
+Here is the demonstration of SDK library generation and its usage.
+
+As you can see, client application developers can interact with the WebSocket server of the AI chatbot, type safely and conveniently, just by importing and calling the SDK library.
