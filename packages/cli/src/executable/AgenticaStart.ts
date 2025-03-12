@@ -163,10 +163,7 @@ export namespace AgenticaStart {
       },
     ] satisfies (QuestionCollection | null)[];
 
-    return questions.filter(
-      (question): question is Exclude<typeof question, null> =>
-        question !== null,
-    );
+    return questions.filter((question) => question !== null);
   };
 
   /**
