@@ -70,19 +70,10 @@ export namespace AgenticaStart {
         openAIKey,
         services,
       });
-    } else if (projectType === "nodejs") {
+    } else {
       await clone(projectType, projectName);
 
-      await AgenticaStartOption.Project.execute("nodejs")({
-        projectName,
-        projectPath,
-        openAIKey,
-        services,
-      });
-    } else if (projectType === "nestjs") {
-      await clone(projectType, projectName);
-
-      await AgenticaStartOption.Project.execute("nestjs")({
+      await AgenticaStartOption.Project.execute(projectType)({
         projectName,
         projectPath,
         openAIKey,
@@ -204,7 +195,7 @@ namespace AgenticaStartOption {
         case "nestjs":
           return nestjs;
         default:
-          throw new Error(`Invalid project type: ${option}`);
+          throw new Error(`Not supported project type: ${option}`);
       }
     };
 
