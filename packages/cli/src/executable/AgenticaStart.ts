@@ -238,39 +238,30 @@ namespace AgenticaStartOption {
 
       // Modify index.ts: replace import and controller code
       const indexFilePath = path.join(input.projectPath, "src/index.ts");
-      let indexFileContent = await fs.readFile(indexFilePath, "utf-8");
-
-      if (input.services.length !== 0) {
-        // Remove BbsArticleService import and controllers code
-        indexFileContent = indexFileContent.replace(
-          /import { BbsArticleService }.*;\n/g,
-          "",
-        );
-
-        indexFileContent = indexFileContent.replace(
-          /controllers:\s*\[[\s\S]*?\],\n/,
-          "controllers: [/// INSERT CONTROLLER HERE],\n",
-        );
-      }
+      const indexFileContent = await fs
+        .readFile(indexFilePath, "utf-8")
+        .then((content) => {
+          if (input.services.length !== 0) {
+            return content
+              .replace(/import { BbsArticleService }.*;\n/g, "")
+              .replace(
+                /controllers:\s*\[[\s\S]*?\],\n/,
+                "controllers: [/// INSERT CONTROLLER HERE],\n",
+              );
+          }
+          return content;
+        });
 
       // Insert importCode and connectorCode
-      indexFileContent = indexFileContent.replace(
-        "/// INSERT IMPORT HERE",
-        importCode,
-      );
-      indexFileContent = indexFileContent.replace(
-        "/// INSERT CONTROLLER HERE",
-        connectorCode,
-      );
+      const updatedFileContent = indexFileContent
+        .replace("/// INSERT IMPORT HERE", importCode)
+        .replace("/// INSERT CONTROLLER HERE", connectorCode);
 
-      const formattedIndexFileContent = await prettier.format(
-        indexFileContent,
-        {
-          parser: "typescript",
-        },
-      );
+      const formattedFileContent = await prettier.format(updatedFileContent, {
+        parser: "typescript",
+      });
 
-      await fs.writeFile(indexFilePath, formattedIndexFileContent);
+      await fs.writeFile(indexFilePath, formattedFileContent);
 
       console.log("✅ Agentica code created");
 
