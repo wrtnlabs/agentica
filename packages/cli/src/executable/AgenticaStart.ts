@@ -70,10 +70,19 @@ export namespace AgenticaStart {
         openAIKey,
         services,
       });
-    } else {
+    } else if (projectType === "nodejs") {
       await clone(projectType, projectName);
 
-      await AgenticaStartOption.Project.others({
+      await AgenticaStartOption.Project.nodejs({
+        projectName,
+        projectPath,
+        openAIKey,
+        services,
+      });
+    } else if (projectType === "nestjs") {
+      await clone(projectType, projectName);
+
+      await AgenticaStartOption.Project.nestjs({
         projectName,
         projectPath,
         openAIKey,
@@ -225,13 +234,14 @@ namespace AgenticaStartOption {
       console.log("✅ .env created");
     };
 
-    export const others = async (
+    export const nodejs = async (
       input: IAgenticaStartOption.IProject,
     ): Promise<void> => {
       // Create Agentica code
       const importCode = Connector.create("import")({
         services: input.services,
       });
+
       const connectorCode = Connector.create("connector")({
         services: input.services,
       });
@@ -258,6 +268,45 @@ namespace AgenticaStartOption {
         .replace("/// INSERT CONTROLLER HERE", connectorCode);
 
       const formattedFileContent = await prettier.format(updatedFileContent, {
+        parser: "typescript",
+      });
+
+      await fs.writeFile(indexFilePath, formattedFileContent);
+
+      console.log("✅ Agentica code created");
+
+      // Add env to .env.local
+      const envContent = `\nOPENAI_API_KEY=${input.openAIKey}\n`;
+      await fs.appendFile(
+        path.join(input.projectPath, ".env.local"),
+        envContent,
+      );
+      console.log("✅ .env.local updated");
+    };
+
+    export const nestjs = async (
+      input: IAgenticaStartOption.IProject,
+    ): Promise<void> => {
+      // Create Agentica code
+      const importCode = Connector.create("import")({
+        services: input.services,
+      });
+      const connectorCode = Connector.create("connector")({
+        services: input.services,
+      });
+
+      // Modify ChatController.ts: replace import and controller code
+      const indexFilePath = path.join(
+        input.projectPath,
+        "src/controllers/chat/ChatController.ts",
+      );
+
+      // Insert importCode and connectorCode
+      const indexFileContent = (await fs.readFile(indexFilePath, "utf-8"))
+        .replace("/// INSERT IMPORT HERE", importCode)
+        .replace("/// INSERT CONTROLLER HERE", connectorCode);
+
+      const formattedFileContent = await prettier.format(indexFileContent, {
         parser: "typescript",
       });
 
