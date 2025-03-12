@@ -28,7 +28,7 @@ export class AgenticaDescribePrompt<
   public toJSON(): IAgenticaPromptJson.IDescribe {
     return {
       type: this.type,
-      executions: this.executes.map((e) => e.toJSON()),
+      executes: this.executes.map((e) => e.toJSON()),
       text: this.text,
     };
   }

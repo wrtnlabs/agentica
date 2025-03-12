@@ -39,5 +39,6 @@ export * from "./events/AgenticaSelectEvent";
 export * from "./events/AgenticaTextEvent";
 
 // FACADE CLASS
-export * from "./functional/createHttpLlmApplication";
+export * from "./functional/assertHttpLlmApplication";
+export * from "./functional/validateHttpLlmApplication";
 export * from "./Agentica";
