@@ -3,15 +3,27 @@ import chalk from "chalk";
 import { Command } from "commander";
 
 import { AgenticaStart } from "./executable/AgenticaStart";
+import { IAgenticaStart } from "./structures/IAgenticaStart";
 
 async function main() {
   const program = new Command();
 
   program
-    .command("start <project>")
+    .command("start <directory>")
     .description("Start a new project")
-    .action(async (project: string) => {
-      AgenticaStart.execute({ projectName: project });
+    .option(
+      "-p, --project [nodejs|nestjs|react|standalone]",
+      "The project type",
+    )
+    .action(async (directory: string, options: IAgenticaStart.IOptions) => {
+      if ((options.project as any) === true) {
+        console.error(
+          `\n❌ The value of ${chalk.redBright("--project")} is required`,
+        );
+        return;
+      }
+
+      AgenticaStart.execute({ projectName: directory, options });
     });
 
   console.log("--------------------------------");

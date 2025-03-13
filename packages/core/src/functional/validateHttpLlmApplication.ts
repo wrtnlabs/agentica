@@ -1,6 +1,7 @@
 import {
   HttpLlm,
   IHttpLlmApplication,
+  ILlmSchema,
   OpenApi,
   OpenApiV3,
   OpenApiV3_1,
@@ -9,27 +10,29 @@ import {
 import typia, { IValidation } from "typia";
 
 /**
- * Create an HTTP LLM application instance.
- * 
+ * Create an HTTP LLM application instance with type validation.
+ *
  * Create an {@link IHttpLlmApplication} instance which represents
- * the LLM (Large Language Model) function calling application schema 
+ * the LLM (Large Language Model) function calling application schema
  * from the given Swagger/OpenAPI document and the target LLM model.
- * 
- * By the way, even though this `createHttpLlmApplication` function
+ *
+ * By the way, even though this `validateHttpLlmApplication` function
  * supports every version of Swagger/OpenAPI specification, there can
  * be a type error in the given document. In that case, the function
  * will return {@link IValidation.IFailure} instance with detailed
  * type error tracing information.
- * 
+ *
  * @param props Properties to create the HTTP LLM application instance
  * @returns Validation result of the HTTP LLM application composition
  * @author Samchon
  */
-export const createHttpLlmApplication = (props: {
+export const validateHttpLlmApplication = <
+  Model extends ILlmSchema.Model,
+>(props: {
   /**
    * Target LLM model.
    */
-  model: "chatgpt";
+  model: Model;
 
   /**
    * Swagger/OpenAPI document.
@@ -43,8 +46,8 @@ export const createHttpLlmApplication = (props: {
   /**
    * Options for the LLM function calling schema composition.
    */
-  options?: Partial<IHttpLlmApplication.IOptions<"chatgpt">>;
-}): IValidation<IHttpLlmApplication<"chatgpt">> => {
+  options?: Partial<IHttpLlmApplication.IOptions<Model>>;
+}): IValidation<IHttpLlmApplication<Model>> => {
   const inspect: IValidation<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument

@@ -96,7 +96,7 @@ export namespace IAgenticaPromptJson {
      *
      * This prompt describes the return value of them.
      */
-    executions: IExecute[];
+    executes: IExecute[];
 
     /**
      * Description text.

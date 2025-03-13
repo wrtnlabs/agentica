@@ -25,7 +25,7 @@ yarn add @agentica/core @samchon/openapi
   </Tabs.Tab>
 </Tabs>
 
-You can start WebSocket client Agentic AI application` `by installing `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages. `tgrid` is a TypeScript based RPC (Remote Procedure Call) framework supporting WebSocket protocol, and `@agentica/rpc` is an wrapper module of [`@agentica/core`](/docs/core) following the WebSocket RPC.
+You can start WebSocket client Agentic AI application by installing `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages. `tgrid` is a TypeScript based RPC (Remote Procedure Call) framework supporting WebSocket protocol, and `@agentica/rpc` is an wrapper module of [`@agentica/core`](/docs/core) following the WebSocket RPC.
 
 Also, if you want to develop advanced features not only handling text contents but also manging LLM function calling schemas like [#Arguments Hooking](#arguments-hooking) case, you need to setup `@agentica/core` and [`@samchon/openapi`](https://samchon.github.io/openapi) packages too. `@agentica/core` contains detailed event types, and `@samchon/openapi` provides LLM function calling schemas.
 
@@ -479,5 +479,5 @@ When providing `IAgenticaRpcListener` instance to the server, if you construct t
 
 For example, if the WebSocket server has defined a rule that file arguments must be composed by client side by the file uploading window, you can construct the `call` function to return the new arguments combined with the file uploaded assets.
 
-Below is the example utilizing the `call` function for such case.
+Above is the example utilizing the `call` function for such case.
 

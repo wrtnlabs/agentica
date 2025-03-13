@@ -59,9 +59,8 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
 ### 📖 Features
 - **📚 Core Library**
   - [Agentic AI](https://wrtnlabs.io/agentica/docs/core)
-  - [TypeScript Class Chatbot](https://wrtnlabs.io/agentica/docs/core/class)
-  - [Swagger/OpenApi Chatbot](https://wrtnlabs.io/agentica/docs/core/swagger)
-  - [Configurations](https://wrtnlabs.io/agentica/docs/core/configurations)
+  - [Facade Controller](https://wrtnlabs.io/agentica/docs/core/facade)
+  - [Configurations](https://wrtnlabs.io/agentica/docs/core/config)
   - [Event Handling](https://wrtnlabs.io/agentica/docs/core/event)
   - [Prompt Histories](https://wrtnlabs.io/agentica/docs/core/history)
 - **📡 WebSocket Protocol**

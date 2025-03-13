@@ -6,7 +6,7 @@ import { Tabs } from 'nextra/components'
 ## `@agentica/rpc`
 RPC module of Agentica for WebSocket Communication.
 
-[`@agentica/core`](/docs/core) is the simplest Agentic AI library specialized in **LLM Function Calling**, and `@agentica/rpc` is an RPC (Remote Procedure Call) wrapper module of it. If you combine the RPC wrapper module with [`TGrid`](https://github.com/samchon/tgrid), you can develop the WebSocket AI Chatbot.
+[`@agentica/core`](/docs/core) is the simplest Agentic AI library specialized in **LLM Function Calling**, and `@agentica/rpc` is an RPC (Remote Procedure Call) wrapper module of it. If you combine the RPC wrapper module with [`TGrid`](https://tgrid.com), you can develop the WebSocket AI Chatbot.
 
 And if you are considering to develop AI chatbot application development, WebSocket protocol is essentially required. Chatting application is basically a two-way communication. AI chatbot is also a two-way chat between an user and an assistant, based on events. Therefore, it cannot be a one-way communication HTTP Restful API, and a two-way protocol such as WebSocket is required.
 
@@ -101,28 +101,110 @@ export class ChatController {
 
 
 
+
 ## Setup
-### NestJS Server
-```bash filename="Terminal" copy
-npm install @agentica/core @samchon/openapi
-npm install @nestjs/common @nestjs/core @nestjs/platform-express
-npm install @agentica/rpc tgrid
-
-npm install -D nestia
-npx nestia setup
-```
-
 ### NodeJS Server
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
 ```bash filename="Terminal" copy
 npm install @agentica/core @samchon/openapi typia
 npm install @agentica/rpc tgrid
 npx typia setup
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+pnpm install @agentica/core @samchon/openapi typia
+pnpm install @agentica/rpc tgrid
+pnpm typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+# YARN BERRY IS NOT SUPPORTED
+yarn add @agentica/core @samchon/openapi typia
+yarn add @agentica/rpc tgrid
+yarn typia setup
+```
+  </Tabs.Tab>
+</Tabs>
+
+To develop NodeJS WebSocket server of AI chatbot, you need to install these packages.
+
+At first, you have to setup [`@agentica/core`](/docs/core), [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://typia.io) basically to construct agent. `@samchon/openapi` is a library defining LLM function calling schemas, and their converters from the Swagger/OpenAPI documents. And `typia` is a framework which can compose LLM function calling schemas from a TypeScript class type by compiler skills.
+
+At next, setup `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages. `tgrid` is a TypeScript based RPC (Remote Procedure Call) framework supporting WebSocket protocol, and `@agentica/rpc` is an wrapper module of `@agentica/core` following the WebSocket RPC.
+
+At last, run `npx typia setup` command. It's because `typia` is a transformer library analyzing TypeScript source code in the compilation level, and it needs additional setup process transforming TypeScript compiler via [`ts-patch`](https://github.com/nonara/ts-patch).
+
+### NestJS Server
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+npm install @nestjs/common @nestjs/core @nestjs/platform-express
+npm install @agentica/core @samchon/openapi
+npm install @agentica/rpc tgrid
+
+npm install -D nestia
+npx nestia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+pnpm install @nestjs/common @nestjs/core @nestjs/platform-express
+pnpm install @agentica/core @samchon/openapi
+pnpm install @agentica/rpc tgrid
+
+pnpm install -D nestia
+pnpm nestia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+# YARN BERRY IS NOT SUPPORTED
+yarn add @nestjs/common @nestjs/core @nestjs/platform-express
+yarn add @agentica/core @samchon/openapi
+yarn add @agentica/rpc tgrid
+
+yarn add -D nestia
+yarn nestia setup
+```
+  </Tabs.Tab>
+</Tabs>
+
+Install NestJS and `@agentica` packages, and then setup `nestia`.
+
+[`@nestia`](https://nestia.io) is a set of helper libraries for NestJS, enhancing type safety and productivity by combining with [`typia`](https://typia.io) which can compose LLM function calling schemas from a TypeScript class type by compiler skills.
+
+Also, `@nestia` makes NestJS to support the WebSocket protocol, so it is essential.
 
 ### Client Application
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
 ```bash filename="Terminal" copy
 npm install @agentica/rpc tgrid
+npm install @agentica/core @samchon/openapi
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+pnpm install @agentica/core @agentica/rpc tgrid
+pnpm install @agentica/core @samchon/openapi
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+yarn add @agentica/core @agentica/rpc tgrid
+yarn add @agentica/core @samchon/openapi
+```
+  </Tabs.Tab>
+</Tabs>
+
+Just install `@agentica/core`, `@samchon/openapi` packages.
+
+If you want to develop advanced features not only handling text contents but also manging LLM function calling schemas like [#Arguments Hooking](/docs/websocket/client/#arguments-hooking) case, you need to setup `@agentica/core` and [`@samchon/openapi`](https://samchon.github.io/openapi) packages too
+
+As client application does not generate LLM function calling schema, it does not need additional setup process for compiler transformation. 
 
 
 
@@ -163,7 +245,7 @@ Deactivate User
 
 WebSocket protocol with RPC paradigm for AI chatbot.
 
-`@agentica/rpc` supports WebSocket protocol that is utilizing [`TGrid`](https://github.com/samchon/tgrid) and its RPC (Remote Procedure Call) paradigm for easy and type safe development. In the RPC paradigm, client application can call a function of `IAgenticaRpcService` remotely as if it were its own object.
+`@agentica/rpc` supports WebSocket protocol that is utilizing [`TGrid`](https://tgrid.com) and its RPC (Remote Procedure Call) paradigm for easy and type safe development. In the RPC paradigm, client application can call a function of `IAgenticaRpcService` remotely as if it were its own object.
 
 Internally, the RPC has composed with three elements; [`Communicator`](https://tgrid.com/docs/features/components/#communicator), [`Provider`](https://tgrid.com/docs/features/components/#provider) and [`Driver`](https://tgrid.com/docs/features/components/#driver). The first `Communicator` takes a responsibility of (WebSocket) network communication. The next `Provider` means an object providing to the remote system for RPC, and `Driver` is a proxy instance realizing the RPC to the remote provided `Provider` instance.
 
@@ -171,31 +253,80 @@ For example, below client application code is calling `IAgenticaRpcService.conve
 
 <Tabs items={[
   "Client Application",
+  "Server Application",
   <code>IAgenticaRpcService</code>,
   <code>IAgenticaRpcListener</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="client/src/main.ts" showLineNumbers {18-20}
+```typescript filename="client/src/main.ts" showLineNumbers
 import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
 import { Driver, WebSocketConnector } from "tgrid";
 
+interface IAuthorizationHeader {
+  Authorization: string;
+}
+
 const connector: WebSocketConnector<
-  null,
+  IAuthorizationHeader,
   IAgenticaRpcListener<"chatgpt">,
   IAgenticaRpcService<"chatgpt">
-> = new WebSocketConnector(null, {
-  text: async (evt) => {
-    console.log(evt.role, evt.text);
+> = new WebSocketConnector(
+  {
+    Authorization: "Bearer ********",
+  }, 
+  {
+    text: async (evt) => {
+      console.log(evt.role, evt.text);
+    },
+    describe: async (evt) => {
+      console.log("describer", evt.text);
+    },
   },
-  describe: async (evt) => {
-    console.log("describer", evt.text);
-  },
-});
+);
 await connector.connect("ws://localhost:3001");
 
 const driver: Driver<IAgenticaRpcService<"chatgpt">> = 
   connector.getDriver();
 await driver.conversate("Hello, what you can do?");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="server/src/main.ts" showLineNumbers
+import { Agentica } from "@agentica/core";
+import {
+  AgenticaRpcService,
+  IAgenticaRpcListener,
+  IAgenticaRpcService
+} from "@agentica/rpc";
+import { Driver, WebSocketServer } from "tgrid";
+
+import { authorizeToken } from "./internal/authorizeToken";
+
+const server: WebSocketServer<
+  IAuthorizationHeader,
+  IAgenticaRpcService<"chatgpt">,
+  IAgenticaRpcListener
+> = new WebSocketServer();
+await server.open(3_001, async (acceptor) => {
+  try {
+    await authorizeToken(acceptor.header);
+  } catch (error) {
+    await acceptor.reject(1008, (error as Error).message);
+    return;
+  }
+  const agent: Agentica<"chatgpt"> = new Agentica({ ... });
+  const listener: Driver<IAgenticaRpcListener> = acceptor.getDriver();
+  const service: AgenticaRpcService<"chatgpt"> = 
+    new AgenticaRpcService({
+      agent,
+      listener,
+    });
+  await acceptor.accept(service);
+});
+
+interface IAuthorizationHeader {
+  Authorization: string;
+}
 ```
   </Tabs.Tab>
   <Tabs.Tab>
@@ -362,3 +493,26 @@ export interface IAgenticaRpcListener<Model extends ILlmSchema.Model> {
 ```
   </Tabs.Tab>
 </Tabs>
+
+### Header
+Header value delivered from client to server after the connection.
+
+In [`TGrid`](https://tgrid.com)'s RPC (Remote Procedure Call) paradigm, header means a value that is delivered after the connection from a client to the server. And header is used in most cases to authenticate the connecting client.
+
+In the above example project, `IAuthorizationHeader` is the header type, and is used by server to determine whether to accept the client's connection or not. If the client's header is not valid, the server would reject the connection.
+
+### Provider
+Functions provided from remote system.
+
+Provider is an object instance containing some functions provided for the remote system for RPC (Remote Procedure Call). In many cases, the provide becomes a class instance containing some methods to be called, but it is okay that composing the provider by just an interface type.
+
+Also, the opposite remote system will call provider's functions by the [`Driver<Remote>`](#driver) instance. In the above example, client application is providing `IAgenticaRpcListener` to the server, and server is providing `AgenticaRpcService` (`IAgenticaRpcService`) to the client.
+
+### Driver
+Driver of RPC (Remote Procedure Call).
+
+`Driver` is a proxy instance designed to call functions of the remote system. It has a generic argument `Remote` which means the type of remote system's [Provider](#provider), and you can remotely call the functions of the [Provider](#provider) asynchronously through the `Drive<Remote>` instance.
+
+When you call some function of remote [Provider](#provider) by the `Driver<Listener>` instance, it hooks the function call expression, and delivers the function name and arguments (parameter values) to the remote system through the [Communicator](#communicator). If the remote system succeeded to reply the result of the function call, [Communicator](#communicator) resolves the promise of the function call expression with the result, so that makes `Driver<Remote>` working.
+
+In the above example, client application is calling `IAgenticaRpcService.conversate()` function remotely through the `Driver<IAgenticaRpcService>` typed instance. In that case, `IAgenticaRpcService` is the [Provider](#provider) instance from server to client.
