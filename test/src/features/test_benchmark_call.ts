@@ -1,5 +1,6 @@
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
 import { Agentica, AgenticaOperation } from "@agentica/core";
+import { ChatGptSelectFunctionAgent } from "@agentica/core/src/chatgpt/ChatGptSelectFunctionAgent";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import fs from "fs";
@@ -8,7 +9,7 @@ import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_call = async (): Promise<void | false> => {
+export const test_benchmark_calld = async (): Promise<void | false> => {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
 
   // HANDLESHAKE WITH SHOPPING BACKEND
@@ -54,6 +55,18 @@ export const test_benchmark_call = async (): Promise<void | false> => {
         connection,
       },
     ],
+    config: {
+      executor: {
+        select: async (ctx) => {
+          console.log(ctx.)
+          const startTime = performance.now();
+          const result = await ChatGptSelectFunctionAgent.execute(ctx);
+          const endTime = performance.now();
+          console.log(`select time: ${endTime - startTime}ms`);
+          return result;
+        },
+      },
+    },
   });
 
   // DO BENCHMARK

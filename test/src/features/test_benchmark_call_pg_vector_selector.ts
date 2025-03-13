@@ -9,7 +9,7 @@ import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_call_pg_vector_selector = async (): Promise<
+export const test_benchmark_calls_pg_vector_selector = async (): Promise<
   void | false
 > => {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
@@ -72,7 +72,32 @@ export const test_benchmark_call_pg_vector_selector = async (): Promise<
     ],
     config: {
       executor: {
-        select: selectorExecute,
+        select: async (ctx) => {
+          const startTime = performance.now();
+          return await selectorExecute(ctx)
+            .catch((e) => {
+              if (e instanceof TypeError) {
+                console.error(
+                  JSON.stringify(
+                    (e as unknown as { cause: { errors: string[] } }).cause
+                      .errors,
+                    null,
+                    2,
+                  ),
+                );
+                console.error(e);
+                throw e;
+              }
+
+              console.error(e);
+              throw e;
+            })
+            .then((v) => {
+              const endTime = performance.now();
+              console.log(`select time: ${endTime - startTime}ms`);
+              return v;
+            });
+        },
       },
     },
   });
