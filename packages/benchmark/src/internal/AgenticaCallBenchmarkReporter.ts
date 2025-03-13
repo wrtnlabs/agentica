@@ -135,7 +135,17 @@ export namespace AgenticaCallBenchmarkReporter {
             `  - Call: ${event.call ? "✅" : "❌"}`,
           ]
         : []),
-      `  - Token Usage: ${event.usage.toLocaleString()}`,
+      `  - Token Usage:`,
+      `    - Total: ${JSON.stringify(event.usage.aggregate.total)}`,
+      `    - Input`,
+      `      - Total: ${event.usage.aggregate.input.total}`,
+      `      - Cached: ${event.usage.aggregate.input.cached}`,
+      `    - Output:`,
+      `      - Total: ${event.usage.aggregate.output.total}`,
+      `      - Accepted Prediction: ${event.usage.aggregate.output.accepted_prediction}`,
+      `      - Reasoning: ${event.usage.aggregate.output.reasoning}`,
+      `      - Rejected Prediction: ${event.usage.aggregate.output.rejected_prediction}`,
+
       "",
       "## Scenario",
       "### User Prompt",
