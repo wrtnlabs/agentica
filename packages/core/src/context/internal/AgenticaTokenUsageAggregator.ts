@@ -27,7 +27,7 @@ export namespace AgenticaTokenUsageAggregator {
       props.completionUsage.prompt_tokens_details?.cached_tokens ?? 0;
 
     // COMPLETION
-    component.output.total += props.completionUsage.total_tokens;
+    component.output.total += props.completionUsage.completion_tokens;
     component.output.accepted_prediction +=
       props.completionUsage.completion_tokens_details
         ?.accepted_prediction_tokens ?? 0;
