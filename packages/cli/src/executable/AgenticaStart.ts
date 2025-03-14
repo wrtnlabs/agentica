@@ -215,7 +215,7 @@ namespace AgenticaStarter {
         }),
     },
     react: {
-      title: `React ${chalk.blueBright("Client Application")} (Current not supported it)`,
+      title: `React ${chalk.blueBright("Client Application")} (Currently not supported)`,
       key: "react",
       runner: undefined,
     },
