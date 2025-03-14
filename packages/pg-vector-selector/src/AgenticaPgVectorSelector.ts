@@ -234,46 +234,43 @@ export namespace AgenticaPgVectorSelector {
         .then((v) => StreamUtil.readAll(v))
         .then(ChatGptCompletionMessageUtil.merge);
 
-      selectCompletion.choices.forEach((v) => {
-        if (v.message.tool_calls) {
-          for (const tc of v.message.tool_calls) {
-            const collection = new AgenticaSelectPrompt<SchemaModel>({
-              id: tc.id,
-              selections: [],
-            });
-            if (tc.function.name !== "execute_function") {
-              continue;
-            }
+      selectCompletion.choices
+        .filter((v) => !!v.message.tool_calls)
+        .forEach((v) => {
+          v.message
+            .tool_calls!.filter((tc) => tc.function.name === "execute_function")
+            .forEach((tc) => {
+              const collection = new AgenticaSelectPrompt<SchemaModel>({
+                id: tc.id,
+                selections: [],
+              });
+              const arg = JSON.parse(tc.function.arguments) as {
+                function_name_list: {
+                  reason: string;
+                  function_name: string;
+                }[];
+              };
 
-            const arg = JSON.parse(tc.function.arguments) as {
-              function_name_list: {
-                reason: string;
-                function_name: string;
-              }[];
-            };
+              arg.function_name_list.forEach((fn) => {
+                const operation = ctx.operations.flat.get(fn.function_name);
+                if (operation === undefined) {
+                  return;
+                }
+                const selection: AgenticaOperationSelection<SchemaModel> =
+                  new AgenticaOperationSelection({
+                    reason: fn.reason,
+                    operation,
+                  });
+                ctx.stack.push(selection);
+                void ctx.dispatch(new AgenticaSelectEvent({ selection }));
+                collection.selections.push(selection);
+              });
 
-            for (const fn of arg.function_name_list) {
-              const operation = ctx.operations.flat.get(fn.function_name);
-              if (operation === undefined) {
-                continue;
+              if (collection.selections.length !== 0) {
+                prompts.push(collection);
               }
-              const selection: AgenticaOperationSelection<SchemaModel> =
-                new AgenticaOperationSelection({
-                  reason: fn.reason,
-                  operation,
-                });
-              ctx.stack.push(selection);
-              void ctx.dispatch(new AgenticaSelectEvent({ selection }));
-
-              collection.selections.push(selection);
-            }
-
-            if (collection.selections.length !== 0) {
-              prompts.push(collection);
-            }
-          }
-        }
-      });
+            });
+        });
 
       return prompts;
     };
