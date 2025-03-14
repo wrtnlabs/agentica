@@ -2,9 +2,8 @@ const fs = require("fs");
 
 const loadPackages = () => {
   const packages = `${__dirname}/../../packages`;
-  const directory = fs
-    .readdirSync(packages)
-    .filter((bucket) => bucket !== "cli");
+  const directory = fs.readdirSync(packages);
+
   return directory
     .filter((bucket) => {
       const stat = fs.lstatSync(`${packages}/${bucket}`);
