@@ -238,6 +238,9 @@ export class Agentica<Model extends ILlmSchema.Model> {
             ...body,
             model: this.props.vendor.model,
             stream: true,
+            stream_options: {
+              include_usage: true,
+            },
           },
           options: this.props.vendor.options,
         });
