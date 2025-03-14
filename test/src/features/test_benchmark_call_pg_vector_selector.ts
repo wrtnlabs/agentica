@@ -9,7 +9,7 @@ import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_call_pg_vector_selector = async (): Promise<
+export const test_benchmark_calls_pg_vector_selector = async (): Promise<
   void | false
 > => {
   if (!TestGlobal.env.CHATGPT_API_KEY) return false;
@@ -49,33 +49,40 @@ export const test_benchmark_call_pg_vector_selector = async (): Promise<
       host: `http://localhost:${TestGlobal.connectorHivePort}`,
     },
   });
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
-    vendor: {
-      model: "gpt-4o-mini",
-      api: new OpenAI({
-        apiKey: process.env.CHATGPT_API_KEY,
-      }),
-    },
-    controllers: [
-      {
-        protocol: "http",
-        name: "shopping",
-        application: HttpLlm.application({
-          model: "chatgpt",
-          document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
-          ).then((res) => res.json()),
+  const newAgentica = async () =>
+    new Agentica({
+      model: "chatgpt",
+      vendor: {
+        model: "gpt-4o-mini",
+        api: new OpenAI({
+          apiKey: process.env.CHATGPT_API_KEY,
         }),
-        connection,
       },
-    ],
-    config: {
-      executor: {
-        select: selectorExecute,
+      controllers: [
+        {
+          protocol: "http",
+          name: "shopping",
+          application: HttpLlm.application({
+            model: "chatgpt",
+            document: await fetch(
+              "https://shopping-be.wrtn.ai/editor/swagger.json",
+            ).then((res) => res.json()),
+          }),
+          connection,
+        },
+      ],
+      config: {
+        executor: {
+          select: selectorExecute,
+        },
       },
-    },
-  });
+    });
+
+  const warming = async () => {
+    await newAgentica().then((v) => v.conversate("What can you do?"));
+  };
+  await warming();
+  const agent: Agentica<"chatgpt"> = await newAgentica();
 
   // DO BENCHMARK
   const find = (
