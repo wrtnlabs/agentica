@@ -4,7 +4,7 @@
   "description": "Agentica Website",
   "scripts": {
     "dev": "next",
-    "build": "node build/typedoc && node build/snippet && next build && node build/playground",
+    "build": "node build/typedoc && node build/snippet && node build/playground && next build",
     "start": "next start"
   },
   "repository": {

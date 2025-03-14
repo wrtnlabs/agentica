@@ -1,29 +1,28 @@
 ```typescript filename="@agentica/core/AgenticaOperationSelection" showLineNumbers
-import { ILlmSchema } from "@samchon/openapi";
+/**
+ * Nestia agent operation selection.
+ *
+ * `AgenticaOperationSelection` is a type represents an operation
+ * which has been selected by the A.I. chatbot of {@link Agentica}
+ * class for the LLM (Large Language Model) function calling with
+ * detailed {@link reason} of the selection (or cancellation).
+ *
+ * @author Samchon
+ */
+export interface AgenticaOperationSelection<Model extends ILlmSchema.Model> {
+  /**
+   * Target operation.
+   *
+   * Operation that has been selected to prepare LLM function calling,
+   * or canceled due to no more required.
+   */
+  operation: AgenticaOperation<Model>;
 
-import { IAgenticaOperationSelectionJson } from "../json/IAgenticaOperationSelectionJson";
-import { AgenticaOperation } from "./AgenticaOperation";
+  /**
+   * The reason of the function selection or cancellation.
+   */
+  reason: string;
 
-export class AgenticaOperationSelection<Model extends ILlmSchema.Model> {
-  public readonly operation: AgenticaOperation<Model>;
-  public readonly reason: string;
-
-  public constructor(props: AgenticaOperationSelection.IProps<Model>) {
-    this.operation = props.operation;
-    this.reason = props.reason;
-  }
-
-  public toJSON(): IAgenticaOperationSelectionJson {
-    return {
-      operation: this.operation.toJSON(),
-      reason: this.reason,
-    };
-  }
-}
-export namespace AgenticaOperationSelection {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    operation: AgenticaOperation<Model>;
-    reason: string;
-  }
+  toJSON(): IAgenticaOperationSelectionJson;
 }
 ```

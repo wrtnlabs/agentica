@@ -1,11 +1,6 @@
 ```typescript filename="@agentica/core/AgenticaOperation" showLineNumbers
-import { IHttpLlmFunction, ILlmFunction, ILlmSchema } from "@samchon/openapi";
-
-import { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
-import { IAgenticaController } from "../structures/IAgenticaController";
-
 /**
- * Operation information in the Agentica Agent.
+ * Operation information in the Nestia Agent.
  *
  * `AgenticaOperation` is a type represents an operation that would
  * be selected by the A.I. chatbot of {@link Agentica} class to
@@ -20,25 +15,28 @@ import { IAgenticaController } from "../structures/IAgenticaController";
  * @author Samchon
  */
 export type AgenticaOperation<Model extends ILlmSchema.Model> =
-  | AgenticaOperation.Class<Model>
-  | AgenticaOperation.Http<Model>;
+  | AgenticaOperation.IHttp<Model>
+  | AgenticaOperation.IClass<Model>;
 export namespace AgenticaOperation {
-  export type Class<Model extends ILlmSchema.Model> = Base<
-    "class",
-    IAgenticaController.IClass<Model>,
-    ILlmFunction<Model>
-  >;
-  export type Http<Model extends ILlmSchema.Model> = Base<
+  /**
+   * HTTP API operation.
+   */
+  export type IHttp<Model extends ILlmSchema.Model> = IBase<
     "http",
     IAgenticaController.IHttp<Model>,
     IHttpLlmFunction<Model>
   >;
 
-  interface Base<
-    Protocol extends "http" | "class",
-    Controller extends object,
-    Function extends object,
-  > {
+  /**
+   * TypeScript class operation.
+   */
+  export type IClass<Model extends ILlmSchema.Model> = IBase<
+    "class",
+    IAgenticaController.IClass<Model>,
+    ILlmFunction<Model>
+  >;
+
+  interface IBase<Protocol, Application, Function> {
     /**
      * Protocol discriminator.
      */
@@ -47,7 +45,7 @@ export namespace AgenticaOperation {
     /**
      * Belonged controller of the target function.
      */
-    controller: Controller;
+    controller: Application;
 
     /**
      * Target function to call.
@@ -59,9 +57,6 @@ export namespace AgenticaOperation {
      */
     name: string;
 
-    /**
-     * Convert to primitive JSON object.
-     */
     toJSON(): IAgenticaOperationJson;
   }
 }

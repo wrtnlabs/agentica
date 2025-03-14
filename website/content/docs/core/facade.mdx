@@ -20,23 +20,21 @@ import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
   <code>IAgenticaController</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {36-38}
+```typescript filename="src/main.ts" showLineNumbers
 import { Agentica, AgenticaEvent, AgenticaPrompt } from "@agentica/core";
 import OpenAI from "@agentica/openai";
 import { v4 } from "uuid";
 
-const id: string = v4();
 export const main = async (id: string): Promise<void> => {
   // CONSTRUCTION
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
     vendor: {
-      api: new OpenAI({
-        apiKey: "********",
-      }),
+      api: new OpenAI({ apiKey: "********" }),
       model: "gpt-4o-mini",
     },
     controllers: [...],
+    histories: await getPrompts(id),
   });
 
   // EVENT HANDLING
@@ -193,13 +191,13 @@ flowchart
   end
 ```
 
-  - [`IChatGptSchema`](https://samchon.github.io/openapi/api/types/IChatGptSchema-1.html): OpenAI GPT
-  - [`IClaudeSchema`](https://samchon.github.io/openapi/api/types/IClaudeSchema-1.html): Anthropic Claude
-  - [`IGeminiSchema`](https://samchon.github.io/openapi/api/types/IGeminiSchema-1.html): Google Gemini
-  - [`ILlamaSchema`](https://samchon.github.io/openapi/api/types/ILlamaSchema-1.html): Meta Llama
+  - [`IChatGptSchema`](/api/types/_samchon_openapi.IChatGptSchema-1.html): OpenAI GPT
+  - [`IClaudeSchema`](/api/types/_samchon_openapi.IClaudeSchema-1.html): Anthropic Claude
+  - [`IGeminiSchema`](/api/types/_samchon_openapi.IGeminiSchema-1.html): Google Gemini
+  - [`ILlamaSchema`](/api/types/_samchon_openapi.ILlamaSchema-1.html): Meta Llama
 - Midldle layer schemas
-  - [`ILlmSchemaV3`](https://samchon.github.io/openapi/api/types/ILlmSchemaV3-1.html): middle layer based on OpenAPI v3.0 specification
-  - [`ILlmSchemaV3_1`](https://samchon.github.io/openapi/api/types/ILlmSchemaV3_1-1.html): middle layer based on OpenAPI v3.1 specification
+  - [`ILlmSchemaV3`](/api/types/_samchon_openapi.ILlmSchemaV3-1.html): middle layer based on OpenAPI v3.0 specification
+  - [`ILlmSchemaV3_1`](/api/types/_samchon_openapi.ILlmSchemaV3_1-1.html): middle layer based on OpenAPI v3.1 specification
 
 
 
@@ -313,44 +311,21 @@ import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import { OpenApi, HttpLlm } from "@samchon/openapi";
 import typia from "typia";
 
-// CONSTRUCTION
-const agent = new Agentica({
-  model: "chatgpt",
-  vendor: {
-    api: new OpenAI({ apiKey: "*****" }),
-    model: "gpt-4o-mini",
-  },
-  controllers: [...],
-  config: {
-    executor: {
-      select: AgenticaPgVectorSelector.boot<"chatgpt">(
-        'https://your-connector-hive-server.com'
-      ),
+export const main = async (id: string): Promise<void> => {
+  const agent = new Agentica({
+    model: "chatgpt",
+    vendor: {
+      api: new OpenAI({ apiKey: "*****" }),
+      model: "gpt-4o-mini",
     },
-  },
-  histories: 
-    (await loadPromptsFromDatabase()) satisfies IAgenticaPromptJson[],
-});
-
-// EVENT LISTENING
-agent.on("text", async (event) => {
-  console.log(`Conversation from ${event.role}: `);
-  for (const str of event.stream)
-    process.stdout.write(str);
-  process.stdout.write("\n");
-});
-agent.on("describe", async (event) => {
-  console.log("Descriptions of the function calling: ");
-  for (const execute of event.executes)
-    console.log(`  - ${execute.operation.function.name}`);
-  console.log(await event.join());
-});
-
-// CONVERSATION + ARCHIVING
-const prompts: AgenticaPrompt[] = await agent.conversate(
-  "I wanna buy MacBook Pro",
-);
-await archiveToDatabase(prompts.map((p) => p.toJSON()));
+    controllers: [...],
+    histories: (await getHistories(id)) satisfies IAgenticaPromptJson[],
+  });
+  const prompts: AgenticaPrompt[] = await agent.conversate(
+    "I wanna buy MacBook Pro",
+  );
+  await archiveHistories(id, prompts.map((p) => p.toJSON()));
+}
 ```
   </Tabs.Tab>
   <Tabs.Tab>

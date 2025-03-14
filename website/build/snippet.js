@@ -27,8 +27,8 @@ const main = async () => {
     "structures/IAgenticaExecutor",
     "structures/IAgenticaSystemPrompt",
     "context/AgenticaContext",
-    "context/AgenticaOperation",
-    "context/AgenticaOperationSelection",
+    // "context/AgenticaOperation",
+    // "context/AgenticaOperationSelection",
     "json/IAgenticaPromptJson",
   ])
     await snippet({

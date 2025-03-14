@@ -44,6 +44,7 @@ const agent = new Agentica({
     },
     locale: "ko-KR",
     timezone: "Asia/Seoul",
+    retry: 3,
   },
 });
 await agent.conversate("Hello, I want to refund my shoes.");
@@ -55,18 +56,57 @@ await agent.conversate("Hello, I want to refund my shoes.");
   <Tabs.Tab>
     <IAgenticaConfigSnippet />
   </Tabs.Tab>
+  <Tabs.Tab>
+    <IAgenticaExecutorSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IAgenticaSystemPromptSnippet />
+  </Tabs.Tab>
 </Tabs>
 
 
-When creating an `Agentica` instance, you can configure some features by 
+When creating an `Agentica` instance, you can configure the agent following the `IAgenticaConfig` type.
+
+If you configure `IAgenticaConfig.executor` property, you can customize internal agents' orchestration, so that affects to the agent's behavior. For example, if you change the `IAgenticaExecutor.select` property to another function like [PG Vector Selector](/docs/plugins/pg-vector-selector), PG Vector Selector will determine the candidate functions to call, and you can save the LLM token costs a lot.
+
+When you set the `IAgenticaConfig.systemPrompt` property, you can change the default system prompt messages of the internal agents. In the customizable system prompts, there's a common system prompt which can be used in every internal agents, and you can also configure the system prompt for each internal agent.
+
+The `IAgenticaConfig.retry` property is the retry count of the [#Validation Feedback](/docs/concepts/function-calling#validation-feedback). If you set the `retry` property to `3`, the agent will retry the function calling 3 times when the function calling composed invalid typed arguments.
 
 
-## Executor
+
+
+## Orchestration Executor
 <Tabs items={[
   <code>src/main.ts</code>,
   <code>IAgenticaExecutor</code>,
   <code>AgenticaContext</code>,
 ]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {13-18}
+import { Agentica, IAgenticaProps, IAgenticaConfig } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import OpenAI from "openai";
+ 
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    executor: {
+      initialize: null,
+      select: AgenticaPgVectorSelector.boot<"chatgpt">(
+        "https://your-connector-hive-server.com",
+      ),
+    },
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
   <Tabs.Tab>
     <IAgenticaExecutorSnippet />
   </Tabs.Tab>
@@ -84,7 +124,7 @@ Otherwise you configure `IAgenticaExecutor.select` to another function like [PG 
 
 
 
-## System Prompt
+## System Prompts
 <Tabs items={[
   <code>src/main.ts</code>,
   <code>IAgenticaSystemPrompt</code>,
@@ -153,6 +193,11 @@ await agent.conversate("Hello, I want to refund my shoes.");
 
 Retry count of [#Validation Feedback](/docs/concepts/function-calling#validation-feedback).
 
+When LLM (Large Language Model) performs function calling, it tends to composes invalid typed arguments at the first trial when complicate type comes. In the case of Shopping AI Chatbot you've seen at the intro page as demonstration, success rate of the first trial is about 30%.
+
+In that case, `@agentica` is designed to retry the function calling with validation feedback strategy. `@agentica` lists up every type errors and let the agent to correct it at the next trial. If you set the `retry` property to `3`, the agent will retry the function calling 3 times when the function calling composed invalid typed arguments.
+ 
+By the way, if you configure the `retry` property as `0`, the agent will never retry the function calling with validation feedback strategy. This is not recommended due to the low success rate of the first trial makes the agent to be useless. The recommended value is `2` or `3`.
 
 
 

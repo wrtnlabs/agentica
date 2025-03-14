@@ -6,6 +6,12 @@ export type AgenticaEvent =
   | AgenticaEvent.Execute
   | AgenticaEvent.Describe;
 export namespace AgenticaEvent {
+  export interface Text extends Base<"text"> {
+    role: "user" | "assistant"
+    stream: ReadableStream<string>;
+    join(): Promise<string>;
+  }
+  
   export interface Initialize extends Base<"initialize"> {}
   export interface Select<Model extends ILlmSchema.Model> 
     extends Base<"select"> {
@@ -26,12 +32,25 @@ export namespace AgenticaEvent {
   }
   export interface Describe<Model extends ILlmSchema.Model> 
     extends Base<"describe"> {
-    executes: AgenticaExecutePrompt<Model>[];
+    executes: AgenticaPrompt.Execute<Model>[];
+    stream: ReadableStream<string>;
+    join(): Promise<string>;
   }
-  export interface Text extends Base<"text"> {
-    role: "user" | "assistant"
-    text: string;
+
+  export interface Request extends Base<"request"> {
+    source: AgenticaEventSource;
+    body: OpenAI.ChatCompletionCreateParamsStreaming;
+    options?: OpenAI.RequestOptions | undefined;
   }
+  export interface Response extends Base<"response"> {
+    source: AgenticaEventSource;
+    body: OpenAI.ChatCompletionCreateResponse;
+    options?: OpenAI.RequestOptions | undefined;
+    stream: ReadableStream<OpenAI.ChatCompletionChunk>;
+    options?: OpenAI.RequestOptions | undefined;
+    join(): Promise<OpenAI.ChatCompletion>;
+  }
+  
   interface Base<Type extends string> {
     type: Type;
   }
