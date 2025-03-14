@@ -3,7 +3,7 @@ title: Agentica > Guide Documents > Core Library
 ---
 import { Tabs } from "nextra/components";
 
-## Outline
+## `@agentica/core`
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
 `@agentica/core` is an agent library utilizing LLM function calling feature, provided from Swagger/OpenAPI document and TypeScript class functions, enhanced by compiler and validation feedback strategy. 
@@ -456,9 +456,11 @@ When creating an `Agentica` class instance, you have to specify the LLM service 
 
 For example, if you want to use Llama instead of GPT, you can do it like below. Instead, as LLM schema models are different by the vendor, you have to define more property `IAgenticaProps.model` and you also have to make LLM function calling schema following the vendor's specification.
 
-<Tabs items={['OpenAI GPT', 'Meta Llama']} defaultIndex={1}>
+<Tabs 
+  items={['OpenAI GPT', 'Meta Llama']} 
+  defaultIndex={1}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {12-18, 24}
+```typescript filename="src/main.chatgpt.ts" showLineNumbers {12-18, 24}
 import { 
   Agentica,
   IAgenticaController,
@@ -490,7 +492,7 @@ await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {12-19, 23}
+```typescript filename="src/main.llama.ts" showLineNumbers {12-19, 23}
 import { 
   Agentica,
   IAgenticaController,
@@ -995,7 +997,7 @@ This is useful when you want to configure "tone and manner" of the AI chatbot, o
 
 For example, if you are developing a chatbot of counseling, you can guide the agent to use the polite and gentle tone in the `IAgenticaSystemPrompt.common` property.
 
-### Additional Properties
+### Locale and Timezone
 You can configure `locale` and `timezone` properties.
 
 This properties are delivered to the AI agent, so that the AI agent considers the user's locale and timezone. If you configure `ko-KR` to the `locale` property, the AI agent will conversate with the Korean language. 
