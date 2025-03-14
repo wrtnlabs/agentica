@@ -152,7 +152,6 @@ export namespace AgenticaPgVectorSelector {
       ctx: AgenticaContext<SchemaModel>,
     ): Promise<AgenticaPrompt<SchemaModel>[]> => {
       if (!isEmbeddedContext(ctx)) {
-        console.log("embedContext");
         await embedContext(ctx);
       }
 
