@@ -1,9 +1,10 @@
 import {
   AgenticaContext,
   AgenticaOperation,
-  AgenticaOperationCollection,
+  AgenticaOperationSelection,
   AgenticaPrompt,
-  AgenticaTextPrompt,
+  AgenticaSelectEvent,
+  AgenticaSelectPrompt,
 } from "@agentica/core";
 import { ChatGptCompletionMessageUtil } from "@agentica/core/src/chatgpt/ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "@agentica/core/src/chatgpt/ChatGptHistoryDecoder";
@@ -13,21 +14,21 @@ import { HttpError, functional } from "@wrtnlabs/connector-hive-api";
 import { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
 
 import { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
+import { Tools } from "./Tools";
 
 const useEmbeddedContext = <SchemaModel extends ILlmSchema.Model>() => {
-  const set = new Map<
-    AgenticaOperationCollection<SchemaModel>,
-    IApplicationConnectorRetrieval.IFilter
-  >();
+  const set = new Map<string, IApplicationConnectorRetrieval.IFilter>();
   return [
-    (ctx: AgenticaContext<SchemaModel>) => set.has(ctx.operations),
+    (ctx: AgenticaContext<SchemaModel>) =>
+      set.has(JSON.stringify(ctx.operations.array)),
     (
       ctx: AgenticaContext<SchemaModel>,
       filter: IApplicationConnectorRetrieval.IFilter,
     ) => {
-      set.set(ctx.operations, filter);
+      set.set(JSON.stringify(ctx.operations.array), filter);
     },
-    (ctx: AgenticaContext<SchemaModel>) => set.get(ctx.operations),
+    (ctx: AgenticaContext<SchemaModel>) =>
+      set.get(JSON.stringify(ctx.operations.array)),
   ] as const;
 };
 
@@ -151,8 +152,11 @@ export namespace AgenticaPgVectorSelector {
       ctx: AgenticaContext<SchemaModel>,
     ): Promise<AgenticaPrompt<SchemaModel>[]> => {
       if (!isEmbeddedContext(ctx)) {
+        console.log("embedContext");
         await embedContext(ctx);
       }
+
+      const prompts: AgenticaPrompt<SchemaModel>[] = [];
 
       const filter = getFilterFromContext(ctx);
 
@@ -176,25 +180,7 @@ export namespace AgenticaPgVectorSelector {
         ],
         tool_choice: "required",
 
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "extract_search_query",
-              description: "extract search query from user message",
-              parameters: {
-                type: "object",
-                properties: {
-                  query: {
-                    type: "string",
-                    description: "the search query",
-                  },
-                },
-                required: ["query"],
-              },
-            },
-          },
-        ],
+        tools: [Tools["extract_query"]],
       });
 
       const chunks = await StreamUtil.readAll(completionStream);
@@ -224,13 +210,72 @@ export namespace AgenticaPgVectorSelector {
         ),
       );
 
-      const text: AgenticaTextPrompt = new AgenticaTextPrompt({
-        role: "assistant",
-        text: `I will use next tools because it is semantic search result: ${JSON.stringify(
-          resultList,
-        )}`,
+      const selectCompletion = await ctx
+        .request("select", {
+          messages: [
+            {
+              role: "developer",
+              content: [
+                "You are an AI assistant that selects and executes the most appropriate function(s) based on the current context, running the functions required by the context in the correct order. First, analyze the user's input or situation and provide a brief reasoning for why you chose the function(s) (one or more). Then, execute the selected function(s). If multiple functions are chosen, the order of execution follows the function call sequence, and the result may vary depending on this order. Return the results directly after execution. If clarification is needed, ask the user a concise question.",
+                `<FUNCTION_LIST>${JSON.stringify(resultList)}</FUNCTION_LIST>`,
+              ].join("\n"),
+            },
+            ...ctx.histories
+              .map(ChatGptHistoryDecoder.decode<SchemaModel>)
+              .flat(),
+            {
+              role: "user",
+              content: ctx.prompt.text,
+            },
+          ],
+          tool_choice: "required",
+          tools: [Tools["execute_function"]],
+        })
+        .then((v) => StreamUtil.readAll(v))
+        .then(ChatGptCompletionMessageUtil.merge);
+
+      selectCompletion.choices.forEach((v) => {
+        if (v.message.tool_calls) {
+          for (const tc of v.message.tool_calls) {
+            const collection = new AgenticaSelectPrompt<SchemaModel>({
+              id: tc.id,
+              selections: [],
+            });
+            if (tc.function.name !== "execute_function") {
+              continue;
+            }
+
+            const arg = JSON.parse(tc.function.arguments) as {
+              function_name_list: {
+                reason: string;
+                function_name: string;
+              }[];
+            };
+
+            for (const fn of arg.function_name_list) {
+              const operation = ctx.operations.flat.get(fn.function_name);
+              if (operation === undefined) {
+                continue;
+              }
+              const selection: AgenticaOperationSelection<SchemaModel> =
+                new AgenticaOperationSelection({
+                  reason: fn.reason,
+                  operation,
+                });
+              ctx.stack.push(selection);
+              void ctx.dispatch(new AgenticaSelectEvent({ selection }));
+
+              collection.selections.push(selection);
+            }
+
+            if (collection.selections.length !== 0) {
+              prompts.push(collection);
+            }
+          }
+        }
       });
-      return [text];
+
+      return prompts;
     };
 
     return selectorExecute;

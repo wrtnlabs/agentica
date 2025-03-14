@@ -49,58 +49,66 @@ export const test_benchmark_calls_pg_vector_selector = async (): Promise<
       host: `http://localhost:${TestGlobal.connectorHivePort}`,
     },
   });
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
-    vendor: {
-      model: "gpt-4o-mini",
-      api: new OpenAI({
-        apiKey: process.env.CHATGPT_API_KEY,
-      }),
-    },
-    controllers: [
-      {
-        protocol: "http",
-        name: "shopping",
-        application: HttpLlm.application({
-          model: "chatgpt",
-          document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
-          ).then((res) => res.json()),
+  const newAgentica = async () =>
+    new Agentica({
+      model: "chatgpt",
+      vendor: {
+        model: "gpt-4o-mini",
+        api: new OpenAI({
+          apiKey: process.env.CHATGPT_API_KEY,
         }),
-        connection,
       },
-    ],
-    config: {
-      executor: {
-        select: async (ctx) => {
-          const startTime = performance.now();
-          return await selectorExecute(ctx)
-            .catch((e) => {
-              if (e instanceof TypeError) {
-                console.error(
-                  JSON.stringify(
-                    (e as unknown as { cause: { errors: string[] } }).cause
-                      .errors,
-                    null,
-                    2,
-                  ),
-                );
+      controllers: [
+        {
+          protocol: "http",
+          name: "shopping",
+          application: HttpLlm.application({
+            model: "chatgpt",
+            document: await fetch(
+              "https://shopping-be.wrtn.ai/editor/swagger.json",
+            ).then((res) => res.json()),
+          }),
+          connection,
+        },
+      ],
+      config: {
+        executor: {
+          select: async (ctx) => {
+            const startTime = performance.now();
+            return await selectorExecute(ctx)
+              .catch((e) => {
+                if (e instanceof TypeError) {
+                  console.error(
+                    JSON.stringify(
+                      (e as unknown as { cause: { errors: string[] } }).cause
+                        .errors,
+                      null,
+                      2,
+                    ),
+                  );
+                  console.error(e);
+                  throw e;
+                }
+
                 console.error(e);
                 throw e;
-              }
-
-              console.error(e);
-              throw e;
-            })
-            .then((v) => {
-              const endTime = performance.now();
-              console.log(`select time: ${endTime - startTime}ms`);
-              return v;
-            });
+              })
+              .then((v) => {
+                const endTime = performance.now();
+                console.log(`select time: ${endTime - startTime}ms`);
+                return v;
+              });
+          },
         },
       },
-    },
-  });
+    });
+
+  const warmming = async () => {
+    await newAgentica().then((v) => v.conversate("What can you do?"));
+  };
+  await warmming();
+
+  const agent: Agentica<"chatgpt"> = await newAgentica();
 
   // DO BENCHMARK
   const find = (
