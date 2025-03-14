@@ -6,32 +6,32 @@ export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
   /**
    * Aggregated token usage.
    */
-  public readonly aggregate: IAgenticaTokenUsageJson.IComponent;
+  public readonly aggregate: AgenticaTokenUsage.IComponent;
 
   /**
    * Token uasge of initializer agent.
    */
-  public readonly initialize: IAgenticaTokenUsageJson.IComponent;
+  public readonly initialize: AgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function selector agent.
    */
-  public readonly select: IAgenticaTokenUsageJson.IComponent;
+  public readonly select: AgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function canceler agent.
    */
-  public readonly cancel: IAgenticaTokenUsageJson.IComponent;
+  public readonly cancel: AgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function caller agent.
    */
-  public readonly call: IAgenticaTokenUsageJson.IComponent;
+  public readonly call: AgenticaTokenUsage.IComponent;
 
   /**
    * Token usage of function calling describer agent.
    */
-  public readonly describe: IAgenticaTokenUsageJson.IComponent;
+  public readonly describe: AgenticaTokenUsage.IComponent;
 
   public constructor(props?: IAgenticaTokenUsageJson) {
     if (props === undefined) {

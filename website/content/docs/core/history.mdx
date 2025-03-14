@@ -1,21 +1,217 @@
 ---
 title: Agentica > Guide Documents > Core Library > Prompt Histories
 ---
+import { Tabs } from "nextra/components";
+
+import AgenticaPromptSnippet from "../../snippets/AgenticaPromptSnippet.mdx";
+import AgenticaOperationSelectionSnippet from "../../snippets/AgenticaOperationSelectionSnippet.mdx";
+import AgenticaOperationSnippet from "../../snippets/AgenticaOperationSnippet.mdx";
 
 ## Prompt Histories
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaPrompt</code>,
+  <code>IAgenticaPromptJson</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import {
+  Agentica,
+  AgenticaPrompt,
+  IAgenticaPromptJson,
+} from "@agentica/core";
+import OpenAI from "openai";
+
+export const main = async (id: string): Promise<void> => {
+  const agent = new Agentica({
+    model: "chatgpt",
+    vendor: {
+      api: new OpenAI({ apiKey: "*****" }),
+      model: "gpt-4o-mini",
+    },
+    controllers: [...],
+    histories: (await getHistories(id)) satisfies IAgenticaPromptJson[],
+  });
+  const prompts: AgenticaPrompt[] = await agent.conversate(
+    "I wanna buy MacBook Pro",
+  );
+  await archiveHistories(id, prompts.map((p) => p.toJSON()));
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaPromptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSelectionSnippet />
+  </Tabs.Tab>
+</Tabs>
+
 
 
 
 ## Text Prompt
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaPrompt</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaPrompt } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "*****" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+
+const prompts: AgenticaPrompt[] = await agent.conversate(
+  "I wanna buy MacBook Pro",
+);
+for (const p of prompts)
+  if (p.type === "text") console.log(p.role, p.text);
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaPromptSnippet />
+  </Tabs.Tab>
+</Tabs>
+
 
 
 
 ## Select Prompt
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaPrompt</code>,
+  <code>AgenticaOperationSelection</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaPrompt } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "*****" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+
+const prompts: AgenticaPrompt[] = await agent.conversate(
+  "I wanna buy MacBook Pro",
+);
+for (const p of prompts)
+  if (p.type === "select")
+    for (const selection of p.selections) 
+      console.log(
+        "select",
+        selection.operation.name,
+        selection.reason,
+      );
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaPromptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSelectionSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
+
 
 
 
 ## Execute Prompt
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaPrompt</code>,
+  <code>AgenticaOperationSelection</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaPrompt } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "*****" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+const prompts: AgenticaPrompt[] = await agent.conversate(
+  "I wanna buy MacBook Pro",
+);
+for (const p of prompts)
+  if (p.type === "execute")
+    console.log(
+      "execute",
+      p.operation.name,
+      p.arguments,
+      p.value,
+    );
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaPromptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
 
 
 
 ## Describe Prompt
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaPrompt</code>,
+  <code>AgenticaOperationSelection</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaPrompt } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "*****" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+const prompts: AgenticaPrompt[] = await agent.conversate(
+  "I wanna buy MacBook Pro",
+);
+for (const p of prompts)
+  if (p.type === "describe")
+    console.log(
+      "describe",
+      p.executes.map((e) => e.operation.name),
+      p.text,
+    );
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaPromptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>

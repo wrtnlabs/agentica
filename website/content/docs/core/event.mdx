@@ -1,40 +1,413 @@
 ---
 title: Agentica > Guide Documents > Core Library > Event Handling
 ---
+import { Tabs } from "nextra/components";
+
+import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
+import AgenticaOperationSelectionSnippet from "../../snippets/AgenticaOperationSelectionSnippet.mdx";
+import AgenticaOperationSnippet from "../../snippets/AgenticaOperationSnippet.mdx";
 
 ## Event Handling
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperationSelection</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+
+agent.on("text", async (event) => {
+  console.log("Text from", event.role);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+});
+
+agent.on("initialize", async () => {
+  console.log("Function calling started");
+});
+agent.on("select", async (event) => {
+  console.log(
+    "Candidate function selected", 
+    event.selection.operation.name, 
+    event.selection.reason,
+  );
+});
+agent.on("execute", async (event) => {
+  console.log(
+    "Function executed", 
+    event.operation.name, 
+    event.arguments, 
+    event.value,
+  );
+});
+agent.on("describe", async (event) => {
+  console.log("Describe Function Calling");
+  for (const execute of event.executes)
+    console.log(`  - ${execute.operation.name}`);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+}); 
+
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSelectionSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
 
 
 
 
-## Initialize Event
+## Streaming Event
+### Text Event
+<Tabs items={[
+  <code>src/main.stream.ts</code>,
+  <code>src/main.join.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.stream.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("text", async (event) => {
+  console.log("Text from", event.role);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.join.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("text", async (event) => {
+  const text: string = await event.join();
+  console.log("Text from", event.role, text);
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+### Describe Event
+<Tabs items={[
+  <code>src/main.stream.ts</code>,
+  <code>src/main.join.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.stream.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("describe", async (event) => {
+  console.log("Describe Function Calling");
+  for (const execute of event.executes)
+    console.log(`  - ${execute.operation.name}`);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.join.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("describe", async (event) => {
+  console.log("Describe Function Calling");
+  for (const execute of event.executes)
+    console.log(`  - ${execute.operation.name}`);
+
+  const text: string = await event.join();
+  console.log(text);
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
 
 
 
 
-## Select Event
+
+
+## Function Event
+### Initialize Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("initialize", async () => {
+  console.log("Function calling begins");
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+### Select Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperationSelection</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("select", async (event) => {
+  console.log(
+    "select",
+    event.selection.operation.name,
+    event.selection.reason,
+  );
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSelectionSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+### Call Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("call", async (event) => {
+  event.arguments = await fillArguments({
+    $defs: event.operation.function.parameters.$defs,
+    schema: event.operation.function.parameters,
+    arguments: event.arguments,
+  });
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+### Execute Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("execute", async (event) => {
+  console.log(
+    "execute",
+    event.operation.name,
+    event.arguments,
+    event.value,
+  );
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
 
 
 
 
-## Call Event
+## API Event
+### Request Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="@agentica/core/AgenticaEvent"
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
 
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("select", async (event) => {
+  console.log(
+    "select",
+    event.selection.operation.name,
+    event.selection.reason,
+  );
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
 
+### Response Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="@agentica/core/AgenticaEvent"
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
 
-
-## Execute Event
-
-
-
-
-## Describe Event
-
-
-
-
-## Request Event
-
-
-
-
-## Response Event
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("response", async (event) => {
+  console.log(
+    "completion",
+    (await event.join()) satisfies OpenAI.ChatCompletion,
+  );
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
