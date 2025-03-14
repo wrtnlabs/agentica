@@ -103,11 +103,10 @@ export const test_benchmark_calls_pg_vector_selector = async (): Promise<
       },
     });
 
-  const warmming = async () => {
+  const warming = async () => {
     await newAgentica().then((v) => v.conversate("What can you do?"));
   };
-  await warmming();
-
+  await warming();
   const agent: Agentica<"chatgpt"> = await newAgentica();
 
   // DO BENCHMARK
