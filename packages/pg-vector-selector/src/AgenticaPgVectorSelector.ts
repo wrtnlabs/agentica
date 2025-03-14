@@ -215,7 +215,8 @@ export namespace AgenticaPgVectorSelector {
             {
               role: "developer",
               content: [
-                "You are an AI assistant that selects and executes the most appropriate function(s) based on the current context, running the functions required by the context in the correct order. First, analyze the user's input or situation and provide a brief reasoning for why you chose the function(s) (one or more). Then, execute the selected function(s). If multiple functions are chosen, the order of execution follows the function call sequence, and the result may vary depending on this order. Return the results directly after execution. If clarification is needed, ask the user a concise question.",
+                props.experimental?.select_prompt ??
+                  "You are an AI assistant that selects and executes the most appropriate function(s) based on the current context, running the functions required by the context in the correct order. First, analyze the user's input or situation and provide a brief reasoning for why you chose the function(s) (one or more). Then, execute the selected function(s). If multiple functions are chosen, the order of execution follows the function call sequence, and the result may vary depending on this order. Return the results directly after execution. If clarification is needed, ask the user a concise question.",
                 `<FUNCTION_LIST>${JSON.stringify(resultList)}</FUNCTION_LIST>`,
               ].join("\n"),
             },
