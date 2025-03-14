@@ -32,5 +32,8 @@ const meta: MetaRecord = {
       },
     },
   },
+  snippets: {
+    display: "hidden",
+  },
 };
 export default meta;

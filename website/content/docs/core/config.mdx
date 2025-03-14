@@ -1,17 +1,194 @@
 ---
 title: Agentica > Guide Documents > Core Library > Configurations
 ---
+import { Tabs } from "nextra/components";
+
+import IAgenticaPropsSnippet from "../../snippets/IAgenticaPropsSnippet.mdx";
+import IAgenticaConfigSnippet from "../../snippets/IAgenticaConfigSnippet.mdx";
+import IAgenticaExecutorSnippet from "../../snippets/IAgenticaExecutorSnippet.mdx";
+import IAgenticaSystemPromptSnippet from "../../snippets/IAgenticaSystemPromptSnippet.mdx";
+import AgenticaContextSnippet from "../../snippets/AgenticaContextSnippet.mdx";
 
 ## Configuration
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaProps</code>,
+  <code>IAgenticaConfig</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, IAgenticaProps, IAgenticaConfig } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import OpenAI from "openai";
 
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    executor: {
+      initialize: null,
+      select: AgenticaPgVectorSelector.boot<"chatgpt">(
+        "https://your-connector-hive-server.com",
+      ),
+    },
+    systemPrompt: {
+      common: () => [
+        "You are a counselor of the shopping mall.",
+        "",
+        "Be kind and polite to the customer.",
+      ].join("\n"),
+    },
+    locale: "ko-KR",
+    timezone: "Asia/Seoul",
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IAgenticaPropsSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IAgenticaConfigSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+
+When creating an `Agentica` instance, you can configure some features by 
 
 
 ## Executor
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaExecutor</code>,
+  <code>AgenticaContext</code>,
+]}>
+  <Tabs.Tab>
+    <IAgenticaExecutorSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaContextSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions, and returns the list of newly created prompts in the orchestration process.
+
+And you can change some of internal agent's behavior by configuring the `IAgenticaExecutor` property. For example, if you assign `null` value to the `IAgenticaExecutor.initialize`, the agent will skip the initialize process and directly go to the select process.
+
+Otherwise you configure `IAgenticaExecutor.select` to another function like [PG Vector Selector](/docs/plugins/pg-vector-selector), the agent will select the functions to call by the PG Vector Selector's strategy. And this way is recommend when your number of controller functions are too many. If you don't do that with a lot of controller functions, your agent will consume a lot of LLM token costs.
+
 
 
 
 ## System Prompt
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaSystemPrompt</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12-18}
+import { Agentica, IAgenticaProps, IAgenticaConfig } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    systemPrompt: {
+      common: () => [
+        "You are a counselor of the shopping mall.",
+        "",
+        "Be kind and polite to the customer.",
+      ].join("\n"),
+    },
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IAgenticaSystemPromptSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+
+
+
+## Retry Count
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaConfig</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12}
+import { Agentica } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    retry: 3,
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IAgenticaConfigSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+Retry count of [#Validation Feedback](/docs/concepts/function-calling#validation-feedback).
+
+
 
 
 
 ## Locale and Timezone
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaConfig</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12-13}
+import { Agentica } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    locale: "ko-KR",
+    timezone: "Asia/Seoul",
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IAgenticaConfigSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+You can configure `locale` and `timezone` properties.
+
+This properties are delivered to the AI agent, so that the AI agent considers the user's locale and timezone. If you configure `ko-KR` to the `locale` property, the AI agent will conversate with the Korean language. 
+
+Otherwise you configure `Asia/Seoul` to the `timezone` property, the AI agent considers the location and timezone, so that sometimes affect to the LLM function calling's arguments composition. For example, if you ask the AI agent to "recommend me a local food", the AI agent will recommend the local food in Seoul, Korea.
