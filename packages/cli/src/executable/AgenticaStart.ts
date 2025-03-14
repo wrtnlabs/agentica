@@ -45,41 +45,25 @@ export namespace AgenticaStart {
     );
 
     const questions = getQuestions({ services: availableServices, options });
-    const answers = await inquirer.prompt(questions);
-
-    const updatedAnswers = {
-      ...answers,
-      // options
-      projectType: options.project ?? answers.projectType,
+    const config = {
+      ...(await inquirer.prompt<{
+        projectType: ProjectOptionValue;
+        services: string[];
+        packageManager: PackageManager;
+        openAIKey: string;
+      }>(questions)),
+      ...(options.project ? { projectType: options.project } : {}),
     };
 
-    const validAnswers = typia.assert<{
-      packageManager: PackageManager;
-      openAIKey: string;
-      services: string[];
-      // Options
-      projectType: ProjectOptionValue;
-    }>(updatedAnswers);
-
+    const validAnswers = typia.assert(config);
     const { packageManager, openAIKey, projectType, services } = validAnswers;
 
-    if (projectType === "standalone") {
-      await AgenticaStartOption.Project.execute("standalone")({
-        projectName,
-        projectPath,
-        openAIKey,
-        services,
-      });
-    } else {
-      await clone(projectType, projectName);
-
-      await AgenticaStartOption.Project.execute(projectType)({
-        projectName,
-        projectPath,
-        openAIKey,
-        services,
-      });
-    }
+    await AgenticaStarter.execute(projectType)({
+      projectName,
+      projectPath,
+      openAIKey,
+      services,
+    });
 
     // Run package installation
     console.log("📦 Package installation in progress...");
@@ -122,24 +106,10 @@ export namespace AgenticaStart {
             type: "list",
             name: "projectType",
             message: "Project Type",
-            choices: [
-              {
-                name: `NodeJS ${chalk.blueBright("Agent Server")}`,
-                value: "nodejs",
-              },
-              {
-                name: `NestJS ${chalk.blueBright("Agent Server")}`,
-                value: "nestjs",
-              },
-              {
-                name: `React ${chalk.blueBright("Client Application")}`,
-                value: "react",
-              },
-              {
-                name: `Standalone ${chalk.blueBright("Application")}`,
-                value: "standalone",
-              },
-            ] satisfies { name: string; value: ProjectOptionValue }[],
+            choices: Object.values(AgenticaStarter.PROJECT).map((project) => ({
+              name: project.title,
+              value: project.key,
+            })),
           },
       {
         type: "checkbox",
@@ -156,14 +126,163 @@ export namespace AgenticaStart {
 
     return questions.filter((question) => question !== null);
   };
+}
 
+/**
+ * Methods for Agentica start options.
+ */
+namespace AgenticaStarter {
+  export const execute = (option: ProjectOptionValue) => {
+    const runner = PROJECT[option].runner;
+    if (!runner) {
+      throw new Error(`Not supported project type: ${option}`);
+    }
+
+    return runner;
+  };
+
+  export const PROJECT = {
+    standalone: {
+      title: `Standalone ${chalk.blueBright("Application")}`,
+      key: "standalone",
+      runner: async (input: IAgenticaStartOption.IProject): Promise<void> => {
+        // Create project directory
+        createProjectDirectory({ projectPath: input.projectPath });
+
+        // Create package.json (without dependencies)
+        await Promise.all([
+          // create package.json
+          Package.create({
+            projectName: input.projectName,
+            projectPath: input.projectPath,
+          }),
+          // create tsconfig.json
+          Tsconfig.create({ projectPath: input.projectPath }),
+        ]);
+
+        await fs.mkdir(path.join(input.projectPath, "src"), {
+          recursive: false,
+        });
+
+        // Create Agentica code
+        const agenticaCode = Connector.createAll({ services: input.services });
+
+        await writeTypescriptFile({
+          filePath: path.join(input.projectPath, "src/agent.ts"),
+          taskName: "Agentica code",
+          content: agenticaCode,
+        });
+        await setEnvFiles(input);
+      },
+    },
+
+    nodejs: {
+      title: `NodeJS ${chalk.blueBright("Agent Server")}`,
+      key: "nodejs",
+      runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
+        nonStandalone("nodejs")(input)(async () => {
+          // Modify index.ts: replace import and controller code
+          const indexFilePath = path.join(input.projectPath, "src/index.ts");
+          const indexFileContent = await fs
+            .readFile(indexFilePath, "utf-8")
+            .then((content) => {
+              if (input.services.length !== 0) {
+                return content
+                  .replace(/import { BbsArticleService }.*;\n/g, "")
+                  .replace(
+                    /controllers:\s*\[[\s\S]*?\],\n/,
+                    "controllers: [/// INSERT CONTROLLER HERE],\n",
+                  );
+              }
+              return content;
+            });
+
+          return { indexFilePath, indexFileContent };
+        }),
+    },
+    nestjs: {
+      title: `NestJS ${chalk.blueBright("Agent Server")}`,
+      key: "nestjs",
+      runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
+        nonStandalone("nestjs")(input)(async () => {
+          const indexFilePath = path.join(
+            input.projectPath,
+            "src/controllers/chat/ChatController.ts",
+          );
+
+          const indexFileContent = await fs.readFile(indexFilePath, "utf-8");
+          return { indexFilePath, indexFileContent };
+        }),
+    },
+    react: {
+      title: `React ${chalk.blueBright("Client Application")} (Currently not supported)`,
+      key: "react",
+      runner: undefined,
+    },
+  } as const;
+
+  const nonStandalone =
+    (option: "nodejs" | "nestjs") =>
+    (input: IAgenticaStartOption.IProject) =>
+    async (
+      getIndexFileInfo: () => Promise<{
+        indexFilePath: string;
+        indexFileContent: string;
+      }>,
+    ) => {
+      clone(option, input.projectName);
+
+      // Create Agentica code
+      const importCode = Connector.create("import")({
+        services: input.services,
+      });
+
+      const connectorCode = Connector.create("connector")({
+        services: input.services,
+      });
+
+      const { indexFilePath, indexFileContent } = await getIndexFileInfo();
+
+      // Insert importCode and connectorCode
+      const agenticaCode = indexFileContent
+        .replace("/// INSERT IMPORT HERE", importCode)
+        .replace("/// INSERT CONTROLLER HERE", connectorCode);
+
+      await writeTypescriptFile({
+        filePath: indexFilePath,
+        taskName: "Agentica code",
+        content: agenticaCode,
+      });
+      await setEnvFiles(input);
+    };
+
+  const writeTypescriptFile = async (props: {
+    filePath: string;
+    taskName: string;
+    content: string;
+  }): Promise<void> => {
+    const formattedFileContent = await prettier.format(props.content, {
+      parser: "typescript",
+    });
+
+    await fs.writeFile(props.filePath, formattedFileContent);
+    console.log(`✅ ${props.taskName} created`);
+  };
+  /**
+   * Set project .env files
+   */
+  const setEnvFiles = async (
+    input: IAgenticaStartOption.IProject,
+  ): Promise<void> => {
+    // Create .env file
+    const envContent = `OPENAI_API_KEY=${input.openAIKey}\n`;
+    await fs.writeFile(path.join(input.projectPath, ".env"), envContent);
+    console.log("✅ .env created");
+  };
   /**
    * Git Clone from template repository.
    */
-  export const clone = async (
-    type: ProjectOptionValue,
-    directory: string,
-  ): Promise<void> => {
+  export const clone = (type: ProjectOptionValue, directory: string): void => {
     const execute = (command: string): void => {
       console.log(`\n$ ${command}`);
       cp.execSync(command, { stdio: "inherit" });
@@ -171,7 +290,7 @@ export namespace AgenticaStart {
 
     // COPY PROJECTS
     execute(
-      `git clone https://github.com/wrtnlabs/agentica.template.${type} ${directory}`,
+      `git clone git@github.com:wrtnlabs/agentica.template.${type} ${directory}`,
     );
     process.chdir(directory);
 
@@ -179,149 +298,4 @@ export namespace AgenticaStart {
     cp.execSync("npx rimraf .git");
     cp.execSync("npx rimraf .github/dependabot.yml");
   };
-}
-
-/**
- * Methods for Agentica start options.
- */
-namespace AgenticaStartOption {
-  export namespace Project {
-    export const execute = (option: ProjectOptionValue) => {
-      switch (option) {
-        case "standalone":
-          return standalone;
-        case "nodejs":
-          return nodejs;
-        case "nestjs":
-          return nestjs;
-        default:
-          throw new Error(`Not supported project type: ${option}`);
-      }
-    };
-
-    const standalone = async (
-      input: IAgenticaStartOption.IProject,
-    ): Promise<void> => {
-      // Create project directory
-      createProjectDirectory({ projectPath: input.projectPath });
-
-      // Create package.json (without dependencies)
-      Package.create({
-        projectName: input.projectName,
-        projectPath: input.projectPath,
-      });
-
-      // Create tsconfig.json
-      Tsconfig.create({ projectPath: input.projectPath });
-
-      await fs.mkdir(path.join(input.projectPath, "src"), {
-        recursive: false,
-      });
-
-      // Create Agentica code
-      const agenticaCode = Connector.createAll({ services: input.services });
-      const formattedAgenticaCode = await prettier.format(agenticaCode, {
-        parser: "typescript",
-      });
-      await fs.writeFile(
-        path.join(input.projectPath, "src/agent.ts"),
-        formattedAgenticaCode,
-      );
-      console.log("✅ agent.ts created");
-
-      // Create .env file
-      const envContent = `OPENAI_API_KEY=${input.openAIKey}\n`;
-      await fs.writeFile(path.join(input.projectPath, ".env"), envContent);
-      console.log("✅ .env created");
-    };
-
-    const nodejs = async (
-      input: IAgenticaStartOption.IProject,
-    ): Promise<void> => {
-      // Create Agentica code
-      const importCode = Connector.create("import")({
-        services: input.services,
-      });
-
-      const connectorCode = Connector.create("connector")({
-        services: input.services,
-      });
-
-      // Modify index.ts: replace import and controller code
-      const indexFilePath = path.join(input.projectPath, "src/index.ts");
-      const indexFileContent = await fs
-        .readFile(indexFilePath, "utf-8")
-        .then((content) => {
-          if (input.services.length !== 0) {
-            return content
-              .replace(/import { BbsArticleService }.*;\n/g, "")
-              .replace(
-                /controllers:\s*\[[\s\S]*?\],\n/,
-                "controllers: [/// INSERT CONTROLLER HERE],\n",
-              );
-          }
-          return content;
-        });
-
-      // Insert importCode and connectorCode
-      const updatedFileContent = indexFileContent
-        .replace("/// INSERT IMPORT HERE", importCode)
-        .replace("/// INSERT CONTROLLER HERE", connectorCode);
-
-      const formattedFileContent = await prettier.format(updatedFileContent, {
-        parser: "typescript",
-      });
-
-      await fs.writeFile(indexFilePath, formattedFileContent);
-
-      console.log("✅ Agentica code created");
-
-      // Add env to .env.local
-      const envContent = `\nOPENAI_API_KEY=${input.openAIKey}\n`;
-      await fs.appendFile(
-        path.join(input.projectPath, ".env.local"),
-        envContent,
-      );
-      console.log("✅ .env.local updated");
-    };
-
-    const nestjs = async (
-      input: IAgenticaStartOption.IProject,
-    ): Promise<void> => {
-      // Create Agentica code
-      const importCode = Connector.create("import")({
-        services: input.services,
-      });
-      const connectorCode = Connector.create("connector")({
-        services: input.services,
-      });
-
-      // Modify ChatController.ts: replace import and controller code
-      const indexFilePath = path.join(
-        input.projectPath,
-        "src/controllers/chat/ChatController.ts",
-      );
-
-      // Insert importCode and connectorCode
-      const indexFileContent = (await fs.readFile(indexFilePath, "utf-8"))
-        .replace("/// INSERT IMPORT HERE", importCode)
-        .replace("/// INSERT CONTROLLER HERE", connectorCode);
-
-      const formattedFileContent = await prettier.format(indexFileContent, {
-        parser: "typescript",
-      });
-
-      await fs.writeFile(indexFilePath, formattedFileContent);
-
-      console.log("✅ Agentica code created");
-
-      // Add env to .env.local
-      const envContent = `\nOPENAI_API_KEY=${input.openAIKey}\n`;
-      await fs.appendFile(
-        path.join(input.projectPath, ".env.local"),
-        envContent,
-      );
-      console.log("✅ .env.local updated");
-    };
-  }
 }
