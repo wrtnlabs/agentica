@@ -5,16 +5,15 @@ title: Agentica > Guide Documents > Plugin Modules > PG Vector Selector
 # PG Vector Selector
 
 ## Introduction
-This library was created to enable even faster function selection in Agentica. While the existing Agentica Selector could take 1 to 2 seconds, this library significantly reduces search time by leveraging Vector Semantic Search technology.
 
-Vector Semantic Search embeds text in high-dimensional vector space to search based on semantic similarity, allowing for more accurate and faster function selection compared to simple keyword matching.
+This library was created to significantly reduce token consumption for function selection in Agentica. While the existing Agentica Selector typically consumes a large number of tokens per selection, this library cuts token usage to approximately one-tenth by employing Vector Semantic Search technology.
 
-Although there isn't a formal benchmark, we can see a significant reduction in test duration as shown below. The only difference between these two tests is the change in selector:
+Vector Semantic Search embeds text into a high-dimensional vector space, enabling searches based on semantic similarity. This approach drastically reduces token consumption compared to traditional keyword-based methods.
 
-```md filename="Test Result"
-- test_benchmark_call: 106,829 ms
-- test_benchmark_call_pg_vector_selector: 1,775 ms
-```
+The difference in selection speed between using this library and not using it is minimal. However, using this library is approximately 1.3 times faster.
+
+The current state of selection accuracy leaves room for improvement. Contributions to enhance accuracy are welcome. You can experiment with improving tool selection accuracy by using the experimental.[select_prompt](#select_prompt) configuration.
+
 
 ## Installation
 
@@ -34,9 +33,11 @@ import typia from "typia";
 
 
 // Initialize with connector-hive server
-const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
-  'https://your-connector-hive-server.com'
-);
+const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">({
+  connectorHiveConnection: {
+    host: `http://localhost:${TestGlobal.connectorHivePort}`,
+  },
+});
 
 
 const agent = new Agentica({
@@ -146,7 +147,22 @@ const agent = new Agentica({
 await agent.conversate("I wanna buy MacBook Pro");
 ```
 
-## Performance Comparison
+## Experimental Features
 
-In typical use cases, PG Vector Selector is approximately 5-6 times faster than the traditional selector and provides more accurate function selection. The difference is especially notable for complex queries or large controller sets.
+### select_prompt
 
+The `select_prompt` configuration allows you to customize the prompt for the function selection process. This can be used to improve the accuracy of tool selection.
+
+```typescript copy
+const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">({
+  connectorHiveConnection: {
+    host: `http://localhost:${TestGlobal.connectorHivePort}`,
+  },
+  experimental: {
+    select_prompt:
+      "You are an AI assistant that selects and executes the most appropriate function(s) based on the current context, running the functions required by the context in the correct order. First, analyze the user's input or situation and provide a brief reasoning for why you chose the function(s) (one or more). Then, execute the selected function(s). If multiple functions are chosen, the order of execution follows the function call sequence, and the result may vary depending on this order. Return the results directly after execution. If clarification is needed, ask the user a concise question.",
+  },
+});
+```
+
+when get tool list from vector database, it will use the `select_prompt` to select the most appropriate function.
