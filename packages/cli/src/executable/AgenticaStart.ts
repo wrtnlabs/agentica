@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import cp from "child_process";
 import fs from "fs/promises";
 import inquirer, { QuestionCollection } from "inquirer";
@@ -15,6 +14,7 @@ import { createProjectDirectory } from "../utils/createProjectDirectory";
 import { getNpmPackages } from "../utils/getNpmPackages";
 import { PackageManager } from "../utils/types/PackageManager";
 import { ProjectOptionValue } from "../utils/types/ProjectOption";
+import { redBright, yellow, blueBright } from "../utils/styleText";
 
 export namespace AgenticaStart {
   /**
@@ -34,7 +34,7 @@ export namespace AgenticaStart {
         .catch(() => false)
     ) {
       console.error(
-        `❌ Project ${chalk.redBright(projectName)} already exists`,
+        `❌ Project ${redBright(projectName)} already exists`,
       );
       return;
     }
@@ -76,7 +76,7 @@ export namespace AgenticaStart {
     console.log(`\n🎉 Project ${projectName} created`);
 
     console.log(
-      `\n⚠️  ${chalk.yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
+      `\n⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
     );
   }
 
@@ -95,7 +95,7 @@ export namespace AgenticaStart {
           "npm",
           "pnpm",
           {
-            name: `yarn (berry ${chalk.blueBright("is not supported")})`,
+            name: `yarn (berry ${blueBright("is not supported")})`,
             value: "yarn",
           },
         ],
@@ -143,7 +143,7 @@ namespace AgenticaStarter {
 
   export const PROJECT = {
     standalone: {
-      title: `Standalone ${chalk.blueBright("Application")}`,
+      title: `Standalone ${blueBright("Application")}`,
       key: "standalone",
       runner: async (input: IAgenticaStartOption.IProject): Promise<void> => {
         // Create project directory
@@ -177,7 +177,7 @@ namespace AgenticaStarter {
     },
 
     nodejs: {
-      title: `NodeJS ${chalk.blueBright("Agent Server")}`,
+      title: `NodeJS ${blueBright("Agent Server")}`,
       key: "nodejs",
       runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
         nonStandalone("nodejs")(input)(async () => {
@@ -201,7 +201,7 @@ namespace AgenticaStarter {
         }),
     },
     nestjs: {
-      title: `NestJS ${chalk.blueBright("Agent Server")}`,
+      title: `NestJS ${blueBright("Agent Server")}`,
       key: "nestjs",
       runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
         nonStandalone("nestjs")(input)(async () => {
@@ -215,7 +215,7 @@ namespace AgenticaStarter {
         }),
     },
     react: {
-      title: `React ${chalk.blueBright("Client Application")} (Currently not supported)`,
+      title: `React ${blueBright("Client Application")} (Currently not supported)`,
       key: "react",
       runner: undefined,
     },
