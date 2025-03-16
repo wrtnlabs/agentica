@@ -38,6 +38,8 @@ export namespace Package {
             return `yarn add ${pkg}`;
           case "pnpm":
             return `pnpm add ${pkg}`;
+          case "bun":
+            return `bun add ${pkg}`;
         }
       };
 

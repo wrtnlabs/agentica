@@ -98,6 +98,7 @@ export namespace AgenticaStart {
             name: `yarn (berry ${chalk.blueBright("is not supported")})`,
             value: "yarn",
           },
+          "bun",
         ],
       },
       input.options.project
