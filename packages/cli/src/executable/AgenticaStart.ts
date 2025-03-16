@@ -3,7 +3,6 @@ import cp from "child_process";
 import fs from "fs/promises";
 import inquirer, { QuestionCollection } from "inquirer";
 import path from "path";
-import prettier from "prettier";
 import typia from "typia";
 
 import { Connector } from "../bases/Connector";
@@ -261,9 +260,13 @@ namespace AgenticaStarter {
     taskName: string;
     content: string;
   }): Promise<void> => {
-    const formattedFileContent = await prettier.format(props.content, {
-      parser: "typescript",
-    });
+    /** prettier is not in the dependencies */
+    const formattedFileContent =
+      await import("prettier")
+        .then((prettier) => prettier.format(props.content, {
+          parser: "typescript",
+        }))
+        .catch(() => props.content);
 
     await fs.writeFile(props.filePath, formattedFileContent);
     console.log(`✅ ${props.taskName} created`);
