@@ -43,7 +43,6 @@
   ],
   "dependencies": {
     "axios": "^1.8.2",
-    "chalk": "^4.1.2",
     "commander": "^10.0.0",
     "comment-json": "^4.2.3",
     "inquirer": "^8.2.5",
