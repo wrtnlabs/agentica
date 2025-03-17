@@ -22,9 +22,7 @@ jobs:
       - name: Root
         run: pnpm install
       - name: Website
-        run: |
-          npm install
-          npm run build
+        run: pnpm run build
         working-directory: website
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.3

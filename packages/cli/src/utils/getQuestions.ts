@@ -20,6 +20,7 @@ export const getQuestions = (
         "npm",
         "pnpm",
         `yarn (berry ${blueBright("is not supported")})`,
+        "bun",
       ],
     },
     {

@@ -38,6 +38,13 @@ export namespace Package {
             return `yarn add ${pkg}`;
           case "pnpm":
             return `pnpm add ${pkg}`;
+          case "bun":
+            return `bun add ${pkg}`;
+          default:
+            /** exhaustive check */
+            packageManager satisfies never;
+
+            throw new Error(`Unsupported package manager: ${packageManager as unknown as string}`);
         }
       };
 
