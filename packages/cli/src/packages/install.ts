@@ -5,6 +5,9 @@ interface InstallProps {
   pkg: string;
 }
 
+/**
+  * get install command depending on package manager
+  */
 export const install = ({ packageManager, pkg }: InstallProps) => {
   switch (packageManager) {
     case "npm":
