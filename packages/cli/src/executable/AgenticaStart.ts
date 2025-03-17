@@ -1,6 +1,7 @@
-import fs from "fs/promises";
+import process from "node:process";
+import fs from "node:fs/promises";
+import path from "node:path";
 import inquirer from "inquirer";
-import path from "path";
 import typia from "typia";
 
 import { Package } from "../bases/Package";

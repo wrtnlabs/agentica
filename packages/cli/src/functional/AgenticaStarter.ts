@@ -1,6 +1,6 @@
-import fs from "fs/promises";
-import { downloadTemplate } from "giget";
+import fs from "node:fs/promises";
 import path from "node:path";
+import { downloadTemplate } from "giget";
 
 import { Connector } from "../bases/Connector";
 import { Package } from "../bases/Package";
