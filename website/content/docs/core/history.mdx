@@ -14,7 +14,7 @@ import AgenticaOperationSnippet from "../../snippets/AgenticaOperationSnippet.md
   <code>IAgenticaPromptJson</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers
+```typescript filename="src/main.ts" showLineNumbers {16, 21}
 import {
   Agentica,
   AgenticaPrompt,
@@ -36,7 +36,7 @@ export const main = async (id: string): Promise<void> => {
     "I wanna buy MacBook Pro",
   );
   await archiveHistories(id, prompts.map((p) => p.toJSON()));
-}
+};
 ```
   </Tabs.Tab>
   <Tabs.Tab>
@@ -46,6 +46,16 @@ export const main = async (id: string): Promise<void> => {
     <AgenticaOperationSelectionSnippet />
   </Tabs.Tab>
 </Tabs>
+
+You can start chatbot by creating `Agentica` instance, and calling its function `Agentica.conversate()`. When creating the `Agentica` instance, you have to specify the LLM (Large Language Model) service vendor, and lists of controller to serving for function calling.
+
+In the `Agentica.conversate()` function, [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents would be processed including function callings and executions. When the orchestration has been completed, the `Agentica.conversate()` function will return the list of newly created prompts.
+
+When you want to archive the conversation state of current agent, store the returned prompots to your database serializing them from `AgenticaPrompt` type to JSON format's `IAgenticaPromptJson` type. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property when creating a new `Agentica` instance.
+
+For reference, loading and saving the prompt histories, it is possible to change its content or remove some of them for management purpose. For example, you can summarize some or all prompts to a single prompt to reduce the LLM token costs.
+
+If you're not considering the summarization, but just hope to remove some of the prompt histories, you can remove `AgenticaPrompt.Select` and `AgenticaPrompt.Execute` types. In that case, remained `AgenticaPrompt.Describe` type will keep the context.
 
 
 
@@ -57,7 +67,7 @@ export const main = async (id: string): Promise<void> => {
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers
+```typescript filename="src/main.ts" showLineNumbers {17}
 import { Agentica, AgenticaPrompt } from "@agentica/core";
 import OpenAI from "openai";
 
@@ -82,6 +92,10 @@ for (const p of prompts)
   </Tabs.Tab>
 </Tabs>
 
+Text conversation history.
+
+`AgenticaPrompt.Text` is a type of history that represents the text conversation between the user and the agent. And it is separated by the role of the speaker, which is either `user` or `agent`.
+
 
 
 
@@ -93,7 +107,7 @@ for (const p of prompts)
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers
+```typescript filename="src/main.ts" showLineNumbers {17}
 import { Agentica, AgenticaPrompt } from "@agentica/core";
 import OpenAI from "openai";
 
@@ -130,6 +144,13 @@ for (const p of prompts)
   </Tabs.Tab>
 </Tabs>
 
+Selection history of the candidate functions.
+
+`AgenticaPrompt.Select` is a type of history that represents the selection of the candidate functions to call with detailed reasons.
+
+For reference, as the selection is sometimes done by grouping several functions together, if `AgenticaPrompt.Select.selections` has more than one element, it means that the selection to multiple functions are made by just one conversation step.
+
+Also, if you want to reduce the number of prompt histories to reduce the LLM token costs, this `AgenticaPrompt.Select` type can be the elimination target with `AgenticaPrompt.Execute` type. Instead, you have to keep the `AgenticaPrompt.Describe` type to remain the context.
 
 
 
@@ -174,6 +195,13 @@ for (const p of prompts)
   </Tabs.Tab>
 </Tabs>
 
+Execution history of the function call.
+
+`AgenticaPrompt.Execute` is a type of history that represents the execution of the function call with its arguments composed by LLM function calling, and return value by the execution. If a target function comes from an HTTP controller, the return value also contains the status and headers of the HTTP response.
+
+For reference, this `AgenticaPrompt.Execute` often becomes the elimination target with `AgenticaPrompt.Select` when you want to reduce the number of prompt histories to reduce the LLM token costs. It is okay to eliminating `AgenticaPrompt.Execute` and `AgenticaPrompt.Select` types from the prompt histories, but you have to keep the `AgenticaPrompt.Describe` type to remain the context.
+
+
 
 
 ## Describe Prompt
@@ -215,3 +243,9 @@ for (const p of prompts)
     <AgenticaOperationSnippet />
   </Tabs.Tab>
 </Tabs>
+
+Description history of function calling results.
+
+`AgenticaPrompt.Describe` is a type of history that represents the description of the function calling results. It contains the list of target function execution prompts, and the text description about the results.
+
+If you want to reduce the LLM token costs, make `AgenticaPrompt.Describe.text` to be shorter by configuring system prompt of the describe agent, or summarize `AgenticaPrompt.Text` and `AgenticaPrompt.Describe` types to a single prompt after eliminating the `AgenticaPrompt.Select` and `AgenticaPrompt.Execute` types.
