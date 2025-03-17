@@ -1,4 +1,4 @@
-import { ProjectOptionValue } from "../utils/types/ProjectOption";
+import type { ProjectOptionValue } from "../types/ProjectOption";
 
 /**
  * Types about `npx agentica start` command.
