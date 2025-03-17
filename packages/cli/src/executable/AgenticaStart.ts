@@ -295,12 +295,11 @@ namespace AgenticaStarter {
     await downloadTemplate(`github:wrtnlabs/agentica.template.${type}`, {
       dir: directory,
     });
-    process.chdir(directory);
 
     console.log("✅ Template downloaded");
 
     // REMOVE .GIT DIRECTORY
-    cp.execSync("npx rimraf .git");
-    cp.execSync("npx rimraf .github/dependabot.yml");
+    await fs.rm(path.join(directory, ".git"), { recursive: true });
+    await fs.rm(path.join(directory, ".github/dependabot.yml"));
   };
 }
