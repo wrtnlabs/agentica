@@ -291,6 +291,8 @@ namespace AgenticaStarter {
     await downloadTemplate(`github:wrtnlabs/agentica.template.${type}`, {
       dir: directory,
     });
+    process.chdir(directory);
+
     console.log("✅ Template cloned");
 
     // REMOVE .GIT DIRECTORY
