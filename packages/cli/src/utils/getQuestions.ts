@@ -1,5 +1,5 @@
-import chalk from "chalk";
 import { QuestionCollection } from "inquirer";
+import { blueBright } from "./styleText";
 
 export interface GetQuestionsInput {
   services: {
@@ -19,7 +19,7 @@ export const getQuestions = (
       choices: [
         "npm",
         "pnpm",
-        `yarn (berry ${chalk.blueBright("is not supported")})`,
+        `yarn (berry ${blueBright("is not supported")})`,
         "bun",
       ],
     },
@@ -28,10 +28,10 @@ export const getQuestions = (
       name: "projectType",
       message: "Project Type",
       choices: [
-        `NodeJS ${chalk.blueBright("Agent Server")}`,
-        `NestJS ${chalk.blueBright("Agent Server")}`,
-        `React ${chalk.blueBright("Client Application")}`,
-        `Standard ${chalk.blueBright("Application")}`,
+        `NodeJS ${blueBright("Agent Server")}`,
+        `NestJS ${blueBright("Agent Server")}`,
+        `React ${blueBright("Client Application")}`,
+        `Standard ${blueBright("Application")}`,
       ],
     },
     {

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import chalk from "chalk";
 import { Command } from "commander";
 
 import { AgenticaStart } from "./executable/AgenticaStart";
 import { IAgenticaStart } from "./structures/IAgenticaStart";
+import { redBright, blueBright } from './utils/styleText';
 
 async function main() {
   const program = new Command();
@@ -18,7 +18,7 @@ async function main() {
     .action(async (directory: string, options: IAgenticaStart.IOptions) => {
       if ((options.project as any) === true) {
         console.error(
-          `\n❌ The value of ${chalk.redBright("--project")} is required`,
+          `\n❌ The value of ${redBright("--project")} is required`,
         );
         return;
       }
@@ -27,7 +27,7 @@ async function main() {
     });
 
   console.log("--------------------------------");
-  console.log(`   🚀 ${"Agentica"} ${chalk.blueBright("Setup Wizard")}`);
+  console.log(`   🚀 ${"Agentica"} ${blueBright("Setup Wizard")}`);
   console.log("--------------------------------");
 
   program.parse(process.argv);
