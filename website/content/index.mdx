@@ -1,39 +1,7 @@
-## Agentica
+---
+title: Home
+---
 
-![Logo](/logo.png)
+import AgenticaPage from "../app/_pages/LandingPage.tsx";
 
-<center>
-[Guide Documents](/docs) · [Playground](/playground) · [Github Repository](https://github.com/wrtnlabs/agentica)
-</center>
-
-The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
-
-Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `agentica`. Then `agentica` will do everything with the function calling.
-
-Look at the below demonstration, and feel how `agentica` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
-
-```typescript showLineNumbers
-import { Agentica } from "@agentica/core";
-import typia from "typia";
-
-const agent = new Agentica({
-  controllers: [
-    await fetch(
-      "https://shopping-be.wrtn.ai/editor/swagger.json",
-    ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
-    typia.llm.application<ShoppingPolicy>(),
-    typia.llm.application<ShoppingSearchRag>(),
-  ],
-});
-await agent.conversate("I wanna buy MacBook Pro");
-```
-
-<br/>
-<iframe src="https://www.youtube.com/embed/m47p4iJ90Ms?si=cvgfckN25GJhjLTB" 
-        title="Shopping A.I. Chatbot built with Nestia" 
-        width="100%" 
-        height="600" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" 
-        allowfullscreen></iframe>
+<AgenticaPage></AgenticaPage>

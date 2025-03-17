@@ -1,8 +1,11 @@
-import { Footer, Layout, Navbar } from "nextra-theme-docs";
+import { Layout, Navbar } from "nextra-theme-docs";
 // Required for theme styles, previously was imported under the hood
 import "nextra-theme-docs/style.css";
 import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
+
+import Footer from "./_components/layout/Footer";
+import "./globals.css";
 
 export const metadata = {
   // ... your metadata API
@@ -16,9 +19,10 @@ const navbar = (
   />
 );
 const footer = (
-  <Footer className="flex-col items-center md:items-start">
-    MIT {new Date().getFullYear()} © Wrtn Technologies.
-  </Footer>
+  <Footer />
+  // <Footer className="flex-col items-center md:items-start">
+  //   MIT {new Date().getFullYear()} © Wrtn Technologies.
+  // </Footer>
 );
 
 export default async function RootLayout(props) {
@@ -70,10 +74,7 @@ export default async function RootLayout(props) {
         {/* TWITTER */}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@SamchonGithub" />
-        <meta
-          name="twitter:image"
-          content="/agentica/og.jpg"
-        />
+        <meta name="twitter:image" content="/agentica/og.jpg" />
         <meta name="twitter:title" content="Agentica Guide Documents" />
         <meta
           name="twitter:description"
