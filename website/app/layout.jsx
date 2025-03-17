@@ -1,10 +1,9 @@
-import { Layout, Navbar } from "nextra-theme-docs";
+import { Footer, Layout, Navbar } from "nextra-theme-docs";
 // Required for theme styles, previously was imported under the hood
 import "nextra-theme-docs/style.css";
 import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 
-import Footer from "./_components/layout/Footer";
 import "./globals.css";
 
 export const metadata = {
@@ -19,10 +18,9 @@ const navbar = (
   />
 );
 const footer = (
-  <Footer />
-  // <Footer className="flex-col items-center md:items-start">
-  //   MIT {new Date().getFullYear()} © Wrtn Technologies.
-  // </Footer>
+  <Footer className="flex-col items-center md:items-start">
+    MIT {new Date().getFullYear()} © Wrtn Technologies.
+  </Footer>
 );
 
 export default async function RootLayout(props) {

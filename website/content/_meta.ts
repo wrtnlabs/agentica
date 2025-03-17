@@ -12,6 +12,7 @@ const meta: MetaRecord = {
       navbar: false,
       toc: false,
       sidebar: false,
+      footer: false,
       breadcrumb: false,
       collapsed: false,
       pagination: false,

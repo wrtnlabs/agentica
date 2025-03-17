@@ -16,7 +16,7 @@ export function Section({
   return (
     <section
       className={cn(
-        "flex min-h-screen flex-col gap-8 px-3 py-16 md:gap-12 md:px-20 md:py-30",
+        "flex min-h-screen max-w-[1280px] flex-col gap-8 px-3 py-16 md:gap-12 md:px-20 md:py-30 mx-auto",
         className,
       )}
     >

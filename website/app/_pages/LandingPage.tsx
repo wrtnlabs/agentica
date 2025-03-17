@@ -5,12 +5,15 @@ import { FuncCallCard } from "../_components/landing/FuncCallCard";
 import { FuncCallCode } from "../_components/landing/FuncCallCode";
 import { Section } from "../_components/landing/Section";
 import { WelcomeSection } from "../_components/landing/WelcomeSection";
+import Footer from "../_components/layout/Footer";
+import Header from "../_components/layout/Header";
 import { CORE_VALUES, FUNC_CALLS } from "../_constants/landing";
 import LenisProvider from "../_provider/LenisProvider";
 
 export default function AgenticaPage() {
   return (
     <LenisProvider>
+      <Header />
       {/* Welcome */}
       <WelcomeSection />
 
@@ -59,6 +62,7 @@ export default function AgenticaPage() {
           />
         </div>
       </Section>
+      {/* Preview */}
       <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
         <PreviewCard
           href="/agentica/github-agent"
@@ -66,6 +70,8 @@ export default function AgenticaPage() {
           image="https://picsum.photos/200/300"
         />
       </section>
+
+      <Footer />
     </LenisProvider>
   );
 }
