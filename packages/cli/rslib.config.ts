@@ -20,6 +20,9 @@ export default defineConfig({
     {
       format: 'cjs',
       bundle: true,
+      banner: {
+        js: '#!/usr/bin/env node' // Add shebang to the output file
+      },
       output: {
         distPath: {
           root: './bin',
