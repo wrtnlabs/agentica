@@ -6,7 +6,7 @@ import typia from "typia";
 import { Package } from "../bases/Package";
 import { AgenticaStarter } from "../functional/AgenticaStarter";
 import { IAgenticaStart } from "../structures/IAgenticaStart";
-import { getNpmPackages } from "../utils/getNpmPackages";
+import { getConnectors } from "../utils/getConnectors";
 import { getQuestions } from "../utils/getQuestions";
 import { redBright, yellow } from "../utils/styleText";
 import { PackageManager } from "../utils/types/PackageManager";
@@ -37,7 +37,7 @@ export namespace AgenticaStart {
     const availableServices =
       options.project === "react"
         ? []
-        : (await getNpmPackages()).sort((a, b) => a.name.localeCompare(b.name));
+        : (await getConnectors()).sort((a, b) => a.name.localeCompare(b.name));
 
     const questions = getQuestions({ services: availableServices, options });
 

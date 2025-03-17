@@ -10,7 +10,7 @@ export interface INpmPackages {
   time: string & tags.Format<"date-time">;
 }
 
-export const getNpmPackages = async (): Promise<
+export const getConnectors = async (): Promise<
   { name: string; value: string }[]
 > => {
   try {
