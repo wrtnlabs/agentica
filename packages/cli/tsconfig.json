@@ -75,7 +75,8 @@
       {
         "transform": "typia/lib/transform",
       }
-    ]
+    ],
+    "types": ["vitest/globals"]
   },
   "include": ["src"]
 }
