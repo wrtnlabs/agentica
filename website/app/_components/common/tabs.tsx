@@ -1,11 +1,10 @@
 "use client";
 
-import * as React from "react";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
-
-import { cn } from "@/app/_lib/utils/cn";
-import { motion } from "framer-motion";
 import { useAttributeObserver } from "@/app/_hooks/useAttributeObserver";
+import { cn } from "@/app/_lib/utils/cn";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import { motion } from "framer-motion";
+import * as React from "react";
 
 function Tabs({
   className,
@@ -58,7 +57,8 @@ function TabsTrigger({
       {...props}
     >
       <motion.li initial={false}>
-        {children}
+        {children as any}
+        {/* @todo Jaxtyn */}
         {isActive && (
           <motion.div
             layoutId="activeTabIndicator"

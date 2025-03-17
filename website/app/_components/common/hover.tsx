@@ -1,4 +1,5 @@
 "use client";
+
 import { ReactElement } from "react";
 import { useHover } from "react-use";
 
@@ -7,6 +8,6 @@ interface HoverableProps {
 }
 
 export function Hoverable({ children }: HoverableProps) {
-  const [newElement] = useHover(children);
+  const [newElement] = useHover(children as any); // @todo Jaxtyn
   return newElement;
 }
