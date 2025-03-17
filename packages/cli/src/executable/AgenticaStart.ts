@@ -1,9 +1,9 @@
 import chalk from "chalk";
 import cp from "child_process";
 import fs from "fs/promises";
+import { downloadTemplate } from "giget";
 import inquirer, { QuestionCollection } from "inquirer";
 import path from "path";
-import prettier from "prettier";
 import typia from "typia";
 
 import { Connector } from "../bases/Connector";
@@ -231,7 +231,7 @@ namespace AgenticaStarter {
         indexFileContent: string;
       }>,
     ) => {
-      clone(option, input.projectName);
+      await writeTemplate(option, input.projectName);
 
       // Create Agentica code
       const importCode = Connector.create("import")({
@@ -262,9 +262,13 @@ namespace AgenticaStarter {
     taskName: string;
     content: string;
   }): Promise<void> => {
-    const formattedFileContent = await prettier.format(props.content, {
-      parser: "typescript",
-    });
+    /** prettier is not in the dependencies */
+    const formattedFileContent =
+      await import("prettier")
+        .then((prettier) => prettier.format(props.content, {
+          parser: "typescript",
+        }))
+        .catch(() => props.content);
 
     await fs.writeFile(props.filePath, formattedFileContent);
     console.log(`✅ ${props.taskName} created`);
@@ -283,17 +287,17 @@ namespace AgenticaStarter {
   /**
    * Git Clone from template repository.
    */
-  export const clone = (type: ProjectOptionValue, directory: string): void => {
-    const execute = (command: string): void => {
-      console.log(`\n$ ${command}`);
-      cp.execSync(command, { stdio: "inherit" });
-    };
-
+  export const writeTemplate = async (
+    type: ProjectOptionValue,
+    directory: string,
+  ): Promise<void> => {
     // COPY PROJECTS
-    execute(
-      `git clone git@github.com:wrtnlabs/agentica.template.${type} ${directory}`,
-    );
+    await downloadTemplate(`github:wrtnlabs/agentica.template.${type}`, {
+      dir: directory,
+    });
     process.chdir(directory);
+
+    console.log("✅ Template downloaded");
 
     // REMOVE .GIT DIRECTORY
     cp.execSync("npx rimraf .git");

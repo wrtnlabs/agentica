@@ -42,21 +42,21 @@
     "src"
   ],
   "dependencies": {
-    "axios": "^1.8.2",
     "chalk": "^4.1.2",
     "commander": "^10.0.0",
     "comment-json": "^4.2.3",
+    "giget": "^1",
     "inquirer": "^8.2.5",
-    "package-manager-detector": "^0.2.0"
+    "package-manager-detector": "^0.2.0",
+    "typia": "^8.0.0"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.4",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^18.19.76",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
-    "typescript": "~5.8.2",
-    "typia": "^8.0.0"
+    "typescript": "~5.8.2"
   }
 }
+

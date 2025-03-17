@@ -1,0 +1,100 @@
+---
+title: Agentica > Tutorial > Getting Started  
+---
+
+## Preface  
+
+This tutorial guides you through setting up the foundation for developing multiple agents using **Agentica**. Regardless of whether an agent is designed for email processing, workflow automation, or data handling, there are common tasks that all agents must perform. This guide walks you through the essential setup process to establish a **consistent** and **scalable** development environment.  
+
+### Project Setup  
+
+First, create a new project folder and navigate into it.  
+
+```bash
+# Create a project folder
+mkdir agentica-test
+
+# Move into the project folder
+cd agentica-test
+```  
+
+Next, initialize the project with **npm** to create a `package.json` file, which will manage project metadata and dependencies.  
+
+```bash
+# Initialize npm package.json
+npm init -y
+```  
+
+### Installing Essential Packages  
+
+Install **TypeScript** to enable type-safe development.  
+
+```bash
+# Install TypeScript
+npm i --save-dev typescript
+
+# Set up a TypeScript project (creates a tsconfig.json file)
+npx tsc --init
+```  
+
+Now, install **OpenAI** and **Agentica Core**, which are essential for AI-powered agent development.  
+
+```bash
+# Install OpenAI package
+npm i @openai
+
+# Install Agentica Core
+npm i @agentica/core
+```  
+
+### Setting Up Typia for TypeScript  
+
+[**Typia**](https://github.com/samchon/typia) is a TypeScript plugin library that enhances type safety and serialization performance. It is particularly useful in agent-based systems that require structured data handling and precise type definitions.  
+
+To install and configure Typia, run:  
+
+```bash
+# Install Typia (enhances type safety and serialization)
+npm i typia
+
+# Set up the project with Typia
+npx typia setup
+```  
+
+### Managing Environment Variables (dotenv)  
+
+To securely manage API keys and other sensitive information, use **dotenv** to configure environment variables.  
+
+```bash
+# Install dotenv package
+npm i dotenv
+```  
+
+After installation, create a `.env` file in the project root and define environment variables as follows:  
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+```  
+
+You can then load these variables in your code using:  
+
+```typescript
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+const openaiApiKey = process.env.OPENAI_API_KEY;
+console.log("OpenAI API Key:", openaiApiKey);
+```  
+
+### Why This Setup Matters  
+
+This setup ensures that multiple agents can be developed in a **standardized** manner. Regardless of the agent's purpose, the following elements are essential:  
+
+- **Structured development environment** (TypeScript & tsconfig)  
+- **AI processing capabilities** (OpenAI API integration)  
+- **Core agent framework** (Agentica Core)  
+- **Efficient type handling** (Typia for serialization and validation)  
+- **Environment variable management** (dotenv for API key security)  
+
+By following these steps, all agents will share a **consistent architecture**, making it significantly easier to **scale**, **maintain**, and **extend** their functionality.

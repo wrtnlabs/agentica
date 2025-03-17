@@ -4,6 +4,8 @@ import "nextra-theme-docs/style.css";
 import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 
+import "./globals.css";
+
 export const metadata = {
   // ... your metadata API
   // https://nextjs.org/docs/app/building-your-application/optimizing/metadata
@@ -61,7 +63,7 @@ export default async function RootLayout(props) {
         <meta name="og:type" content="object" />
         <meta name="og:site_name" content="Agentica Guide Documents" />
         <meta name="og:url" content="https://wrtnlabs.io/agentica" />
-        <meta name="og:image" content="/agentica/og.jpg" />
+        <meta name="og:image" content="https://wrtnlabs.io/agentica/og.jpg" />
         <meta name="og:title" content="Agentica Guide Documents" />
         <meta
           name="og:description"
@@ -72,7 +74,7 @@ export default async function RootLayout(props) {
         <meta name="twitter:site" content="@SamchonGithub" />
         <meta
           name="twitter:image"
-          content="/agentica/og.jpg"
+          content="https://wrtnlabs.io/agentica/og.jpg"
         />
         <meta name="twitter:title" content="Agentica Guide Documents" />
         <meta
