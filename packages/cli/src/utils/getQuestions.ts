@@ -1,17 +1,25 @@
 import { QuestionCollection } from "inquirer";
+
+import { AgenticaStarter } from "../functional/AgenticaStarter";
+import { IAgenticaStart } from "../structures/IAgenticaStart";
 import { blueBright } from "./styleText";
 
-export interface GetQuestionsInput {
+export interface IGetQuestionsProps {
   services: {
     name: string;
     value: string;
   }[];
+
+  options: IAgenticaStart.IOptions;
 }
 
+/**
+ * Get questions for `start` command.
+ */
 export const getQuestions = (
-  input: GetQuestionsInput,
+  input: IGetQuestionsProps,
 ): QuestionCollection[] => {
-  return [
+  const questions = [
     {
       type: "list",
       name: "packageManager",
@@ -19,21 +27,24 @@ export const getQuestions = (
       choices: [
         "npm",
         "pnpm",
-        `yarn (berry ${blueBright("is not supported")})`,
+        {
+          name: `yarn (berry ${blueBright("is not supported")})`,
+          value: "yarn",
+        },
         "bun",
       ],
     },
-    {
-      type: "list",
-      name: "projectType",
-      message: "Project Type",
-      choices: [
-        `NodeJS ${blueBright("Agent Server")}`,
-        `NestJS ${blueBright("Agent Server")}`,
-        `React ${blueBright("Client Application")}`,
-        `Standard ${blueBright("Application")}`,
-      ],
-    },
+    input.options.project
+      ? null
+      : {
+          type: "list",
+          name: "projectType",
+          message: "Project Type",
+          choices: Object.values(AgenticaStarter.PROJECT).map((project) => ({
+            name: project.title,
+            value: project.key,
+          })),
+        },
     {
       type: "checkbox",
       name: "services",
@@ -43,7 +54,9 @@ export const getQuestions = (
     {
       type: "input",
       name: "openAIKey",
-      message: "Please enter your OPEN_AI_API_KEY:",
+      message: "Please enter your OPENAI_API_KEY:",
     },
-  ];
+  ] satisfies (QuestionCollection | null)[];
+
+  return questions.filter((question) => question !== null);
 };
