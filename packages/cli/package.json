@@ -57,6 +57,7 @@
     "@rslib/core": "^0.5.4",
     "@ryoppippi/unplugin-typia": "^1.2.0",
     "@inquirer/testing": "^2.1.45",
+    "@ryoppippi/unplugin-typia": "^2.0.0",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^20.14.8",
     "commander": "^10.0.0",

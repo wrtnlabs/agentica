@@ -222,8 +222,8 @@ importers:
         specifier: ^0.5.4
         version: 0.5.5(typescript@5.8.2)
       '@ryoppippi/unplugin-typia':
-        specifier: ^1.2.0
-        version: 1.2.0(@types/node@20.17.25)(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.36.0)(terser@5.39.0)(yaml@2.7.0)
+        specifier: ^2.0.0
+        version: 2.0.3(rollup@4.36.0)(typescript@5.8.2)(typia@8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2))(vite@5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0))
       '@types/inquirer':
         specifier: ^9.0.3
         version: 9.0.7
@@ -2334,6 +2334,19 @@ packages:
 
   '@ryoppippi/unplugin-typia@1.2.0':
     resolution: {integrity: sha512-TlrqL2WQie2HvSqJpmKPXrFsNPbMwU5Jw2Asx+E3E3Fuyya5mN1lqaeILwSZLmkCOMTQLazIrTWNOGs0V6XL6A==}
+
+  '@ryoppippi/unplugin-typia@2.0.3':
+    resolution: {integrity: sha512-1kEqo3kQzf+2YchQ27p654zUQU68yue6JTUR6VmECsOKgAOnAOOKib+3MCVtnMw8AhzqUGtf8c83mQcXIZ5Mew==}
+    peerDependencies:
+      svelte: ^5.0.0
+      typescript: '>=4.8.0 <5.9.0'
+      typia: '>=8.0.0 <9.0.0'
+      vite: '>=3.0.0'
+    peerDependenciesMeta:
+      svelte:
+        optional: true
+      vite:
+        optional: true
 
   '@samchon/openapi@3.1.0':
     resolution: {integrity: sha512-npzlnWTBLpiA6myD6B9WLlQxiEhXVjwLx59CkDGRLPNL5Ok9QYo7wNgP8km1jb9ZwcpdN5j0UW1ukpFIPDGzQw==}
@@ -6697,6 +6710,10 @@ packages:
     resolution: {integrity: sha512-4/u/j4FrCKdi17jaxuJA0jClGxB1AvU2hw/IuayPc4ay1XGaJs/rbb4v5WKwAjNifjmXK9PIFyuPiaK8azyR9w==}
     engines: {node: '>=14.0.0'}
 
+  unplugin@2.2.0:
+    resolution: {integrity: sha512-m1ekpSwuOT5hxkJeZGRxO7gXbXT3gF26NjQ7GdVHoLoF8/nopLcd/QfPigpCy7i51oFHiRJg/CyHhj4vs2+KGw==}
+    engines: {node: '>=18.12.0'}
+
   update-browserslist-db@1.1.3:
     resolution: {integrity: sha512-UxhIZQ+QInVdunkDAaiazvvT/+fXL5Osr0JZlJulepYu6Jd7qJtDZjlur0emRlT71EN3ScPoE7gvsuIKKNavKw==}
     hasBin: true
@@ -8743,7 +8760,7 @@ snapshots:
       - tsx
       - yaml
 
-  '@ryoppippi/unplugin-typia@1.2.0(@types/node@20.17.25)(jiti@2.4.2)(lightningcss@1.29.2)(rollup@4.36.0)(terser@5.39.0)(yaml@2.7.0)':
+  '@ryoppippi/unplugin-typia@2.0.3(rollup@4.36.0)(typescript@5.8.2)(typia@8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2))(vite@5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.36.0)
       consola: 3.4.2
@@ -8751,27 +8768,16 @@ snapshots:
       diff-match-patch: 1.0.5
       find-cache-dir: 5.0.0
       magic-string: 0.30.17
-      pathe: 1.1.2
-      pkg-types: 1.3.1
+      pathe: 2.0.3
+      pkg-types: 2.1.0
       type-fest: 4.37.0
-      typescript: 5.6.3
-      typia: 7.6.4(@samchon/openapi@3.1.0)(typescript@5.6.3)
-      unplugin: 1.16.1
-      vite: 6.2.2(@types/node@20.17.25)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0)
+      typescript: 5.8.2
+      typia: 8.0.3(@samchon/openapi@3.1.0)(typescript@5.8.2)
+      unplugin: 2.2.0
+    optionalDependencies:
+      vite: 5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0)
     transitivePeerDependencies:
-      - '@samchon/openapi'
-      - '@types/node'
-      - jiti
-      - less
-      - lightningcss
       - rollup
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - yaml
 
   '@samchon/openapi@3.1.0': {}
 
@@ -14388,6 +14394,11 @@ snapshots:
       acorn: 8.14.1
       webpack-virtual-modules: 0.6.2
 
+  unplugin@2.2.0:
+    dependencies:
+      acorn: 8.14.1
+      webpack-virtual-modules: 0.6.2
+
   update-browserslist-db@1.1.3(browserslist@4.24.4):
     dependencies:
       browserslist: 4.24.4
@@ -14516,19 +14527,6 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.29.2
       terser: 5.39.0
-
-  vite@6.2.2(@types/node@20.17.25)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0):
-    dependencies:
-      esbuild: 0.25.1
-      postcss: 8.5.3
-      rollup: 4.36.0
-    optionalDependencies:
-      '@types/node': 20.17.25
-      fsevents: 2.3.3
-      jiti: 2.4.2
-      lightningcss: 1.29.2
-      terser: 5.39.0
-      yaml: 2.7.0
 
   vite@6.2.2(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(terser@5.39.0)(yaml@2.7.0):
     dependencies:
