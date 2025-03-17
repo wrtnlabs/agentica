@@ -17,7 +17,7 @@ const FOOTER_CONTENTS = [
 
 export default function Footer() {
   return (
-    <footer className="flex h-64 justify-between bg-zinc-900 px-16 py-8">
+    <footer className="z-10 flex h-64 justify-between bg-zinc-900 px-16 py-8">
       <WrtnlabsLogo className="h-7 w-7 md:h-18 md:w-18" />
       <div className="flex gap-16">
         {FOOTER_CONTENTS.map(({ title, links }) => (

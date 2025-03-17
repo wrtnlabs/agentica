@@ -5,7 +5,7 @@ import { FUNC_CALL_CODE } from "../../_constants/landing";
 
 export function FuncCallCode() {
   return (
-    <div className="flex flex-auto flex-col gap-8 rounded-3xl border border-zinc-700 p-2">
+    <div className="flex flex-auto flex-col gap-8 rounded-3xl border bg-[#030303] border-zinc-700 p-2">
       <div className="flex h-10 items-center justify-between rounded-2xl border border-zinc-700 px-2.5 text-zinc-700">
         <div className="flex gap-2">
           <div className="h-5 w-5 rounded-full border border-zinc-700" />

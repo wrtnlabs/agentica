@@ -11,13 +11,13 @@ import { CORE_VALUES, FUNC_CALLS } from "../_constants/landing";
 
 export default function AgenticaPage() {
   return (
-    <>
+    <div className="relative">
       <Header />
+
       {/* Welcome */}
       <WelcomeSection />
 
       {/* Function calling */}
-
       <Section
         title="Function calling"
         description="One click to turn your backend into an AI agent."
@@ -61,6 +61,7 @@ export default function AgenticaPage() {
           />
         </div>
       </Section>
+
       {/* Preview */}
       <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
         <PreviewCard
@@ -70,7 +71,14 @@ export default function AgenticaPage() {
         />
       </section>
 
+      <div className="absolute w-full h-full left-0 top-0 flex justify-between px-24 -z-1">
+        <hr className="border-[#272727] border-l-[1px] h-full w-px" />
+        <hr className="border-[#272727] border-l-[1px] h-full w-px" />
+        <hr className="border-[#272727] border-l-[1px] h-full w-px" />
+      </div>
+
+      <div className="bg-[#030303] -z-10 absolute left-0 top-0 w-full h-full" />
       <Footer />
-    </>
+    </div>
   );
 }
