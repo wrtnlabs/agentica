@@ -9,7 +9,7 @@
     "prepare": "ts-patch install",
     "build": "rslib build",
     "dev": "rslib build --watch",
-    "start:dev": "ts-node src/index.ts"
+    "typecheck": "tsc --noEmit"
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",
