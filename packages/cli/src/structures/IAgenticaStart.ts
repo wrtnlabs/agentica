@@ -20,16 +20,4 @@ export namespace IAgenticaStart {
     projectName: string;
     options: IOptions;
   }
-
-  /**
-   * Input for `getQuestions` function.
-   */
-  export interface IGetQuestionsInput {
-    services: {
-      name: string;
-      value: string;
-    }[];
-
-    options: IOptions;
-  }
 }
