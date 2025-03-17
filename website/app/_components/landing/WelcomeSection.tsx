@@ -1,6 +1,6 @@
 import { Button } from "@/app/_components/common/button";
 import { GithubIcon } from "@/app/_components/icons/Github";
-import { ArrowUpRight } from "lucide-react";
+// import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 import { ChatExample } from "./ChatExample";
@@ -21,15 +21,17 @@ export function WelcomeSection() {
         </div>
         <div className="flex flex-col gap-[18px] md:flex-row">
           <Link href="/docs">
-            <Button variant="secondary" className="w-full md:w-[180px]">
-              Docs
-              <ArrowUpRight />
+            <Button variant="secondary" className="w-full md:w-[240px]">
+              📖 Guide Docs
+              {/* <ArrowUpRight /> */}
             </Button>
           </Link>
-          <Button className="w-full md:w-[180px]">
-            Github
-            <GithubIcon width={24} height={24} className="h-6 w-6" />
-          </Button>
+          <Link href="https://github.com/wrtnlabs/agentica" target="_blank">
+            <Button className="w-full md:w-[180px]">
+              <GithubIcon width={24} height={24} className="h-6 w-6" />
+              Github
+            </Button>
+          </Link>
         </div>
       </div>
       <ChatExample />

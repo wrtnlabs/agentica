@@ -35,8 +35,7 @@ const chatBubbleVariants = cva("py-4 px-5 rounded-2xl flex flex-col gap-4 ", {
 });
 
 export function ChatBubble({ author, messages, type }: ChatMessageType) {
-  const isFuncCall = type === "func_selector" || type === "func_describer";
-
+  // const isFuncCall = type === "func_selector" || type === "func_describer";
   return (
     <div className={chatBubbleVariants({ author })}>
       {type && (
@@ -48,12 +47,12 @@ export function ChatBubble({ author, messages, type }: ChatMessageType) {
       {messages.map((message, index) => (
         <Markdown key={index}>{message}</Markdown>
       ))}
-      {isFuncCall && (
+      {/* {isFuncCall && (
         <div className="flex gap-1 py-1 px-2 text-[#848470] text-xs font-bold cursor-not-allowed">
           <ChevronDown size={16} strokeWidth={2} />
           SHOW FUNCTION DESCRIPTION
         </div>
-      )}
+      )} */}
     </div>
   );
 }

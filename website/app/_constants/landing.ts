@@ -134,6 +134,13 @@ export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
     author: "agent",
     type: "func_selector",
     messages: [
+      "Operation:\n\n - POST\n - /shoppings/customers/orders\n\nTo create a new order application from the shopping cart.",
+    ],
+  },
+  {
+    author: "agent",
+    type: "func_selector",
+    messages: [
       "Operation:\n\n- POST\n- /shoppings/customers/orders/{orderld}/publish\n\nProceeding with the order completion using the provided address and cash payment method.",
     ],
   },
@@ -141,11 +148,16 @@ export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
     author: "agent",
     type: "func_describer",
     messages: [
-      "The function call was made to publish an order identified by the order ID a1d065c-fd98-41e4-bd32-2653ed348f97. This action included the customer's address details and payment vendor information. Here's a detailed description of the return value from this function call:\n",
+      "The function call was made to create and publish an order from a shopping cart. This action included the customer's address details and payment vendor information. Here's a detailed description of the return value from this function call:\n",
       "### Function Call Summary\n" +
-        "- Method: POST\n" +
-        "- Path: /shoppings/customers/orders/{orderId}/publish\n" +
-        "- Status: 201 Created\n",
+        "#### Order Application:\n" +
+        "  - Method: POST\n" +
+        "  - Path: /shoppings/customers/orders\n" +
+        "  - Status: 201 Created\n",
+        "#### Order Publication:\n" +
+        "  - Method: POST\n" +
+        "  - Path: /shoppings/customers/orders/{orderId}/publish\n" +
+        "  - Status: 201 Created\n",
       "### Return Value Overview\n" +
         "The return value provides information about the completed order and the associated delivery details. Here's a breakdown of the important sections:\n",
       "#### Order Details\n" +
@@ -195,19 +207,19 @@ await agent.conversate("I wanna buy MacBook Pro");`;
 export const FUNC_CALLS = [
   {
     icon: FeedbackIcon,
-    title: "validation feedback",
+    title: "Validation Feedback",
     description:
       "LLM doesn’t always get function parameters right. With validation feedback, it learns from mistakes and improves accuracy. This ensures more reliable and successful function calls.",
   },
   {
     icon: SwaggerIcon,
-    title: "swagger",
+    title: "Swagger/OpenAPI Document",
     description:
       "Just upload a Swagger document, and AI will handle API calls. It understands your backend and interacts with it automatically. No extra setup—just seamless AI-powered API execution.",
   },
   {
     icon: TypescriptClassIcon,
-    title: "typescript class",
+    title: "TypeScript Class",
     description:
       "Turn your TypeScript classes into AI-powered tools. AI reads your class types and calls the right methods on its own. No extra coding—just connect and start using AI.",
   },
