@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 import fs from "fs/promises";
 import path from "path";
 
-import { PackageManager } from "../packages/PackageManager";
+import { PackageManager } from "../packages/consts";
 
 export namespace Package {
   export const create = async (input: {

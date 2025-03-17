@@ -9,8 +9,8 @@ import { IAgenticaStart } from "../structures/IAgenticaStart";
 import { getConnectors } from "../utils/getConnectors";
 import { getQuestions } from "../utils/getQuestions";
 import { redBright, yellow } from "../utils/styleText";
-import { PackageManager } from "../packages/PackageManager";
-import { ProjectOptionValue } from "../utils/types/ProjectOption";
+import { PackageManager } from "../packages/consts";
+import type { ProjectOptionValue } from "../types/ProjectOption";
 
 export namespace AgenticaStart {
   /**

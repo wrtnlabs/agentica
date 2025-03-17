@@ -1,4 +1,4 @@
-import type { PackageManager } from "./PackageManager";
+import type { PackageManager } from "./consts";
 
 interface InstallProps {
   packageManager: PackageManager;
