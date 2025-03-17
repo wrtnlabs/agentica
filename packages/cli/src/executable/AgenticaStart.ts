@@ -293,7 +293,7 @@ namespace AgenticaStarter {
     });
     process.chdir(directory);
 
-    console.log("✅ Template cloned");
+    console.log("✅ Template downloaded");
 
     // REMOVE .GIT DIRECTORY
     cp.execSync("npx rimraf .git");
