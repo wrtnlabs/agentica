@@ -16,7 +16,7 @@ export function ChatExample() {
   // const messageSplit = CHAT_EXAMPLE_INITIAL_MESSAGE.split(" ");
 
   return (
-    <div className="hidden overflow-y-scroll h-full w-[480px] rounded-[20px] bg-[#27272A] md:flex flex-col gap-6 px-7 py-6">
+    <div className="hidden overflow-y-scroll h-full w-[480px] rounded-[20px] bg-[#27272A] md:flex flex-col gap-6 px-7 py-6 z-10">
       {/* <motion.div
         initial={{ opacity: 1, fontSize: "30px" }}
         animate={{ opacity: 1, fontSize: isComplete ? "14px" : "30px" }}
