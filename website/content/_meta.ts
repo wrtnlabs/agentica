@@ -6,8 +6,16 @@ const meta: MetaRecord = {
     type: "page",
     display: "hidden",
     theme: {
+      timestamp: false,
       typesetting: "article",
+      layout: "full",
+      navbar: false,
       toc: false,
+      sidebar: false,
+      footer: false,
+      breadcrumb: false,
+      collapsed: false,
+      pagination: false,
     },
   },
   docs: {
