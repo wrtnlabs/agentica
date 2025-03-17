@@ -1,5 +1,4 @@
 import { ArrowUpRight, MenuIcon } from "lucide-react";
-import { headers } from "next/headers";
 import Link from "next/link";
 
 import { Button } from "../common/button";

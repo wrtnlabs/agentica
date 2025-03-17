@@ -1,4 +1,3 @@
-import { HamIcon } from "lucide-react";
 import { StyledLink } from "../common/link";
 import { WrtnlabsLogo } from "../icons/WrtnlabsLogo";
 

@@ -8,11 +8,10 @@ import { WelcomeSection } from "../_components/landing/WelcomeSection";
 import Footer from "../_components/layout/Footer";
 import Header from "../_components/layout/Header";
 import { CORE_VALUES, FUNC_CALLS } from "../_constants/landing";
-import LenisProvider from "../_provider/LenisProvider";
 
 export default function AgenticaPage() {
   return (
-    <LenisProvider>
+    <>
       <Header />
       {/* Welcome */}
       <WelcomeSection />
@@ -72,6 +71,6 @@ export default function AgenticaPage() {
       </section>
 
       <Footer />
-    </LenisProvider>
+    </>
   );
 }
