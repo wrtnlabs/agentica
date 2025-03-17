@@ -15,7 +15,7 @@ export const getNpmPackages = async (): Promise<
 > => {
   try {
     const response = await fetch(
-      "https://registry.npmjs.org/-/v1/search?text=scope:@wrtnlabs&size=10000",
+      "https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/feature/list-connectors/connectors-list.json",
     );
     const responseJson = (await response.json()) as INpmPackages;
 
