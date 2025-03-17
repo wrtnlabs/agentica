@@ -1,4 +1,3 @@
-import axios from "axios";
 import typia, { tags } from "typia";
 
 export interface INpmPackages {
@@ -15,10 +14,11 @@ export const getNpmPackages = async (): Promise<
   { name: string; value: string }[]
 > => {
   try {
-    const response = await axios.get(
+    const response = await fetch(
       "https://registry.npmjs.org/-/v1/search?text=scope:@wrtnlabs&size=10000",
     );
-    const data = typia.assert<INpmPackages>(response.data);
+    const responseJson = await response.json();
+    const data = typia.assert<INpmPackages>(responseJson);
 
     return data.objects
       .map((pkg: any) => pkg.package.name)
