@@ -63,7 +63,7 @@ export default async function RootLayout(props) {
         <meta name="og:type" content="object" />
         <meta name="og:site_name" content="Agentica Guide Documents" />
         <meta name="og:url" content="https://wrtnlabs.io/agentica" />
-        <meta name="og:image" content="/agentica/og.jpg" />
+        <meta name="og:image" content="https://wrtnlabs.io/agentica/og.jpg" />
         <meta name="og:title" content="Agentica Guide Documents" />
         <meta
           name="og:description"
@@ -72,7 +72,10 @@ export default async function RootLayout(props) {
         {/* TWITTER */}
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:site" content="@SamchonGithub" />
-        <meta name="twitter:image" content="/agentica/og.jpg" />
+        <meta
+          name="twitter:image"
+          content="https://wrtnlabs.io/agentica/og.jpg"
+        />
         <meta name="twitter:title" content="Agentica Guide Documents" />
         <meta
           name="twitter:description"

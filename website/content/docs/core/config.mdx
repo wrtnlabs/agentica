@@ -159,6 +159,16 @@ await agent.conversate("Hello, I want to refund my shoes.");
   </Tabs.Tab>
 </Tabs>
 
+System prompts for each [internal agents](/docs/concepts/function-calling/#orchestration-strategy).
+
+If you configure `IAgenticaSystemPrompt` properties, you can change the system prompt contents.
+
+Here is the list of default system prompts, and it would be changed to what you've configured. Reading the `IAgenticaSystemPrompt` type carefully and referencing below snippet, configure the system prompts for guiding the agent to the right way.
+
+Also, the `common` property configure will affect to the every internal agents. If you are developing a chatbot of counseling, you can guide the agent to use the polite and gentle tone by configuring the `common` property. When your agent needs to follow a specific policy, the `common` property is the best place to configure too.
+
+   - https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts
+
 
 
 
