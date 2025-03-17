@@ -32,7 +32,7 @@ const meta: MetaRecord = {
     items: {
       swagger: {
         title: "Swagger Uploader",
-        href: "/playground/playground/",
+        href: "/playground/uploader/",
       },
       shopping: {
         title: "Shopping AI Chatbot (Swagger)",
