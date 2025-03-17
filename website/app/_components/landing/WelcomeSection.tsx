@@ -3,6 +3,8 @@ import { GithubIcon } from "@/app/_components/icons/Github";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
+import { ChatExample } from "./ChatExample";
+
 export function WelcomeSection() {
   return (
     <div className="flex h-[calc(100vh_-_78px)] items-center justify-between gap-0 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(41,41,48,0.75)_0%,rgba(25,25,28,0.57)_53%,rgba(3,3,3,0)_100%)] px-20 py-8 md:gap-6 mx-auto max-w-[1280px]">
@@ -30,7 +32,7 @@ export function WelcomeSection() {
           </Button>
         </div>
       </div>
-      <div className="hidden h-full w-[480px] rounded-[20px] bg-[#27272A] md:block"></div>
+      <ChatExample />
     </div>
   );
 }
