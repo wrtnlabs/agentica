@@ -17,11 +17,12 @@ export const getNpmPackages = async (): Promise<
     const response = await fetch(
       "https://registry.npmjs.org/-/v1/search?text=scope:@wrtnlabs&size=10000",
     );
-    const responseJson = await response.json();
+    const responseJson = (await response.json()) as INpmPackages;
+
     const data = typia.assert<INpmPackages>(responseJson);
 
     return data.objects
-      .map((pkg: any) => pkg.package.name)
+      .map((pkg) => pkg.package.name)
       .filter((name: string) => {
         // shared is not connector package. This is connector util package.
         if (name === "@wrtnlabs/connector-shared") {
