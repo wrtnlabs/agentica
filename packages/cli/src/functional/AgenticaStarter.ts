@@ -5,7 +5,7 @@ import path from "node:path";
 import { Connector } from "../bases/Connector";
 import { IAgenticaStartOption } from "../structures/IAgenticaStartOption";
 import { blueBright } from "../utils/styleText";
-import { ProjectOptionValue } from "../utils/types/ProjectOption";
+import type { ProjectOptionValue } from "../types/ProjectOption";
 
 export namespace AgenticaStarter {
   export const execute = (option: ProjectOptionValue) => {
