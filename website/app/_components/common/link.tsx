@@ -7,7 +7,7 @@ export function StyledLink({
 }: React.ComponentProps<typeof Link> & {
   asChild?: boolean;
 }) {
-  const Comp = asChild ? Slot : Link;
+  const Comp = (asChild ? Slot : Link) as any; // @todo Jaxtyn
 
   return (
     <Comp
