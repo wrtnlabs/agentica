@@ -6,7 +6,7 @@ const FOOTER_CONTENTS = [
     title: "Developers",
     links: [
       { label: "Github", href: "https://github.com/wrtnlabs" },
-      { label: "Docs", href: "https://wrtnlabs.io/blog-overview" },
+      { label: "Docs", href: "/docs" },
     ],
   },
   {
