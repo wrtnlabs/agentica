@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://wrtnlabs.io/agentica
+
+# Sitemaps
+Sitemap: https://wrtnlabs.io/agentica/sitemap.xml
