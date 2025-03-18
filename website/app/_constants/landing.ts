@@ -5,6 +5,8 @@ import { DeclarativeIcon } from "../_components/icons/grapic/Declarative";
 import { RobustIcon } from "../_components/icons/grapic/RobustIcon";
 import { StructuredIcon } from "../_components/icons/grapic/StructuredIcon";
 
+export const CHAT_BUBBLE_DELAY = 500;
+
 export const CHAT_EXAMPLE_INITIAL_MESSAGE = "What can you do?";
 
 export type ChatMessageType = {
@@ -14,6 +16,7 @@ export type ChatMessageType = {
 };
 
 export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
+  { author: "user", messages: ["What can you do?"] },
   {
     author: "agent",
     type: "assistant",
