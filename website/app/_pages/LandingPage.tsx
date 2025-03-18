@@ -6,13 +6,13 @@ import { FuncCallCode } from "../_components/landing/FuncCallCode";
 import { Section } from "../_components/landing/Section";
 import { WelcomeSection } from "../_components/landing/WelcomeSection";
 import Footer from "../_components/layout/Footer";
-import Header from "../_components/layout/Header";
+// import Header from "../_components/layout/Header";
 import { CORE_VALUES, FUNC_CALLS } from "../_constants/landing";
 
 export default function AgenticaPage() {
   return (
     <div className="relative">
-      <Header />
+      {/* <Header /> */}
 
       {/* Welcome */}
       <WelcomeSection />
@@ -65,7 +65,7 @@ export default function AgenticaPage() {
       {/* Preview */}
       <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
         <PreviewCard
-          href="/agentica/github-agent"
+          href="/tutorial/coding/github"
           title="Github Agent"
           image="https://picsum.photos/200/300"
         />
