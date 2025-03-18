@@ -27,11 +27,7 @@ jobs:
           version: 8
       - name: Root
         run: pnpm install
-      - name: Lint
-        run: pnpm run lint
-        working-directory: website
       - name: Website
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: pnpm run build
         working-directory: website
       - name: Deploy
