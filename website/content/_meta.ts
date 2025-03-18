@@ -7,9 +7,9 @@ const meta: MetaRecord = {
     display: "hidden",
     theme: {
       timestamp: false,
-      typesetting: "article",
+      // typesetting: "article",
       layout: "full",
-      navbar: false,
+      // navbar: false,
       toc: false,
       sidebar: false,
       footer: false,
@@ -22,8 +22,8 @@ const meta: MetaRecord = {
     title: "📖 Guide Documents",
     type: "page",
   },
-  tutorials: {
-    title: "🧪 Tutorials",
+  tutorial: {
+    title: "🧪 Tutorial Projects",
     type: "page",
   },
   playground: {
