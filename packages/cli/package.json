@@ -55,7 +55,6 @@
   },
   "devDependencies": {
     "@rslib/core": "^0.5.4",
-    "@ryoppippi/unplugin-typia": "^1.2.0",
     "@inquirer/testing": "^2.1.45",
     "@ryoppippi/unplugin-typia": "^2.0.0",
     "@types/inquirer": "^9.0.3",
