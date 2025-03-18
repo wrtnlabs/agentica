@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { ILlmSchema } from "@samchon/openapi";
 import { toPng } from "html-to-image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
@@ -175,7 +175,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   //----
   const theme: Theme = useTheme();
   const isMobile: boolean = useMediaQuery(theme.breakpoints.down("lg"));
-  const bodyMovie = (): JSX.Element => (
+  const bodyMovie = (): ReactElement => (
     <div
       style={{
         overflowY: "auto",
@@ -201,7 +201,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
       </Container>
     </div>
   );
-  const sideMovie = (): JSX.Element => (
+  const sideMovie = (): ReactElement => (
     <div
       style={{
         width: isMobile ? undefined : SIDE_WIDTH,

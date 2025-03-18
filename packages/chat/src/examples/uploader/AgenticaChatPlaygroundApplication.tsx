@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { IHttpLlmApplication } from "@samchon/openapi";
 import OpenAI from "openai";
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import JsonInput from "react-json-editor-ajrm";
 // @ts-ignore
 import locale from "react-json-editor-ajrm/locale/en.js";
@@ -166,6 +166,6 @@ export namespace AgenticaChatUploaderApplication {
   export interface IProps {
     style?: React.CSSProperties;
     onError?: (error: string) => void;
-    onSuccess: (element: JSX.Element) => void;
+    onSuccess: (element: ReactElement) => void;
   }
 }
