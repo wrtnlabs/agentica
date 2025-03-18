@@ -1,5 +1,4 @@
 import { CardShowcase } from "../_components/common/card-showcase";
-import { PreviewCard } from "../_components/common/preview-card";
 import { CoreValueCard } from "../_components/landing/CoreValueCard";
 import { FuncCallCard } from "../_components/landing/FuncCallCard";
 import { FuncCallCode } from "../_components/landing/FuncCallCode";
@@ -48,28 +47,32 @@ export default function AgenticaPage() {
         title="Showcase"
         description="This is a minimal full-stack React application of Agentica."
       >
-        <div className="flex flex-col gap-8 lg:flex-row lg:gap-5">
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-5">
           <CardShowcase
-            imageSrc="https://picsum.photos/200/300"
+            imageSrc="/agentica/github.svg"
             title="Github Agent"
-            description="Meet an AI agent that uses GitHub’s main APIs to handle your tasks—from scanning key projects to generating refined code, requesting reviews, and even committing changes. "
+            description="Meet an AI agent that uses GitHub’s main APIs to handle your tasks—from scanning key projects to generating refined code, requesting reviews, and even committing changes."
+            isNew
+            status="inactive"
           />
           <CardShowcase
-            imageSrc="https://picsum.photos/200/300"
-            title="Github Agent"
-            description="Meet an AI agent that uses GitHub’s main APIs to handle your tasks—from scanning key projects to generating refined code, requesting reviews, and even committing changes. "
+            imageSrc="/agentica/connector.svg"
+            title="Connector chatbot"
+            description="Meet an AI chatbot designed to seamlessly integrate APIs and services, simplifying workflows and enhancing productivity by effortlessly connecting data sources and managing complex tasks."
+            isNew
+            status="inactive"
           />
         </div>
       </Section>
 
       {/* Preview */}
-      <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
+      {/* <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
         <PreviewCard
           href="/agentica/github-agent"
           title="Github Agent"
           image="https://picsum.photos/200/300"
         />
-      </section>
+      </section> */}
 
       <div className="absolute w-full h-full left-0 top-0 flex justify-between px-24 -z-1">
         <hr className="border-[#272727] border-l-[1px] h-full w-px" />

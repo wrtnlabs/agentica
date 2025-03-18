@@ -1,10 +1,10 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import { cn } from "@/app/_lib/utils/cn";
 import { cva } from "class-variance-authority";
+import Image from "next/image";
+
 import { Badge } from "./badge";
-import {} from "framer-motion";
 import { Hoverable } from "./hover";
 
 interface CardProps {
@@ -29,13 +29,15 @@ export function CardShowcase({
         <div className={cn(cardShowcaseBoxVariants({ status }))}>
           <div
             className={cn(
-              "aspect-[16/9] max-h-[200px] overflow-hidden rounded-md bg-zinc-400 md:max-h-[400px]",
+              "relative flex justify-center items-center aspect-[16/9] max-h-[200px] overflow-hidden rounded-md bg-zinc-400 md:max-h-[400px]",
               !isActive && "opacity-50",
             )}
           >
-            <img
+            <Image
               src={imageSrc}
               alt={title}
+              objectFit="cover"
+              layout="fill"
               className={cn(
                 "h-full w-full object-cover transition-all duration-300",
                 hover && isActive && "scale-110",
