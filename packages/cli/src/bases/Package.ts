@@ -15,8 +15,8 @@ export namespace Package {
       description: "",
       scripts: {
         build: "tsc",
-        dev: `ts-node ${input.projectName}/cli.ts`,
-        start: `node ${input.projectName}/cli.js`,
+        dev: `ts-node src/index.ts`,
+        start: `node dist/index.js`,
       },
     };
 
@@ -44,7 +44,9 @@ export namespace Package {
             /** exhaustive check */
             packageManager satisfies never;
 
-            throw new Error(`Unsupported package manager: ${packageManager as unknown as string}`);
+            throw new Error(
+              `Unsupported package manager: ${packageManager as unknown as string}`,
+            );
         }
       };
 
