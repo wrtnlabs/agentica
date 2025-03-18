@@ -57,8 +57,7 @@ function TabsTrigger({
       {...props}
     >
       <motion.li initial={false}>
-        {children as any}
-        {/* @todo Jaxtyn */}
+        {children}
         {isActive && (
           <motion.div
             layoutId="activeTabIndicator"

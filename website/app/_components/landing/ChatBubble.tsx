@@ -1,18 +1,13 @@
 import { ChatMessageType } from "@/app/_constants/landing";
 import { cva } from "class-variance-authority";
-import {
-  ChevronDown,
-  SquareArrowDownRight,
-  SquareCheckBig,
-  UserRound,
-} from "lucide-react";
-import { SVGAttributes } from "react";
+import { SquareArrowDownRight, SquareCheckBig, UserRound } from "lucide-react";
+import { ReactNode } from "react";
 
 import { Markdown } from "./Markdown";
 
 const TYPE_SELECTOR: Record<
   Exclude<ChatMessageType["type"], undefined>,
-  { icon: SVGAttributes<SVGElement>; label: string }
+  { icon: ReactNode; label: string }
 > = {
   assistant: { icon: <UserRound size={16} />, label: "Assistant" },
   func_selector: {
@@ -40,7 +35,7 @@ export function ChatBubble({ author, messages, type }: ChatMessageType) {
     <div className={chatBubbleVariants({ author })}>
       {type && (
         <div className="w-fit font-bold text-xs rounded-full border-[#06474C] text-[#06474C] border px-2 py-1 flex gap-1">
-          <>{TYPE_SELECTOR[type].icon}</>
+          {TYPE_SELECTOR[type].icon}
           {TYPE_SELECTOR[type].label}
         </div>
       )}

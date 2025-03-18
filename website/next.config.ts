@@ -16,7 +16,4 @@ export default withNextra({
   nextThemes: {
     theme: "dark",
   },
-  eslint: {
-    ignoreDuringBuilds: true, // @todo Jaxtyn
-  },
 });
