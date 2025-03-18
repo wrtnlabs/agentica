@@ -3,11 +3,9 @@ title: Agentica > Guide Documents > Core Library > Facade Controller
 ---
 import { Tabs } from "nextra/components";
 
+import RemoteSource from "../../../components/RemoteSource";
+
 import AgenticaSnippet from "../../snippets/AgenticaSnippet.mdx";
-import IAgenticaPropsSnippet from "../../snippets/IAgenticaPropsSnippet.mdx";
-import IAgenticaConfigSnippet from "../../snippets/IAgenticaConfigSnippet.mdx";
-import IAgenticaControllerSnippet from "../../snippets/IAgenticaControllerSnippet.mdx";
-import IAgenticaVendorSnippet from "../../snippets/IAgenticaVendorSnippet.mdx";
 import AgenticaPromptSnippet from "../../snippets/AgenticaPromptSnippet.mdx";
 import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
 
@@ -65,13 +63,22 @@ export const main = async (id: string): Promise<void> => {
     <AgenticaSnippet />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaPropsSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaProps.ts"
+      filename="@agentica/core/IAgenticaProps"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaConfigSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaControllerSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaController.ts"
+      filename="@agentica/core/IAgenticaController"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -161,10 +168,16 @@ await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaPropsSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaProps.ts"
+      filename="@agentica/core/IAgenticaProps"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaVendorSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaVendor.ts"
+      filename="@agentica/core/IAgenticaVendor"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -275,10 +288,16 @@ main().catch(console.error);
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaPropsSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaProps.ts"
+      filename="@agentica/core/IAgenticaProps"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaControllerSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaController.ts"
+      filename="@agentica/core/IAgenticaController"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 

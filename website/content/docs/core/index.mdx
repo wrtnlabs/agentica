@@ -3,16 +3,11 @@ title: Agentica > Guide Documents > Core Library
 ---
 import { Tabs } from "nextra/components";
 
+import RemoteSource from "../../../components/RemoteSource";
+
 import AgenticaSnippet from "../../snippets/AgenticaSnippet.mdx";
-import IAgenticaPropsSnippet from "../../snippets/IAgenticaPropsSnippet.mdx";
-import IAgenticaVendorSnippet from "../../snippets/IAgenticaVendorSnippet.mdx";
-import IAgenticaControllerSnippet from "../../snippets/IAgenticaControllerSnippet.mdx";
-import IAgenticaConfigSnippet from "../../snippets/IAgenticaConfigSnippet.mdx";
-import IAgenticaExecutorSnippet from "../../snippets/IAgenticaExecutorSnippet.mdx";
-import IAgenticaSystemPromptSnippet from "../../snippets/IAgenticaSystemPromptSnippet.mdx";
 import AgenticaPromptSnippet from "../../snippets/AgenticaPromptSnippet.mdx";
 import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
-import IAgenticaPromptJsonSnippet from "../../snippets/IAgenticaPromptJsonSnippet.mdx";
 
 ## `@agentica/core`
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
@@ -145,13 +140,22 @@ By the way, as `typia` is a transformer library analyzing TypeScript source code
     <AgenticaSnippet />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaPropsSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaProps.ts"
+      filename="@agentica/core/IAgenticaProps"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaVendorSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaVendor.ts"
+      filename="@agentica/core/IAgenticaVendor"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaControllerSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaController.ts"
+      filename="@agentica/core/IAgenticaController"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -323,13 +327,22 @@ Also, if you want to trace the conversation process, you can add event listeners
   <code>IAgenticaSystemPrompt</code>,
 ]}>
   <Tabs.Tab>
-    <IAgenticaConfigSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaExecutorSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaExecutor.ts"
+      filename="@agentica/core/IAgenticaExecutor"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaSystemPromptSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaSystemPrompt.ts"
+      filename="@agentica/core/IAgenticaSystemPrompt"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -378,7 +391,10 @@ Even though the event listening is not essential, I recommend you to at least li
     <AgenticaPromptSnippet />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaPromptJsonSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/json/IAgenticaPromptJson.ts"
+      filename="@agentica/core/IAgenticaPromptJson"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
