@@ -6,7 +6,7 @@ import { ChatExample } from "./ChatExample";
 
 export function WelcomeSection() {
   return (
-    <div className="relative flex h-screen items-center justify-center md:justify-between gap-0 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(41,41,48,0.75)_0%,rgba(25,25,28,0.57)_53%,rgba(3,3,3,0)_100%)] px-20 py-8 md:gap-6 mx-auto max-w-[1280px]">
+    <div className="relative flex h-[calc(100vh-64px)] items-center justify-center md:justify-between gap-0 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(41,41,48,0.75)_0%,rgba(25,25,28,0.57)_53%,rgba(3,3,3,0)_100%)] px-20 py-8 md:gap-6 mx-auto max-w-[1280px]">
       <div className="flex flex-col gap-9 z-10">
         <div className="flex flex-col gap-4">
           <h1 className="text-center text-[80px] font-semibold text-zinc-50 md:text-start">

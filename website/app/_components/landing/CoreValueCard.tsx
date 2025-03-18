@@ -1,9 +1,8 @@
 import {
   Card,
-  CardTitle,
   CardDescription,
+  CardTitle,
 } from "@/app/_components/common/card";
-
 import { SVGAttributes } from "react";
 
 interface CoreValueCardProps {
@@ -18,7 +17,7 @@ export function CoreValueCard({
   description,
 }: CoreValueCardProps) {
   return (
-    <Card className="relative flex flex-1 flex-col justify-between overflow-hidden rounded-[36px] border-zinc-700 bg-[#030303]/70 p-5 pb-12">
+    <Card className="relative flex flex-1 h-[440px] flex-col justify-between overflow-hidden rounded-[36px] border-zinc-700 bg-[#030303]/70 p-5 pb-[72px]">
       {/* TODO: icon */}
       {<IconElement width={80} />}
 
