@@ -173,7 +173,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   if (!describeEvent) {
     throw new Error("Could not find describe event");
   }
-  console.log("describeEvent.done", describeEvent.done);
+
   // Check if describe event includes executions array
   if (!describeEvent.executes || describeEvent.executes.length === 0) {
     throw new Error("describe event has no executions information");
