@@ -94,7 +94,7 @@ export namespace ChatGptDescribeFunctionAgent {
       };
 
       if (acc.object === "chat.completion.chunk") {
-        registerContext([acc, chunk].flatMap((acc) => acc.choices));
+        registerContext([acc, chunk].flatMap((v) => v.choices));
         return ChatGptCompletionMessageUtil.merge([acc, chunk]);
       }
 

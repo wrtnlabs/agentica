@@ -5,6 +5,8 @@ import { DeclarativeIcon } from "../_components/icons/grapic/Declarative";
 import { RobustIcon } from "../_components/icons/grapic/RobustIcon";
 import { StructuredIcon } from "../_components/icons/grapic/StructuredIcon";
 
+export const CHAT_BUBBLE_DELAY = 500;
+
 export const CHAT_EXAMPLE_INITIAL_MESSAGE = "What can you do?";
 
 export type ChatMessageType = {
@@ -14,6 +16,7 @@ export type ChatMessageType = {
 };
 
 export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
+  { author: "user", messages: ["What can you do?"] },
   {
     author: "agent",
     type: "assistant",
@@ -91,11 +94,11 @@ export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
       "### Commodity Details\n" +
         "- Commodity ID: 4d60821b-2546-4230-b727-48cc9ced6977\n" +
         "#### Sale Information\n" +
-        "- Sale ID: 72126644-31f8-4571-b3e9-5362040aee50" +
-        "- Snapshot ID: 3fb4895-6a01-4abf-b94d-28945bab2c0c" +
-        "- Latest Snapshot: Yes" +
+        "- Sale ID: 72126644-31f8-4571-b3e9-5362040aee50\n" +
+        "- Snapshot ID: 3fb4895-6a01-4abf-b94d-28945bab2c0c\n" +
+        "- Latest Snapshot: Yes\n" +
         "#### Content Information\n" +
-        "- Title: Apple MacBook Pro" +
+        "- Title: Apple MacBook Pro\n" +
         "- Thumbnail: " +
         "![macbook](/agentica/macbook.png)\n",
       "#### Unit Details\n" +
@@ -127,7 +130,7 @@ export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
   {
     author: "user",
     messages: [
-      "I'll pay it with cash, and my address is:\n\ncountry: South Korea city/province: Seoul\n\ndepartment: Wrtn Apartment\npossession: 101-1411",
+      "I'll pay it with cash, and my address is:\n\ncountry: South Korea\ncity/province: Seoul\n\ndepartment: Wrtn Apartment\npossession: 101-1411",
     ],
   },
   {
@@ -154,7 +157,7 @@ export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
         "  - Method: POST\n" +
         "  - Path: /shoppings/customers/orders\n" +
         "  - Status: 201 Created\n",
-        "#### Order Publication:\n" +
+      "#### Order Publication:\n" +
         "  - Method: POST\n" +
         "  - Path: /shoppings/customers/orders/{orderId}/publish\n" +
         "  - Status: 201 Created\n",

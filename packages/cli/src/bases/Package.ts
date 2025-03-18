@@ -14,9 +14,10 @@ export namespace Package {
       version: "0.0.1",
       description: "",
       scripts: {
+        prepare: "ts-patch install",
         build: "tsc",
-        dev: `ts-node ${input.projectName}/cli.ts`,
-        start: `node ${input.projectName}/cli.js`,
+        dev: `ts-node src/index.ts`,
+        start: `node dist/index.js`,
       },
     };
 
@@ -44,7 +45,9 @@ export namespace Package {
             /** exhaustive check */
             packageManager satisfies never;
 
-            throw new Error(`Unsupported package manager: ${packageManager as unknown as string}`);
+            throw new Error(
+              `Unsupported package manager: ${packageManager as unknown as string}`,
+            );
         }
       };
 
@@ -53,11 +56,10 @@ export namespace Package {
         "typia",
         "dotenv",
         "@agentica/core",
-        "readline",
         ...input.services.map((s) => `@wrtnlabs/connector-${s}`),
       ];
 
-      const devDependencies = ["ts-node", "typescript"];
+      const devDependencies = ["ts-node", "typescript", "ts-patch"];
 
       // install existing dependencies
       console.log("🚀 Installing existing dependencies...");

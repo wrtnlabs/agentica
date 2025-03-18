@@ -1,7 +1,8 @@
-import { ChatMessageType } from "@/app/_constants/landing";
+import { CHAT_BUBBLE_DELAY, ChatMessageType } from "@/app/_constants/landing";
 import { cva } from "class-variance-authority";
+import { motion } from "framer-motion";
 import { SquareArrowDownRight, SquareCheckBig, UserRound } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import { Markdown } from "./Markdown";
 
@@ -20,7 +21,7 @@ const TYPE_SELECTOR: Record<
   },
 };
 
-const chatBubbleVariants = cva("py-4 px-5 rounded-2xl flex flex-col gap-4 ", {
+const chatBubbleVariants = cva("py-4 px-5 rounded-2xl flex flex-col gap-4", {
   variants: {
     author: {
       user: "bg-zinc-600 max-w-[272px] ml-auto text-zinc-100",
@@ -30,24 +31,45 @@ const chatBubbleVariants = cva("py-4 px-5 rounded-2xl flex flex-col gap-4 ", {
 });
 
 export function ChatBubble({ author, messages, type }: ChatMessageType) {
-  // const isFuncCall = type === "func_selector" || type === "func_describer";
+  const [visibleTexts, setVisibleTexts] = useState<number>(0);
+
+  useEffect(() => {
+    if (visibleTexts < messages.length) {
+      const timeout = setTimeout(() => {
+        setVisibleTexts((prev) => prev + 1);
+      }, CHAT_BUBBLE_DELAY);
+      return () => clearTimeout(timeout);
+    }
+  }, [visibleTexts, messages.length]);
+
   return (
-    <div className={chatBubbleVariants({ author })}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={chatBubbleVariants({ author })}
+    >
       {type && (
-        <div className="w-fit font-bold text-xs rounded-full border-[#06474C] text-[#06474C] border px-2 py-1 flex gap-1">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="w-fit font-bold text-xs rounded-full border-[#06474C] text-[#06474C] border px-2 py-1 flex gap-1"
+        >
           {TYPE_SELECTOR[type].icon}
           {TYPE_SELECTOR[type].label}
-        </div>
+        </motion.div>
       )}
-      {messages.map((message, index) => (
-        <Markdown key={index}>{message}</Markdown>
+      {messages.slice(0, visibleTexts).map((message, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Markdown>{message}</Markdown>
+        </motion.div>
       ))}
-      {/* {isFuncCall && (
-        <div className="flex gap-1 py-1 px-2 text-[#848470] text-xs font-bold cursor-not-allowed">
-          <ChevronDown size={16} strokeWidth={2} />
-          SHOW FUNCTION DESCRIPTION
-        </div>
-      )} */}
-    </div>
+    </motion.div>
   );
 }

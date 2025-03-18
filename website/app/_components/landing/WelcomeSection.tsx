@@ -1,21 +1,20 @@
 import { Button } from "@/app/_components/common/button";
 import { GithubIcon } from "@/app/_components/icons/Github";
-// import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 import { ChatExample } from "./ChatExample";
 
 export function WelcomeSection() {
   return (
-    <div className="relative flex h-[calc(100vh_-_78px)] items-center justify-center md:justify-between gap-0 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(41,41,48,0.75)_0%,rgba(25,25,28,0.57)_53%,rgba(3,3,3,0)_100%)] px-20 py-8 md:gap-6 mx-auto max-w-[1280px]">
+    <div className="relative flex h-[calc(100vh-64px)] items-center justify-center md:justify-between gap-0 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(41,41,48,0.75)_0%,rgba(25,25,28,0.57)_53%,rgba(3,3,3,0)_100%)] px-20 py-8 md:gap-6 mx-auto max-w-[1280px]">
       <div className="flex flex-col gap-9 z-10">
         <div className="flex flex-col gap-4">
           <h1 className="text-center text-[80px] font-semibold text-zinc-50 md:text-start">
             Agentica
           </h1>
-          <p className="text-center text-xl whitespace-pre-line text-[#767676] md:text-start">
+          <p className="text-center text-[15px] whitespace-pre-line md:whitespace-normal text-zinc-300 md:text-start md:text-[18px] lg:text-xl">
             {
-              "Agentic AI Framework specialized in LLM Function Calling\n enhanced by TypeScript compiler skills"
+              "Agentic AI Framework\n specialized in LLM Function Calling\n enhanced by TypeScript compiler skills"
             }
           </p>
         </div>
@@ -35,10 +34,12 @@ export function WelcomeSection() {
         </div>
       </div>
       <ChatExample />
+
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/agentica/welcome_bg.png"
         alt="background"
-        className="top-[50%] left-[50%] transform-[translate(-50%,-50%)] h-screen object-cover opacity-30 absolute md:w-[70%] md:h-auto"
+        className="absolute top-[50%] left-[50%] transform-[translate(-50%,-50%)] h-screen object-cover opacity-30 md:w-[75%] md:h-auto select-none"
       />
     </div>
   );

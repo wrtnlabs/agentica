@@ -1,0 +1,168 @@
+---
+title: Agentica > Tutorial > File System Agents  
+---
+
+## Introduction
+
+This tutorial guides you through setting up a **fully functional File System Agent** using **Agentica**. With the following code block, you can create an agent that interacts with the local file system, powered by **OpenAI's GPT model**.
+
+## The Complete File System Agent
+
+First, ensure you have the necessary packages installed. For this example, you'll need Node's built-in `fs` module along with the Agentica core packages:
+
+```bash
+npm install @agentica/core dotenv openai typia
+```
+
+Then, add the following code to your project:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import dotenv from "dotenv";
+import fs from "fs";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+class FsClass {
+  /**
+   * Indicates the current folder path.
+   *
+   * ```ts
+   * The directory name of the current module. This is the same as the
+   * `path.dirname()` of the `__filename`.
+   * @since v0.1.27
+   * __dirname;
+   * ```
+   *
+   * @returns dirname
+   */
+  async __dirname(): Promise<string> {
+    return __dirname;
+  }
+
+  /**
+   * Reads the contents of the directory.
+   *
+   * See the POSIX [`readdir(3)`](http://man7.org/linux/man-pages/man3/readdir.3.html) documentation for more details.
+   *
+   * The optional `options` argument can be a string specifying an encoding, or an
+   * object with an `encoding` property specifying the character encoding to use for
+   * the filenames returned. If the `encoding` is set to `'buffer'`,
+   * the filenames returned will be passed as `Buffer` objects.
+   *
+   * If `options.withFileTypes` is set to `true`, the result will contain `fs.Dirent` objects.
+   * @since v0.1.21
+   */
+  async readdirSync(input: {
+    path: string;
+    options?:
+      | {
+          encoding: "utf-8";
+          withFileTypes?: false | undefined;
+          recursive?: boolean | undefined;
+        }
+      | "utf-8"
+      | null;
+  }): Promise<string[]> {
+    return fs.readdirSync(input.path, input.options);
+  }
+
+  /**
+   * Returns the contents of the `path`.
+   *
+   * For detailed information, see the documentation of the asynchronous version of
+   * this API: {@link readFile}.
+   *
+   * If the `encoding` option is specified then this function returns a
+   * string. Otherwise it returns a buffer.
+   *
+   * Similar to {@link readFile}, when the path is a directory, the behavior of
+   * `fs.readFileSync()` is platform-specific.
+   *
+   * ```js
+   * import { readFileSync } from 'fs';
+   *
+   * // macOS, Linux, and Windows
+   * readFileSync('<directory>');
+   * // => [Error: EISDIR: illegal operation on a directory, read <directory>]
+   *
+   * //  FreeBSD
+   * readFileSync('<directory>'); // => <data>
+   * ```
+   * @since v0.1.8
+   * @param path filename
+   */
+  async readFileSync(input: { path: string }): Promise<string> {
+    return fs.readFileSync(input.path, { encoding: "utf-8" }) as string;
+  }
+
+  /**
+   * Writes data to the specified file.
+   *
+   * The `mode` option only affects the newly created file. See {@link open} for more details.
+   *
+   * For detailed information, see the documentation of the asynchronous version of
+   * this API: {@link writeFile}.
+   * @since v0.1.29
+   * @param file filename or file descriptor
+   */
+  async writeFileSync(input: { file: string; data: string }): Promise<void> {
+    return fs.writeFileSync(input.file, input.data);
+  }
+}
+
+export const FileSystemAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "File Connector",
+      protocol: "class",
+      application: typia.llm.application<FsClass, "chatgpt">(),
+      execute: new FsClass(),
+    },
+  ],
+});
+```
+
+## What This Does
+
+With this configuration, the File System Agent can:
+
+- **Retrieve the current directory path** using `__dirname`.
+- **Read directory contents** with `readdirSync`, providing options for encoding and file types.
+- **Read file contents** using `readFileSync`, with the ability to specify encoding.
+- **Write data to files** with `writeFileSync`.
+
+### Additional Explanation
+
+Please note that there is no built-in connector specifically for file read/write operations. However, don't worry—Agentica supports calling instance member functions on classes directly. This means you can simply wrap Node's `fs` functions in a class, as shown above.
+
+For those who are concerned about writing detailed comments for every function, remember that Node's built-in `fs` module already comes with comprehensive documentation. You can reuse its comments directly, ensuring that you have clear and accurate information without extra effort.
+
+Keep in mind that communication with agents must occur via conversation, which is represented as strings for ease of understanding by developers. Therefore, types that cannot be easily expressed as strings (such as `Buffer`) should be excluded from the types exposed by the agent. In simpler terms, only primitive types like `number`, `string`, `boolean`, and literal types are recommended for use.
+
+### Security Warning
+
+**Warning:** This example is provided for demonstration purposes only. Using file system operations in an agent can be risky, especially in a production environment, as it may expose your system to security vulnerabilities. **Do not use this example code in production without proper security measures.** Always ensure that file operations are properly validated and secured before deployment.
+
+## Use Case Example
+
+Imagine asking the agent to:
+
+> "Read the contents of a specific file and return the current directory path."
+
+The agent would combine responses from the `readFileSync` and `__dirname` methods to provide the requested information.
+
+## Available Functions
+
+You can inspect the available functions in the `FsClass` by reviewing the source code or the documentation comments within the class.
+
+With this **code block**, your AI-powered File System Agent is complete. Enjoy automating your file operations—but remember to apply caution and secure your implementation!
