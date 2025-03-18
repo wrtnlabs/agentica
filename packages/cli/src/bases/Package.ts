@@ -14,6 +14,7 @@ export namespace Package {
       version: "0.0.1",
       description: "",
       scripts: {
+        prepare: "ts-patch install",
         build: "tsc",
         dev: `ts-node src/index.ts`,
         start: `node dist/index.js`,
@@ -55,11 +56,10 @@ export namespace Package {
         "typia",
         "dotenv",
         "@agentica/core",
-        "readline",
         ...input.services.map((s) => `@wrtnlabs/connector-${s}`),
       ];
 
-      const devDependencies = ["ts-node", "typescript"];
+      const devDependencies = ["ts-node", "typescript", "ts-patch"];
 
       // install existing dependencies
       console.log("🚀 Installing existing dependencies...");
