@@ -3,9 +3,12 @@ import { getConnectors, getConnectorsList } from './getConnectors';
 describe('getConnectorsList', () => {
   it('should return a list of connectors', async () => {
     const connectors = await getConnectorsList();
-    expect(connectors).toEqual([
-      { name: '@wrtnio/connector-google-map', version: '1.0.0' }
-    ]);
+    expect(connectors).toEqual({
+      connectors: [
+        '@wrtnio/connector-google-map',
+      ],
+      version: '1.0.0',
+    });
   });
 })
 
