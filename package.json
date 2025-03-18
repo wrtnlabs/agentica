@@ -13,7 +13,8 @@
     "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
-    "release": "bumpp"
+    "release": "bumpp",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
