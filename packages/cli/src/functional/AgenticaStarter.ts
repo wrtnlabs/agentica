@@ -177,7 +177,6 @@ export namespace AgenticaStarter {
 
     console.log("✅ Template downloaded");
 
-    // REMOVE .GIT DIRECTORY
     // Some templates may not have .github/dependabot.yml
 
     if (
