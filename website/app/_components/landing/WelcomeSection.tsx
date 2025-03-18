@@ -1,6 +1,5 @@
 import { Button } from "@/app/_components/common/button";
 import { GithubIcon } from "@/app/_components/icons/Github";
-// import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 import { ChatExample } from "./ChatExample";
@@ -35,10 +34,12 @@ export function WelcomeSection() {
         </div>
       </div>
       <ChatExample />
+
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/agentica/welcome_bg.png"
         alt="background"
-        className="top-[50%] left-[50%] transform-[translate(-50%,-50%)] h-screen object-cover opacity-30 absolute md:w-[70%] md:h-auto"
+        className="absolute top-[50%] left-[50%] transform-[translate(-50%,-50%)] h-screen object-cover opacity-30 md:w-[75%] md:h-auto select-none"
       />
     </div>
   );
