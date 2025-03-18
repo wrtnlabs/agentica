@@ -1,13 +1,13 @@
 "use client";
 
-import { ReactElement } from "react";
+import React from "react";
 import { useHover } from "react-use";
 
 interface HoverableProps {
-  children: (isHover: boolean) => ReactElement;
+  children: (isHover: boolean) => React.ReactElement;
 }
 
 export function Hoverable({ children }: HoverableProps) {
-  const [newElement] = useHover(children as any); // @todo Jaxtyn
+  const [newElement] = useHover(children);
   return newElement;
 }
