@@ -68,7 +68,7 @@ export default function AgenticaPage() {
       {/* Preview */}
       {/* <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
         <PreviewCard
-          href="/agentica/github-agent"
+          href="/tutorial/coding/github"
           title="Github Agent"
           image="https://picsum.photos/200/300"
         />
