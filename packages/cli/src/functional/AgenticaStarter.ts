@@ -47,7 +47,7 @@ export namespace AgenticaStarter {
         const agenticaCode = Connector.createAll({ services: input.services });
 
         await writeTypescriptFile({
-          filePath: path.join(input.projectPath, "src/agent.ts"),
+          filePath: path.join(input.projectPath, "src/index.ts"),
           taskName: "Agentica code",
           content: agenticaCode,
         });
