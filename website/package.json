@@ -4,7 +4,7 @@
   "description": "Agentica Website",
   "scripts": {
     "dev": "next",
-    "build": "node build/typedoc && node build/snippet && node build/playground && next build && node build/sitemap",
+    "build": "node build/typedoc && node build/playground && next build && node build/sitemap",
     "start": "next start",
     "lint": "next lint"
   },
@@ -42,16 +42,17 @@
     "react-markdown": "^9.0.3",
     "react-use": "^17.6.0",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tstl": "^3.0.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "22.13.9",
     "@types/react": "^19.0.0",
-    "next-sitemap": "^4.2.3",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
-    "@eslint/eslintrc": "^3"
+    "next-sitemap": "^4.2.3",
+    "tailwindcss": "^4"
   }
 }

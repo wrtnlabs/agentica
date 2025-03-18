@@ -3,11 +3,7 @@ title: Agentica > Guide Documents > Core Library > Configurations
 ---
 import { Tabs } from "nextra/components";
 
-import IAgenticaPropsSnippet from "../../snippets/IAgenticaPropsSnippet.mdx";
-import IAgenticaConfigSnippet from "../../snippets/IAgenticaConfigSnippet.mdx";
-import IAgenticaExecutorSnippet from "../../snippets/IAgenticaExecutorSnippet.mdx";
-import IAgenticaSystemPromptSnippet from "../../snippets/IAgenticaSystemPromptSnippet.mdx";
-import AgenticaContextSnippet from "../../snippets/AgenticaContextSnippet.mdx";
+import RemoteSource from "../../../components/RemoteSource";
 
 ## Configuration
 <Tabs items={[
@@ -51,16 +47,28 @@ await agent.conversate("Hello, I want to refund my shoes.");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaPropsSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaProps.ts"
+      filename="@agentica/core/IAgenticaProps"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaConfigSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaExecutorSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaExecutor.ts"
+      filename="@agentica/core/IAgenticaExecutor"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaSystemPromptSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaSystemPrompt.ts"
+      filename="@agentica/core/IAgenticaSystemPrompt"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -108,10 +116,16 @@ await agent.conversate("Hello, I want to refund my shoes.");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaExecutorSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaExecutor.ts"
+      filename="@agentica/core/IAgenticaExecutor"
+      showLineNumbers />
   </Tabs.Tab>
   <Tabs.Tab>
-    <AgenticaContextSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/context/AgenticaContext.ts"
+      filename="@agentica/core/AgenticaContext"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -155,7 +169,10 @@ await agent.conversate("Hello, I want to refund my shoes.");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaSystemPromptSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaSystemPrompt.ts"
+      filename="@agentica/core/IAgenticaSystemPrompt"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -197,7 +214,10 @@ await agent.conversate("Hello, I want to refund my shoes.");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaConfigSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
@@ -238,7 +258,10 @@ await agent.conversate("Hello, I want to refund my shoes.");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <IAgenticaConfigSnippet />
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
   </Tabs.Tab>
 </Tabs>
 
