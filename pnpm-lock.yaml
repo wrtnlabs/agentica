@@ -205,18 +205,12 @@ importers:
       commander:
         specifier: ^10.0.0
         version: 10.0.1
-      comment-json:
-        specifier: ^4.2.3
-        version: 4.2.5
       giget:
         specifier: ^1
         version: 1.2.5
       inquirer:
         specifier: ^8.2.5
         version: 8.2.6
-      package-manager-detector:
-        specifier: ^0.2.0
-        version: 0.2.11
       typia:
         specifier: ^8.0.0
         version: 8.0.0(@samchon/openapi@3.0.0)(typescript@5.8.2)

@@ -40,10 +40,8 @@
   ],
   "dependencies": {
     "commander": "^10.0.0",
-    "comment-json": "^4.2.3",
     "giget": "^1",
     "inquirer": "^8.2.5",
-    "package-manager-detector": "^0.2.0",
     "typia": "^8.0.0"
   },
   "engines": {
