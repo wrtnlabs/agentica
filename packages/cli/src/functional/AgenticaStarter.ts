@@ -94,9 +94,11 @@ export namespace AgenticaStarter {
         }),
     },
     react: {
-      title: `React ${blueBright("Client Application")} (Currently not supported)`,
+      title: `React ${blueBright("Client Application")}`,
       key: "react",
-      runner: undefined,
+      runner: async (input: IAgenticaStartOption.IProject): Promise<void> => {
+        await writeTemplate("react", input.projectName);
+      },
     },
   } as const;
 
