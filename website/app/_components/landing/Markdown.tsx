@@ -6,6 +6,25 @@ export interface MarkdownProps {
 }
 
 export function Markdown({ children }: MarkdownProps) {
+  const regex = /^ {2,}-\s/;
+  if (regex.test(children)) {
+    const content = children.replace(regex, "");
+    const pl = Math.floor((children.match(/^ */)?.[0].length || 2) / 2) + 2;
+
+    return (
+      <ul
+        className={`whitespace-normal list-inside list-disc text-sm`}
+        style={{ paddingLeft: `${pl}rem` }}
+      >
+        <li className="marker:absolute marker:-left-[4px] marker:mr-[4px]">
+          {content}
+        </li>
+      </ul>
+    );
+  }
+
+  if (children === "") return <br />;
+
   return (
     <ReactMarkdown
       components={{
@@ -31,8 +50,10 @@ export function Markdown({ children }: MarkdownProps) {
           />
         ),
         img: ({ ...props }) => (
-          <img {...props} className="block w-max-full h-auto" />
+          // eslint-disable-next-line @next/next/no-img-element
+          <img {...props} alt="image" className="block w-max-full h-auto" />
         ),
+        hr: ({ ...props }) => <hr {...props} className="border-zinc-700" />,
       }}
     >
       {children}
