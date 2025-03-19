@@ -211,9 +211,6 @@ importers:
       inquirer:
         specifier: ^8.2.5
         version: 8.2.6
-      typia:
-        specifier: ^8.0.0
-        version: 8.0.0(@samchon/openapi@3.0.0)(typescript@5.8.2)
     devDependencies:
       '@rslib/core':
         specifier: ^0.5.4
@@ -236,6 +233,9 @@ importers:
       typescript:
         specifier: ~5.8.2
         version: 5.8.2
+      typia:
+        specifier: ^8.0.0
+        version: 8.0.0(@samchon/openapi@3.0.0)(typescript@5.8.2)
     optionalDependencies:
       prettier:
         specifier: '>=2.4.0'
