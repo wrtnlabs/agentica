@@ -40,7 +40,7 @@ export const SwaggerAgent = async () =>
         application: HttpLlm.application({
           // Convert the Swagger JSON document to an OpenAPI model for Agentica.
           document: OpenApi.convert(
-            await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(
+            await fetch("https://petstore.swagger.io/v2/swagger.json").then(
               (r) => r.json()
             )
           ),
