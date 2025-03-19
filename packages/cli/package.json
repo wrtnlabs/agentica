@@ -39,7 +39,6 @@
     "bin"
   ],
   "dependencies": {
-    "commander": "^10.0.0",
     "giget": "^1",
     "inquirer": "^8.2.5"
   },
@@ -54,6 +53,7 @@
     "@ryoppippi/unplugin-typia": "^1.2.0",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^20.14.8",
+    "commander": "^10.0.0",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
     "typia": "^8.0.0",

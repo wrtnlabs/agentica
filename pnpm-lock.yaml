@@ -202,9 +202,6 @@ importers:
 
   packages/cli:
     dependencies:
-      commander:
-        specifier: ^10.0.0
-        version: 10.0.1
       giget:
         specifier: ^1
         version: 1.2.5
@@ -224,6 +221,9 @@ importers:
       '@types/node':
         specifier: ^20.14.8
         version: 20.17.23
+      commander:
+        specifier: ^10.0.0
+        version: 10.0.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.17.23)(typescript@5.8.2)
