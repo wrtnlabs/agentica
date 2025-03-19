@@ -45,12 +45,15 @@ export const getQuestions = (
             value: project.key,
           })),
         },
-    {
-      type: "checkbox",
-      name: "services",
-      message: "Embedded Controllers",
-      choices: input.services,
-    },
+    input.services.length === 0
+      ? null
+      : {
+          type: "checkbox",
+          name: "services",
+          message: "Embedded Controllers",
+          choices: input.services,
+          when: (answers) => answers.projectType !== "react",
+        },
     {
       type: "input",
       name: "openAIKey",
