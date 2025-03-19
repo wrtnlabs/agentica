@@ -27,7 +27,7 @@ dotenv.config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
 
-export const GamilAgent = new Agentica({
+export const GmailAgent = new Agentica({
   model: "chatgpt",
   vendor: {
     api: openai,
@@ -102,7 +102,7 @@ For example, in the following code, only these five functions are available:
 - `hardDelete`
 
 ```typescript
-export const GamilAgent = new Agentica({
+export const GmailAgent = new Agentica({
   model: "chatgpt",
   vendor: {
     api: openai,
