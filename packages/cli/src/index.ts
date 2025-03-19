@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { Command } from "commander";
 
 import { AgenticaStart } from "./executable/AgenticaStart";
