@@ -177,8 +177,15 @@ export namespace AgenticaStarter {
 
     console.log("✅ Template downloaded");
 
-    // REMOVE .GIT DIRECTORY
-    await fs.rm(path.join(directory, ".git"), { recursive: true });
-    await fs.rm(path.join(directory, ".github/dependabot.yml"));
+    // Some templates may not have .github/dependabot.yml
+    const dependabotFilePath = path.join(directory, ".github/dependabot.yml");
+    if (
+      await fs
+        .access(dependabotFilePath)
+        .then(() => true)
+        .catch(() => false)
+    ) {
+      await fs.rm(dependabotFilePath);
+    }
   };
 }
