@@ -34,19 +34,24 @@ export namespace AgenticaStart {
     }
 
     // Get connector package names from npm and sort alphabetically
-    const availableServices = (await getNpmPackages()).sort((a, b) =>
-      a.name.localeCompare(b.name),
-    );
+    const availableServices =
+      options.project === "react"
+        ? []
+        : (await getNpmPackages()).sort((a, b) => a.name.localeCompare(b.name));
 
     const questions = getQuestions({ services: availableServices, options });
+
+    const answers = await inquirer.prompt<{
+      projectType: ProjectOptionValue;
+      services?: string[];
+      packageManager: PackageManager;
+      openAIKey: string;
+    }>(questions);
+
     const config = {
-      ...(await inquirer.prompt<{
-        projectType: ProjectOptionValue;
-        services: string[];
-        packageManager: PackageManager;
-        openAIKey: string;
-      }>(questions)),
+      ...answers,
       ...(options.project ? { projectType: options.project } : {}),
+      ...(answers.services ? { services: answers.services } : { services: [] }),
     };
 
     const validAnswers = typia.assert(config);
