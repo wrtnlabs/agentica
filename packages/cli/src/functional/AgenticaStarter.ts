@@ -178,15 +178,14 @@ export namespace AgenticaStarter {
     console.log("✅ Template downloaded");
 
     // Some templates may not have .github/dependabot.yml
-
+    const dependabotFilePath = path.join(directory, ".github/dependabot.yml");
     if (
       await fs
-        .access(path.join(directory, ".github/dependabot.yml"))
-
+        .access(dependabotFilePath)
         .then(() => true)
         .catch(() => false)
     ) {
-      await fs.rm(path.join(directory, ".github/dependabot.yml"));
+      await fs.rm(dependabotFilePath);
     }
   };
 }
