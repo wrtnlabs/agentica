@@ -2,12 +2,12 @@ import { generateConnectorsArrayCode } from "./connectors";
 
 describe("generateConnectorsArrayCode", () => {
   it("should be empty string when services is empty", () => {
-    const result = generateConnectorsArrayCode({ services: [] });
+    const result = generateConnectorsArrayCode([]);
     expect(result).toBe("");
   });
 
   it("should generate connectors array code with one service", () => {
-    const result = generateConnectorsArrayCode({ services: ["chatgpt"] });
+    const result = generateConnectorsArrayCode(["chatgpt"]);
     expect(result).toBe(`{
 name: "Chatgpt Connector",
 protocol: "class",
@@ -17,7 +17,7 @@ execute: new ChatgptService(),
   });
 
   it("should generate connectors array code with multiple services", () => {
-    const result = generateConnectorsArrayCode({ services: ["chatgpt", "openai"] });
+    const result = generateConnectorsArrayCode(["chatgpt", "openai"]);
     expect(result).toBe(`{
 name: "Chatgpt Connector",
 protocol: "class",

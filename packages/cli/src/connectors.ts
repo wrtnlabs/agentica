@@ -2,10 +2,10 @@ import { capitalize } from "./utils";
 
 /**
   * Generate code for the `connectors` array.
-  * it should be placed in controllers property of Agentica's intialization object.
+  * it should be placed in controllers property of Agentica's initialization object.
   */
-export const generateConnectorsArrayCode = (input: { services: string[] }): string => {
-  const serviceConnectors = input.services
+export const generateConnectorsArrayCode = (services: string[]): string => {
+  const serviceConnectors = services
   .map((service) => {
     const serviceName = capitalize(service);
     return `{
