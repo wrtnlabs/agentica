@@ -57,21 +57,23 @@ export namespace AgenticaStart {
     const validAnswers = typia.assert(config);
     const { packageManager, openAIKey, projectType, services } = validAnswers;
 
-    await AgenticaStarter.execute(projectType)({
+    const { projectPaths } = await AgenticaStarter.execute(projectType)({
       projectName,
       projectPath,
       openAIKey,
       services,
     });
 
-    process.chdir(projectPath);
-
     // Run package installation
     console.log("📦 Package installation in progress...");
 
-    Package.installPackage(packageManager)({
-      projectPath,
-      services,
+    projectPaths.forEach((p) => {
+      process.chdir(p);
+
+      Package.installPackage(packageManager)({
+        projectPath: p,
+        services,
+      });
     });
 
     console.log(`\n🎉 Project ${projectName} created`);
