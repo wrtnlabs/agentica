@@ -6,14 +6,16 @@ on:
       - 'test/**'
       - 'package.json'
 jobs:
-  Ubuntu:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
       - name: Install dependencies
         run: pnpm install
       - name: Test
-        run: cd test && pnpm start
+        run: pnpm start
+        working-directory: ./test
         env:
           CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
+
