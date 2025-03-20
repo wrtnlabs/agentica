@@ -1,8 +1,8 @@
+import type { PackageJson } from 'type-fest';
+import type { PackageManager } from '../packages/consts';
 import { execSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
-
-import { PackageManager } from "../packages/consts";
 
 export namespace Package {
   export const create = async (input: {
@@ -19,7 +19,7 @@ export namespace Package {
         dev: `ts-node src/index.ts`,
         start: `node dist/index.js`,
       },
-    };
+    } as const satisfies PackageJson;
 
     await fs.writeFile(
       path.join(input.projectPath, "package.json"),

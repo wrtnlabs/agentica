@@ -245,6 +245,9 @@ importers:
       ts-patch:
         specifier: ^3.3.0
         version: 3.3.0
+      type-fest:
+        specifier: ^4.37.0
+        version: 4.37.0
       typescript:
         specifier: ~5.8.2
         version: 5.8.2
