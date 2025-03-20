@@ -21,19 +21,26 @@ export namespace AgenticaStarter {
     standalone: {
       title: `Standalone ${blueBright("Application")}`,
       key: "standalone",
-      runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
-        bootstrap("standalone")(input)(async () => {
+      runner: async (
+        input: IAgenticaStartOption.IProject,
+      ): Promise<{ projectPaths: string[] }> => {
+        await bootstrap("standalone")(input)(async () => {
           const indexFilePath = path.join(input.projectPath, "src/index.ts");
           const indexFileContent = await fs.readFile(indexFilePath, "utf-8");
           return { indexFilePath, indexFileContent };
-        }),
+        });
+
+        return { projectPaths: [input.projectPath] };
+      },
     },
 
     nodejs: {
       title: `NodeJS ${blueBright("Agent Server")}`,
       key: "nodejs",
-      runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
-        bootstrap("nodejs")(input)(async () => {
+      runner: async (
+        input: IAgenticaStartOption.IProject,
+      ): Promise<{ projectPaths: string[] }> => {
+        await bootstrap("nodejs")(input)(async () => {
           // Modify index.ts: replace import and controller code
           const indexFilePath = path.join(input.projectPath, "src/index.ts");
           const indexFileContent = await fs
@@ -51,13 +58,18 @@ export namespace AgenticaStarter {
             });
 
           return { indexFilePath, indexFileContent };
-        }),
+        });
+
+        return { projectPaths: [input.projectPath] };
+      },
     },
     nestjs: {
       title: `NestJS ${blueBright("Agent Server")}`,
       key: "nestjs",
-      runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
-        bootstrap("nestjs")(input)(async () => {
+      runner: async (
+        input: IAgenticaStartOption.IProject,
+      ): Promise<{ projectPaths: string[] }> => {
+        await bootstrap("nestjs")(input)(async () => {
           const indexFilePath = path.join(
             input.projectPath,
             "src/controllers/chat/ChatController.ts",
@@ -65,13 +77,51 @@ export namespace AgenticaStarter {
 
           const indexFileContent = await fs.readFile(indexFilePath, "utf-8");
           return { indexFilePath, indexFileContent };
-        }),
+        });
+
+        return { projectPaths: [input.projectPath] };
+      },
     },
     react: {
       title: `React ${blueBright("Client Application")}`,
       key: "react",
-      runner: async (input: IAgenticaStartOption.IProject): Promise<void> => {
+      runner: async (
+        input: IAgenticaStartOption.IProject,
+      ): Promise<{ projectPaths: string[] }> => {
         await writeTemplate("react", input.projectName);
+
+        return { projectPaths: [input.projectPath] };
+      },
+    },
+    "nestjs+react": {
+      title: `NestJS + React ${blueBright("Agent Server + Client Application")}`,
+      key: "nestjs+react",
+      runner: async (
+        input: IAgenticaStartOption.IProject,
+      ): Promise<{ projectPaths: string[] }> => {
+        await bootstrap("nestjs")({
+          ...input,
+          projectPath: `${input.projectPath}/server`,
+          projectName: `${input.projectName}/server`,
+        })(async () => {
+          const indexFilePath = path.join(
+            input.projectPath,
+            "server",
+            "src/controllers/chat/ChatController.ts",
+          );
+
+          const indexFileContent = await fs.readFile(indexFilePath, "utf-8");
+          return { indexFilePath, indexFileContent };
+        });
+
+        await writeTemplate("react", `${input.projectName}/client`);
+
+        return {
+          projectPaths: [
+            `${input.projectPath}/server`,
+            `${input.projectPath}/client`,
+          ],
+        };
       },
     },
   } as const;
