@@ -9,6 +9,7 @@
   "packageManager": "pnpm@10.6.4",
   "scripts": {
     "build": "pnpm -r build",
+    "build:package": "pnpm --filter='./packages/**' -r build",
     "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",

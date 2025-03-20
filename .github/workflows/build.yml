@@ -25,5 +25,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm run build
+      - run: pnpm run build:package
       - run: pnpm dlx pkg-pr-new publish './packages/*'
