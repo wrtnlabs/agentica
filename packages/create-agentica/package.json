@@ -6,9 +6,6 @@
   "bin": "./index.js",
   "author": "Wrtn Technologies",
   "license": "MIT",
-  "scripts": {
-    "build": " "
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/wrtnlabs/agentica"
