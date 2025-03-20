@@ -1,0 +1,81 @@
+---
+title: Agentica > Tutorial > Google Search Agents
+---
+
+## Introduction
+
+This tutorial guides you through setting up a **fully functional Google Search Agent** using **Agentica**. With the following code block, you can create an agent that interacts with Google Search, powered by **OpenAI's GPT model**.
+
+## The Complete Google Search Agent
+
+First, install the required Google Search connector package:
+
+```bash
+npm install @wrtnlabs/connector-google-search
+```
+
+Then, add the following code to your project:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { GoogleSearchService } from "@wrtnlabs/connector-google-search";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+export const GoogleSearchAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Google Search Connector",
+      protocol: "class",
+      application: typia.llm.application<GoogleSearchService, "chatgpt">(),
+      execute: new GoogleSearchService({
+        apiKey: process.env.SEARPAPI_API_KEY!,
+      }),
+    },
+  ],
+});
+```
+
+## What This Does
+
+With this single setup, your Google Search Agent is ready to:
+
+- **Process Google Search data** using the `GoogleSearch` connector.
+- **Leverage OpenAI’s GPT model** for intelligent search queries.
+- **Ensure type safety** with `typia`.
+- **Securely manage credentials** using `dotenv`.
+
+Just set up your **environment variables** in a `.env` file:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+SEARPAPI_API_KEY=searpapi-api-key
+```
+
+Make sure to enter the API key from your SerpApi account in the SEARPAPI_API_KEY field.
+
+And you’re all set! 🎉
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Find the best pizza places in New York City with outdoor seating"
+
+The Agent will search Google for top-rated pizza restaurants in New York City that offer outdoor seating, and provide you with the Google search results containing relevant information about locations, ratings, reviews, and special features of these establishments.
+## Available Functions
+
+For a list of available functions in `GoogleSearchService`, check out the source code:
+👉 [wrtnlabs/connectors - GoogleSearchService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_search/src/google_search/GoogleSearchService.ts)
+
+That’s it. This **single code block** gives you a fully functional Google Search Agent, ready for AI-powered google search automation. 🚀
