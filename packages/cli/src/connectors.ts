@@ -2,18 +2,22 @@ import typia from "typia";
 import { capitalize } from "./utils";
 import { Tagged } from "type-fest";
 
+const CONNECTORS_LIST_URL = 'https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json' as const;
+const CONNECTOR_PREFIX = '@wrtnlabs/connector-' as const;
+
 /** Service name. Opaque type. */
 type Service = Tagged<string, "Service">;
 
-type Connector = `@wrtnlabs/connector-${string}`;
+type Connector = `${typeof CONNECTOR_PREFIX}${string}`;
 
 interface Connectors {
   connectors: Connector[];
   version: string;
 }
 
-const CONNECTORS_LIST_URL = 'https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json';
-
+/**
+  * Get the list of connectors from the wrtnlabs/connectors repository.
+  */
 export async function getConnectorsList(): Promise<Connectors> {
   const response = await fetch(CONNECTORS_LIST_URL);
   const responseJson = (await response.json());
@@ -27,11 +31,19 @@ interface GetConnectorsReturn {
   displayName: string;
 };
 
+/**
+  * Get the list of connectors from the wrtnlabs/connectors repository.
+  * result is formatted for the user interface.
+  * @returns {
+  *   packageName: original package name,
+  *   serviceName: removed `@wrtnlabs/connector-` and capitalized service name,
+  *   displayName: capitalized service name with spaces
+  */
 export async function getConnectors(): Promise<ReadonlyArray<GetConnectorsReturn>> {
   const data = await getConnectorsList();
   return data.connectors
     .map((name) => {
-      const serviceName = (name.replace("@wrtnlabs/connector-", "") satisfies string) as Service
+      const serviceName = (name.replace(CONNECTOR_PREFIX, "") satisfies string) as Service
       const displayName = serviceName.replace("-", " ").toUpperCase();
       return {
         packageName: name,
@@ -67,7 +79,7 @@ execute: new ${serviceName}Service(),
 export function generateServiceImportsCode(services: string[]): string {
   const serviceImports = services
   .map(
-    (service) => `import { ${capitalize(service)}Service } from "@wrtnlabs/connector-${service}";`
+    (service) => `import { ${capitalize(service)}Service } from "${CONNECTOR_PREFIX}${service}";`
   )
   .join("\n");
 
