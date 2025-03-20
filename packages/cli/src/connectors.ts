@@ -4,7 +4,7 @@ import { capitalize } from "./utils";
   * Generate code for the `connectors` array.
   * it should be placed in controllers property of Agentica's initialization object.
   */
-export const generateConnectorsArrayCode = (services: string[]): string => {
+export function generateConnectorsArrayCode(services: string[]): string {
   const serviceConnectors = services
   .map((service) => {
     const serviceName = capitalize(service);
