@@ -6,6 +6,6 @@ const meta: MetaRecord = {
   notion: "Notion",
   arxiv: "ArXiv",
   "google-search": "Google Search",
-  google_calendar: "Google Calendar",
+  "google-calendar": "Google Calendar",
 };
 export default meta;
