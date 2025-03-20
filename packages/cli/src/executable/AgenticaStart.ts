@@ -1,3 +1,4 @@
+import { execSync } from "child_process";
 import fs from "fs/promises";
 import inquirer from "inquirer";
 import path from "path";
@@ -34,19 +35,24 @@ export namespace AgenticaStart {
     }
 
     // Get connector package names from npm and sort alphabetically
-    const availableServices = (await getNpmPackages()).sort((a, b) =>
-      a.name.localeCompare(b.name),
-    );
+    const availableServices =
+      options.project === "react"
+        ? []
+        : (await getNpmPackages()).sort((a, b) => a.name.localeCompare(b.name));
 
     const questions = getQuestions({ services: availableServices, options });
+
+    const answers = await inquirer.prompt<{
+      projectType: ProjectOptionValue;
+      services?: string[];
+      packageManager: PackageManager;
+      openAIKey: string;
+    }>(questions);
+
     const config = {
-      ...(await inquirer.prompt<{
-        projectType: ProjectOptionValue;
-        services: string[];
-        packageManager: PackageManager;
-        openAIKey: string;
-      }>(questions)),
+      ...answers,
       ...(options.project ? { projectType: options.project } : {}),
+      ...(answers.services ? { services: answers.services } : { services: [] }),
     };
 
     const validAnswers = typia.assert(config);
@@ -58,6 +64,8 @@ export namespace AgenticaStart {
       openAIKey,
       services,
     });
+
+    process.chdir(projectPath);
 
     // Run package installation
     console.log("📦 Package installation in progress...");

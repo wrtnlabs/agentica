@@ -1,0 +1,106 @@
+---
+title: Agentica > Tutorial > Notion Agents  
+---
+
+## Introduction
+
+This tutorial guides you through setting up a **Notion Agent** using **Agentica**. With the code below, you can create an agent that interacts with Notion—reading page lists, retrieving page contents, creating new pages, and updating existing pages—all powered by **OpenAI's GPT model**.
+
+## The Complete Notion Agent
+
+First, install the required Notion connector package:
+
+```bash
+npm install @wrtnlabs/connector-notion
+```
+
+Then, add or update the following code in your project:
+
+> **Important:**  
+> When modifying this code, be cautious as updates may overwrite existing content. Notion's API rate limits are relatively strict and block-based, so use update and creation functions with care. Used correctly, however, this tool is highly effective.
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { NotionService } from "@wrtnlabs/connector-notion";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+export const NotionAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Notion Agent",
+      protocol: "class",
+      application: typia.llm.application<
+        Pick<
+          NotionService,
+          | "readPageList"
+          | "readPageContents"
+          | "createPageByMarkdown"
+          | "updatePageContent"
+        >,
+        "chatgpt"
+      >(),
+      execute: new NotionService({
+        secret: process.env.NOTION_SECRET_KEY!,
+      }),
+    },
+  ],
+});
+```
+
+## Notion API Setup
+
+1. **Integration:**  
+   - Create your integration at [Notion Integrations](https://www.notion.so/profile/integrations) and add your Private API Integration Secret to your `.env` file:
+     ```env
+     OPENAI_API_KEY=your-openai-api-key
+     NOTION_SECRET_KEY=your-notion-secret-key
+     ```
+
+2. **Permissions:**  
+   - During the integration setup, enable the required functionalities such as reading, updating, and creating pages (and comment management if needed).
+
+3. **Data Sharing:**  
+   - Share the relevant Notion pages or databases with your integration to grant access.
+
+## What This Does
+
+With this configuration, the Notion Agent can:
+
+- **Retrieve a List of Pages:** Use `readPageList` to get your Notion pages.
+- **Read Page Contents:** Retrieve detailed contents of a specific page via `readPageContents`.
+- **Create New Pages Automatically:** Provide a topic or content in natural language. The agent will automatically summarize and format the input into Markdown and create a new page using `createPageByMarkdown`.
+- **Update Existing Pages:** Modify page content based on your instructions using `updatePageContent`.
+
+Leveraging OpenAI's GPT model, the agent translates natural language queries into API calls, enabling seamless interaction with your Notion workspace while ensuring type safety with `typia` and secure credential management with `dotenv`.
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Summarize the latest meeting discussion and create a new page with the summary."
+
+The agent will process your natural language query by summarizing the content and then execute `createPageByMarkdown` to create a new page with the formatted summary. Similarly, you can update existing pages by issuing natural language commands.
+
+---
+
+
+
+## Available Functions
+
+You can review the full list of functions available in `NotionService` by checking the source code.  
+👉 [wrtnlabs/connectors - NotionService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/notion/src/notion/NotionService.ts)
+
+With this **code block**, your AI-powered Notion Agent is complete. 🚀
+
+Enjoy harnessing the power of natural language interactions with your Notion data!

@@ -1,0 +1,22 @@
+{
+  "name": "create-agentica",
+  "version": "0.1.0",
+  "description": "alias of agentica cli",
+  "type": "module",
+  "bin": "./index.js",
+  "author": "Wrtn Technologies",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wrtnlabs/agentica"
+  },
+  "bugs": {
+    "url": "https://github.com/wrtnlabs/agentica/issues"
+  },
+  "dependencies": {
+    "agentica": "workspace:*"
+  },
+  "files": [
+    "index.js"
+  ]
+}
