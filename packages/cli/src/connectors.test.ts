@@ -5,7 +5,7 @@ describe('getConnectorsList', () => {
     const connectors = await getConnectorsList();
     expect(connectors).toEqual({
       connectors: [
-        '@wrtnio/connector-google-map',
+        '@wrtnlabs/connector-google-map',
       ],
       version: '1.0.0',
     });
@@ -17,7 +17,7 @@ describe('getConnectors', () => {
     const connectors = await getConnectors();
     expect(connectors).toEqual([
       {
-        packageName: '@wrtnio/connector-google-map',
+        packageName: '@wrtnlabs/connector-google-map',
         serviceName: 'google-map',
         displayName: 'GOOGLE MAP',
       },
