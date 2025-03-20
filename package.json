@@ -6,6 +6,7 @@
   "engines": {
     "pnpm": ">=10"
   },
+  "packageManager": "pnpm@10.6.4",
   "scripts": {
     "build": "node deploy/build",
     "package:latest": "node deploy/publish --tag latest",
@@ -54,6 +55,5 @@
     "overrides": {
       "@types/react": "19.0.0"
     }
-  },
-  "packageManager": "pnpm@10.6.4"
+  }
 }
