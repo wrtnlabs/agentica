@@ -1,0 +1,123 @@
+---
+title: Agentica > Tutorial > Google Shopping Agents
+---
+
+## Introduction
+
+This tutorial guides you through setting up a **fully functional Google Shopping Agent** using **Agentica**. With the following code block, you can create an agent that interacts with Google Shopping, powered by **OpenAI's GPT model**.
+
+## The Complete Google Shopping Agent
+
+First, install the required Google Shopping connector package:
+
+```bash
+npm install @wrtnlabs/connector-google-shopping
+```
+
+Then, add the following code to your project:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { GoogleShoppingService } from "@wrtnlabs/connector-google-shopping";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+export const GoogleShoppingAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Google Shopping Connector",
+      protocol: "class",
+      application: typia.llm.application<GoogleShoppingService, "chatgpt">(),
+      execute: new GoogleShoppingService({
+        apiKey: process.env.SERP_API_KEY!,
+      }),
+    },
+  ],
+});
+```
+
+## What This Does
+
+With this single setup, your Google Shopping Agent is ready to:
+
+- **Process Google Shopping data** using the `GoogleShopping` connector.
+- **Leverage OpenAI’s GPT model** for intelligent shopping queries.
+- **Ensure type safety** with `typia`.
+- **Securely manage credentials** using `dotenv`.
+
+Just set up your **environment variables** in a `.env` file:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+SERP_API_KEY=searpapi_api_key
+```
+
+Make sure to enter the API key from your SerpApi account in the SERP_API_KEY field.
+
+And you’re all set! 🎉
+
+
+## Selecting Specific Functions
+
+By using TypeScript’s `Pick` utility type, you can restrict the `GoogleShoppingService` to only expose the methods you need.
+
+For example, in the following code, only these six functions are available:
+
+- `aliExpress`
+- `iherb`
+
+```typescript
+export const GoogleShoppingAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Google Shopping Connector",
+      protocol: "class",
+      application: typia.llm.application<
+        Pick<
+          GoogleShoppingService,
+          | "aliExpress"
+          | "iherb"
+        >,
+        "chatgpt"
+      >(),
+      execute: new GoogleShoppingService({
+        apiKey: process.env.SERP_API_KEY!,
+      }),
+    },
+  ],
+});
+```
+
+This ensures that the `GoogleShoppingAgent` only has access to these specific functions, making your integration more secure and maintainable.
+
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "What are the best medications for hair loss?"
+
+The agent can then use the `iherb` function to search for hair loss medications on iHerb, providing you with the best options available.
+
+## Available Functions
+
+For a list of available functions in `GoogleShoppingService`, check out the source code:
+👉 [wrtnlabs/connectors - GoogleShoppingService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_shopping/src/google_shopping/GoogleShoppingService.ts)
+
+That's it. This **single code block** gives you a fully functional Google Shopping Agent, ready for AI-powered google shoppiong automation. 🚀
+

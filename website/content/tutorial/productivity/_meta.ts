@@ -7,5 +7,6 @@ const meta: MetaRecord = {
   arxiv: "ArXiv",
   "google-search": "Google Search",
   "google-calendar": "Google Calendar",
+  "google-shopping": "Google Shopping",
 };
 export default meta;
