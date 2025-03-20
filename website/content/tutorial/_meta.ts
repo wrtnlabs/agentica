@@ -12,5 +12,11 @@ const meta: MetaRecord = {
       collapsed: false,
     },
   },
+  enterprise: {
+    title: "🏢 Enterprise",
+    theme: {
+      collapsed: false,
+    },
+  },
 };
 export default meta;
