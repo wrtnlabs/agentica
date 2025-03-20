@@ -4,8 +4,9 @@
   "version": "0.12.14",
   "description": "Agentic AI library specialized in LLM Function Calling",
   "engines": {
-    "pnpm": ">=8"
+    "pnpm": ">=10"
   },
+  "packageManager": "pnpm@10.6.4",
   "scripts": {
     "build": "node deploy/build",
     "package:latest": "node deploy/publish --tag latest",
