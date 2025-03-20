@@ -4,17 +4,27 @@ title: Agentica > Tutorial > Github Agents
 
 ## Introduction
 
-This tutorial guides you through setting up a **fully functional Github Agent** using **Agentica**. With the following code block, you can create an agent that interacts with Github, powered by **OpenAI's GPT model**.
+Set up a **fully functional Github Agent** powered by OpenAI's GPT model quickly using the Agentica CLI. This agent lets you interact with Github—search users, retrieve profiles, and list repositories—through natural language commands.
 
-## The Complete Github Agent
+## Quick CLI Setup
 
-First, install the required Github connector package:
+Launch the Agentica Setup Wizard with a single command:
 
 ```bash
-npm install @wrtnlabs/connector-github
+npx agentica start github-agent
 ```
 
-Then, add the following code to your project:
+The wizard guides you through:
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **GITHUB** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
 
 ```typescript
 import { Agentica } from "@agentica/core";
@@ -37,13 +47,7 @@ export const GithubAgent = new Agentica({
     {
       name: "Github Connector",
       protocol: "class",
-      application: typia.llm.application<
-        Pick<
-          GithubService,
-          "searchUser" | "getUserProfile" | "getUserRepositories"
-        >,
-        "chatgpt"
-      >(),
+      application: typia.llm.application<GithubService, "chatgpt">(),
       execute: new GithubService({
         secret: process.env.GITHUB_ACCESS_TOKEN!,
       }),
@@ -52,78 +56,38 @@ export const GithubAgent = new Agentica({
 });
 ```
 
+This code instantly sets up your Github Agent to interact with Github via its API.
+
 ## Github API Setup
 
-Before running the agent, you need to configure your Github API credentials.
+Before running your agent, configure your Github API credentials:
 
-1. **Create a Github Application**  
-   - You can create a new OAuth application by visiting either [Github Developer Settings](https://github.com/settings/developers) or Organization Application Settings.
-   - Using an OAuth application allows you to obtain a token via login. This is optional, but if a token is used, the API ratelimit increases from the default 10 to up to 5,000, enabling more stable usage.
+1. **Create a Github Application:**  
+   - Visit [Github Developer Settings](https://github.com/settings/developers) to create a new OAuth application.
+   - An OAuth application allows you to obtain a token (starting with `gho_`), which boosts your API rate limit for more stable usage.
 
-2. **Obtain Credentials**  
-   - The Github token will start with `gho_`.
-   - User permissions are required to use this token.
-   - Although the API can be used without a token, the ratelimit is much lower; therefore, it is recommended to generate a token for more reliable usage.
+2. **Obtain Credentials:**  
+   - Generate the necessary token and ensure you have the required permissions.
 
-3. **Set Up Environment Variables**  
-   - Add the following credentials to your `.env` file:
+3. **Set Up Environment Variables:**  
+   - Create or update your `.env` file with:
 
    ```env
    OPENAI_API_KEY=your-openai-api-key
    GITHUB_ACCESS_TOKEN=your-github-access-token
    ```
 
-Once this setup is complete, your Github Agent will interact with Github seamlessly.
-
 ## What This Does
 
-With this configuration, the Github Agent can:
-
-- **Process Github data**: Utilize the `GithubService` connector to handle Github-related data.
-- **Leverage OpenAI's GPT model**: Use OpenAI's GPT model for intelligent interactions with Github.
-- **Ensure type safety**: Maintain code type safety using `typia`.
-- **Securely manage credentials**: Handle sensitive credentials safely with `dotenv`.
-
-## Selecting Specific Functions
-
-Using TypeScript's `Pick` utility type, you can restrict the functions exposed by `GithubService` to only those you need. For example, if you only want to use the `getUserProfile` function, you can configure your agent as follows:
-
-```typescript
-export const GithubAgent = new Agentica({
-  model: "chatgpt",
-  vendor: {
-    api: openai,
-    model: "gpt-4o-mini",
-  },
-  controllers: [
-    {
-      name: "Github Connector",
-      protocol: "class",
-      application: typia.llm.application<
-        Pick<GithubService, "getUserProfile">,
-        "chatgpt"
-      >(),
-      execute: new GithubService({
-        secret: process.env.GITHUB_ACCESS_TOKEN!,
-      }),
-    },
-  ],
-});
-```
-
-This ensures that the `GithubAgent` only has access to the selected function, improving security and maintainability.
-
-## Example Response
-
-When I asked the question:
-
-> Create a brief resume by analyzing the profile, repository of the user "kakasoo".
-
-The agent returned a concise summary indicating that the response included key details from the user's profile (basic info, repository statistics, pinned repositories, and insights) with personal data filtered for privacy.
+Your Github Agent will:
+- **Process Github Data:** Use the `GithubService` connector to search users, fetch profiles, and list repositories.
+- **Leverage OpenAI's GPT Model:** Translate natural language queries into Github API calls.
+- **Maintain Type Safety:** With `typia`.
+- **Securely Manage Credentials:** Using environment variables via `dotenv`.
 
 ## Available Functions
 
-You can check the list of available functions in `GithubService` by reviewing the source code.  
-👉 [wrtnlabs/connectors - GithubService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/github/src/GithubService.ts)
+For a complete list of available functions in `GithubService`, check out the source code:  
+👉 [wrtnlabs/connectors - GithubService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/github/src/github/GithubService.ts)
 
-With this **code block**, your AI-powered Github Agent is complete. 🚀
+Your AI-powered Github Agent is now ready for seamless Github interactions! 🚀

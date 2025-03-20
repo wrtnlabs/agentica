@@ -4,67 +4,82 @@ title: Agentica > Tutorial > Google Search Agents
 
 ## Introduction
 
-This tutorial guides you through setting up a **fully functional Google Search Agent** using **Agentica**. With the following code block, you can create an agent that interacts with Google Search, powered by **OpenAI's GPT model**.
+Set up a **fully functional Google Search Agent** powered by OpenAI's GPT model quickly using the Agentica CLI.
 
-## The Complete Google Search Agent
+## Quick CLI Setup
 
-First, install the required Google Search connector package:
+Start the Agentica Setup Wizard with this single command:
 
 ```bash
-npm install @wrtnlabs/connector-google-search
+npx agentica start google-search-agent
 ```
 
-Then, add the following code to your project:
+The wizard guides you through:
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **GOOGLE SEARCH** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
 
 ```typescript
 import { Agentica } from "@agentica/core";
-import { GoogleSearchService } from "@wrtnlabs/connector-google-search";
-import dotenv from "dotenv";
-import OpenAI from "openai";
 import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { GoogleSearchService } from "@wrtnlabs/connector-google-search";
 
 dotenv.config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-export const GoogleSearchAgent = new Agentica({
+export const agent = new Agentica({
   model: "chatgpt",
   vendor: {
-    api: openai,
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    }),
     model: "gpt-4o-mini",
   },
   controllers: [
     {
-      name: "Google Search Connector",
+      name: "GoogleSearch Connector",
       protocol: "class",
       application: typia.llm.application<GoogleSearchService, "chatgpt">(),
-      execute: new GoogleSearchService({
-        apiKey: process.env.SERP_API_KEY!,
-      }),
+      execute: new GoogleSearchService(),
     },
   ],
 });
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+
 ```
+
+This code instantly sets up your Google Search Agent, ready to perform intelligent search queries on Google.
 
 ## What This Does
 
-With this single setup, your Google Search Agent is ready to:
+Your Google Search Agent will:
+- **Process Google Search Data:** Use the `GoogleSearchService` connector.
+- **Leverage OpenAI's GPT Model:** For smart search queries.
+- **Maintain Type Safety:** With `typia`.
+- **Securely Manage Credentials:** Using environment variables via `dotenv`.
 
-- **Process Google Search data** using the `GoogleSearch` connector.
-- **Leverage OpenAI’s GPT model** for intelligent search queries.
-- **Ensure type safety** with `typia`.
-- **Securely manage credentials** using `dotenv`.
-
-Just set up your **environment variables** in a `.env` file:
+Set up your environment variables in a `.env` file:
 
 ```env
 OPENAI_API_KEY=your-openai-api-key
 SERPAPI_API_KEY=your-serp-api-api-key
 ```
 
-Make sure to enter the API key from your SerpApi account in the SERP_API_KEY field.
-
-And you’re all set! 🎉
+Make sure to include your SerpApi API key in the `SERPAPI_API_KEY` field.
 
 ## Use Case Example
 
@@ -72,10 +87,11 @@ Imagine asking the agent:
 
 > "Find the best pizza places in New York City with outdoor seating"
 
-The Agent will search Google for top-rated pizza restaurants in New York City that offer outdoor seating, and provide you with the Google search results containing relevant information about locations, ratings, reviews, and special features of these establishments.
+The agent will search Google for top-rated pizza restaurants in New York City that offer outdoor seating, and provide you with relevant information on locations, ratings, reviews, and features.
+
 ## Available Functions
 
-For a list of available functions in `GoogleSearchService`, check out the source code:
+For a complete list of functions available in `GoogleSearchService`, check out the source code:  
 👉 [wrtnlabs/connectors - GoogleSearchService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_search/src/google_search/GoogleSearchService.ts)
 
-That’s it. This **single code block** gives you a fully functional Google Search Agent, ready for AI-powered google search automation. 🚀
+Your AI-powered Google Search Agent is now ready for seamless, automated search queries! 🚀

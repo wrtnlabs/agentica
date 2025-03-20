@@ -1,8 +1,8 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
-  github: "Github",
   "file-system": "File System",
+  github: "Github",
   swagger: "Swagger",
   "vector-store": "Vector Store",
 };
