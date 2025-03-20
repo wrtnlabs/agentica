@@ -11,7 +11,8 @@
     "build": "pnpm -r build",
     "package:latest": "node deploy/publish --tag latest",
     "package:next": "node deploy/publish --tag dev",
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "release": "bumpp"
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "bumpp": "^10.1.0",
     "eslint": "^9.17.0",
     "prettier": "^3.5.0",
     "rimraf": "^6.0.1",
