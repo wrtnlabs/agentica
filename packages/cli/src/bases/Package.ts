@@ -51,15 +51,9 @@ export namespace Package {
         }
       };
 
-      const dependencies = [
-        "openai",
-        "typia",
-        "dotenv",
-        "@agentica/core",
-        ...input.services.map((s) => `@wrtnlabs/connector-${s}`),
-      ];
-
-      const devDependencies = ["ts-node", "typescript", "ts-patch"];
+      const dependencies = input.services.map(
+        (s) => `@wrtnlabs/connector-${s}`,
+      );
 
       // install existing dependencies
       console.log("🚀 Installing existing dependencies...");
@@ -71,14 +65,6 @@ export namespace Package {
       dependencies.forEach((dep) => {
         console.log(`🚀 Installing ${dep}...`);
         execSync(installCmd(dep), { cwd: input.projectPath, stdio: "inherit" });
-      });
-
-      devDependencies.forEach((dep) => {
-        console.log(`🚀 Installing ${dep}...`);
-        execSync(`${installCmd(dep)} -D`, {
-          cwd: input.projectPath,
-          stdio: "inherit",
-        });
       });
     };
 }

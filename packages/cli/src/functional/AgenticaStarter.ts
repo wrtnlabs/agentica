@@ -3,10 +3,7 @@ import { downloadTemplate } from "giget";
 import path from "node:path";
 
 import { Connector } from "../bases/Connector";
-import { Package } from "../bases/Package";
-import { Tsconfig } from "../bases/Tsconfig";
 import { IAgenticaStartOption } from "../structures/IAgenticaStartOption";
-import { createProjectDirectory } from "../utils/createProjectDirectory";
 import { blueBright } from "../utils/styleText";
 import { ProjectOptionValue } from "../utils/types/ProjectOption";
 
@@ -24,42 +21,19 @@ export namespace AgenticaStarter {
     standalone: {
       title: `Standalone ${blueBright("Application")}`,
       key: "standalone",
-      runner: async (input: IAgenticaStartOption.IProject): Promise<void> => {
-        // Create project directory
-        createProjectDirectory({ projectPath: input.projectPath });
-
-        // Create package.json (without dependencies)
-        await Promise.all([
-          // create package.json
-          Package.create({
-            projectName: input.projectName,
-            projectPath: input.projectPath,
-          }),
-          // create tsconfig.json
-          Tsconfig.create({ projectPath: input.projectPath }),
-        ]);
-
-        await fs.mkdir(path.join(input.projectPath, "src"), {
-          recursive: false,
-        });
-
-        // Create Agentica code
-        const agenticaCode = Connector.createAll({ services: input.services });
-
-        await writeTypescriptFile({
-          filePath: path.join(input.projectPath, "src/index.ts"),
-          taskName: "Agentica code",
-          content: agenticaCode,
-        });
-        await setEnvFiles(input);
-      },
+      runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
+        bootstrap("standalone")(input)(async () => {
+          const indexFilePath = path.join(input.projectPath, "src/index.ts");
+          const indexFileContent = await fs.readFile(indexFilePath, "utf-8");
+          return { indexFilePath, indexFileContent };
+        }),
     },
 
     nodejs: {
       title: `NodeJS ${blueBright("Agent Server")}`,
       key: "nodejs",
       runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
-        nonStandalone("nodejs")(input)(async () => {
+        bootstrap("nodejs")(input)(async () => {
           // Modify index.ts: replace import and controller code
           const indexFilePath = path.join(input.projectPath, "src/index.ts");
           const indexFileContent = await fs
@@ -83,7 +57,7 @@ export namespace AgenticaStarter {
       title: `NestJS ${blueBright("Agent Server")}`,
       key: "nestjs",
       runner: async (input: IAgenticaStartOption.IProject): Promise<void> =>
-        nonStandalone("nestjs")(input)(async () => {
+        bootstrap("nestjs")(input)(async () => {
           const indexFilePath = path.join(
             input.projectPath,
             "src/controllers/chat/ChatController.ts",
@@ -102,8 +76,8 @@ export namespace AgenticaStarter {
     },
   } as const;
 
-  const nonStandalone =
-    (option: "nodejs" | "nestjs") =>
+  const bootstrap =
+    (option: Exclude<ProjectOptionValue, "react">) =>
     (input: IAgenticaStartOption.IProject) =>
     async (
       getIndexFileInfo: () => Promise<{
