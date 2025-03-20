@@ -5,12 +5,21 @@ const meta: MetaRecord = {
 
   productivity: {
     title: "🔍 Productivity",
+    theme: {
+      collapsed: false,
+    },
   },
   coding: {
     title: "💻 Coding",
+    theme: {
+      collapsed: false,
+    },
   },
   enterprise: {
     title: "🏢 Enterprise",
+    theme: {
+      collapsed: false,
+    },
   },
 };
 export default meta;
