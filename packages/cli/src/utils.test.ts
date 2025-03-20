@@ -1,4 +1,4 @@
-import { capitalize, createProjectDirectory, getConnectors, getConnectorsList, } from "./utils";
+import { capitalize, createProjectDirectory } from "./utils";
 import { fs, vol } from 'memfs';
 
 describe("capitalize", () => {
@@ -31,27 +31,6 @@ describe("createProjectDirectory", () => {
     expect(() => {
       createProjectDirectory({ projectPath: "my-new-project" });
     }).toThrow("my-new-project directory already exists.");
-  });
-})
-
-describe('getConnectorsList', () => {
-  it('should return a list of connectors', async () => {
-    const connectors = await getConnectorsList();
-    expect(connectors).toEqual({
-      connectors: [
-        '@wrtnio/connector-google-map',
-      ],
-      version: '1.0.0',
-    });
-  });
-})
-
-describe('getConnectors', () => {
-  it('should return a list of connectors', async () => {
-    const connectors = await getConnectors();
-    expect(connectors).toEqual([
-      { name: '@WRTNIO/CONNECTOR GOOGLE-MAP', value: '@wrtnio/connector-google-map' }
-    ]);
   });
 })
 

@@ -1,4 +1,25 @@
-import { generateConnectorsArrayCode, generateServiceImportsCode } from "./connectors";
+import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList } from "./connectors";
+
+describe('getConnectorsList', () => {
+  it('should return a list of connectors', async () => {
+    const connectors = await getConnectorsList();
+    expect(connectors).toEqual({
+      connectors: [
+        '@wrtnio/connector-google-map',
+      ],
+      version: '1.0.0',
+    });
+  });
+})
+
+describe('getConnectors', () => {
+  it('should return a list of connectors', async () => {
+    const connectors = await getConnectors();
+    expect(connectors).toEqual([
+      { name: '@WRTNIO/CONNECTOR GOOGLE-MAP', value: '@wrtnio/connector-google-map' }
+    ]);
+  });
+})
 
 describe("generateConnectorsArrayCode", () => {
   it("should be empty string when services is empty", () => {
