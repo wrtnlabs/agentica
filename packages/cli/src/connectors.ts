@@ -1,4 +1,4 @@
-import { capitalize } from "../utils/capitalize";
+import { capitalize } from "./utils";
 
 export namespace Connector {
   export type Code = "import" | "connector";
