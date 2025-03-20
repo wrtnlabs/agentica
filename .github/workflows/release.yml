@@ -16,6 +16,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: pnpm/action-setup@v2
       - name: Publish to NPM
-        run: npm run package:latest
+        # we need -no-git-checks to avoid git errors https://github.com/pnpm/pnpm/issues/5894
+        run: pnpm package:latest --no-git-checks --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
+          NPM_CONFIG_PROVENANCE: true # Enable provenance
+
