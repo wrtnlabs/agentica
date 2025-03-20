@@ -14,8 +14,6 @@ jobs:
         with:
           node-version: 20.x
       - uses: pnpm/action-setup@v2
-        with:
-          version: 8.15.9
       - name: Install dependencies
         run: pnpm install
       - name: Test
