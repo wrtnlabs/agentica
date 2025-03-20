@@ -1,0 +1,81 @@
+---
+title: Agentica > Tutorial > Google Image Agents
+---
+
+## Introduction
+
+This tutorial guides you through setting up a **fully functional Google Image Agent** using **Agentica**. With the following code block, you can create an agent that interacts with Google Image, powered by **OpenAI's GPT model**.
+
+## The Complete Google Image Agent
+
+First, install the required Google Image connector package:
+
+```bash
+npm install @wrtnlabs/connector-google-image
+```
+
+Then, add the following code to your project:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { GoogleImageService } from "@wrtnlabs/connector-google-image";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+export const GoogleImageAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Google Image Connector",
+      protocol: "class",
+      application: typia.llm.application<GoogleImageService, "chatgpt">(),
+      execute: new GoogleImageService({
+        apiKey: process.env.SERP_API_KEY!,
+      }),
+    },
+  ],
+});
+```
+
+## What This Does
+
+With this single setup, your Google Image Agent is ready to:
+
+- **Process Google Image data** using the `GoogleImage` connector.
+- **Leverage OpenAI’s GPT model** for intelligent search image at google.
+- **Ensure type safety** with `typia`.
+- **Securely manage credentials** using `dotenv`.
+
+Just set up your **environment variables** in a `.env` file:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+SERP_API_KEY=your-serp-api-key
+```
+
+Make sure to enter the API key from your SerpApi account in the SERP_API_KEY field.
+
+And you’re all set! 🎉
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Find the cute cat image"
+
+The Agent will search Google for top-rated pizza restaurants in New York City that offer outdoor seating, and provide you with the Google Image results containing relevant information about locations, ratings, reviews, and special features of these establishments.
+## Available Functions
+
+For a list of available functions in `GoogleImageService`, check out the source code:
+👉 [wrtnlabs/connectors - GoogleImageService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_image/src/google_image/GoogleImageService.ts)
+
+That’s it. This **single code block** gives you a fully functional Google Image Agent, ready for AI-powered Google Image automation. 🚀

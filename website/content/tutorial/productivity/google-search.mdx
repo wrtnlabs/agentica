@@ -39,7 +39,7 @@ export const GoogleSearchAgent = new Agentica({
       protocol: "class",
       application: typia.llm.application<GoogleSearchService, "chatgpt">(),
       execute: new GoogleSearchService({
-        apiKey: process.env.SEARPAPI_API_KEY!,
+        apiKey: process.env.SERP_API_KEY!,
       }),
     },
   ],
@@ -59,10 +59,10 @@ Just set up your **environment variables** in a `.env` file:
 
 ```env
 OPENAI_API_KEY=your-openai-api-key
-SEARPAPI_API_KEY=searpapi-api-key
+SERPAPI_API_KEY=your-serp-api-api-key
 ```
 
-Make sure to enter the API key from your SerpApi account in the SEARPAPI_API_KEY field.
+Make sure to enter the API key from your SerpApi account in the SERP_API_KEY field.
 
 And you’re all set! 🎉
 
