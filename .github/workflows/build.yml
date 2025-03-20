@@ -26,4 +26,13 @@ jobs:
       - uses: pnpm/action-setup@v4
       - run: pnpm install
       - run: pnpm run build:package
+      - name: expand publishConfig
+        shell: bash
+        run: |
+          find packages -type f -name "package.json" | while read -r file; do
+            echo "Processing: $file"
+            cp "$file" "$file.bak"
+            jq '. + .publishConfig | del(.publishConfig)' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+            rm "$file.bak"
+          done
       - run: pnpm dlx pkg-pr-new publish './packages/*'
