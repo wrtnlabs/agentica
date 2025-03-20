@@ -2,7 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { styleText } from 'node:util';
 
-// Convert first letter to uppercase (ex: aws-s3 -> AwsS3)
+/**
+* Convert a string to a capitalized string.
+* @example
+* capitalize("chatgpt") // "Chatgpt"
+* capitalize("aws-s3") // "AwsS3"
+*/
 export const capitalize = (service: string): string => {
   return service
     .split("-")
