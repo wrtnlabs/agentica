@@ -51,6 +51,19 @@ export namespace Package {
         }
       };
 
+      // install ts-patch First.
+      execSync(installCmd("ts-patch"), {
+        cwd: input.projectPath,
+        stdio: "inherit",
+      });
+
+      // install existing dependencies
+      console.log("🚀 Installing existing dependencies...");
+      execSync(`${packageManager} install`, {
+        cwd: input.projectPath,
+        stdio: "inherit",
+      });
+
       const dependencies = [
         "openai",
         "typia",
@@ -59,14 +72,7 @@ export namespace Package {
         ...input.services.map((s) => `@wrtnlabs/connector-${s}`),
       ];
 
-      const devDependencies = ["ts-node", "typescript", "ts-patch"];
-
-      // install existing dependencies
-      console.log("🚀 Installing existing dependencies...");
-      execSync(`${packageManager} install`, {
-        cwd: input.projectPath,
-        stdio: "inherit",
-      });
+      const devDependencies = ["ts-node", "typescript"];
 
       dependencies.forEach((dep) => {
         console.log(`🚀 Installing ${dep}...`);
