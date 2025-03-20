@@ -1,8 +1,13 @@
 {
-  "private": true,
   "name": "@agentica/core",
   "version": "0.7.1",
   "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js",
+    "module": "lib/index.mjs",
+    "typings": "lib/index.d.ts",
+    "access": "public"
+  },
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "scripts": {
     "prepare": "ts-patch install && pnpm build:prompt",
