@@ -1,6 +1,6 @@
 import { capitalize } from "./utils";
 
-export const createConnector = (input: { services: string[] }): string => {
+export const generateConnectorsArrayCode = (input: { services: string[] }): string => {
   const serviceConnectors = input.services
   .map((service) => {
     const serviceName = capitalize(service);
