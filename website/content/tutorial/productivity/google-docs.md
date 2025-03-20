@@ -4,33 +4,45 @@ title: Agentica > Tutorial > Google Docs Agents
 
 ## Introduction  
 
-This tutorial will guide you through setting up a **fully functional Google Docs Agent** using **Agentica**. With just the following code, you’ll have an agent that can interact with Google Docs, powered by **OpenAI’s GPT model**.  
+Set up a **fully functional Google Docs Agent** powered by OpenAI's GPT model in no time—using the Agentica CLI.
+
 
 ## The Complete Google Docs Agent  
 
-First, install the required Google Docs connector package:  
+Launch the Agentica Setup Wizard with a single command:
 
 ```bash
-npm install @wrtnlabs/connector-google-docs
+npx agentica start google-docs-agent
 ```  
 
-Then, simply add this code to your project:  
+The wizard guides you through:
+- Installing the required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **Google Docs** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated Google Docs Agent code looks like this:
 
 ```typescript
 import { Agentica } from "@agentica/core";
-import { GoogleDocsService } from "@wrtnlabs/connector-google-docs";
-import dotenv from "dotenv";
-import OpenAI from "openai";
 import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { GoogleDocsService } from "@wrtnlabs/connector-google-docs";
 
 dotenv.config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
-
-export const GoogleDocsAgent = new Agentica({
+export const agent = new Agentica({
   model: "chatgpt",
-  vendor: {
-    api: openai,
+ vendor: {
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    }),
     model: "gpt-4o-mini",
   },
   controllers: [
@@ -38,63 +50,47 @@ export const GoogleDocsAgent = new Agentica({
       name: "Google Docs Connector",
       protocol: "class",
       application: typia.llm.application<GoogleDocsService, "chatgpt">(),
-      execute: new GoogleDocsService({
-        clientId: process.env.GOOGLE_DOCS_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_DOCS_CLIENT_SECRET!,
-        secret: process.env.GOOGLE_DOCS_REFRESH_TOKEN!,
-      }),
+      execute: new GoogleDocsService(),
     },
   ],
 });
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
 ```  
+This code instantly sets up your Google Docs Agent to interact with Google Docs using OpenAI’s GPT model.
 
 ## Google API Setup  
 
 Before running the Google Docs Agent, you need to configure your Google API credentials.  
 
-1. **Create a Project in Google Cloud Console**  
-   - Go to [Google Cloud Console - Google Docs API](https://console.cloud.google.com/marketplace/product/google/docs.googleapis.com?inv=1&invt=Absg_g).  
-   - Create a new project and enable the **Google Docs API**.  
-
-2. **Obtain Credentials**  
-   - Generate OAuth 2.0 credentials to get your **Client ID** and **Client Secret**.  
-   - Obtain a **Refresh Token** for persistent authentication.  
-
-3. **Set Up Environment Variables**  
-   - Add the following credentials to your `.env` file:  
-
-   ```env
-    GOOGLE_DOCS_CLIENT_ID=your-google-docs-client-id
-    GOOGLE_DOCS_CLIENT_SECRET=your-google-docs-client-secret
-    GOOGLE_DOCS_REFRESH_TOKEN=your-google-docs-refresh-token
-   ```
-
-   Once this setup is complete, your Google Docs Agent will be able to interact with Google Docs seamlessly.
-
-## What This Does  
-
-With this single setup, your Google Docs Agent is ready to:  
-
-- **Process Google Docs data** using the `GoogleDocsService` connector.  
-- **Leverage OpenAI’s GPT model** for intelligent document interactions.  
-- **Ensure type safety** with `typia`.  
-- **Securely manage credentials** using `dotenv`.  
-
-Just set up your **environment variables** in a `.env` file:  
-
 ```env
-OPENAI_KEY=your-openai-api-key
+OPENAI_API_KEY=your-openai-api-key
 GOOGLE_DOCS_CLIENT_ID=your-google-docs-client-id
 GOOGLE_DOCS_CLIENT_SECRET=your-google-docs-client-secret
-GOOGLE_DOCS_REFRESH_TOKEN=your-google-docs-refresh-token
-```  
+GOOGLE_DOCS_REFRESH_TOKEN=your-google-docs-refresh-token 
+```
+
+To get these credentials:
+1. **Create a Project in Google Cloud Console:**  
+   - Enable the **Google Docs API**.
+2. **Obtain Credentials:**  
+   - Generate OAuth 2.0 credentials to get your Client ID, Client Secret, and Refresh Token.
+
+## What This Does
+
+Your Google Docs Agent will:
+- **Process Google Docs Data:** Use the `GoogleDocsService` connector.
+- **Leverage OpenAI's GPT Model:** For smart email interactions.
+- **Maintain Type Safety:** With `typia`.
+- **Securely Manage Credentials:** Using `dotenv`.
 
 ## Selecting Specific Functions  
 
-By using TypeScript’s `Pick` utility type, you can restrict the `GoogleDocsService` to only expose the methods you need.  
-
-For example, in the following code, only these four functions are available:  
-
+You can restrict available functions using TypeScript’s `Pick` utility. For example, to expose only these functions:
 - `write`
 - `clear`
 - `readDocs`
@@ -131,12 +127,11 @@ export const GoogleDocsAgent = new Agentica({
 });
 ```
 
-This ensures that the `GoogleDocsAgent` only has access to these specific functions, making your integration more secure and maintainable.
+This selective exposure makes your integration even more secure and maintainable.
 
-
-## Available Functions  
+## Available Functions
 
 For a list of available functions in `GoogleDocsService`, check out the source code:  
 👉 [wrtnlabs/connectors - GoogleDocsService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_docs/src/google_docs/GoogleDocsService.ts)  
 
-That’s it. This **single code block** gives you a fully functional GoogleDocs Agent, ready for AI-powered document operation automation. 🚀
+Your AI-powered Gmail Agent is now ready for seamless document operation automation! 🚀
