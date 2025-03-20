@@ -9,3 +9,5 @@ mise.toml
 .infisical.json
 
 .idea
+
+.DS_Store
