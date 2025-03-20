@@ -20,14 +20,15 @@ execute: new ${serviceName}Service(),
   return serviceConnectors;
 };
 
-export const createImport = (input: { services: string[] }) => {
-  // Generate import statements for selected services
-  const serviceImports = input.services
+/**
+  * Generate import statements for selected services
+  */
+export function generateServiceImportsCode(services: string[]): string {
+  const serviceImports = services
   .map(
-    (service) =>
-      `import { ${capitalize(service)}Service } from "@wrtnlabs/connector-${service}";`,
+    (service) => `import { ${capitalize(service)}Service } from "@wrtnlabs/connector-${service}";`
   )
   .join("\n");
 
   return serviceImports;
-};
+}
