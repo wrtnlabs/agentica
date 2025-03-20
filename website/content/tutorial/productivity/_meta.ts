@@ -5,6 +5,6 @@ const meta: MetaRecord = {
   slack: "🚀 Slack",
   notion: "📒 Notion",
   arxiv: "📄 ArXiv",
-  "google-search": "🔍 Google Search",
+  "google-search": "Google Search",
 };
 export default meta;
