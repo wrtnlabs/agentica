@@ -19,3 +19,11 @@ jobs:
         env:
           CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
 
+  Publish-dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm dlx pkg-pr-new publish './packages/*'
