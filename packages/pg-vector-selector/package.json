@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc && rollup -c",
     "eslint": "eslint ./**/*.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "prepublishOnly": "pnpm run build"
   },
   "repository": {
     "type": "git",

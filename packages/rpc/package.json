@@ -12,7 +12,8 @@
   "scripts": {
     "prepare": "ts-patch install",
     "build": "rimraf lib && tsc && rollup -c",
-    "dev": "rimraf lib && tsc --watch"
+    "dev": "rimraf lib && tsc --watch",
+    "prepublishOnly": "pnpm run build"
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",

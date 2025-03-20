@@ -14,7 +14,8 @@
     "build": "rimraf lib && pnpm build:prompt && tsc && rollup -c",
     "build:prompt": "ts-node build/prompt.ts",
     "dev": "rimraf lib && tsc --watch",
-    "eslint": "eslint ./**/*.ts"
+    "eslint": "eslint ./**/*.ts",
+    "prepublishOnly": "pnpm run build"
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",
@@ -73,4 +74,3 @@
     "openai": ">=4.80.0"
   }
 }
-

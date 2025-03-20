@@ -12,7 +12,8 @@
     "prepare": "ts-patch install",
     "build": "rslib build",
     "dev": "rslib build --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",
