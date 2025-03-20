@@ -5,6 +5,9 @@
   "typings": "bin/index.d.ts",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "bin": "bin/index.js",
+  "exports": {
+    ".": "./bin/index.js"
+  },
   "scripts": {
     "prepare": "ts-patch install",
     "build": "rslib build",
