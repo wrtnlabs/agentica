@@ -1,8 +1,14 @@
 import typia from "typia";
 import { capitalize } from "./utils";
+import { Tagged } from "type-fest";
 
-export interface Connectors {
-  connectors: string[];
+/** Service name. Opaque type. */
+type Service = Tagged<string, "Service">;
+
+type Connector = `@wrtnlabs/connector-${string}`;
+
+interface Connectors {
+  connectors: Connector[];
   version: string;
 }
 
@@ -15,14 +21,22 @@ export async function getConnectorsList(): Promise<Connectors> {
   return data;
 }
 
-export async function getConnectors(): Promise<{ name: string; value: string; }[]> {
+interface GetConnectorsReturn {
+  packageName: Connector;
+  serviceName: Service;
+  displayName: string;
+};
+
+export async function getConnectors(): Promise<ReadonlyArray<GetConnectorsReturn>> {
   const data = await getConnectorsList();
   return data.connectors
     .map((name) => {
-      const serviceName = name.replace("@wrtnlabs/connector-", "");
+      const serviceName = (name.replace("@wrtnlabs/connector-", "") satisfies string) as Service
+      const displayName = serviceName.replace("-", " ").toUpperCase();
       return {
-        name: serviceName.replace("-", " ").toUpperCase(),
-        value: serviceName,
+        packageName: name,
+        serviceName,
+        displayName,
       };
     });
 }
