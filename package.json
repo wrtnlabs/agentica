@@ -14,7 +14,8 @@
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
     "release": "bumpp",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
