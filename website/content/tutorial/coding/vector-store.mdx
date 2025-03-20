@@ -1,0 +1,102 @@
+---
+title: Agentica > Tutorial > RAG Agents  
+---
+
+## Introduction
+
+This tutorial guides you through setting up a **Retrieval-Augmented Generation (RAG) Agent** using **Agentica**. With the code below, you can create an agent that combines OpenAI's GPT model with a vector store for document retrieval and summarization.
+
+## The Complete RAG Agent
+
+First, install the required package:
+
+```bash
+npm install @agentica/openai-vector-store
+```
+
+Then, add the following code to your project:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { AgenticaOpenAIVectorStoreSelector } from "@agentica/openai-vector-store";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+const selector = new AgenticaOpenAIVectorStoreSelector({
+  provider: {
+    api: openai,
+    assistant: { name: "agentica", model: "gpt-4o-mini" },
+    vectorStore: { name: "vectorStore" },
+  },
+});
+
+export const RagAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      protocol: "class",
+      name: "vectorStore",
+      application: typia.llm.application<
+        AgenticaOpenAIVectorStoreSelector,
+        "chatgpt"
+      >(),
+      execute: selector,
+    },
+  ],
+});
+```
+
+## How It Works
+
+With this configuration, the RAG Agent will:
+
+- **Utilize a Vector Store Selector:** The `AgenticaOpenAIVectorStoreSelector` connects OpenAI’s API with a vector store, enabling document retrieval based on natural language queries.
+- **Process Natural Language Queries:** The agent converts user queries into vector-based searches, retrieving relevant documents.
+- **Generate Intelligent Responses:** It then uses the GPT model to summarize or respond to queries based on the retrieved documents.
+- **Ensure Type Safety:** By using `typia`, the code maintains strong type safety.
+- **Secure API Access:** Environment variables (managed by `dotenv`) secure your API keys.
+
+For more detailed information about `AgenticaOpenAIVectorStoreSelector`, please refer to the [Vector Store repository](https://github.com/wrtnlabs/vector-store).
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Summarize recent advancements in AI research."
+
+The agent will process your query by searching the vector store for relevant documents, and then use OpenAI's GPT model to generate a concise summary based on the retrieved information.
+
+## Environment Setup
+
+Create a `.env` file in your project root with the following content:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+```
+
+## Final Notes & Tips
+
+- **Testing and Debugging:**  
+  - During development, log responses and verify that your queries return the expected results.
+  - Consider adding error handling to manage potential issues like API timeouts or vector store response delays.
+
+- **Security and Environment Variables:**  
+  - Ensure that your API keys in the `.env` file are not committed to version control.
+  - For production environments, use a secure secret management system.
+
+- **Vector Store Functionality:**  
+  - The vector store is key to mapping natural language queries to relevant documents. Understanding its role can help you optimize search results.
+  
+- **Additional Use Cases:**  
+  - Beyond summarization, the agent can support various document retrieval tasks such as Q&A, content aggregation, or even generating insights based on a corpus of documents.
+
+This code block sets up a fully functional RAG Agent using Agentica. Enjoy harnessing the power of natural language interactions combined with vector-based document retrieval to create dynamic, intelligent responses!
