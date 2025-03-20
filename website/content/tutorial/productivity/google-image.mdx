@@ -4,67 +4,82 @@ title: Agentica > Tutorial > Google Image Agents
 
 ## Introduction
 
-This tutorial guides you through setting up a **fully functional Google Image Agent** using **Agentica**. With the following code block, you can create an agent that interacts with Google Image, powered by **OpenAI's GPT model**.
+Set up a **fully functional Google Image Agent** powered by OpenAI's GPT model in a flash using the Agentica CLI.
 
-## The Complete Google Image Agent
+## Quick CLI Setup
 
-First, install the required Google Image connector package:
+Start the Agentica Setup Wizard with this single command:
 
 ```bash
-npm install @wrtnlabs/connector-google-image
+npx agentica start google-image-agent
 ```
 
-Then, add the following code to your project:
+The wizard will walk you through:
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **GOOGLE IMAGE** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
 
 ```typescript
 import { Agentica } from "@agentica/core";
-import { GoogleImageService } from "@wrtnlabs/connector-google-image";
-import dotenv from "dotenv";
-import OpenAI from "openai";
 import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { GoogleImageService } from "@wrtnlabs/connector-google-image";
 
 dotenv.config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-export const GoogleImageAgent = new Agentica({
+export const agent = new Agentica({
   model: "chatgpt",
   vendor: {
-    api: openai,
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    }),
     model: "gpt-4o-mini",
   },
   controllers: [
     {
-      name: "Google Image Connector",
+      name: "GoogleImage Connector",
       protocol: "class",
       application: typia.llm.application<GoogleImageService, "chatgpt">(),
-      execute: new GoogleImageService({
-        apiKey: process.env.SERP_API_KEY!,
-      }),
+      execute: new GoogleImageService(),
     },
   ],
 });
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+
 ```
+
+This code instantly sets up your Google Image Agent, ready to perform intelligent image searches on Google.
 
 ## What This Does
 
-With this single setup, your Google Image Agent is ready to:
+Your Google Image Agent will:
+- **Process Google Image Data:** Use the `GoogleImageService` connector.
+- **Leverage OpenAI's GPT Model:** For smart image search queries.
+- **Maintain Type Safety:** With `typia`.
+- **Securely Manage Credentials:** Using environment variables via `dotenv`.
 
-- **Process Google Image data** using the `GoogleImage` connector.
-- **Leverage OpenAI’s GPT model** for intelligent search image at google.
-- **Ensure type safety** with `typia`.
-- **Securely manage credentials** using `dotenv`.
-
-Just set up your **environment variables** in a `.env` file:
+Set up your environment variables in a `.env` file:
 
 ```env
 OPENAI_API_KEY=your-openai-api-key
 SERP_API_KEY=your-serp-api-key
 ```
 
-Make sure to enter the API key from your SerpApi account in the SERP_API_KEY field.
-
-And you’re all set! 🎉
+Make sure to include your SerpApi API key in the `SERP_API_KEY` field.
 
 ## Use Case Example
 
@@ -72,11 +87,11 @@ Imagine asking the agent:
 
 > "Find the cute cat image"
 
-The Agent will search image at google for cute cat.
+The agent will search Google Images for a cute cat photo.
 
 ## Available Functions
 
-For a list of available functions in `GoogleImageService`, check out the source code:
+For a complete list of functions available in `GoogleImageService`, check out the source code:  
 👉 [wrtnlabs/connectors - GoogleImageService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_image/src/google_image/GoogleImageService.ts)
 
-That’s it. This **single code block** gives you a fully functional Google Image Agent, ready for AI-powered Google Image automation. 🚀
+Your AI-powered Google Image Agent is now ready for seamless, automated image searches! 🚀

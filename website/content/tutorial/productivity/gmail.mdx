@@ -2,35 +2,46 @@
 title: Agentica > Tutorial > Gmail Agents  
 ---
 
-## Introduction  
+## Introduction
 
-This tutorial will guide you through setting up a **fully functional Gmail Agent** using **Agentica**. With just the following code, you’ll have an agent that can interact with Gmail, powered by **OpenAI’s GPT model**.  
+Set up a **fully functional Gmail Agent** powered by OpenAI's GPT model in no time—using the Agentica CLI.
 
-## The Complete Gmail Agent  
+## Quick CLI Setup
 
-First, install the required Gmail connector package:  
+Launch the Agentica Setup Wizard with a single command:
 
 ```bash
-npm install @wrtnlabs/connector-gmail
-```  
+npx agentica start gmail-agent
+```
 
-Then, simply add this code to your project:  
+The wizard guides you through:
+- Installing the required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **GMAIL** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated Gmail Agent code looks like this:
 
 ```typescript
 import { Agentica } from "@agentica/core";
-import { GmailService } from "@wrtnlabs/connector-gmail";
-import dotenv from "dotenv";
-import OpenAI from "openai";
 import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { GmailService } from "@wrtnlabs/connector-gmail";
 
 dotenv.config();
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
-
-export const GmailAgent = new Agentica({
+export const agent = new Agentica({
   model: "chatgpt",
   vendor: {
-    api: openai,
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    }),
     model: "gpt-4o-mini",
   },
   controllers: [
@@ -38,63 +49,48 @@ export const GmailAgent = new Agentica({
       name: "Gmail Connector",
       protocol: "class",
       application: typia.llm.application<GmailService, "chatgpt">(),
-      execute: new GmailService({
-        clientId: process.env.GMAIL_CLIENT_ID!,
-        clientSecret: process.env.GMAIL_CLIENT_SECRET!,
-        secret: process.env.GMAIL_REFRESH_TOKEN!,
-      }),
+      execute: new GmailService(),
     },
   ],
 });
-```  
 
-## Google API Setup  
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
 
-Before running the Gmail Agent, you need to configure your Google API credentials.  
+main();
+```
 
-1. **Create a Project in Google Cloud Console**  
-   - Go to [Google Cloud Console - Gmail API](https://console.cloud.google.com/marketplace/product/google/gmail.googleapis.com).  
-   - Create a new project and enable the **Gmail API**.  
+This code instantly sets up your Gmail Agent to interact with Gmail using OpenAI’s GPT model.
 
-2. **Obtain Credentials**  
-   - Generate OAuth 2.0 credentials to get your **Client ID** and **Client Secret**.  
-   - Obtain a **Refresh Token** for persistent authentication.  
+## Google API Setup
 
-3. **Set Up Environment Variables**  
-   - Add the following credentials to your `.env` file:  
-
-   ```env
-   GMAIL_CLIENT_ID=your-gmail-client-id  
-   GMAIL_CLIENT_SECRET=your-gmail-client-secret  
-   GMAIL_REFRESH_TOKEN=your-gmail-refresh-token  
-   ```
-
-   Once this setup is complete, your Gmail Agent will be able to interact with Gmail seamlessly.
-
-## What This Does  
-
-With this single setup, your Gmail Agent is ready to:  
-
-- **Process Gmail data** using the `GmailService` connector.  
-- **Leverage OpenAI’s GPT model** for intelligent email interactions.  
-- **Ensure type safety** with `typia`.  
-- **Securely manage credentials** using `dotenv`.  
-
-Just set up your **environment variables** in a `.env` file:  
+Before running the agent, add your Google API credentials to the `.env` file:
 
 ```env
-OPENAI_KEY=your-openai-api-key
+OPENAI_API_KEY=your-openai-api-key
 GMAIL_CLIENT_ID=your-gmail-client-id
 GMAIL_CLIENT_SECRET=your-gmail-client-secret
 GMAIL_REFRESH_TOKEN=your-gmail-refresh-token
-```  
+```
 
-## Selecting Specific Functions  
+To get these credentials:
+1. **Create a Project in Google Cloud Console:**  
+   - Enable the **Gmail API**.
+2. **Obtain Credentials:**  
+   - Generate OAuth 2.0 credentials to get your Client ID, Client Secret, and Refresh Token.
 
-By using TypeScript’s `Pick` utility type, you can restrict the `GmailService` to only expose the methods you need.  
+## What This Does
 
-For example, in the following code, only these five functions are available:  
+Your Gmail Agent will:
+- **Process Gmail Data:** Use the `GmailService` connector.
+- **Leverage OpenAI's GPT Model:** For smart email interactions.
+- **Maintain Type Safety:** With `typia`.
+- **Securely Manage Credentials:** Using `dotenv`.
 
+## Selecting Specific Functions
+
+You can restrict available functions using TypeScript’s `Pick` utility. For example, to expose only these functions:
 - `createDraft`
 - `findEmails`
 - `deleteMailList`
@@ -133,12 +129,11 @@ export const GmailAgent = new Agentica({
 });
 ```
 
-This ensures that the `GmailAgent` only has access to these specific functions, making your integration more secure and maintainable.
+This selective exposure makes your integration even more secure and maintainable.
 
+## Available Functions
 
-## Available Functions  
+For a complete list of functions in `GmailService`, check out the source code:  
+👉 [wrtnlabs/connectors - GmailService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/gmail/src/gmail/GmailService.ts)
 
-For a list of available functions in `GmailService`, check out the source code:  
-👉 [wrtnlabs/connectors - GmailService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/gmail/src/gmail/GmailService.ts)  
-
-That’s it. This **single code block** gives you a fully functional Gmail Agent, ready for AI-powered email automation. 🚀
+Your AI-powered Gmail Agent is now ready for seamless email automation! 🚀
