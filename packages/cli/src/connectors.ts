@@ -1,4 +1,4 @@
-import type { Tagged } from "type-fest";
+import type { Tagged, UnwrapTagged } from "type-fest";
 import typia from "typia";
 import { capitalize } from "./utils";
 
@@ -43,7 +43,7 @@ export async function getConnectors(): Promise<ReadonlyArray<GetConnectorsReturn
   const data = await getConnectorsList();
   return data.connectors
     .map((name) => {
-      const serviceName = (name.replace(CONNECTOR_PREFIX, "") satisfies string) as Service
+      const serviceName = (name.replace(CONNECTOR_PREFIX, "") satisfies UnwrapTagged<Service>) as Service
       const displayName = serviceName.replace("-", " ").toUpperCase();
       return {
         packageName: name,
