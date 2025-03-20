@@ -1,3 +1,4 @@
+import { execSync } from "child_process";
 import fs from "fs/promises";
 import inquirer from "inquirer";
 import path from "path";
@@ -63,6 +64,8 @@ export namespace AgenticaStart {
       openAIKey,
       services,
     });
+
+    process.chdir(projectPath);
 
     // Run package installation
     console.log("📦 Package installation in progress...");
