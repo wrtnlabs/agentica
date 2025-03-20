@@ -1,0 +1,146 @@
+---
+title: Agentica > Tutorial > Google Calendar Agents  
+---
+
+## Introduction  
+
+This tutorial will guide you through setting up a **fully functional Google Calendar Agent** using **Agentica**. With just the following code, you’ll have an agent that can interact with Google Calendar, powered by **OpenAI’s GPT model**.  
+
+## The Complete Google Calendar Agent  
+
+First, install the required Google Calendar connector package:  
+
+```bash
+npm install @wrtnlabs/connector-google-calendar
+```  
+
+Then, simply add this code to your project:  
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { GoogleCalendarService } from "@wrtnlabs/connector-google-calendar";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
+
+export const GoogleCalendarAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Google Calendar Connector",
+      protocol: "class",
+      application: typia.llm.application<GoogleCalendarService, "chatgpt">(),
+      execute: new GoogleCalendarService({
+        clientId: process.env.GOOGLE_CALENDAR_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
+        secret: process.env.GOOGLE_CALENDAR_REFRESH_TOKEN!,
+      }),
+    },
+  ],
+});
+```  
+
+## Google API Setup  
+
+Before running the Google Calendar Agent, you need to configure your Google API credentials.  
+
+1. **Create a Project in Google Cloud Console**  
+   - Go to [Google Cloud Console - Google Calendar API](https://console.cloud.google.com/marketplace/product/google/calendar-json.googleapis.com?inv=1&invt=Absgsg).  
+   - Create a new project and enable the **Google Calendar API**.  
+
+2. **Obtain Credentials**  
+   - Generate OAuth 2.0 credentials to get your **Client ID** and **Client Secret**.  
+   - Obtain a **Refresh Token** for persistent authentication.  
+
+3. **Set Up Environment Variables**  
+   - Add the following credentials to your `.env` file:  
+
+   ```env
+    GOOGLE_CALENDAR_CLIENT_ID=your-google-calendar-client-id
+    GOOGLE_CALENDAR_CLIENT_SECRET=your-google-calendar-client-secret
+    GOOGLE_CALENDAR_REFRESH_TOKEN=your-google-calendar-refresh-token
+   ```
+
+   Once this setup is complete, your Google Calendar Agent will be able to interact with Google Calendar seamlessly.
+
+## What This Does  
+
+With this single setup, your Google Calendar Agent is ready to:  
+
+- **Process Google Calendar data** using the `GoogleCalendarService` connector.  
+- **Leverage OpenAI’s GPT model** for intelligent calendar interactions.  
+- **Ensure type safety** with `typia`.  
+- **Securely manage credentials** using `dotenv`.  
+
+Just set up your **environment variables** in a `.env` file:  
+
+```env
+OPENAI_KEY=your-openai-api-key
+GOOGLE_CALENDAR_CLIENT_ID=your-google-calendar-client-id
+GOOGLE_CALENDAR_CLIENT_SECRET=your-google-calendar-client-secret
+GOOGLE_CALENDAR_REFRESH_TOKEN=your-google-calendar-refresh-token
+```  
+
+## Selecting Specific Functions  
+
+By using TypeScript’s `Pick` utility type, you can restrict the `GoogleCalendarService` to only expose the methods you need.  
+
+For example, in the following code, only these six functions are available:  
+
+- `getCalendarList`
+- `createCalendar`
+- `eventList`
+- `createEvent`
+- `updateEvent`
+- `deleteEvent`
+
+```typescript
+export const GoogleCalendarAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Google Calendar Connector",
+      protocol: "class",
+      application: typia.llm.application<
+        Pick<
+          GoogleCalendarService,
+          | "getCalendarList"
+          | "createCalendar"
+          | "eventList"
+          | "createEvent"
+          | "updateEvent"
+          | "deleteEvent"
+        >,
+        "chatgpt"
+      >(),
+      execute: new GoogleCalendarService({
+        clientId: process.env.GOOGLE_CALENDAR_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
+        secret: process.env.GOOGLE_CALENDAR_REFRESH_TOKEN!,
+      }),
+    },
+  ],
+});
+```
+
+This ensures that the `GoogleCalendarAgent` only has access to these specific functions, making your integration more secure and maintainable.
+
+
+## Available Functions  
+
+For a list of available functions in `GoogleCalendarService`, check out the source code:  
+👉 [wrtnlabs/connectors - GoogleCalendarService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_calendar/src/google_calendar/GoogleCalendarService.ts)  
+
+That’s it. This **single code block** gives you a fully functional GoogleCalendar Agent, ready for AI-powered email automation. 🚀
