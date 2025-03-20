@@ -1,4 +1,5 @@
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList } from "./connectors";
+import type { Service } from "./connectors";
 
 describe('getConnectorsList', () => {
   it('should return a list of connectors', async () => {
@@ -22,7 +23,7 @@ describe('getConnectors', () => {
         displayName: 'GOOGLE MAP',
       },
     ]);
-});
+  });
 })
 
 describe("generateConnectorsArrayCode", () => {
@@ -32,7 +33,7 @@ describe("generateConnectorsArrayCode", () => {
   });
 
   it("should generate connectors array code with one service", () => {
-    const result = generateConnectorsArrayCode(["chatgpt"]);
+    const result = generateConnectorsArrayCode(["chatgpt"] as Service[]);
     expect(result).toBe(`{
 name: "Chatgpt Connector",
 protocol: "class",
@@ -42,7 +43,7 @@ execute: new ChatgptService(),
   });
 
   it("should generate connectors array code with one service with '-' in name", () => {
-    const result = generateConnectorsArrayCode(["aws-s3"]);
+    const result = generateConnectorsArrayCode(["aws-s3"] as Service[]);
     expect(result).toBe(`{
 name: "AwsS3 Connector",
 protocol: "class",
@@ -52,7 +53,7 @@ execute: new AwsS3Service(),
   });
 
   it("should generate connectors array code with multiple services", () => {
-    const result = generateConnectorsArrayCode(["chatgpt", "openai"]);
+    const result = generateConnectorsArrayCode(["chatgpt", "openai"] as Service[]);
     expect(result).toBe(`{
 name: "Chatgpt Connector",
 protocol: "class",
@@ -66,7 +67,7 @@ application: typia.llm.application<OpenaiService, "chatgpt">(),
 execute: new OpenaiService(),
 }`);
   });
- } )
+} )
 
 
 describe("generateServiceImportsCode", () => {
@@ -76,23 +77,23 @@ describe("generateServiceImportsCode", () => {
   });
 
   it("should generate import statements with one service", () => {
-    const result = generateServiceImportsCode(["chatgpt"]);
+    const result = generateServiceImportsCode(["chatgpt"] as Service[]);
     expect(result).toBe(`import { ChatgptService } from "@wrtnlabs/connector-chatgpt";`);
   });
 
   it("should generate import statements with one service with '-' in name", () => {
-    const result = generateServiceImportsCode(["aws-s3"]);
+    const result = generateServiceImportsCode(["aws-s3"] as Service[]);
     expect(result).toBe(`import { AwsS3Service } from "@wrtnlabs/connector-aws-s3";`);
   });
 
   it("should generate import statements with multiple services", () => {
-    const result = generateServiceImportsCode(["chatgpt", "openai"]);
+    const result = generateServiceImportsCode(["chatgpt", "openai"] as Service[]);
     expect(result).toBe(`import { ChatgptService } from "@wrtnlabs/connector-chatgpt";
 import { OpenaiService } from "@wrtnlabs/connector-openai";`);
   });
 
   it("should generate import statements with multiple services in different order", () => {
-    const result = generateServiceImportsCode(["openai", "chatgpt"]);
+    const result = generateServiceImportsCode(["openai", "chatgpt"] as Service[]);
     expect(result).toBe(`import { OpenaiService } from "@wrtnlabs/connector-openai";
 import { ChatgptService } from "@wrtnlabs/connector-chatgpt";`);
   });
