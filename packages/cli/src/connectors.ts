@@ -1,12 +1,12 @@
+import type { Tagged } from "type-fest";
 import typia from "typia";
 import { capitalize } from "./utils";
-import { Tagged } from "type-fest";
 
 const CONNECTORS_LIST_URL = 'https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json' as const;
 const CONNECTOR_PREFIX = '@wrtnlabs/connector-' as const;
 
 /** Service name. Opaque type. */
-type Service = Tagged<string, "Service">;
+export type Service = Tagged<string, "Service">;
 
 type Connector = `${typeof CONNECTOR_PREFIX}${string}`;
 
@@ -57,7 +57,7 @@ export async function getConnectors(): Promise<ReadonlyArray<GetConnectorsReturn
   * Generate code for the `connectors` array.
   * it should be placed in controllers property of Agentica's initialization object.
   */
-export function generateConnectorsArrayCode(services: string[]): string {
+export function generateConnectorsArrayCode(services: Service[]): string {
   const serviceConnectors = services
   .map((service) => {
     const serviceName = capitalize(service);
@@ -76,7 +76,7 @@ execute: new ${serviceName}Service(),
 /**
   * Generate import statements for selected services
   */
-export function generateServiceImportsCode(services: string[]): string {
+export function generateServiceImportsCode(services: Service[]): string {
   const serviceImports = services
   .map(
     (service) => `import { ${capitalize(service)}Service } from "${CONNECTOR_PREFIX}${service}";`
