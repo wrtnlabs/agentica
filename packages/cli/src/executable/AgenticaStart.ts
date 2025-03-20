@@ -1,17 +1,76 @@
 import process from "node:process";
 import fs from "node:fs/promises";
 import path from "node:path";
-import inquirer from "inquirer";
+import inquirer, { QuestionCollection } from "inquirer";
 import typia from "typia";
 
 import { Package } from "../bases/Package";
 import { AgenticaStarter } from "../functional/AgenticaStarter";
 import { IAgenticaStart } from "../structures/IAgenticaStart";
-import { getConnectors } from "../utils/getConnectors";
-import { getQuestions } from "../utils/getQuestions";
-import { redBright, yellow } from "../utils/styleText";
+import { blueBright, getConnectors } from "../utils";
+import { redBright, yellow } from "../utils";
 import { PackageManager } from "../packages/consts";
-import type { ProjectOptionValue } from "../types/ProjectOption";
+import type { ProjectOptionValue } from "../types";
+
+export interface IGetQuestionsProps {
+  services: {
+    name: string;
+    value: string;
+  }[];
+
+  options: IAgenticaStart.IOptions;
+}
+
+/**
+ * Get questions for `start` command.
+ */
+export const getQuestions = (
+  input: IGetQuestionsProps,
+): QuestionCollection[] => {
+  const questions = [
+    {
+      type: "list",
+      name: "packageManager",
+      message: "Package Manager",
+      choices: [
+        "npm",
+        "pnpm",
+        {
+          name: `yarn (berry ${blueBright("is not supported")})`,
+          value: "yarn",
+        },
+        "bun",
+      ],
+    },
+    input.options.project
+      ? null
+      : {
+          type: "list",
+          name: "projectType",
+          message: "Project Type",
+          choices: Object.values(AgenticaStarter.PROJECT).map((project) => ({
+            name: project.title,
+            value: project.key,
+          })),
+        },
+    input.services.length === 0
+      ? null
+      : {
+          type: "checkbox",
+          name: "services",
+          message: "Embedded Controllers",
+          choices: input.services,
+          when: (answers) => answers.projectType !== "react",
+        },
+    {
+      type: "input",
+      name: "openAIKey",
+      message: "Please enter your OPENAI_API_KEY:",
+    },
+  ] satisfies (QuestionCollection | null)[];
+
+  return questions.filter((question) => question !== null);
+};
 
 export namespace AgenticaStart {
   /**
