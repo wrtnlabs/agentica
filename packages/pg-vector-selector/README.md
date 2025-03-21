@@ -15,12 +15,10 @@ import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 
 import typia from "typia";
 
-
 // Initialize with connector-hive server
 const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
-  'https://your-connector-hive-server.com'
+  "https://your-connector-hive-server.com"
 );
-
 
 const agent = new Agentica({
   model: "chatgpt",
@@ -67,10 +65,10 @@ To use pg-vector-selector, you need:
 First, initialize the library with your connector-hive server:
 
 ```typescript
-import { AgenticaPgVectorSelector } from 'pg-vector-selector';
+import { AgenticaPgVectorSelector } from "pg-vector-selector";
 
 const selectorExecute = AgenticaPgVectorSelector.boot<YourSchemaModel>(
-  'https://your-connector-hive-server.com'
+  "https://your-connector-hive-server.com"
 );
 ```
 

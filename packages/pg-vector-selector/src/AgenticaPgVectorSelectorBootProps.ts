@@ -1,4 +1,4 @@
-import { IConnection } from "@wrtnlabs/connector-hive-api";
+import type { IConnection } from "@wrtnlabs/connector-hive-api";
 
 export interface IAgenticaPgVectorSelectorBootProps {
   connectorHiveConnection: IConnection;
@@ -22,8 +22,8 @@ export interface IAgenticaPgVectorSelectorBootProps {
       version:
         | number
         | {
-            [key: string]: number;
-          };
+          [key: string]: number;
+        };
     };
   };
 }
