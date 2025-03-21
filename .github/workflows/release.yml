@@ -1,8 +1,10 @@
 # author: elliot-huffman
 name: release
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "*"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -23,3 +25,16 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH }}
           NPM_CONFIG_PROVENANCE: true # Enable provenance
 
+  release:
+    runs-on: ubuntu-latest
+    needs: publish
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - run: pnpm dlx changelogithub
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
