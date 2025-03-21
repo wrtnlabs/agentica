@@ -60,18 +60,6 @@ By the way, how the human cannot take any mistake on the documentation? In the t
 
 To overcome such human mistakes, `@agentica` recommends to adapt new era's backend framework like FastAPI or NestJS. These frameworks are supporting the Swagger/OpenAPI document generation by the compiler. They don't require human's hand-writing the JSON schema.
 
-{/* Have you heard about "Contract Driven Development"? It is a development methodology advocated by OpenAPI foundation, every developers participating in the project are involved in defining the RestAPI specification together, hand writing the `swagger.json` (`swaggar.yaml`) file first, and then developing the frontend and backend applications based on it.
-
-Considering its strengths, "Contract Driven Development" seems like an ideal methodology that every developers must follow. However, I have never seen a project that hand writing the `swagger.json` file first, and following the Contract Driven Development rule. */}
-
-{/* Compiler Driven Development for productivity and stability.
-
-Have you heards of Contract Driven Development? It is a development methodology that is advocated by OpenAPI Foundation, which created the Swagger/OpenAPI specification. Every developers participating in the project are involved in defining the RestAPI specification together, writing the specification as a Swagger/OpenAPI document hand manually first, and then developing the frontend and backend applications based on it. 
-
-Since the specification is clearly defined in advance, it is easy for developers to collaborate with each other and to verify each other's code. Once the OpenAPI document is written and the specifications are finalized, backend development can also be carried out in parallel by dividing the test program writer and the main program writer, thereby ensuring both productivity and stability.
-
-This method is also effective when developing AI agents. Rather than completing all the function functions and then applying them to the AI ​​agent, it is more efficient and stable to first define the function description and parameter/return type, and then check whether the AI ​​agent understands them well through benchmarking before completing the function implementation. */}
-
 
 
 
@@ -230,13 +218,18 @@ Contract Driven Development with Compiler.
 
 Considering strengths of the Contract Driven Development, some of them are reasonable and enough acceptable for the new era of AI agent development. Rather than completing all of the functions and then applying them to the AI agent at once, it is more efficient and stable to define the function interface first, and then check whether the AI agent can understand them well through benchmarking before completing the function implementation.
 
-Just define function interface first, with its name, description comments, and DTO (parameters/return) types. If you think that you've defined enough detailed descriptions on the function and DTO types, then run the select benchmark feature of [`@agentica/benchmark`](/docs/plugins/benchmark) program only with the interface.
+Just define function interface first, with its name, description comments, and DTO (parameters/return) types. If you think that you've defined enough detailed descriptions on the function and DTO types, then run the select benchmark features of [`@agentica/benchmark`](/docs/plugins/benchmark) program only with the interface.
+
+If you've get the successful result from the benchmark, then you start the function implementation. If not, then you have to modify the description comments or DTO types, and then run the benchmark program again. This is the new era's Contract Driven Development with Compiler.
+
+### With Selection Benchmark
+Selection benchmark is the most important.
 
 Note that, `@agentica` is a framework specialized in LLM (Large Language Model) function calling, and doing everything with the function calling. And the most important thing in the `@agentica` based AI chatbot development is, let the AI agent to select proper function to call from the conversation context. It is called function selecting, and the quality of the function selecting would be determined by the quality of the description comments written on each function.
 
 Even if you have completed implementing the TypeScript class or developing the backend, you may not know whether it will work well in the AI ​​agent. Perhaps the description of each function is ambiguous or conflicts with each other, so you may have to modify the already completed program again. Therefore, it is more stable and productive to define the function interface first, and then check whether the AI agent can understand them well through benchmarking before completing the function implementation.
 
-This is the new era's Contract Driven Development with Compiler.
+This is the reason why I'm recommending to adapt the new era's Contract Driven Development with Compiler. Defining interface only, and measuring its performance may look like annoying things. However, I can sure that, this methology will save your time and effort a lot. You may not suffer from the re-desining and re-implementing the functions after the AI agent development.
 
 > [!TIP]
 >
