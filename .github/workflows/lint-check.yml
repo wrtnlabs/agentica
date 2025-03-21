@@ -1,5 +1,6 @@
 name: lint-check
 on:
+  push:
   pull_request:
 
 jobs:
