@@ -80,20 +80,20 @@ export async function start({ project, template }: StartOptions) {
     context.packageManager = packageManager
   }
 
-  // Ask for project type
+  // Ask for template type
 {
     if (template != null) {
       context.template = template;
     }else{
-      const { projectType } = await inquirer.prompt<{ projectType: StarterTemplate }>([
+      const { templateType } = await inquirer.prompt<{ templateType: StarterTemplate }>([
         {
           type: "list",
-          name: "projectType",
+          name: "templateType",
           message: "Which project type do you want to start?",
           choices: STARTER_TEMPLATES,
         }
       ]);
-      project = projectType;
+      context.template = templateType;
     }
   }
 

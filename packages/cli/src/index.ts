@@ -7,6 +7,7 @@ import typia from "typia";
 async function main() {
   const program = new Command();
 
+  // TODO: project option should be template
   program
     .command("start <directory>")
     .description("Start a new project")
