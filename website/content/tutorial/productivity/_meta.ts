@@ -9,5 +9,6 @@ const meta: MetaRecord = {
   "google-search": "Google Search",
   notion: "Notion",
   slack: "Slack",
+  "google-docs": "Google Docs",
 };
 export default meta;
