@@ -1,0 +1,19 @@
+```typescript showLineNumbers
+import { Agentica } from "@agentica/core";
+import { HttpLlm } from "@samchon/openapi";
+import typia from "typia";
+
+const agent = new Agentica({
+  controllers: [
+    HttpLlm.application(
+      await fetch(
+        "https://shopping-be.wrtn.ai/editor/swagger.json",
+      ).then(r => r.json())
+    ),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```

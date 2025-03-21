@@ -3,6 +3,10 @@ title: Agentica > Guide Documents > Getting Started
 ---
 import { Tabs } from "nextra/components";
 
+import RemoteSource from "../../components/RemoteSource";
+import AgenticaExamplePseudoSnippet from "../snippets/AgenticaExamplePseudoSnippet.mdx";
+import AgenticaExampleActualSnippet from "../snippets/AgenticaExampleActualSnippet.mdx";
+
 ## Agentica
 
 ![Agentica Logo](/logo.png)
@@ -59,82 +63,10 @@ Look at the below demonstration, and feel how `agentica` is easy and powerful. Y
 
 <Tabs items={["Pseudo Code", "Actual Code"]}>
   <Tabs.Tab>
-```typescript showLineNumbers
-import { Agentica } from "@agentica/core";
-import typia from "typia";
-
-const agent = new Agentica({
-  controllers: [
-    await fetch(
-      "https://shopping-be.wrtn.ai/editor/swagger.json",
-    ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
-    typia.llm.application<ShoppingPolicy>(),
-    typia.llm.application<ShoppingSearchRag>(),
-  ],
-});
-await agent.conversate("I wanna buy MacBook Pro");
-```
+    <AgenticaExamplePseudoSnippet />
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript showLineNumbers
-import { Agentica } from "@agentica/core";
-import { OpenApi, HttpLlm } from "@samchon/openapi";
-import typia from "typia";
-
-const main = async (): Promise<void> => {
-  const agent = new Agentica({
-    model: "chatgpt",
-    vendor: {
-      api: new OpenAI({ apiKey: "*****" }),
-      model: "gpt-4o-mini",
-    },
-    controllers: [
-      {
-        protocol: "http",
-        name: "shopping",
-        application: HttpLlm.application({
-          model: "chatgpt",
-          document: OpenApi.convert(
-            await fetch(
-              "https://shopping-be.wrtn.ai/editor/swagger.json",
-            ).then(r => r.json()),
-          ),
-        }),
-        connection: {
-          host: "https://shopping-be.wrtn.ai",
-          headers: {
-            Authorization: "Bearer *****",
-          },
-        },
-      },
-      {
-        protocol: "class",
-        name: "counselor",
-        application: 
-          typia.llm.application<ShoppingCounselor, "chatgpt">(),
-        execute: new ShoppingCounselor(),
-      },
-      {
-        protocol: "class",
-        name: "policy",
-        application: 
-          typia.llm.application<ShoppingPolicy, "chatgpt">(),
-        execute: new ShoppingPolicy(),
-      },
-      {
-        protocol: "class",
-        name: "rag",
-        application: 
-          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
-        execute: new ShoppingSearchRag(),
-      },
-    ],
-  });
-  await agent.conversate("I wanna buy MacBook Pro");
-};
-main().catch(console.error);
-```
+    <AgenticaExampleActualSnippet />
   </Tabs.Tab>
 </Tabs>
 
@@ -143,9 +75,8 @@ main().catch(console.error);
         title="Shopping A.I. Chatbot built with Nestia" 
         width="100%" 
         height="600" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" 
-        allowfullscreen></iframe>
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" 
+        allowFullScreen></iframe>
 
 
 
