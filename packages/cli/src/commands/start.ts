@@ -101,12 +101,19 @@ export async function start({ project, template }: StartOptions) {
     if (template != null) {
       context.template = template;
     }else{
+      const choices = {
+        standalone: `Standalone ${blueBright("Agent Server")}`,
+        nodejs: `NodeJS ${blueBright("Agent Server")}`,
+        nestjs: `NestJS ${blueBright("Agent Server")}`,
+        react: `React ${blueBright("Application")}`,
+      } as const satisfies Record<StarterTemplate, string>;
+
       const { templateType } = await inquirer.prompt<{ templateType: StarterTemplate }>([
         {
           type: "list",
           name: "templateType",
           message: "Which project type do you want to start?",
-          choices: STARTER_TEMPLATES,
+          choices,
         }
       ]);
       context.template = templateType;
