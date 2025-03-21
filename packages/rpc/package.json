@@ -1,6 +1,6 @@
 {
   "name": "@agentica/rpc",
-  "version": "0.12.20",
+  "version": "0.12.21",
   "main": "src/index.ts",
   "publishConfig": {
     "main": "lib/index.js",
