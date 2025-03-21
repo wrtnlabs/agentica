@@ -268,9 +268,6 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^12.1.2
         version: 12.1.2(rollup@4.36.0)(tslib@2.8.1)(typescript@5.8.2)
-      '@trivago/prettier-plugin-sort-imports':
-        specifier: ^5.2.2
-        version: 5.2.2(@vue/compiler-sfc@3.5.13)(prettier@3.5.3)
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
@@ -280,9 +277,6 @@ importers:
       openai:
         specifier: ^4.80.0
         version: 4.89.0(zod@3.24.2)
-      prettier:
-        specifier: ^3.5.0
-        version: 3.5.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
