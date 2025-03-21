@@ -9,7 +9,7 @@ import AgenticaExampleActualSnippet from "../../snippets/AgenticaExampleActualSn
 import KotlinSpringSnippet from "../../snippets/KotlinSpringSnippet.mdx";
 import PhpLaravelSnippet from "../../snippets/PhpLaravelSnippet.mdx";
 import PythonDjangoSnippet from "../../snippets/PythonDjangoSnippet.mdx";
-import PythonFastAPISnippet from "../../snippets/PythonFastAPISnippet.mdx";
+import PythonFastApiSnippet from "../../snippets/PythonFastApiSnippet.mdx";
 
 ## Preface
 ### Function Calling Schema
@@ -24,7 +24,7 @@ import PythonFastAPISnippet from "../../snippets/PythonFastAPISnippet.mdx";
 
 LLM function calling schema must be built by compiler.
 
-`@agentica` is specialized in LLM (Large Language Model) function calling, and doing everything with the function calling. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica`. Only LLM function calling schema is important, and `@agentica` will do everything with it. Therefore, the most important thing in `@agentica` based development is, how safely and efficiently the LLM function calling schema is acquired.
+`@agentica` is specialized in LLM (Large Language Model) function calling, and doing everything with the function calling. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica`. Only LLM function calling schema is important, and `@agentica` will do everything with it. Therefore, the most important thing in `@agentica` based development is, how safely and efficiently build the LLM function calling schema.
 
 By the way, what if a person writes a function calling schema by hand and makes a mistake? It will break the entire AI agent system, because the LLM function calling would never be successful with the wrong schema. For example, in the case of a traditional backend development, if a backend developer takes a mistake in the API documentation, the frontend developer (human) can intuitively avoid it. However, **AI never forgives** such mistakes.
 
@@ -54,7 +54,7 @@ Swagger/OpenAPI document must be composed by compiler.
 
 Looking at backend development ecosystem of traditional, it is not easy to building the Swagger/OpenAPI document. Most of traditional languages and frameworks are guiding to write the Swagger/OpenAPI document by hand.
 
-Considering the use case of backend servers in the LLM (Large Language Model) function calling of AI chatbot, most of them would be enterprise level applications that generally have a large number of API functions. Therefore, the stability and the efficiency of mass production are much more important than when calling a class function.
+Considering the use case of backend servers in the LLM (Large Language Model) function calling of AI chatbot, most of them would be enterprise level applications that generally have a large number of API functions. Therefore, the stability and the efficiency of mass production are much more important than the class function calling case.
 
 By the way, how the human cannot take any mistake on the documentation? In the traditional development ecosystem, if a backend developer takes a mistake in the API documentation, the frontend developer (human) can intuitively avoid it. However, AI is not. **AI never forgives** such mistakes when performing the LLM function calling. The function calling would never be successful with the wrong schema.
 
@@ -135,6 +135,7 @@ Therefore, `DJango` is not suitable for new AI era.
 </Tabs>
 
 ### Python FastAPI Framework
+<PythonFastApiSnippet />
 
 ### Compiler Driven Development
 
