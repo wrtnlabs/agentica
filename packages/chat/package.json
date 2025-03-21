@@ -11,6 +11,7 @@
     "build:lib": "rimraf lib && tsc --project tsconfig.lib.json --emitDeclarationOnly && rollup -c",
     "dev": "vite",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "prepare": "ts-patch install",
     "preview": "vite preview",
     "deploy": "node build/deploy.mjs",
