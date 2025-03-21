@@ -64,7 +64,9 @@ export function ChatExample() {
             <ChatBubble key={i} {...message} />
           ),
         )}
-        {visibleMessage >= 4 && <div ref={bottomBoundaryRef} />}
+        {visibleMessage === CHAT_EXAMPLE_MESSAGE_LIST.length && (
+          <div ref={bottomBoundaryRef} />
+        )}
       </div>
 
       {visibleMessage >= 4 && (
