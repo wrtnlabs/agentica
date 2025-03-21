@@ -1,30 +1,244 @@
 ---
 title: Agentica > Guide Documents > Concepts > Compiler Driven Development
 ---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../components/RemoteSource";
+import AgenticaExamplePseudoSnippet from "../../snippets/AgenticaExamplePseudoSnippet.mdx";
+import AgenticaExampleActualSnippet from "../../snippets/AgenticaExampleActualSnippet.mdx";
+import KotlinSpringSnippet from "../../snippets/KotlinSpringSnippet.mdx";
+import PhpLaravelSnippet from "../../snippets/PhpLaravelSnippet.mdx";
+import PythonDjangoSnippet from "../../snippets/PythonDjangoSnippet.mdx";
+import PythonFastAPISnippet from "../../snippets/PythonFastAPISnippet.mdx";
+
+## Preface
+### Function Calling Schema
+<Tabs items={["Pseudo Code", "Actual Code"]}>
+  <Tabs.Tab>
+    <AgenticaExamplePseudoSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaExampleActualSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+LLM function calling schema must be built by compiler.
+
+`@agentica` is specialized in LLM (Large Language Model) function calling, and doing everything with the function calling. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica`. Only LLM function calling schema is important, and `@agentica` will do everything with it. Therefore, the most important thing in `@agentica` based development is, how safely and efficiently the LLM function calling schema is acquired.
+
+By the way, what if a person writes a function calling schema by hand and makes a mistake? It will break the entire AI agent system, because the LLM function calling would never be successful with the wrong schema. For example, in the case of a traditional backend development, if a backend developer takes a mistake in the API documentation, the frontend developer (human) can intuitively avoid it. However, **AI never forgives** such mistakes.
+
+To prevent such human mistakes, the LLM function calling schema must be constructed by the compiler. I call this concept as "Compiler Driven Development".
+
+### TypeScript Class
+Use [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application) function.
+
+`@agentica` is guiding to use `typia.llm.application<Class, Model>()` function when constructing a function calling schema for a TypeScript class method. The compiler library `typia` will analyze the source code for the target class type `Class`, and automatically create an LLM (Large Language Model) function calling schema.
+
+By the way, `@agentica` is the only one framework that supporting TypeScript class function calling. And `typia` is the only one library which can create LLM function calling schema from the TypeScript class type. Regardless of whether you follow the "Compiler Driven Development" rule or not, this is the only way to call a function for a TypeScript class method in AI agent.
+
+### Backend Development
+<Tabs items={["Java/Kotlin Spring", "Php Laravel", "Python Django"]}>
+  <Tabs.Tab>
+    <KotlinSpringSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <PhpLaravelSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <PythonDjangoSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+Swagger/OpenAPI document must be composed by compiler.
+
+Looking at backend development ecosystem of traditional, it is not easy to building the Swagger/OpenAPI document. Most of traditional languages and frameworks are guiding to write the Swagger/OpenAPI document by hand.
+
+Considering the use case of backend servers in the LLM (Large Language Model) function calling of AI chatbot, most of them would be enterprise level applications that generally have a large number of API functions. Therefore, the stability and the efficiency of mass production are much more important than when calling a class function.
+
+By the way, how the human cannot take any mistake on the documentation? In the traditional development ecosystem, if a backend developer takes a mistake in the API documentation, the frontend developer (human) can intuitively avoid it. However, AI is not. **AI never forgives** such mistakes when performing the LLM function calling. The function calling would never be successful with the wrong schema.
+
+To overcome such human mistakes, `@agentica` recommends to adapt new era's backend framework like FastAPI or NestJS. These frameworks are supporting the Swagger/OpenAPI document generation by the compiler. They don't require human's hand-writing the JSON schema.
+
+{/* Have you heard about "Contract Driven Development"? It is a development methodology advocated by OpenAPI foundation, every developers participating in the project are involved in defining the RestAPI specification together, hand writing the `swagger.json` (`swaggar.yaml`) file first, and then developing the frontend and backend applications based on it.
+
+Considering its strengths, "Contract Driven Development" seems like an ideal methodology that every developers must follow. However, I have never seen a project that hand writing the `swagger.json` file first, and following the Contract Driven Development rule. */}
+
+{/* Compiler Driven Development for productivity and stability.
+
+Have you heards of Contract Driven Development? It is a development methodology that is advocated by OpenAPI Foundation, which created the Swagger/OpenAPI specification. Every developers participating in the project are involved in defining the RestAPI specification together, writing the specification as a Swagger/OpenAPI document hand manually first, and then developing the frontend and backend applications based on it. 
+
+Since the specification is clearly defined in advance, it is easy for developers to collaborate with each other and to verify each other's code. Once the OpenAPI document is written and the specifications are finalized, backend development can also be carried out in parallel by dividing the test program writer and the main program writer, thereby ensuring both productivity and stability.
+
+This method is also effective when developing AI agents. Rather than completing all the function functions and then applying them to the AI ​​agent, it is more efficient and stable to first define the function description and parameter/return type, and then check whether the AI ​​agent understands them well through benchmarking before completing the function implementation. */}
+
+
+
+
+## Legacy Backend Development
+### Java/Kotlin Spring Framework
+<KotlinSpringSnippet />
+
+In the existing backend development ecosystem, as API documents are written by hands, it is very difficult, dangerous and not suitable for Super AI Chatbot development. As I am a Korean, I will talk about this story within framework of the Korean backend ecosystem.
+
+In Korea, **Java** takes about 90% of the backend development ecosystem of major IT companies (experience of other languages are not recognized in Korea). And in the Java ecosystem, most of them have adopted [Spring Framework](https://spring.io/projects/spring-framework), and force to use [Spring RectDocs](https://spring.io/projects/spring-restdocs) for the API documentation purpose. Even when generating Swagger/OpenAPI documents, company policy dictates to convert from the `RestDocs`.
+
+And in the `RestDocs`, you have to write the API documents manually by your hands. As you can see from the above example code, you have to write the API endpoint (`"/api/v1/samples/{sampleId}"`) by yourself, and also must write the schema types (`fieldWithPath("name").type(JsonFieldType.STRING).description("The name of sample.")`) manually.
+
+If you take some mistakes on the documentation, it only can be caught by the runtime level test functions. The mistake never can be caught in the compilation level, so that API documentation is extremely hard work for backend developers.
+
+And in most cases, backend developers in Korea have roles divided within the team, with those who develop the main program, those who write test code, and those who write API documentation. And in most cases, the main program is developed by senior developers, and test programs or API documentations are shifted to the junior developers.
+
+> I am not a backend dedicated developer and have never used Java/Spring, so I do not know this ecosystem in detail. I wrote this article based on company regulations and interviews with backend developers and technical blog articles of them.
+>
+> And while researching information about Java's OpenAPI documentation ecosystem, I suddenly had a question. Looking at Java Spring Framework, there is a way to build Swagger directly and there are annonations related to the Swagger documentation, so why use `RestDocs`? Regarding this, the company regulations and senior backend developers are saying the same word even in their technical blogs.
+>
+> "Swagger is invasive to the operation code, and RestDocs is not"
+>
+> This is probably the answer to why there is a division of main program developers, test developers, and documentation developers within the backend team. However, as I am not a developer in this ecosystem, so I cannot understand it exactly. If anyone knows more about this subject, please let me know in the comments.
+
+References:
+
+- https://techblog.woowahan.com/2597/
+- https://toss.tech/article/tosspayments-restdocs
+- https://helloworld.kurly.com/blog/spring-rest-docs-guide/#%EB%B0%8B%EB%B0%8B%ED%95%9C%EA%B2%8C-%EC%95%84%EC%89%AC%EC%9A%B0%EB%8B%88%EA%B9%8C-spring-rest-docs-%EC%97%90-swagger-%EB%A5%BC-%EB%84%A3%EC%96%B4%EB%B3%B4%EC%9E%90
+- https://tech.kakaopay.com/post/openapi-documentation/
+
+### Php Laravel Framework
+<PhpLaravelSnippet />
+
+In globally, Php seems like the major language of backend development ecosystem, and [Laravel](https://laravel.com/) is the most popular framework in the Php language. When making a Swagger/OpenAPI document in the Php Laravel Framework, you have to write documentation comments like above with `@OA` tags.
+
+This is the most horrible and dangerous way of building swagger documents I have ever seen. At this point, CDD (Contract Driven Development) advocated by OpenAPI Foundation seems better. Isn't it the same thing as writing Swagger specs by hand as Php comments, versus writing Swagger documents by hand?
+
+Researching it, I understood one thing. If you take mistake when writing the Swagger documentation comment, it never can be caught automatically as `RestDocs` case. And even just typo mistake like `OAA\Respons()` or `QA\Proper(type='stringggg')` never can be caught until actually opening the Swagger document. Unless `RestDocs ` forces user to write a test program validating the operation and its schemas, the Laravel's swagger generator does not any restriction, so that I could hear that no one of Php co-working client developer believes the Swagger document.
+
+I can clearly say that, Php has fuXXing ecosystem for Super AI chatbot development. This is the most terrible solution I've ever seen.
+
+### Python Django Framework
+<PythonDjangoSnippet />
+
+In the Python backend ecosystem, there are two major frameworks [`Django`](https://www.djangoproject.com/) and [`FastAPI`](https://fastapi.tiangolo.com/).
+
+Above example code is demonstrating the way to generate the Swagger document in the Django framework with [`DRF-Speculator`](https://drf-spectacular.readthedocs.io/). As you can see, it is horrible like `Spring RestDocs` and `Php Laravel` cases. Human must write the most of Swagger document parts manually by their hands. If human takes some mistake, it will break the Super AI chatbot.
+
+Therefore, `DJango` is not suitable for new AI era.
+
+
+
 
 ## Compiler Driven Development
-### JSN Schema
 ### TypeScript Class
-### Swagger Document
+
+### TypeScript NestJS Framework
+<Tabs items={["Controller", "DTO Schema"]}>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/sales/IShoppingSaleUnitStock.ts" 
+      filename="@samchon/shopping-backend/IShoppingSaleUnitStock" 
+      showLineNumbers />
+    </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/sales/IShoppingSaleUnitSelectableOption.ts" 
+      filename="@samchon/shopping-backend/IShoppingSaleUnitSelectableOption" 
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+### Python FastAPI Framework
+
+### Compiler Driven Development
 
 
 
 
-## Backend Development
-> [!WARNING]
+## Contract Driven Development
+### Traditional Way
+Hand written `swagger.json` file first, and then develop applications based on it.
+
+Have you heards of "(OpenAPI) Contract Driven Development"? It is a development methodology that is advocated by OpenAPI Foundation, which created the Swagger/OpenAPI specification. Every developers participating in the project are involved in defining the RestAPI specification together, writing the specification as a Swagger/OpenAPI document hand manually first, and then developing the frontend and backend applications based on it. 
+
+Since the specification is clearly defined in advance, it is easy for developers to collaborate with each other and to verify each other's code. Once the OpenAPI document is written and the specifications are finalized, backend development can also be carried out in parallel by dividing the test program writer and the main program writer, thereby ensuring both productivity and stability.
+
+However, hand writing `swagger.json` file means that, endless annoying tasks and endless human mistakes would be. In actually, regardless of whether this method is used to develop an AI agent or not, I have never seen a single case of this actually being used around me. No matter how ideal the methodology is, most backend developers are doing code first development, and it is not even ideal.
+
+### New Way with Compiler
+```typescript
+export interface IBbsArticleService {
+  /**
+   * Get all articles.
+   *
+   * List up every articles archived in the BBS DB.
+   *
+   * @returns List of every articles
+   */
+  index(): IBbsArticle[];
+
+  /**
+   * Create a new article.
+   *
+   * Writes a new article and archives it into the DB.
+   *
+   * @param props Properties of create function
+   * @returns Newly created article
+   */
+  create(props: {
+    /**
+     * Information of the article to create
+     */
+    input: IBbsArticle.ICreate;
+  }): IBbsArticle;
+
+  /**
+   * Update an article.
+   *
+   * Updates an article with new content.
+   *
+   * @param props Properties of update function
+   * @param input New content to update
+   */
+  update(props: {
+    /**
+     * Target article's {@link IBbsArticle.id}.
+     */
+    id: string & tags.Format<"uuid">;
+
+    /**
+     * New content to update.
+     */
+    input: IBbsArticle.IUpdate;
+  }): void;
+
+  /**
+   * Erase an article.
+   *
+   * Erases an article from the DB.
+   *
+   * @param props Properties of erase function
+   */
+  erase(props: {
+    /**
+     * Target article's {@link IBbsArticle.id}.
+     */
+    id: string & tags.Format<"uuid">;
+  }): void;
+}
+```
+
+Contract Driven Development with Compiler.
+
+Considering strengths of the Contract Driven Development, some of them are reasonable and enough acceptable for the new era of AI agent development. Rather than completing all of the functions and then applying them to the AI agent at once, it is more efficient and stable to define the function interface first, and then check whether the AI agent can understand them well through benchmarking before completing the function implementation.
+
+Just define function interface first, with its name, description comments, and DTO (parameters/return) types. If you think that you've defined enough detailed descriptions on the function and DTO types, then run the select benchmark feature of [`@agentica/benchmark`](/docs/plugins/benchmark) program only with the interface.
+
+Note that, `@agentica` is a framework specialized in LLM (Large Language Model) function calling, and doing everything with the function calling. And the most important thing in the `@agentica` based AI chatbot development is, let the AI agent to select proper function to call from the conversation context. It is called function selecting, and the quality of the function selecting would be determined by the quality of the description comments written on each function.
+
+Even if you have completed implementing the TypeScript class or developing the backend, you may not know whether it will work well in the AI ​​agent. Perhaps the description of each function is ambiguous or conflicts with each other, so you may have to modify the already completed program again. Therefore, it is more stable and productive to define the function interface first, and then check whether the AI agent can understand them well through benchmarking before completing the function implementation.
+
+This is the new era's Contract Driven Development with Compiler.
+
+> [!TIP]
 >
-> Human forgives mistake, but AI is not.
-
-### Java Spring Framework
-### Php Laravel Framework
-### Python Django Framework
-
-
-
-## Compiler Strategy
-
-
-
-## Everything for you
-
+> Don't worry about the arguments' composition step after the function selecting. `@agentica` rarely fails to the arguments' composition step by utilizing the [validation feedback strategy](/docs/concepts/function-calling#validation-feedback). Therefore, just concentrate on the function selecting with the quality of the description comments please.
 

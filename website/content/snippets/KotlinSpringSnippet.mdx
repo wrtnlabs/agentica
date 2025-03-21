@@ -1,0 +1,49 @@
+```kotlin
+@ExtendWith(RestDocumentationExtension::class, SpringExtension::class)
+@SpringBootTest
+class SampleControllerTest {
+  private lateinit var mockMvc: MockMvc
+
+  @BeforeEach
+  internal fun setUp(context: WebApplicationContext, restDocumentation: RestDocumentationContextProvider) {
+    mockMvc = MockMvcBuilders
+      .webAppContextSetup(context)
+      .apply<DefaultMockMvcBuilder>(
+        MockMvcRestDocumentation.documentationConfiguration(
+          restDocumentation
+        )
+      ).build()
+  }
+
+  @Test
+  fun getSampleByIdTest() {
+    val sampleId = "aaa"
+    mockMvc.perform(
+      get("/api/v1/samples/{sampleId}", sampleId)
+    )
+      .andExpect(status().isOk)
+      .andExpect(jsonPath("sampleId", `is`(sampleId)))
+      .andExpect(jsonPath("name", `is`("sample-$sampleId")))
+      .andDo(
+        MockMvcRestDocumentationWrapper.document(
+          identifier = "sample",
+          resourceDetails = ResourceSnippetParametersBuilder()
+            .tag("Sample")
+            .description("Get a sample by id")
+            .pathParameters(
+              parameterWithName("sampleId")
+                .description("the sample id"),
+            )
+            .responseFields(
+              fieldWithPath("sampleId")
+                .type(JsonFieldType.STRING)
+                .description("The sample identifier."),
+              fieldWithPath("name")
+                .type(JsonFieldType.STRING)
+                .description("The name of sample."),
+            ),
+        ),
+      )
+  }
+}
+```
