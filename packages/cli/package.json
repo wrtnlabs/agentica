@@ -1,6 +1,6 @@
 {
   "name": "agentica",
-  "version": "0.1.0",
+  "version": "0.12.18",
   "main": "bin/index.js",
   "typings": "bin/index.d.ts",
   "description": "Agentic AI Library specialized in LLM Function Calling",

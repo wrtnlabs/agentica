@@ -1,6 +1,6 @@
 {
   "name": "@agentica/core",
-  "version": "0.7.1",
+  "version": "0.12.18",
   "main": "src/index.ts",
   "publishConfig": {
     "main": "lib/index.js",

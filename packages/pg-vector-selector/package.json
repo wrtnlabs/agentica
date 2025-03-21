@@ -1,6 +1,6 @@
 {
   "name": "@agentica/pg-vector-selector",
-  "version": "0.1.0",
+  "version": "0.12.18",
   "main": "src/index.ts",
   "publishConfig": {
     "main": "lib/index.js",
