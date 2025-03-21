@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@agentica/chat",
-  "version": "0.12.19",
+  "version": "0.12.20",
   "main": "./lib/index.mjs",
   "typings": "./lib/index.d.ts",
   "description": "Frontend Application of Agentica",
