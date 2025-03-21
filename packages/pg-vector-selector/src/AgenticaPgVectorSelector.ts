@@ -54,7 +54,7 @@ function getRetry(count: number) {
       }
     }
 
-    if (lastError) {
+    if (lastError != null) {
       throw lastError;
     }
     throw new Error("unreachable code");
@@ -242,7 +242,7 @@ export namespace AgenticaPgVectorSelector {
         .then(ChatGptCompletionMessageUtil.merge);
 
       selectCompletion.choices
-        .filter(v => !!v.message.tool_calls)
+        .filter(v => v.message.tool_calls != null && v.message.tool_calls.length > 0)
         .forEach((v) => {
           v.message
             .tool_calls!.filter(tc => tc.function.name === "execute_function").forEach((tc) => {
