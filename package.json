@@ -13,7 +13,9 @@
     "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
-    "release": "bumpp"
+    "release": "bumpp",
+    "lint": "pnpm --parallel -r --no-bail lint",
+    "lint:fix": "pnpm --parallel -r --no-bail lint:fix"
   },
   "repository": {
     "type": "git",
@@ -48,6 +50,7 @@
     "@eslint/js": "^9.17.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "bumpp": "^10.1.0",
+    "@wrtnlabs/eslint-config": "^0.1.0",
     "eslint": "^9.17.0",
     "prettier": "^3.5.0",
     "rimraf": "^6.0.1",

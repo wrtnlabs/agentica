@@ -5,6 +5,7 @@ node_modules/
 *.log
 .env
 
+.mise.toml
 mise.toml
 .infisical.json
 
