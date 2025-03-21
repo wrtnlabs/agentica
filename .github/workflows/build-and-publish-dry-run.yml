@@ -1,25 +1,10 @@
-name: build
+name: build and publish dry run
 on:
+  push:
   pull_request:
-    paths:
-      - 'packages/*/src/**'
-      - 'test/**'
-      - 'package.json'
-jobs:
-  Test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Test
-        run: pnpm start
-        working-directory: ./test
-        env:
-          CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
 
-  Publish-dry-run:
+jobs:
+  build-and-publish-dry-run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
