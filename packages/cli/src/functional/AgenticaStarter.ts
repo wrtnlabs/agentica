@@ -76,6 +76,7 @@ export namespace AgenticaStarter {
           );
 
           const indexFileContent = await fs.readFile(indexFilePath, "utf-8");
+
           return { indexFilePath, indexFileContent };
         });
 
@@ -127,7 +128,7 @@ export namespace AgenticaStarter {
   } as const;
 
   const bootstrap =
-    (option: Exclude<ProjectOptionValue, "react">) =>
+    (option: Exclude<ProjectOptionValue, "react" | "nestjs+react">) =>
     (input: IAgenticaStartOption.IProject) =>
     async (
       getIndexFileInfo: () => Promise<{
@@ -158,7 +159,7 @@ export namespace AgenticaStarter {
         taskName: "Agentica code",
         content: agenticaCode,
       });
-      await setEnvFiles(input);
+      await setEnvFiles(option)(input);
     };
 
   const writeTypescriptFile = async (props: {
@@ -181,22 +182,39 @@ export namespace AgenticaStarter {
   /**
    * Set project .env files
    */
-  const setEnvFiles = async (
-    input: IAgenticaStartOption.IProject,
-  ): Promise<void> => {
-    // Create .env file
-    const envPath = path.join(input.projectPath, ".env");
-    const envContent = `\nOPENAI_API_KEY=${input.openAIKey}\n`;
+  const setEnvFiles =
+    (option: Exclude<ProjectOptionValue, "react" | "nestjs+react">) =>
+    async (input: IAgenticaStartOption.IProject): Promise<void> => {
+      // Create .env file
+      const envPath = path.join(input.projectPath, ".env");
 
-    try {
-      await fs.access(envPath);
-      await fs.appendFile(envPath, envContent);
-      console.log("✅ .env updated");
-    } catch (err) {
-      await fs.writeFile(envPath, envContent);
-      console.log("✅ .env created");
-    }
-  };
+      const envContent = (() => {
+        switch (option) {
+          case "standalone":
+            return [`\nOPENAI_API_KEY=${input.openAIKey}`].join("\n");
+          case "nodejs":
+            return [`\nOPENAI_API_KEY=${input.openAIKey}`, `PORT=3001`].join(
+              "\n",
+            );
+          case "nestjs":
+            return [
+              `\nOPENAI_API_KEY=${input.openAIKey}`,
+              `API_PORT=37001`,
+            ].join("\n");
+          default:
+            return "";
+        }
+      })();
+
+      try {
+        await fs.access(envPath);
+        await fs.appendFile(envPath, envContent);
+        console.log("✅ .env updated");
+      } catch (err) {
+        await fs.writeFile(envPath, envContent);
+        console.log("✅ .env created");
+      }
+    };
   /**
    * Git Clone from template repository.
    */
