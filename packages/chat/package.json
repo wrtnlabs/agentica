@@ -1,4 +1,5 @@
 {
+  "private": true,
   "type": "module",
   "name": "@agentica/chat",
   "version": "0.4.0",
@@ -13,8 +14,7 @@
     "lint": "eslint .",
     "prepare": "ts-patch install",
     "preview": "vite preview",
-    "deploy": "node build/deploy.mjs",
-    "prepublishOnly": "pnpm run build"
+    "deploy": "node build/deploy.mjs"
   },
   "repository": {
     "type": "git",
@@ -91,4 +91,3 @@
     "!src/examples"
   ]
 }
-
