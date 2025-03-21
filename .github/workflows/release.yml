@@ -14,7 +14,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           registry-url: https://registry.npmjs.org/
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
       - name: Publish to NPM
         # we need -no-git-checks to avoid git errors https://github.com/pnpm/pnpm/issues/5894
         run: pnpm package:latest --no-git-checks --provenance --access public

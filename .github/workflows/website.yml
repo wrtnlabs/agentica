@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
       - uses: pnpm/action-setup@v2
       - name: Root
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
       - name: Website
         run: pnpm run build
         working-directory: website

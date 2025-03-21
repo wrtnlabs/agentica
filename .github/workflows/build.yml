@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
       - name: Test
         run: pnpm start
         working-directory: ./test
@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-      - run: pnpm install
+      - run: pnpm install --frozen-lockfile
       - run: pnpm run build:package
       - name: expand publishConfig
         shell: bash
