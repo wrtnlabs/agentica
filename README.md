@@ -81,6 +81,22 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
 - [⇲ API Documents](https://wrtnlabs.io/agentica/api)
 
 
+## How to Contribute?
+
+### 💻 Development
+
+- Clone this repository
+- Install dependencies using `pnpm install`
+
+### 📦 Build
+
+- Run `pnpm build` to build the project.
+
+### 🚀 Publish
+
+- Run `pnpm release` in local environment. This command bump the version and create git tag! Then, push the tag to the remote repository.
+- GitHub Actions will automatically publish the package to npm registry!
+- Done! 🎉
 
 
 <!-- 
