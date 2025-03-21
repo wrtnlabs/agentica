@@ -1,15 +1,21 @@
 {
-  "private": true,
   "name": "@agentica/core",
   "version": "0.7.1",
   "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js",
+    "module": "lib/index.mjs",
+    "typings": "lib/index.d.ts",
+    "access": "public"
+  },
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "scripts": {
     "prepare": "ts-patch install && pnpm build:prompt",
     "build": "rimraf lib && pnpm build:prompt && tsc && rollup -c",
     "build:prompt": "ts-node build/prompt.ts",
     "dev": "rimraf lib && tsc --watch",
-    "eslint": "eslint ./**/*.ts"
+    "eslint": "eslint ./**/*.ts",
+    "prepublishOnly": "pnpm run build"
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",
@@ -68,4 +74,3 @@
     "openai": ">=4.80.0"
   }
 }
-
