@@ -3,19 +3,37 @@ import { downloadTemplate } from "giget";
 import path from "node:path";
 
 import { Connector } from "../bases/Connector";
+import { Package } from "../bases/Package";
 import { IAgenticaStartOption } from "../structures/IAgenticaStartOption";
 import { blueBright } from "../utils/styleText";
+import { PackageManager } from "../utils/types/PackageManager";
 import { ProjectOptionValue } from "../utils/types/ProjectOption";
 
 export namespace AgenticaStarter {
-  export const execute = (option: ProjectOptionValue) => {
-    const runner = PROJECT[option].runner;
-    if (!runner) {
-      throw new Error(`Not supported project type: ${option}`);
-    }
+  export const execute =
+    (option: ProjectOptionValue) =>
+    (packageManager: PackageManager) =>
+    async (input: IAgenticaStartOption.IProject) => {
+      const runner = PROJECT[option].runner;
+      if (!runner) {
+        throw new Error(`Not supported project type: ${option}`);
+      }
 
-    return runner;
-  };
+      // Run Agentica CLI
+      const { projectPaths } = await runner(input);
+
+      // Run package installation
+      console.log("📦 Package installation in progress...");
+
+      projectPaths.forEach((p) => {
+        process.chdir(p);
+
+        Package.installPackage(packageManager)({
+          projectPath: p,
+          services: input.services,
+        });
+      });
+    };
 
   export const PROJECT = {
     standalone: {
@@ -188,23 +206,23 @@ export namespace AgenticaStarter {
       // Create .env file
       const envPath = path.join(input.projectPath, ".env");
 
-      const envContent = (() => {
-        switch (option) {
-          case "standalone":
-            return [`\nOPENAI_API_KEY=${input.openAIKey}`].join("\n");
-          case "nodejs":
-            return [`\nOPENAI_API_KEY=${input.openAIKey}`, `PORT=3001`].join(
-              "\n",
-            );
-          case "nestjs":
-            return [
-              `\nOPENAI_API_KEY=${input.openAIKey}`,
-              `API_PORT=37001`,
-            ].join("\n");
-          default:
-            return "";
-        }
-      })();
+      const ENV = {
+        standalone: {
+          OPENAI_API_KEY: input.openAIKey,
+        },
+        nodejs: {
+          OPENAI_API_KEY: input.openAIKey,
+          PORT: "3001",
+        },
+        nestjs: {
+          OPENAI_API_KEY: input.openAIKey,
+          API_PORT: "37001",
+        },
+      } as const;
+
+      const envContent = Object.entries(ENV[option])
+        .map(([key, value]) => `${key}=${value}`)
+        .join("\n");
 
       try {
         await fs.access(envPath);
