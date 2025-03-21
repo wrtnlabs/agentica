@@ -1,12 +1,18 @@
 {
   "name": "@agentica/pg-vector-selector",
-  "version": "0.1.0",
+  "version": "0.12.18",
   "main": "src/index.ts",
-  "description": "Super A.I. Chatbot agent by Swagger Document",
+  "publishConfig": {
+    "main": "lib/index.js",
+    "module": "lib/index.mjs",
+    "typings": "lib/index.d.ts",
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc && rollup -c",
     "eslint": "eslint ./**/*.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "prepublishOnly": "pnpm run build"
   },
   "repository": {
     "type": "git",

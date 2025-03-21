@@ -49,7 +49,7 @@ import AgenticaExampleActualSnippet from "../snippets/AgenticaExampleActualSnipp
   //   "https://discord.gg/E94XhzrUCZ",
   // ]
 ].map(([alt, image, url]) => (
-  <a href={url} style={{ marginTop: "30px", marginRight: "6px" }}>
+  <a href={url} style={{ marginTop: "30px", marginRight: "6px" }} key={alt}>
       <img src={image} alt={alt} />
   </a>
 ))}

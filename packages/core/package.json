@@ -1,8 +1,13 @@
 {
-  "private": true,
   "name": "@agentica/core",
-  "version": "0.7.1",
+  "version": "0.12.18",
   "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js",
+    "module": "lib/index.mjs",
+    "typings": "lib/index.d.ts",
+    "access": "public"
+  },
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "scripts": {
     "prepare": "ts-patch install && pnpm build:prompt",
@@ -10,7 +15,7 @@
     "build:prompt": "ts-node build/prompt.ts",
     "dev": "rimraf lib && tsc --watch",
     "eslint": "eslint ./**/*.ts",
-    "test": "pnpm build:test && node bin/test/index.js"
+    "prepublishOnly": "pnpm run build"
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",

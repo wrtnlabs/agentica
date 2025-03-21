@@ -1,4 +1,8 @@
 packages:
-  - 'packages/*'
-  - 'test'
-  - 'website'
+  - packages/*
+  - test
+  - website
+onlyBuiltDependencies:
+  - core-js
+  - esbuild
+  - sharp

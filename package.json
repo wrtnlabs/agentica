@@ -1,16 +1,19 @@
 {
   "private": true,
   "name": "@agentica/station",
-  "version": "0.12.11",
+  "version": "0.12.18",
   "description": "Agentic AI library specialized in LLM Function Calling",
   "engines": {
-    "pnpm": ">=8"
+    "pnpm": ">=10"
   },
+  "packageManager": "pnpm@10.6.4",
   "scripts": {
-    "build": "node deploy/build",
-    "package:latest": "node deploy/publish --tag latest",
-    "package:next": "node deploy/publish --tag dev",
-    "preinstall": "npx only-allow pnpm"
+    "build": "pnpm -r build",
+    "build:package": "pnpm --filter='./packages/**' -r build",
+    "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
+    "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
+    "preinstall": "npx only-allow pnpm",
+    "release": "bumpp"
   },
   "repository": {
     "type": "git",
@@ -44,6 +47,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "bumpp": "^10.1.0",
     "eslint": "^9.17.0",
     "prettier": "^3.5.0",
     "rimraf": "^6.0.1",

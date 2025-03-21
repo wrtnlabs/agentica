@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import fs from "fs/promises";
 import inquirer from "inquirer";
 import path from "path";
@@ -47,6 +46,7 @@ export namespace AgenticaStart {
       services?: string[];
       packageManager: PackageManager;
       openAIKey: string;
+      port?: string;
     }>(questions);
 
     const config = {
@@ -56,23 +56,20 @@ export namespace AgenticaStart {
     };
 
     const validAnswers = typia.assert(config);
-    const { packageManager, openAIKey, projectType, services } = validAnswers;
+    const {
+      packageManager,
+      openAIKey,
+      projectType,
+      services,
+      port = "3000",
+    } = validAnswers;
 
-    await AgenticaStarter.execute(projectType)({
+    await AgenticaStarter.execute(projectType)(packageManager)({
       projectName,
       projectPath,
       openAIKey,
       services,
-    });
-
-    process.chdir(projectPath);
-
-    // Run package installation
-    console.log("📦 Package installation in progress...");
-
-    Package.installPackage(packageManager)({
-      projectPath,
-      services,
+      port,
     });
 
     console.log(`\n🎉 Project ${projectName} created`);

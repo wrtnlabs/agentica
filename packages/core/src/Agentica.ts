@@ -275,14 +275,15 @@ export class Agentica<Model extends ILlmSchema.Model> {
           }
         })();
 
+        const [streamForStream, streamForJoin] = streamForEvent.tee();
         await dispatch({
           type: "response",
           source: source,
-          stream: streamForEvent,
+          stream: streamForStream,
           body: event.body,
           options: event.options,
           join: async () => {
-            const chunks = await StreamUtil.readAll(streamForEvent);
+            const chunks = await StreamUtil.readAll(streamForJoin);
             return ChatGptCompletionMessageUtil.merge(chunks);
           },
         });

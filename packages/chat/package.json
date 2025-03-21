@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@agentica/chat",
-  "version": "0.4.0",
+  "version": "0.12.18",
   "main": "./lib/index.mjs",
   "typings": "./lib/index.d.ts",
   "description": "Frontend Application of Agentica",
@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "prepare": "ts-patch install",
     "preview": "vite preview",
-    "deploy": "node build/deploy.mjs"
+    "deploy": "node build/deploy.mjs",
+    "prepublishOnly": "pnpm run build"
   },
   "repository": {
     "type": "git",
@@ -90,3 +91,4 @@
     "!src/examples"
   ]
 }
+

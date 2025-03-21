@@ -6,19 +6,33 @@ on:
       - 'test/**'
       - 'package.json'
 jobs:
-  Ubuntu:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8.15.9
+      - uses: pnpm/action-setup@v4
       - name: Install dependencies
         run: pnpm install
       - name: Test
-        run: cd test && pnpm start
+        run: pnpm start
+        working-directory: ./test
         env:
           CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
+
+  Publish-dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
+      - run: pnpm run build:package
+      - name: expand publishConfig
+        shell: bash
+        run: |
+          find packages -type f -name "package.json" | while read -r file; do
+            echo "Processing: $file"
+            cp "$file" "$file.bak"
+            jq '. + .publishConfig | del(.publishConfig)' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+            rm "$file.bak"
+          done
+      - run: pnpm dlx pkg-pr-new publish './packages/*'

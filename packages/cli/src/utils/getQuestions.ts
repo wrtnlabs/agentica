@@ -45,6 +45,16 @@ export const getQuestions = (
             value: project.key,
           })),
         },
+    input.options.project === "standalone"
+      ? null
+      : {
+          type: "input",
+          name: "port",
+          message:
+            "Server Port(if project is client app, this port mean ws server port):",
+          default: "3000",
+          when: (answers) => answers.projectType !== "standalone",
+        },
     input.services.length === 0
       ? null
       : {
