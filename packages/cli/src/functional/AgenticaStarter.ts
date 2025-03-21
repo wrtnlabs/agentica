@@ -154,39 +154,40 @@ export namespace AgenticaStarter {
   } as const;
 
   const bootstrap =
+    // @TODO Categorize bootstrap as 'multiple projects' or 'single project'.
     (option: Exclude<ProjectOptionValue, "react" | "nestjs+react">) =>
-    (input: IAgenticaStartOption.IProject) =>
-    async (
-      getIndexFileInfo: () => Promise<{
-        indexFilePath: string;
-        indexFileContent: string;
-      }>,
-    ) => {
-      await writeTemplate(option, input.projectName);
+      (input: IAgenticaStartOption.IProject) =>
+      async (
+        getIndexFileInfo: () => Promise<{
+          indexFilePath: string;
+          indexFileContent: string;
+        }>,
+      ) => {
+        await writeTemplate(option, input.projectName);
 
-      // Create Agentica code
-      const importCode = Connector.create("import")({
-        services: input.services,
-      });
+        // Create Agentica code
+        const importCode = Connector.create("import")({
+          services: input.services,
+        });
 
-      const connectorCode = Connector.create("connector")({
-        services: input.services,
-      });
+        const connectorCode = Connector.create("connector")({
+          services: input.services,
+        });
 
-      const { indexFilePath, indexFileContent } = await getIndexFileInfo();
+        const { indexFilePath, indexFileContent } = await getIndexFileInfo();
 
-      // Insert importCode and connectorCode
-      const agenticaCode = indexFileContent
-        .replace("/// INSERT IMPORT HERE", importCode)
-        .replace("/// INSERT CONTROLLER HERE", connectorCode);
+        // Insert importCode and connectorCode
+        const agenticaCode = indexFileContent
+          .replace("/// INSERT IMPORT HERE", importCode)
+          .replace("/// INSERT CONTROLLER HERE", connectorCode);
 
-      await writeTypescriptFile({
-        filePath: indexFilePath,
-        taskName: "Agentica code",
-        content: agenticaCode,
-      });
-      await setEnvFiles(option)(input);
-    };
+        await writeTypescriptFile({
+          filePath: indexFilePath,
+          taskName: "Agentica code",
+          content: agenticaCode,
+        });
+        await setEnvFiles(option)(input);
+      };
 
   const writeTypescriptFile = async (props: {
     filePath: string;
@@ -209,7 +210,7 @@ export namespace AgenticaStarter {
    * Set project .env files
    */
   const setEnvFiles =
-    (option: Exclude<ProjectOptionValue, "nestjs+react">) =>
+    (projectType: Exclude<ProjectOptionValue, "nestjs+react">) =>
     async (input: IAgenticaStartOption.IProject): Promise<void> => {
       // Create .env file
       const envPath = path.join(input.projectPath, ".env");
@@ -234,7 +235,7 @@ export namespace AgenticaStarter {
         Record<string, string>
       >;
 
-      const envContent = Object.entries(ENV[option])
+      const envContent = Object.entries(ENV[projectType])
         .map(([key, value]) => `${key}=${value}`)
         .join("\n");
 
