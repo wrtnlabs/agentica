@@ -9,5 +9,6 @@ export namespace IAgenticaStartOption {
     projectPath: string;
     openAIKey: string;
     services: string[];
+    port: string;
   }
 }
