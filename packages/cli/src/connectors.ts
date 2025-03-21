@@ -8,7 +8,7 @@ const CONNECTOR_PREFIX = '@wrtnlabs/connector-' as const;
 /** Service name. Opaque type. */
 export type Service = Tagged<string, "Service">;
 
-type Connector = `${typeof CONNECTOR_PREFIX}${string}`;
+export type Connector = `${typeof CONNECTOR_PREFIX}${string}`;
 
 interface Connectors {
   connectors: Connector[];
@@ -39,7 +39,7 @@ interface GetConnectorsReturn {
   *   serviceName: removed `@wrtnlabs/connector-` and capitalized service name,
   *   displayName: capitalized service name with spaces
   */
-export async function getConnectors(): Promise<ReadonlyArray<GetConnectorsReturn>> {
+export async function getConnectors(): Promise<GetConnectorsReturn[]> {
   const data = await getConnectorsList();
   return data.connectors
     .map((name) => {

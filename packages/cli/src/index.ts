@@ -1,8 +1,8 @@
 import { Command } from "commander";
-
-import { AgenticaStart } from "./executable/AgenticaStart";
-import { IAgenticaStart } from "./structures/IAgenticaStart";
-import { redBright, blueBright } from './utils/styleText';
+import { start, StarterTemplate } from "./commands/start";
+import { IAgenticaStart } from "./types";
+import { redBright, blueBright } from "./utils";
+import typia from "typia";
 
 async function main() {
   const program = new Command();
@@ -22,7 +22,17 @@ async function main() {
         return;
       }
 
-      AgenticaStart.execute({ projectName: directory, options });
+      /** check valid project type */
+      try {
+        typia.assertGuard<StarterTemplate|undefined>(options.project);
+      } catch (e) {
+        console.error(
+          `\n❌ The value of ${redBright("--project")} is invalid`,
+        );
+        return;
+      }
+
+      start({ project: directory, template: options.project });
     });
 
   console.log("--------------------------------");
