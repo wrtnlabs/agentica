@@ -1,10 +1,13 @@
 import type { StarterTemplate } from "./commands/start";
 
-import type { IAgenticaStart } from "./types";
 import { Command } from "commander";
 import typia from "typia";
 import { start } from "./commands/start";
 import { blueBright, redBright } from "./utils";
+
+interface CliOptions {
+  project?: StarterTemplate;
+}
 
 async function main() {
   const program = new Command();
@@ -17,7 +20,7 @@ async function main() {
       "-p, --project [nodejs|nestjs|react|nestjs+react|standalone]",
       "The project type",
     )
-    .action(async (directory: string, options: IAgenticaStart.IOptions) => {
+    .action(async (directory: string, options: CliOptions) => {
       if ((options.project as any) === true) {
         console.error(
           `\n❌ The value of ${redBright("--project")} is required`,
