@@ -3,6 +3,7 @@ import {
   ChatCompletionChunk,
   ChatCompletionMessage,
   ChatCompletionMessageToolCall,
+  CompletionUsage,
 } from "openai/resources";
 import { json } from "typia";
 
@@ -15,7 +16,9 @@ export namespace ChatGptCompletionMessageUtil {
   ): ChatCompletionChunk => {
     const str =
       source instanceof Uint8Array ? ByteArrayUtil.toUtf8(source) : source;
-    return json.assertParse<ChatCompletionChunk>(str);
+    return json.assertParse<
+      ChatCompletionChunk & { usage: CompletionUsage | null | undefined }
+    >(str);
   };
 
   export const accumulate = (
