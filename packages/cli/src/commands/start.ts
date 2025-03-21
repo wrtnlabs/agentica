@@ -6,6 +6,7 @@
 
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import process from "node:process";
 import inquirer from "inquirer";
 import { type Connector, getConnectors } from "../connectors";
 import { PackageManager } from "../packages";
