@@ -24,6 +24,21 @@ const STARTER_TEMPLATES = [
 /** supported starter templates */
 export type StarterTemplate = typeof STARTER_TEMPLATES[number];
 
+/** dependencies for each template */
+const dependencies = [
+  "openai",
+  "typia",
+  "dotenv",
+  "@agentica/core",
+  "readline",
+] as const;
+
+/** dev dependencies for each template */
+const devDependencies = [
+  "ts-node",
+  "typescript"
+] as const;
+
 /**
 * Start command options
 */

@@ -1,18 +1,5 @@
 import type { PackageJson } from "type-fest";
 
-export const dependencies = [
-  "openai",
-  "typia",
-  "dotenv",
-  "@agentica/core",
-  "readline",
-] as const;
-
-export const devDependencies = [
-  "ts-node",
-  "typescript"
-] as const;
-
 export const packageManagers = [
   "npm",
   "yarn",
