@@ -50,7 +50,8 @@ export const getQuestions = (
       : {
           type: "input",
           name: "port",
-          message: "Port:",
+          message:
+            "Server Port(if project is client app, this port mean ws server port):",
           default: "3000",
           when: (answers) => answers.projectType !== "standalone",
         },
