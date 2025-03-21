@@ -229,7 +229,10 @@ export namespace AgenticaStarter {
         react: {
           VITE_AGENTICA_WS_URL: `ws://localhost:${input.port}/chat`,
         },
-      } as const;
+      } as const satisfies Record<
+        Exclude<ProjectOptionValue, "nestjs+react">,
+        Record<string, string>
+      >;
 
       const envContent = Object.entries(ENV[option])
         .map(([key, value]) => `${key}=${value}`)
