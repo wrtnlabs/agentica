@@ -1,0 +1,56 @@
+```typescript showLineNumbers
+import { Agentica } from "@agentica/core";
+import { OpenApi, HttpLlm } from "@samchon/openapi";
+import typia from "typia";
+
+const main = async (): Promise<void> => {
+  const agent = new Agentica({
+    model: "chatgpt",
+    vendor: {
+      api: new OpenAI({ apiKey: "*****" }),
+      model: "gpt-4o-mini",
+    },
+    controllers: [
+      {
+        protocol: "http",
+        name: "shopping",
+        application: HttpLlm.application({
+          model: "chatgpt",
+          document: await fetch(
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
+          ).then(r => r.json()),
+        }),
+        connection: {
+          host: "https://shopping-be.wrtn.ai",
+          headers: {
+            Authorization: "Bearer *****",
+          },
+        },
+      },
+      {
+        protocol: "class",
+        name: "counselor",
+        application: 
+          typia.llm.application<ShoppingCounselor, "chatgpt">(),
+        execute: new ShoppingCounselor(),
+      },
+      {
+        protocol: "class",
+        name: "policy",
+        application: 
+          typia.llm.application<ShoppingPolicy, "chatgpt">(),
+        execute: new ShoppingPolicy(),
+      },
+      {
+        protocol: "class",
+        name: "rag",
+        application: 
+          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
+        execute: new ShoppingSearchRag(),
+      },
+    ],
+  });
+  await agent.conversate("I wanna buy MacBook Pro");
+};
+main().catch(console.error);
+```

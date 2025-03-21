@@ -1,0 +1,126 @@
+---
+title: Agentica > Guide Documents > Getting Started
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../components/RemoteSource";
+import AgenticaExamplePseudoSnippet from "../snippets/AgenticaExamplePseudoSnippet.mdx";
+import AgenticaExampleActualSnippet from "../snippets/AgenticaExampleActualSnippet.mdx";
+
+## Agentica
+
+![Agentica Logo](/logo.png)
+
+<span style={{ display: "flex", flexDirection: "row" }}>
+{[
+  [
+    "MIT License",
+    "https://img.shields.io/badge/license-MIT-blue.svg",
+    "https://github.com/wrtnlabs/agentica/blob/master/LICENSE",
+  ],
+  [
+    "NPM Version",
+    "https://img.shields.io/npm/v/@agentica/core.svg",
+    "https://www.npmjs.com/package/@agentica/core",
+  ],
+  [
+    "NPM Downloads",
+    "https://img.shields.io/npm/dm/@agentica/core.svg",
+    "https://www.npmjs.com/package/@agentica/core",
+  ],
+  [
+    "Build Status",
+    "https://github.com/wrtnlabs/agentica/workflows/build/badge.svg",
+    "https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild",
+  ],
+  [
+    "Guide Documents",
+    "https://img.shields.io/badge/Guide-Documents-forestgreen",
+    "https://wrtnlabs.io/agentica/docs/",
+  ],
+  // [
+  //   "Gurubase",
+  //   "https://img.shields.io/badge/Gurubase-Document%20Chatbot-006BFF",
+  //   "https://gurubase.io/g/agentica",
+  // ],
+  // [
+  //   "Discord",
+  //   "https://img.shields.io/badge/discord-samchon-d91965?style=flat&labelColor=5866f2&logo=discord&logoColor=white&link=https://discord.gg/E94XhzrUCZ",
+  //   "https://discord.gg/E94XhzrUCZ",
+  // ]
+].map(([alt, image, url]) => (
+  <a href={url} style={{ marginTop: "30px", marginRight: "6px" }} key={alt}>
+      <img src={image} alt={alt} />
+  </a>
+))}
+</span>
+
+The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
+
+Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `agentica`. Then `agentica` will do everything with the function calling.
+
+Look at the below demonstration, and feel how `agentica` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
+
+<Tabs items={["Pseudo Code", "Actual Code"]}>
+  <Tabs.Tab>
+    <AgenticaExamplePseudoSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaExampleActualSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+<br/>
+<iframe src="https://www.youtube.com/embed/m47p4iJ90Ms?si=cvgfckN25GJhjLTB" 
+        title="Shopping A.I. Chatbot built with Nestia" 
+        width="100%" 
+        height="600" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" 
+        allowFullScreen></iframe>
+
+
+
+
+## Setup
+```bash filename="Terminal"
+$ npx agentica start <directory>
+
+----------------------------------------
+ Agentica Setup Wizard
+----------------------------------------
+? Package Manager (use arrow keys)
+  > npm
+    pnpm
+    yarn (berry is not supported)
+? Project Type
+    NodeJS Agent Server
+  > NestJS Agent Server
+    React Client Application
+    Standalone Application
+? Embedded Controllers (multi-selectable)
+    (none)
+    Google Calendar
+    Google News
+  > Github
+    Reddit
+    Slack
+    ...
+```
+
+You can start `@agentica` development from boilerplate composition CLI.
+
+If you run `npx agentica start <directory>` command, the CLI (Command Line Interface) prompt will ask what type of package manager you want to adapt, and which type of project you wanna create. And then it will fill some useful controllers (embedded functions) into the project.
+
+About the project types, there are four options you can choose. 
+
+The first **NodeJS server** is an Agentic AI server built in NodeJS with WebSocket protocol. And the second **NestJS server** is the same thing with NodeJS server, but composing backend server with [NestJS](https://nestjs.com) and [Nestia](https://nestia.io). The third React client application is a frontend application built in React connecting to the previous WebSocket server.
+
+When you've determined the project type as "NodeJS server" or "NestJS server", the CLI will ask you to select embedded controllers. The embedded controllers are the pre-built functions you can use in your agent like "Google Calender" or "Github" cases. You can embed multiple pre-built controllers unless you select "Nothing".
+
+> [!WARNING]
+>
+> Standalone frontend application.
+>
+> The last standalone option constructs a frontend application that composing the agent in the frontend environment without any backend server interaction. 
+>
+> It must be not for production, but only for the testing environment. If you distribute the standalone to the production, your LLM API key would be exposed to the public.

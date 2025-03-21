@@ -1,5 +1,5 @@
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
-import { Agentica, IAgenticaOperation } from "@agentica/core";
+import { Agentica, AgenticaOperation } from "@agentica/core";
 import { HttpLlm, OpenApi } from "@samchon/openapi";
 import fs from "fs";
 import OpenAI from "openai";
@@ -38,7 +38,7 @@ export const test_benchmark_select = async (): Promise<void | false> => {
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): IAgenticaOperation<"chatgpt"> => {
+  ): AgenticaOperation<"chatgpt"> => {
     const found = agent
       .getOperations()
       .find(

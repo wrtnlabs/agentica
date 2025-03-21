@@ -1,9 +1,11 @@
 import {
   Agentica,
-  IAgenticaEvent,
-  IAgenticaOperationSelection,
-  IAgenticaPrompt,
-  IAgenticaTokenUsage,
+  AgenticaDescribeEvent,
+  AgenticaOperationSelection,
+  AgenticaPrompt,
+  AgenticaSelectEvent,
+  AgenticaTextEvent,
+  AgenticaTokenUsage,
 } from "@agentica/core";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
@@ -22,15 +24,15 @@ import {
   useTheme,
 } from "@mui/material";
 import { ILlmSchema } from "@samchon/openapi";
-import html2canvas from "html2canvas";
-import fileDownload from "js-file-download";
-import React, { useEffect, useRef, useState } from "react";
+import { toPng } from "html-to-image";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
 
 export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   agent,
+  title,
 }: AgenticaChatMovie.IProps<Model>) => {
   //----
   // VARIABLES
@@ -45,16 +47,16 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   // STATES
   const [error, setError] = useState<Error | null>(null);
   const [text, setText] = useState("");
-  const [histories, setHistories] = useState<IAgenticaPrompt<Model>[]>(
+  const [histories, setHistories] = useState<AgenticaPrompt<Model>[]>(
     agent.getPromptHistories().slice(),
   );
-  const [tokenUsage, setTokenUsage] = useState<IAgenticaTokenUsage>(
+  const [tokenUsage, setTokenUsage] = useState<AgenticaTokenUsage>(
     JSON.parse(JSON.stringify(agent.getTokenUsage())),
   );
   const [height, setHeight] = useState(122);
   const [enabled, setEnabled] = useState(true);
   const [selections, setSelections] = useState<
-    IAgenticaOperationSelection<Model>[]
+    AgenticaOperationSelection<Model>[]
   >([]);
   const [openSide, setOpenSide] = useState(false);
 
@@ -62,33 +64,21 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   // EVENT INTERACTIONS
   //----
   // EVENT LISTENERS
-  const handleText = (evt: IAgenticaEvent.IText) => {
-    histories.push(evt);
+  const handleText = async (event: AgenticaTextEvent) => {
+    await event.join(); // @todo Jaxtyn: streaming
+    histories.push(event.toPrompt());
     setHistories(histories);
   };
-  const handleDescribe = (evt: IAgenticaEvent.IDescribe<Model>) => {
-    histories.push(evt);
+  const handleDescribe = async (event: AgenticaDescribeEvent<Model>) => {
+    await event.join(); // @todo Jaxtyn: streaming
+    histories.push(event.toPrompt());
     setHistories(histories);
   };
-  const handleSelect = (evt: IAgenticaEvent.ISelect<Model>) => {
-    histories.push({
-      type: "select",
-      id: "something",
-      operations: [
-        {
-          ...evt.operation,
-          reason: evt.reason,
-          toJSON: () => ({}) as any,
-        } satisfies IAgenticaOperationSelection<Model>,
-      ],
-    });
+  const handleSelect = (evevnt: AgenticaSelectEvent<Model>) => {
+    histories.push(evevnt.toPrompt());
     setHistories(histories);
 
-    selections.push({
-      ...evt.operation,
-      reason: evt.reason,
-      toJSON: () => ({}) as any,
-    } satisfies IAgenticaOperationSelection<Model>);
+    selections.push(evevnt.selection);
     setSelections(selections);
   };
 
@@ -148,21 +138,21 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     setTokenUsage(agent.getTokenUsage());
     setEnabled(true);
 
-    const selections: IAgenticaOperationSelection<Model>[] = agent
+    const selections: AgenticaOperationSelection<Model>[] = agent
       .getPromptHistories()
       .filter((h) => h.type === "select")
-      .map((h) => h.operations)
+      .map((h) => h.selections)
       .flat();
     for (const cancel of agent
       .getPromptHistories()
       .filter((h) => h.type === "cancel")
-      .map((h) => h.operations)
+      .map((h) => h.selections)
       .flat()) {
       const index: number = selections.findIndex(
         (s) =>
-          s.protocol === cancel.protocol &&
-          s.controller.name === cancel.controller.name &&
-          s.function.name === cancel.function.name,
+          s.operation.protocol === cancel.operation.protocol &&
+          s.operation.controller.name === cancel.operation.controller.name &&
+          s.operation.function.name === cancel.operation.function.name,
       );
       if (index !== -1) selections.splice(index, 1);
     }
@@ -171,20 +161,13 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
 
   const capture = async () => {
     if (bodyContainerRef.current === null) return;
-    const canvas: HTMLCanvasElement = await html2canvas(
-      bodyContainerRef.current,
-      {
-        scrollX: 0,
-        scrollY: 0,
-        width: bodyContainerRef.current.scrollWidth,
-        height: bodyContainerRef.current.scrollHeight,
-        useCORS: true,
-      },
-    );
-    canvas.toBlob((blob) => {
-      if (blob === null) return;
-      fileDownload(blob, "nestia-chat-screenshot.png");
-    });
+
+    const dataUrl = await toPng(bodyContainerRef.current, {});
+    const link = document.createElement("a");
+    link.download = "nestia-chat-screenshot.png";
+    link.href = dataUrl;
+    link.click();
+    link.remove();
   };
 
   //----
@@ -192,25 +175,33 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   //----
   const theme: Theme = useTheme();
   const isMobile: boolean = useMediaQuery(theme.breakpoints.down("lg"));
-  const bodyMovie = (): JSX.Element => (
-    <Container
-      ref={bodyContainerRef}
-      maxWidth={false}
+  const bodyMovie = (): ReactElement => (
+    <div
       style={{
-        marginBottom: 15,
-        paddingBottom: 50,
-        width: isMobile ? "100%" : `calc(100% - ${SIDE_WIDTH}px)`,
+        overflowY: "auto",
         height: "100%",
-        overflowY: "scroll",
+        width: isMobile ? "100%" : `calc(100% - ${SIDE_WIDTH}px)`,
+        margin: 0,
         backgroundColor: "lightblue",
       }}
     >
-      {histories
-        .map((prompt) => <AgenticaChatMessageMovie prompt={prompt} />)
-        .filter((elem) => elem !== null)}
-    </Container>
+      <Container
+        style={{
+          paddingBottom: 50,
+          width: "100%",
+          minHeight: "100%",
+          backgroundColor: "lightblue",
+          margin: 0,
+        }}
+        ref={bodyContainerRef}
+      >
+        {histories
+          .map((prompt) => <AgenticaChatMessageMovie prompt={prompt} />)
+          .filter((elem) => elem !== null)}
+      </Container>
+    </div>
   );
-  const sideMovie = (): JSX.Element => (
+  const sideMovie = (): ReactElement => (
     <div
       style={{
         width: isMobile ? undefined : SIDE_WIDTH,
@@ -239,7 +230,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
       <AppBar ref={upperDivRef} position="relative" component="div">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Agentica Chatbot
+            {title ?? "Agentica Chatbot"}
           </Typography>
           {isMobile ? (
             <>
@@ -324,6 +315,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
 export namespace AgenticaChatMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
     agent: Agentica<Model>;
+    title?: string;
   }
 }
 

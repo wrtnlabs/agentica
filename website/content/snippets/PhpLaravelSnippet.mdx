@@ -1,0 +1,63 @@
+```php
+<?php
+class BbsArticleController {
+  /**
+   * @OA\Post(
+   *   path="/boards",
+   *   tags={"BBS"},
+   *   summary="Create a new article",
+   *   description="Create a new article with its first snapshot",
+   *   @OA\RequestBody(
+   *     description="Article information to create",
+   *     required=true,
+   *     @OA\MediaType(
+   *       mediaType="application/json",
+   *       @OA\Schema(
+   *         @OA\Property(
+   *           property="title",
+   *           type="string",
+   *           description="Title of article",
+   *         ),
+   *         @OA\Property(
+   *           property="content",
+   *           type="string",
+   *           description="Content body of article"
+   *         ),
+   *         @QA\Property(
+   *           property="files",
+   *           type="array",
+   *           @QA\Items(
+   *             @QA\Schema(
+   *               @QA\Property(
+   *                 property="name",
+   *                 type="string",
+   *                 maxLength=255,
+   *                 description="File name, except the extension"
+   *               ),
+   *               @QA\Property(
+   *                 property="extension",
+   *                 type="string",
+   *                 nullable=true,
+   *                 maxLength=8,
+   *                 description="File extension. If no extension, then set null"
+   *               ),
+   *               @QA\Property(
+   *                 property="url",
+   *                 type="string",
+   *                 format="url",
+   *                 description="URL address that the file is located in"
+   *               )
+   *             )
+   *           )
+   *         )
+   *       )
+   *     )
+   *   ),
+   *   @OA\Response(response="200", description="Success"),
+   *   @OA\Response(response="400", description="Fail")
+   * )
+   */
+  public function create(Request $request);
+}
+?>
+```

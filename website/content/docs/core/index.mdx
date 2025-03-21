@@ -1,0 +1,417 @@
+---
+title: Agentica > Guide Documents > Core Library
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../components/RemoteSource";
+
+import AgenticaSnippet from "../../snippets/AgenticaSnippet.mdx";
+import AgenticaPromptSnippet from "../../snippets/AgenticaPromptSnippet.mdx";
+import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
+
+## `@agentica/core`
+The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
+
+`@agentica/core` is an agent library utilizing LLM function calling feature, provided from Swagger/OpenAPI document and TypeScript class functions, enhanced by compiler and validation feedback strategy. 
+
+With these strategies, you can build Agentic AI chatbot only with Swagger documents or TypeScript class types. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica/core`. Only by listing up functions, `@agentica/core` will do everything with the function calling.
+
+Look at the below demonstration, and feel how `@agentica/core` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
+
+```typescript filename="src/main.ts" showLineNumbers {17-24, 35-36, 42-43, 49-50}
+import { Agentica } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import { OpenApi, HttpLlm } from "@samchon/openapi";
+import typia from "typia";
+
+const main = async (): Promise<void> => {
+  const agent = new Agentica({
+    model: "chatgpt",
+    vendor: {
+      api: new OpenAI({ apiKey: "*****" }),
+      model: "gpt-4o-mini",
+    },
+    controllers: [
+      {
+        protocol: "http",
+        name: "shopping",
+        application: HttpLlm.application({
+          model: "chatgpt",
+          document: OpenApi.convert(
+            await fetch(
+              "https://shopping-be.wrtn.ai/editor/swagger.json",
+            ).then(r => r.json()),
+          ),
+        }),
+        connection: {
+          host: "https://shopping-be.wrtn.ai",
+          headers: {
+            Authorization: "Bearer *****",
+          },
+        },
+      },
+      {
+        protocol: "class",
+        name: "counselor",
+        application: 
+          typia.llm.application<ShoppingCounselor, "chatgpt">(),
+        execute: new ShoppingCounselor(),
+      },
+      {
+        protocol: "class",
+        name: "policy",
+        application: 
+          typia.llm.application<ShoppingPolicy, "chatgpt">(),
+        execute: new ShoppingPolicy(),
+      },
+      {
+        protocol: "class",
+        name: "rag",
+        application: 
+          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
+        execute: new ShoppingSearchRag(),
+      },
+    ],
+    config: {
+      executor: {
+        select: AgenticaPgVectorSelector.boot<"chatgpt">(
+          'https://your-connector-hive-server.com'
+        ),
+      },
+    },
+  });
+  await agent.conversate("I wanna buy MacBook Pro");
+};
+main().catch(console.error);
+```
+
+<br/>
+<iframe src="https://www.youtube.com/embed/m47p4iJ90Ms?si=cvgfckN25GJhjLTB" 
+        title="Shopping A.I. Chatbot built with Nestia" 
+        width="100%" 
+        height="600" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" 
+        allowFullScreen></iframe>
+
+
+
+
+## Setup
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+npm install @agentica/core @samchon/openapi typia
+npx typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+pnpm install @agentica/core @samchon/openapi typia
+pnpm typia setup
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal" copy
+# YARN BERRY IS NOT SUPPORTED
+yarn add @agentica/core @samchon/openapi typia
+yarn typia setup
+```
+  </Tabs.Tab>
+</Tabs>
+
+To install `@agentica/core`, you also have to install [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://github.com/samchon/typia).
+
+`@samchon/openapi` is an OpenAPI specification library which can convert Swagger/OpenAPI document to LLM function calling schema. And `typia` is a transformer (compiler) library which can compose LLM function calling schema from a TypeScript class type.
+
+By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`. If you're not using non-standard TypeScript compiler (not `tsc`) or developing the agent in the frontend environment, you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) following its guide.
+
+
+
+
+## Facade Controller
+<Tabs items={[
+  <code>Agentica</code>,
+  <code>IAgenticaProps</code>,
+  <code>IAgenticaVendor</code>,
+  <code>IAgenticaController</code>,
+]}>
+  <Tabs.Tab>
+    <AgenticaSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaProps.ts"
+      filename="@agentica/core/IAgenticaProps"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaVendor.ts"
+      filename="@agentica/core/IAgenticaVendor"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaController.ts"
+      filename="@agentica/core/IAgenticaController"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+### API Vendor
+When creating an `Agentica` class instance, you have to specify the LLM service vendor.
+
+`Agentica` is utilizing OpenAI SDK, but it does not mean that you can use only OpenAI's GPT model in the `Agentica`. The OpenAI SDK is just a connection tool to the LLM vendor's API, and you can use other LLM vendors by configuring its `api.baseURL` and `vendor` properties.
+
+For example, if you want to use Llama instead of GPT, you can do it like below. Instead, as LLM schema models are different by the vendor, you have to define more property `IAgenticaProps.model` and you also have to make LLM function calling schema following the vendor's specification.
+
+<Tabs 
+  items={['OpenAI GPT', 'Meta Llama']} 
+  defaultIndex={1}>
+  <Tabs.Tab>
+```typescript filename="src/main.chatgpt.ts" showLineNumbers {12-18, 24}
+import { 
+  Agentica,
+  IAgenticaController,
+  IAgenticaProps,
+  IAgenticaVendor
+} from "@agentica/core";
+import OpenAI from "openai";
+
+import { BbsArticleService } from "./services/BbsArticleService";
+
+const agent: Agentica<"chatgpt"> = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: "********",
+    }),
+  } satisfies IAgenticaVendor,
+  controllers: [
+    {
+      protocol: "http",
+      name: "class",
+      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController<"chatgpt">,
+  ]
+} satisfies IAgenticaProps<"chatgpt">);
+await agent.conversate("I wanna buy MacBook Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.llama.ts" showLineNumbers {12-19, 23}
+import { 
+  Agentica,
+  IAgenticaController,
+  IAgenticaProps,
+  IAgenticaVendor
+} from "@agentica/core";
+import OpenAI from "openai";
+
+import { BbsArticleService } from "./services/BbsArticleService";
+
+const agent: Agentica<"llama"> = new Agentica({
+  model: "llama",
+  vendor: {
+    model: "llama3.3-70b",
+    api: new OpenAI({
+      apiKey: "********",
+      baseURL: "https://api.llama-api.com",
+    }),
+  } satisfies IAgenticaVendor,
+  controllers: [
+    {
+      protocol: "http",
+      name: "class",
+      application: typia.llm.application<BbsArticleService, "llama">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController<"llama">,
+  ]
+} satisfies IAgenticaProps<"llama">);
+await agent.conversate("I wanna buy MacBook Pro");
+```
+  </Tabs.Tab>
+</Tabs>
+
+### Function Controller
+In `@agentica/core`, there is a concept of controller, a set LLM function calling schemas (application schema) and execute functions for actual function calling. And `@agentica/core` supports two protocol types of controllers; HTTP server and TypeScript class.
+
+When you're using HTTP server controller, create LLM application schema from `assertHttpLlmApplication()` or `validateHttpLlmApplication()` function. These functions will validate whether the target Swagger/OpenAPI document is correct or not. And then, configure connection information to the HTTP server with destination URL and headers. 
+
+Otherwise you want to serve the function calling from a TypeScript class, create LLM application schema from `typia.llm.application<Class, Model>()` function. And provide the class instance for the actual function calling.
+
+For reference, `IAgenticaController.name` must be unique, because it is used to identify the controller in the agent. Also, if number of your controller functions are too many, it would better to configure `executor.selector` as vector selector of plugin. If you don't do it, too much LLM token costs would be consumed.
+
+```typescript filename="src/main.ts" showLineNumbers {13-51}
+import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import { OpenApi, HttpLlm } from "@samchon/openapi";
+import typia from "typia";
+
+const main = async (): Promise<void> => {
+  const agent = new Agentica({
+    model: "chatgpt",
+    vendor: {
+      api: new OpenAI({ apiKey: "*****" }),
+      model: "gpt-4o-mini",
+    },
+    controllers: [
+      {
+        protocol: "http",
+        name: "shopping",
+        application: assertHttpLlmApplication({
+          model: "chatgpt",
+          document: await fetch(
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
+          ).then((r) => r.json()),
+        }),
+        connection: {
+          host: "https://shopping-be.wrtn.ai",
+          headers: {
+            Authorization: "Bearer *****",
+          },
+        },
+      },
+      {
+        protocol: "class",
+        name: "counselor",
+        application: 
+          typia.llm.application<ShoppingCounselor, "chatgpt">(),
+        execute: new ShoppingCounselor(),
+      },
+      {
+        protocol: "class",
+        name: "policy",
+        application: 
+          typia.llm.application<ShoppingPolicy, "chatgpt">(),
+        execute: new ShoppingPolicy(),
+      },
+      {
+        protocol: "class",
+        name: "rag",
+        application: 
+          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
+        execute: new ShoppingSearchRag(),
+      },
+    ],
+    config: {
+      executor: {
+        select: AgenticaPgVectorSelector.boot<"chatgpt">(
+          'https://your-connector-hive-server.com'
+        ),
+      },
+    },
+  });
+  await agent.conversate("I wanna buy MacBook Pro");
+};
+main().catch(console.error);
+```
+
+### Conversation
+When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions, and returns the list of newly created prompts in the orchestration process.
+
+If you want to archive the conversation state of current agent, store the returned prompts to your database. When you want to restore the agent, you can do it by creating a new `Agentica` instance with `IAgenticaProps.histories` property assignment.
+
+Also, if you want to trace the conversation process, you can add event listeners to the agent. The agent emits events when the conversation is started, the function calling is selected or executed, and the description prompt to the function calling result is created.
+
+
+
+
+## Configuration
+<Tabs items={[
+  <code>IAgenticaConfig</code>,
+  <code>IAgenticaExecutor</code>,
+  <code>IAgenticaSystemPrompt</code>,
+]}>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaExecutor.ts"
+      filename="@agentica/core/IAgenticaExecutor"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaSystemPrompt.ts"
+      filename="@agentica/core/IAgenticaSystemPrompt"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+### Executor
+When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions, and returns the list of newly created prompts in the orchestration process.
+
+And you can change some of internal agent's behavior by configuring the `IAgenticaExecutor` property. For example, if you assign `null` value to the `IAgenticaExecutor.initialize`, the agent will skip the initialize process and directly go to the select process.
+
+Otherwise you configure `IAgenticaExecutor.select` to another function like [PG Vector Selector](/docs/plugins/pg-vector-selector), the agent will select the functions to call by the PG Vector Selector's strategy. And this way is recommend when your number of controller functions are too many. If you don't do that with a lot of controller functions, your agent will consume a lot of LLM token costs.
+
+### System Prompts
+You can change system prompts by configuring `IAgenticaSystemPrompt` properties.
+
+This is useful when you want to configure "tone and manner" of the AI chatbot, or you need to restrict the agent to follow your specific rule. 
+
+For example, if you are developing a chatbot of counseling, you can guide the agent to use the polite and gentle tone in the `IAgenticaSystemPrompt.common` property.
+
+### Locale and Timezone
+You can configure `locale` and `timezone` properties.
+
+This properties are delivered to the AI agent, so that the AI agent considers the user's locale and timezone. If you configure `ko-KR` to the `locale` property, the AI agent will conversate with the Korean language. 
+
+Otherwise you configure `Asia/Seoul` to the `timezone` property, the AI agent considers the location and timezone, so that sometimes affect to the LLM function calling's arguments composition. For example, if you ask the AI agent to "recommend me a local food", the AI agent will recommend the local food in Seoul, Korea.
+
+
+
+
+## Event Handling
+<AgenticaEventSnippet />
+
+Here is the list of events emitted by the `Agentica` class.
+
+And you can listen the events by calling `Agentica.on()` function, and erase the event listener by calling `Agentica.off()` function. And the events are emitted only when the `Agentica.conversate()` function is on the process. 
+
+Even though the event listening is not essential, I recommend you to at least listen `text` and `describe` type events, because these events are the most import events containing the conversation contents between the user and the AI agent.
+
+
+
+
+## Prompt Histories
+<Tabs items={[
+  <code>AgenticaPrompt</code>,
+  <code>IAgenticaExecutePrompt</code>,
+]}>
+  <Tabs.Tab>
+    <AgenticaPromptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/json/IAgenticaPromptJson.ts"
+      filename="@agentica/core/IAgenticaPromptJson"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+Here is the list of prompt types returned by the `Agentica.conversate()` function.
+
+When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions, and returns the list of newly created prompts in the orchestration process.
+
+If you want to archive the conversation state of current agent, store the returned prompts to your database. The prompt histories would be serialized from `AgenticaPrompt` to `IAgenticaPromptJson` type. 
+
+When you want to restore the agent, you can do it by creating a new `Agentica` instance with `IAgenticaProps.histories` property assignment. The `Agentica` will deserialize the prompt histories from `IAgenticaPromptJson` to `AgenticaPrompt` type, so that the agent can restore the conversation state.
+
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, IAgenticaPromptJson } from "@agentica/core";
+
+const histories: IAgenticaPromptJson[] = await getHistories();
+const agent: Agentica<"chatgpt"> = new Agentica({
+  ...,
+  histories,
+});
+await agent.conversate("Summarize what we have done please.");
+```

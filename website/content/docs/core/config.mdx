@@ -1,0 +1,272 @@
+---
+title: Agentica > Guide Documents > Core Library > Configurations
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../components/RemoteSource";
+
+## Configuration
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaProps</code>,
+  <code>IAgenticaConfig</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, IAgenticaProps, IAgenticaConfig } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    executor: {
+      initialize: null,
+      select: AgenticaPgVectorSelector.boot<"chatgpt">(
+        "https://your-connector-hive-server.com",
+      ),
+    },
+    systemPrompt: {
+      common: () => [
+        "You are a counselor of the shopping mall.",
+        "",
+        "Be kind and polite to the customer.",
+      ].join("\n"),
+    },
+    locale: "ko-KR",
+    timezone: "Asia/Seoul",
+    retry: 3,
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaProps.ts"
+      filename="@agentica/core/IAgenticaProps"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaExecutor.ts"
+      filename="@agentica/core/IAgenticaExecutor"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaSystemPrompt.ts"
+      filename="@agentica/core/IAgenticaSystemPrompt"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+
+When creating an `Agentica` instance, you can configure the agent following the `IAgenticaConfig` type.
+
+If you configure `IAgenticaConfig.executor` property, you can customize internal agents' orchestration, so that affects to the agent's behavior. For example, if you change the `IAgenticaExecutor.select` property to another function like [PG Vector Selector](/docs/plugins/pg-vector-selector), PG Vector Selector will determine the candidate functions to call, and you can save the LLM token costs a lot.
+
+When you set the `IAgenticaConfig.systemPrompt` property, you can change the default system prompt messages of the internal agents. In the customizable system prompts, there's a common system prompt which can be used in every internal agents, and you can also configure the system prompt for each internal agent.
+
+The `IAgenticaConfig.retry` property is the retry count of the [#Validation Feedback](/docs/concepts/function-calling#validation-feedback). If you set the `retry` property to `3`, the agent will retry the function calling 3 times when the function calling composed invalid typed arguments.
+
+
+
+
+## Orchestration Executor
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaExecutor</code>,
+  <code>AgenticaContext</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {13-18}
+import { Agentica, IAgenticaProps, IAgenticaConfig } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import OpenAI from "openai";
+ 
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    executor: {
+      initialize: null,
+      select: AgenticaPgVectorSelector.boot<"chatgpt">(
+        "https://your-connector-hive-server.com",
+      ),
+    },
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaExecutor.ts"
+      filename="@agentica/core/IAgenticaExecutor"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/context/AgenticaContext.ts"
+      filename="@agentica/core/AgenticaContext"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions, and returns the list of newly created prompts in the orchestration process.
+
+And you can change some of internal agent's behavior by configuring the `IAgenticaExecutor` property. For example, if you assign `null` value to the `IAgenticaExecutor.initialize`, the agent will skip the initialize process and directly go to the select process.
+
+Otherwise you configure `IAgenticaExecutor.select` to another function like [PG Vector Selector](/docs/plugins/pg-vector-selector), the agent will select the functions to call by the PG Vector Selector's strategy. And this way is recommend when your number of controller functions are too many. If you don't do that with a lot of controller functions, your agent will consume a lot of LLM token costs.
+
+
+
+
+## System Prompts
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaSystemPrompt</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12-18}
+import { Agentica, IAgenticaProps, IAgenticaConfig } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    systemPrompt: {
+      common: () => [
+        "You are a counselor of the shopping mall.",
+        "",
+        "Be kind and polite to the customer.",
+      ].join("\n"),
+    },
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaSystemPrompt.ts"
+      filename="@agentica/core/IAgenticaSystemPrompt"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+System prompts for each [internal agents](/docs/concepts/function-calling/#orchestration-strategy).
+
+If you configure `IAgenticaSystemPrompt` properties, you can change the system prompt contents.
+
+Here is the list of default system prompts, and it would be changed to what you've configured. Reading the `IAgenticaSystemPrompt` type carefully and referencing below snippet, configure the system prompts for guiding the agent to the right way.
+
+Also, the `common` property configure will affect to the every internal agents. If you are developing a chatbot of counseling, you can guide the agent to use the polite and gentle tone by configuring the `common` property. When your agent needs to follow a specific policy, the `common` property is the best place to configure too.
+
+   - https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts
+
+
+
+
+## Retry Count
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaConfig</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12}
+import { Agentica } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    retry: 3,
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+Retry count of [#Validation Feedback](/docs/concepts/function-calling#validation-feedback).
+
+When LLM (Large Language Model) performs function calling, it tends to composes invalid typed arguments at the first trial when complicate type comes. In the case of Shopping AI Chatbot you've seen at the intro page as demonstration, success rate of the first trial is about 30%.
+
+In that case, `@agentica` is designed to retry the function calling with validation feedback strategy. `@agentica` lists up every type errors and let the agent to correct it at the next trial. If you set the `retry` property to `3`, the agent will retry the function calling 3 times when the function calling composed invalid typed arguments.
+ 
+By the way, if you configure the `retry` property as `0`, the agent will never retry the function calling with validation feedback strategy. This is not recommended due to the low success rate of the first trial makes the agent to be useless. The recommended value is `2` or `3`.
+
+
+
+
+## Locale and Timezone
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaConfig</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12-13}
+import { Agentica } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o",
+  },
+  controllers: [...],
+  config: {
+    locale: "ko-KR",
+    timezone: "Asia/Seoul",
+  },
+});
+await agent.conversate("Hello, I want to refund my shoes.");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaConfig.ts"
+      filename="@agentica/core/IAgenticaConfig"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+You can configure `locale` and `timezone` properties.
+
+This properties are delivered to the AI agent, so that the AI agent considers the user's locale and timezone. If you configure `ko-KR` to the `locale` property, the AI agent will conversate with the Korean language. 
+
+Otherwise you configure `Asia/Seoul` to the `timezone` property, the AI agent considers the location and timezone, so that sometimes affect to the LLM function calling's arguments composition. For example, if you ask the AI agent to "recommend me a local food", the AI agent will recommend the local food in Seoul, Korea.

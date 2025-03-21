@@ -1,0 +1,93 @@
+---
+title: Agentica > Tutorial > Arxiv Search Agents  
+---
+
+## Introduction
+
+Set up a **fully functional Arxiv Search Agent** powered by OpenAI's GPT model quickly using the Agentica CLI.
+
+## Quick CLI Setup
+
+Launch the Agentica Setup Wizard with a single command:
+
+```bash
+npx agentica start arxiv-search-agent
+```
+
+The wizard guides you through:
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **ARXIV SEARCH** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { ArxivSearchService } from "@wrtnlabs/connector-arxiv-search";
+
+dotenv.config();
+
+export const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "ArxivSearch Connector",
+      protocol: "class",
+      application: typia.llm.application<ArxivSearchService, "chatgpt">(),
+      execute: new ArxivSearchService(),
+    },
+  ],
+});
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+```
+
+This code instantly sets up your Arxiv Search Agent, ready to intelligently search research papers.
+
+## What This Does
+
+Your Arxiv Search Agent will:
+- **Process Arxiv Search Data:** Interact with the Arxiv Search API using the `ArxivSearchService`.
+- **Leverage OpenAI's GPT Model:** For smart, AI-powered paper searches.
+- **Ensure Type Safety:** Using `typia`.
+- **Securely Manage Credentials:** With environment variables.
+
+Set up your environment variable in a `.env` file:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+```
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Find papers related to AI Agent."
+
+The agent will search Arxiv for relevant research papers based on your criteria.
+
+## Available Functions
+
+For a complete list of available functions in `ArxivSearchService`, check out the source code:  
+👉 [wrtnlabs/connectors - ArxivSearchService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/arxiv_search/src/arxiv_search/ArxivSearchService.ts)
+
+Your AI-powered Arxiv Search Agent is now ready to explore research papers seamlessly! 🚀

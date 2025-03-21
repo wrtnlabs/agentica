@@ -1,15 +1,21 @@
 {
   "private": true,
   "name": "@agentica/station",
-  "version": "0.10.1",
+  "version": "0.12.21",
   "description": "Agentic AI library specialized in LLM Function Calling",
   "engines": {
-    "pnpm": ">=8"
+    "pnpm": ">=10"
   },
+  "packageManager": "pnpm@10.6.4",
   "scripts": {
-    "build": "node deploy/build",
-    "package:latest": "node deploy/publish --tag latest",
-    "package:next": "node deploy/publish --tag dev"
+    "build": "pnpm -r build",
+    "build:package": "pnpm --filter='./packages/**' -r build",
+    "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
+    "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
+    "preinstall": "npx only-allow pnpm",
+    "release": "bumpp",
+    "lint": "pnpm --parallel -r --no-bail lint",
+    "lint:fix": "pnpm --parallel -r --no-bail lint:fix"
   },
   "repository": {
     "type": "git",
@@ -43,10 +49,17 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "bumpp": "^10.1.0",
+    "@wrtnlabs/eslint-config": "^0.1.0",
     "eslint": "^9.17.0",
     "prettier": "^3.5.0",
     "rimraf": "^6.0.1",
     "typedoc": "^0.27.7",
     "typedoc-github-theme": "^0.2.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.0.0"
+    }
   }
 }

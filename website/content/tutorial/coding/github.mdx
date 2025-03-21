@@ -1,0 +1,93 @@
+---
+title: Agentica > Tutorial > Github Agents  
+---
+
+## Introduction
+
+Set up a **fully functional Github Agent** powered by OpenAI's GPT model quickly using the Agentica CLI. This agent lets you interact with Github—search users, retrieve profiles, and list repositories—through natural language commands.
+
+## Quick CLI Setup
+
+Launch the Agentica Setup Wizard with a single command:
+
+```bash
+npx agentica start github-agent
+```
+
+The wizard guides you through:
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **GITHUB** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { GithubService } from "@wrtnlabs/connector-github";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import typia from "typia";
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+export const GithubAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: openai,
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Github Connector",
+      protocol: "class",
+      application: typia.llm.application<GithubService, "chatgpt">(),
+      execute: new GithubService({
+        secret: process.env.GITHUB_ACCESS_TOKEN!,
+      }),
+    },
+  ],
+});
+```
+
+This code instantly sets up your Github Agent to interact with Github via its API.
+
+## Github API Setup
+
+Before running your agent, configure your Github API credentials:
+
+1. **Create a Github Application:**  
+   - Visit [Github Developer Settings](https://github.com/settings/developers) to create a new OAuth application.
+   - An OAuth application allows you to obtain a token (starting with `gho_`), which boosts your API rate limit for more stable usage.
+
+2. **Obtain Credentials:**  
+   - Generate the necessary token and ensure you have the required permissions.
+
+3. **Set Up Environment Variables:**  
+   - Create or update your `.env` file with:
+
+   ```env
+   OPENAI_API_KEY=your-openai-api-key
+   GITHUB_ACCESS_TOKEN=your-github-access-token
+   ```
+
+## What This Does
+
+Your Github Agent will:
+- **Process Github Data:** Use the `GithubService` connector to search users, fetch profiles, and list repositories.
+- **Leverage OpenAI's GPT Model:** Translate natural language queries into Github API calls.
+- **Maintain Type Safety:** With `typia`.
+- **Securely Manage Credentials:** Using environment variables via `dotenv`.
+
+## Available Functions
+
+For a complete list of available functions in `GithubService`, check out the source code:  
+👉 [wrtnlabs/connectors - GithubService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/github/src/github/GithubService.ts)
+
+Your AI-powered Github Agent is now ready for seamless Github interactions! 🚀

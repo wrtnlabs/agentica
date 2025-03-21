@@ -1,4 +1,4 @@
-import { IAgenticaTokenUsage } from "@agentica/core";
+import { AgenticaTokenUsage } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaCallBenchmarkEvent } from "./IAgenticaCallBenchmarkEvent";
@@ -30,7 +30,7 @@ export interface IAgenticaCallBenchmarkResult<Model extends ILlmSchema.Model> {
   /**
    * Aggregated token usage information.
    */
-  usage: IAgenticaTokenUsage;
+  usage: AgenticaTokenUsage;
 
   /**
    * Start time of the benchmark.
@@ -65,6 +65,6 @@ export namespace IAgenticaCallBenchmarkResult {
     /**
      * LLM token usage information.
      */
-    usage: IAgenticaTokenUsage;
+    usage: AgenticaTokenUsage;
   }
 }

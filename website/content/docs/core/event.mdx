@@ -1,0 +1,505 @@
+---
+title: Agentica > Guide Documents > Core Library > Event Handling
+---
+import { Tabs } from "nextra/components";
+
+import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
+import AgenticaOperationSelectionSnippet from "../../snippets/AgenticaOperationSelectionSnippet.mdx";
+import AgenticaOperationSnippet from "../../snippets/AgenticaOperationSnippet.mdx";
+
+## Event Handling
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperationSelection</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+
+agent.on("text", async (event) => {
+  console.log("Text from", event.role);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+});
+
+agent.on("initialize", async () => {
+  console.log("Function calling started");
+});
+agent.on("select", async (event) => {
+  console.log(
+    "Candidate function selected", 
+    event.selection.operation.name, 
+    event.selection.reason,
+  );
+});
+agent.on("execute", async (event) => {
+  console.log(
+    "Function executed", 
+    event.operation.name, 
+    event.arguments, 
+    event.value,
+  );
+});
+agent.on("describe", async (event) => {
+  console.log("Describe Function Calling");
+  for (const execute of event.executes)
+    console.log(`  - ${execute.operation.name}`);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+}); 
+
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSelectionSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+You can start chatbot by creating `Agentica` instance, and calling its function `Agentica.conversate()`. When creating the `Agentica` instance, you have to specify the LLM (Large Language Model) service vendor, and lists of controller to serving for function calling.
+
+In the `Agentica.conversate()` function, [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents would be processed including function callings and executions. When the orchestration has been completed, the `Agentica.conversate()` function will return the list of newly created prompts.
+
+By the way, within framework of the UX (User Experience) it is not a good choice to waiting for completion of the `Agentica.conversate()` function and giving prompt results to the user at once. Delivering the events to the user step by step with streaming is more recommended. Enroll event listeners by calling `Agentica.on()` function, and deliver it to the user.
+
+
+
+
+## Streaming Events
+### Text Event
+<Tabs items={[
+  <code>src/main.stream.ts</code>,
+  <code>src/main.join.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.stream.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("text", async (event) => {
+  console.log("Text from", event.role);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.join.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("text", async (event) => {
+  const text: string = await event.join();
+  console.log("Text from", event.role, text);
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+When user or AI agent conversate, it would be delivered as `TextEvent`, and its content would will be streamed.
+
+If you want to get the text pieces of the streaming, use `for await` iteration statement to the `AgenticaEvent.Text.stream` property. Otherwise you want to get the entire text content at once, use `AgenticaEvent.Text.join()` function instead.
+
+### Describe Event
+<Tabs items={[
+  <code>src/main.stream.ts</code>,
+  <code>src/main.join.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.stream.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("describe", async (event) => {
+  console.log("Describe Function Calling");
+  for (const execute of event.executes)
+    console.log(`  - ${execute.operation.name}`);
+  for await (const text of event.stream)
+    process.stdout.write(text);
+  process.stdout.write("\n");
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.join.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("describe", async (event) => {
+  console.log("Describe Function Calling");
+  for (const execute of event.executes)
+    console.log(`  - ${execute.operation.name}`);
+
+  const text: string = await event.join();
+  console.log(text);
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+When function callings are completed, `@agentica` let AI agent to describe the function calling results, and it would be delivered to `AgenticaEvent.Describe` event. As `AgenticaEvent.Text` case, you can get its content is served by streaming.
+
+If you want to get the text pieces of the streaming, use `for await` iteration statement to the `AgenticaEvent.Describe.stream` property. Otherwise you want to get the entire text content at once, use `AgenticaEvent.Describe.join()` function instead.
+
+For reference, description content of function calling results can be huge, when the returned values of function callings have large JSON content. In that case, if you wait for completion of full text content by `AgenticaEvent.Describe.join()` function, it would be bad experience for user. Therefore, I recommend you to use `for await` iteration statement to the `AgenticaEvent.Describe.stream` property.
+
+
+
+
+## Functional Events
+### Initialize Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  "Disable initializer",
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("initialize", async () => {
+  console.log("Function calling begins");
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {11-15}
+import { Agentica, IAgenticaConfig, IAgenticaExecutor } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+  config: {
+    executor: {
+      initialize: null,
+    } satisfies IAgenticaExecutor,
+  } satisfies IAgenticaConfig,
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+</Tabs>
+
+`AgenticaEvent.Initialize` event is triggered when the function calling begins.
+
+In the `Agentica` class, it initialize function calling feature until the user's conversation implies some functions to call. The initialization of function calling means that, informing the list of functions to the LLM (Large Language Model), so that starting the function calling feature. Until the initialization, `Agentica` class will act like a plain agent like ChatGPT.
+
+It's because lazy construction of the LLM function calling feature can reduce token cost until the initialization, and it can be helpful someone who has started chatbot but has not reached to the function calling feature.
+
+By the way, if you don't want to keep the initializer feature, and just start the function calling at the beginning, you can do it by configuring `IAgenticaExecutor.initialize` property to `null`. In that case, the agent will ignore the initialize step, so `AgenticaEvent.Initialize` event will never be triggered.
+
+### Select Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperationSelection</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("select", async (event) => {
+  console.log(
+    "select",
+    event.selection.operation.name,
+    event.selection.reason,
+  );
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSelectionSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+When candidate function to call is selected.
+
+`AgenticaEvent.Select` is an event that is triggered when a candidate function is selected during the conversation. Through the `AgenticaEvent.Select`, you can get the selected operation with the reason why it was selected. 
+
+In the same logic, `AgenticaEvent.Cancel` has the same structure as `AgenticaEvent.Select`, but it is triggered when the candidate function is canceled during the conversation.
+
+For reference, in the `@agentica`'s [#internal agents' orchestration](/docs/concepts/function-calling/#orchestration-strategy), its function calling process is divided into two steps: `select` and `execute` (+`describe`). The actual execution by providing the candidate functions to LLM is done in the `execute` step.
+
+The reason why not to listing up every functions to the LLM is, when over hundreds of functions are provided and all of them are listed up to the LLM at once, it can be a huge cost for token and may occur hallucination due to too much contexts. 
+
+If your number of functions is less, and you don't want such `select` step, you can disable it by using `MicroAgentica` instead. It lists up every functions to the LLM at once, so that can be faster than the `Aentica`'s [#orchestration strategy](/docs/concepts/function-calling/#orchestration-strategy).
+
+### Call Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {20-21, 29-33}
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import { ChatGptTypeChecker, HttpLlm, IChatGptSchema } from "@samchon/openapi";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      type: "http",
+      application: HttpLlm.application({
+        model: "chatgpt",
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json"
+        ),
+        options: {
+          separate: (schema: IChatGptSchema) =>
+            ChatGptTypeChecker.isString(schema) && schema.contentMediaType !== undefined,
+        },
+      }),
+    },
+  ],
+});
+agent.on("call", async (event) => {
+  if (event.operation.function.separated?.human)
+    event.arguments = HttpLlm.mergeParameters({
+      function: event.operation.function,
+      llm: event.arguments,
+      human: await fillArguments(event.operation.function.separated.human)
+    });
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+Event of function calling before execution.
+
+`AgenticaEvent.Call` is an event triggered when LLM function calling composed arguments of the target function. This event occurs before the execution phrase, and you can modify the arguments of the function callinng by changing the `AgenticaEvent.Call.arguments` property.
+
+Representative case of the arguments modification is, the arguments have some properties that must be filled by user. For example, if a function has a property of file uploading, the property must be separated from the LLM function calling, and let user to fill it through the frontend application.
+
+In actually, we the Wrtn Technologies are separating the function calling schemas in the construction level, and let user to fill the human side schema through the interaction with the frontend application.
+
+### Execute Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+  <code>AgenticaOperation</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("execute", async (event) => {
+  console.log(
+    "execute",
+    event.operation.name,
+    event.arguments,
+    event.value,
+  );
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaOperationSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+Event of function calling result.
+
+`AgenticaEvent.Execute` is an event triggered when the LLM function calling is executed, so that succeeded to get its return value (or thrown error). Through the `AgenticaEvent.Execute`, you can get the operation name, arguments, and the return value of the function calling.
+
+Also, if you modify the `AgenticaEvent.Execute.value` property, you can change the return value of the function calling, so that affect to the description of the function calling results delivered by `AgenticaEvent.Describe` event.
+
+Such modification of the return value can be useful when you want to hide some sensitive information like personal information or API secret key. 
+
+
+
+
+## API Events
+### Request Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("request", async (event) => {
+  event.body = await emendRequestBody(event.body)
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+Event of OpenAI API request.
+
+`AgenticaEvent.Request` is an event triggered when the `Agentica` class sends a request to the OpenAI API. Through the `AgenticaEvent.Request`, you can modify the request body of the OpenAI API.
+
+### Response Event
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>AgenticaEvent</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="@agentica/core/AgenticaEvent"
+import { Agentica, AgenticaEvent } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+});
+agent.on("response", async (event) => {
+  console.log(
+    "completion",
+    (await event.join()) satisfies OpenAI.ChatCompletion,
+  );
+});
+await agent.conversate("I wanna buy Surface Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaEventSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+Event of OpenAI API response.
+
+`AgenticaEvent.Response` is an event triggered when the `Agentica` class receives a response from the OpenAI API. Through the `AgenticaEvent.Response`, you can trace the completion of the OpenAI API response.

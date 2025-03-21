@@ -1,0 +1,131 @@
+---
+title: Agentica > Tutorial > Slack Agents  
+---
+
+## Introduction
+
+Set up a **fully functional Slack Agent** powered by OpenAI's GPT model quickly using the Agentica CLI. This agent lets you interact with Slack—sending messages, managing channels, and more—with natural language commands.
+
+## Quick CLI Setup
+
+Launch the Agentica Setup Wizard with a single command:
+
+```bash
+npx agentica start slack-agent
+```
+
+The wizard guides you through:
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **SLACK** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { SlackService } from "@wrtnlabs/connector-slack";
+
+dotenv.config();
+
+export const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Slack Connector",
+      protocol: "class",
+      application: typia.llm.application<SlackService, "chatgpt">(),
+      execute: new SlackService(),
+    },
+  ],
+});
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+
+```
+
+This code instantly sets up your Slack Agent to interact with Slack via the provided functions.
+
+## Slack API Setup
+
+Before running your agent, configure your Slack API credentials:
+
+1. **Create a Slack App:**  
+   - Visit [Slack API: Applications](https://api.slack.com/apps) and create a new application.
+   - Add the recommended scopes (e.g., `channels:read`, `chat:write`, `users:read`, etc.) to enable the functions used in this implementation.
+
+2. **Obtain Credentials:**  
+   - After setting up your app, obtain your **Secret Key** (and other credentials if needed) and add it to your environment variables.
+
+3. **Set Up Environment Variables:**  
+   - Create or update your `.env` file with:
+
+   ```env
+   OPENAI_API_KEY=your-openai-api-key
+   SLACK_SECRET_KEY=your-slack-secret-key
+   ```
+
+## What This Does
+
+With this configuration, the Slack Agent can:
+- **Interact with Slack:** Use the `SlackService` connector to send messages, manage channels, and more.
+- **Leverage OpenAI's GPT Model:** Process natural language commands for intelligent interactions.
+- **Maintain Type Safety:** With `typia`.
+- **Securely Manage Credentials:** Using environment variables with `dotenv`.
+
+## Available Functions
+
+For a complete list of available functions in `SlackService`, refer to the source code:  
+👉 [SlackService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/slack/src/slack/SlackService.ts)
+
+## Appendix: Integrating Your Agent as a Slack Bot
+
+To fully integrate your agent as a Slack bot that responds to mentions and events, follow these additional steps:
+
+### Complete Your Slack App Configuration
+
+1. **Event Subscriptions:**  
+   - In your Slack app settings, enable **Event Subscriptions**.
+   - Provide your **Request URL**. (Use a service like ngrok if testing locally.)
+   - Ensure your server responds with the required challenge parameter for verification.
+
+2. **Subscribe to Bot Events:**  
+   - Under **Subscribe to Bot Events**, add events such as `app_mention` to ensure your agent receives messages when mentioned.
+
+3. **Customize Bot Identity:**  
+   - Optionally, update your bot’s display name and icon under **App Home** to personalize its presence in Slack.
+
+### Interacting with Your Slack Bot
+
+Once integrated, you can interact with your agent by mentioning it in a channel:
+
+```plaintext
+@your_bot_name Send a welcome message to the #general channel.
+```
+
+Your agent will process the message using its Slack connector functions and respond accordingly.
+
+---
+
+**Security Note:**  
+This example is for demonstration purposes. Always handle your Slack API credentials securely and follow best practices in production environments.
+
+Your AI-powered Slack Agent is now ready for automated, intelligent Slack interactions. Enjoy streamlining your Slack workflows! 🚀

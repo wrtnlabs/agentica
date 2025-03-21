@@ -8,7 +8,7 @@
 
 RPC module of Agentica for WebSocket Communication
 
-Agentica is the simplest Agentiic AI library specialized in **LLM Function Calling**, and `@agentica/rpc` is an RPC (Remote Procedure Call) wrapper module. If you combine the RPC wrapper module with [`TGrid`](https://github.com/samchon/tgrid), you can develop the WebSocket AI Chatbot.
+Agentica is the simplest Agentic AI library specialized in **LLM Function Calling**, and `@agentica/rpc` is an RPC (Remote Procedure Call) wrapper module. If you combine the RPC wrapper module with [`TGrid`](https://github.com/samchon/tgrid), you can develop the WebSocket AI Chatbot.
 
 ```typescript
 import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";

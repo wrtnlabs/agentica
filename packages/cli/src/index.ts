@@ -1,60 +1,38 @@
-#!/usr/bin/env node
-import cp from "child_process";
-import fs from "fs";
+import { Command } from "commander";
 
-const USAGE = `Wrong command has been detected. Use like below:
+import { AgenticaStart } from "./executable/AgenticaStart";
+import { IAgenticaStart } from "./structures/IAgenticaStart";
+import { blueBright, redBright } from "./utils/styleText";
 
-npx agentica <type> <directory>
+async function main() {
+  const program = new Command();
 
-  1. npx agentica start <directory>
-  2. npx agentica backend <directory>
-  3. npx agentica client <directory>
-`;
+  program
+    .command("start <directory>")
+    .description("Start a new project")
+    .option(
+      "-p, --project [nodejs|nestjs|react|nestjs+react|standalone]",
+      "The project type",
+    )
+    .action(async (directory: string, options: IAgenticaStart.IOptions) => {
+      if ((options.project as any) === true) {
+        console.error(
+          `\n❌ The value of ${redBright("--project")} is required`,
+        );
+        return;
+      }
 
-const halt = (desc: string): never => {
-  console.error(desc);
-  process.exit(-1);
-};
+      AgenticaStart.execute({ projectName: directory, options });
+    });
 
-const clone = async (type: string, directory: string): Promise<void> => {
-  const execute = (command: string): void => {
-    console.log(`\n$ ${command}`);
-    cp.execSync(command, { stdio: "inherit" });
-  };
+  console.log("--------------------------------");
+  console.log(`   🚀 ${"Agentica"} ${blueBright("Setup Wizard")}`);
+  console.log("--------------------------------");
 
-  // COPY PROJECTS
-  execute(
-    `git clone https://github.com/wrtnlabs/agentica-template-${type} ${directory}`,
-  );
-  console.log(`cd "${directory}"`);
-  process.chdir(directory);
+  program.parse(process.argv);
+}
 
-  // INSTALL DEPENDENCIES
-  execute("npm install");
-
-  // BUILD TYPESCRIPT
-  execute("npm run build");
-
-  // DO TEST
-  execute("npm run test");
-
-  // REMOVE .GIT DIRECTORY
-  cp.execSync("npx rimraf .git");
-  cp.execSync("npx rimraf .github/dependabot.yml");
-};
-
-const main = async (): Promise<void> => {
-  const [_v0, _v1, type, directory] = process.argv;
-  if (
-    ["start", "backend", "client", "standalone"].includes(type) === false ||
-    directory === undefined
-  )
-    halt(USAGE);
-  else if (fs.existsSync(directory) === true)
-    halt("The target directory already exists.");
-  await clone(type, directory);
-};
 main().catch((exp) => {
-  console.log(exp.message);
+  console.error(exp.message);
   process.exit(-1);
 });

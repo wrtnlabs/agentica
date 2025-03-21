@@ -1,4 +1,4 @@
-import { IAgenticaTokenUsage } from "@agentica/core";
+import { AgenticaTokenUsage } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
 import { IAgenticaCallBenchmarkEvent } from "../structures/IAgenticaCallBenchmarkEvent";
@@ -34,7 +34,7 @@ export namespace AgenticaCallBenchmarkReporter {
       events
         .map((e) => e.completed_at.getTime() - e.started_at.getTime())
         .reduce((a, b) => a + b, 0) / events.length;
-    const aggregate: IAgenticaTokenUsage.IComponent = result.usage.aggregate;
+    const aggregate: AgenticaTokenUsage.IComponent = result.usage.aggregate;
     return [
       "# LLM Function Call Benchmark",
       "## Summary",
@@ -135,7 +135,17 @@ export namespace AgenticaCallBenchmarkReporter {
             `  - Call: ${event.call ? "✅" : "❌"}`,
           ]
         : []),
-      `  - Token Usage: ${event.usage.toLocaleString()}`,
+      `  - Token Usage:`,
+      `    - Total: ${JSON.stringify(event.usage.aggregate.total)}`,
+      `    - Input`,
+      `      - Total: ${event.usage.aggregate.input.total}`,
+      `      - Cached: ${event.usage.aggregate.input.cached}`,
+      `    - Output:`,
+      `      - Total: ${event.usage.aggregate.output.total}`,
+      `      - Accepted Prediction: ${event.usage.aggregate.output.accepted_prediction}`,
+      `      - Reasoning: ${event.usage.aggregate.output.reasoning}`,
+      `      - Rejected Prediction: ${event.usage.aggregate.output.rejected_prediction}`,
+
       "",
       "## Scenario",
       "### User Prompt",

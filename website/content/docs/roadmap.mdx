@@ -1,0 +1,30 @@
+---
+title: Agentica > Guide Documents > Roadmap
+---
+
+## Local LLMs
+We'll even support Local LLMs which do not have function calling capability.
+
+The shopping mall agent of demonstration has utilized the `gpt-4o-mini` model of 8b parameters. And the 8b parameters, it can be run even on the high-spec laptops. Just by the 8b parameters model, `@agentica` has successfully implemented the shopping mall agent of 289 functions. Only by conversation texts, users could search and purchase products from the agent.
+
+In other words, the local LLMs also can accomplish the Agentic AI, if `@agentica` can support LLM function calling feature for them as well, even though they do not have function calling capability. We'll do it by writing function calling prompt template, and validating the function calling composed arguments.
+
+Also, if 8b parameters model can accomplish the ultimate complicate shopping mall agent, 3b parameters model may be able to develop the simple function calling agent. And if the number of parameters is reduced to 3b, it can be run even on the web browser. We'll also try to support such mini LLMs that can be run on the web browser.
+
+
+
+## Leaderboard of Function Calling
+We'll make a leaderboard of function calling including Local LLMs.
+
+To support function calling on the Local LLMs, we need to measure the performance of the function calling on each LLMs. We'll make a leaderboard of function calling including local LLMs in every week, so that let user to know which LLMs are suitable for their purpose. The success of function calling support in each LLM, it would be evaluated through this benchmark scoreboard.
+
+Also, the scoreobard will contain not only the medium or large sized models, but also small sized models which can be run on the web browser. If the web browser embedded LLMs (maybe 3b parameters) show good performance on the function calling, we will also provide a playground website where users can directly experience the function calling on the web browser.
+
+
+
+## Multi Turn Benchmarking
+We'll support multi turn benchmarking for effective development.
+
+Currently, `@agentica/benchmark` supports only one turn (one conversation) benchmarking, so that users can evaluate only the function calling's selection performance. Such selection benchmark may be meaningful for famous LLMs like OpenAI and Claude, but for the local LLMs, it is enough.
+
+To support the local LLMs perfectly, we will also provide multi turn benchmarking, so that make evaluation of complicate function calling scenario on the local LLMs. In the new multi turn benchmark, you may possible to measure the performance of actual function calling's execution part.

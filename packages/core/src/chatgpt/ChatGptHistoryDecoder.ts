@@ -1,11 +1,11 @@
 import { ILlmSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 
 export namespace ChatGptHistoryDecoder {
   export const decode = <Model extends ILlmSchema.Model>(
-    history: IAgenticaPrompt<Model>,
+    history: AgenticaPrompt<Model>,
   ): OpenAI.ChatCompletionMessageParam[] => {
     // NO NEED TO DECODE DESCRIBE
     if (history.type === "describe") return [];
@@ -27,9 +27,9 @@ export namespace ChatGptHistoryDecoder {
               function: {
                 name: `${history.type}Functions`,
                 arguments: JSON.stringify({
-                  functions: history.operations.map((t) => ({
-                    name: t.function.name,
-                    reason: t.reason,
+                  functions: history.selections.map((s) => ({
+                    name: s.operation.function.name,
+                    reason: s.reason,
                   })),
                 }),
               },
@@ -51,7 +51,7 @@ export namespace ChatGptHistoryDecoder {
             type: "function",
             id: history.id,
             function: {
-              name: history.function.name,
+              name: history.operation.name,
               arguments: JSON.stringify(history.arguments),
             },
           },
@@ -62,18 +62,18 @@ export namespace ChatGptHistoryDecoder {
         tool_call_id: history.id,
         content: JSON.stringify({
           function: {
-            protocol: history.protocol,
-            description: history.function.description,
-            parameters: history.function.parameters,
-            output: history.function.output,
-            ...(history.protocol === "http"
+            protocol: history.operation.protocol,
+            description: history.operation.function.description,
+            parameters: history.operation.function.parameters,
+            output: history.operation.function.output,
+            ...(history.operation.protocol === "http"
               ? {
-                  method: history.function.method,
-                  path: history.function.path,
+                  method: history.operation.function.method,
+                  path: history.operation.function.path,
                 }
               : {}),
           },
-          ...(history.protocol === "http"
+          ...(history.operation.protocol === "http"
             ? {
                 status: history.value.status,
                 data: history.value.body,

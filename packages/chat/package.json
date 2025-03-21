@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@agentica/chat",
-  "version": "0.4.0",
+  "version": "0.12.21",
   "main": "./lib/index.mjs",
   "typings": "./lib/index.d.ts",
   "description": "Frontend Application of Agentica",
@@ -11,9 +11,11 @@
     "build:lib": "rimraf lib && tsc --project tsconfig.lib.json --emitDeclarationOnly && rollup -c",
     "dev": "vite",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "prepare": "ts-patch install",
     "preview": "vite preview",
-    "deploy": "node build/deploy.mjs"
+    "deploy": "node build/deploy.mjs",
+    "prepublishOnly": "pnpm run build"
   },
   "repository": {
     "type": "git",
@@ -36,12 +38,11 @@
   },
   "homepage": "https://wrtnlabs.io/agentica",
   "dependencies": {
+    "@agentica/core": "workspace:^",
     "@mui/icons-material": "^6.4.0",
     "@mui/material": "^6.4.0",
     "@samchon/openapi": "^3.0.0",
-    "@agentica/core": "workspace:^",
-    "html2canvas": "^1.4.1",
-    "js-file-download": "^0.4.12",
+    "html-to-image": "^1.11.13",
     "openai": "^4.80.0",
     "react-markdown": "^9.0.3",
     "rehype-raw": "^7.0.0",
@@ -91,3 +92,4 @@
     "!src/examples"
   ]
 }
+

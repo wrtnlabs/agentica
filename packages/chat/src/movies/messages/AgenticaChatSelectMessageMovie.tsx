@@ -1,4 +1,4 @@
-import { IAgenticaOperationSelection } from "@agentica/core";
+import { AgenticaOperationSelection } from "@agentica/core";
 import GradingIcon from "@mui/icons-material/Grading";
 import {
   Button,
@@ -36,14 +36,14 @@ export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
         <br />
         <br />
         Operation:
-        {selection.protocol === "http" ? (
+        {selection.operation.protocol === "http" ? (
           <ul>
-            <li>{selection.function.method.toUpperCase()}</li>
-            <li>{selection.function.path}</li>
+            <li>{selection.operation.function.method.toUpperCase()}</li>
+            <li>{selection.operation.function.path}</li>
           </ul>
         ) : (
           <ul>
-            <li>{selection.function.name}</li>
+            <li>{selection.operation.function.name}</li>
           </ul>
         )}
         <MarkdownViewer>{selection.reason}</MarkdownViewer>
@@ -55,7 +55,9 @@ export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <MarkdownViewer>{selection.function.description}</MarkdownViewer>
+          <MarkdownViewer>
+            {selection.operation.function.description}
+          </MarkdownViewer>
         </CardContent>
       </Collapse>
     </Card>
@@ -63,6 +65,6 @@ export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
 };
 export namespace AgenticaChatSelectMessageMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    selection: IAgenticaOperationSelection<Model>;
+    selection: AgenticaOperationSelection<Model>;
   }
 }

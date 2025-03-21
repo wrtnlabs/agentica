@@ -1,8 +1,9 @@
 import { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaContext } from "../structures/IAgenticaContext";
+import { AgenticaContext } from "../context/AgenticaContext";
+import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import { IAgenticaExecutor } from "../structures/IAgenticaExecutor";
-import { IAgenticaPrompt } from "../structures/IAgenticaPrompt";
 import { ChatGptCallFunctionAgent } from "./ChatGptCallFunctionAgent";
 import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
 import { ChatGptDescribeFunctionAgent } from "./ChatGptDescribeFunctionAgent";
@@ -14,8 +15,8 @@ export namespace ChatGptAgent {
     <Model extends ILlmSchema.Model>(
       executor: Partial<IAgenticaExecutor<Model>> | null,
     ) =>
-    async (ctx: IAgenticaContext<Model>): Promise<IAgenticaPrompt<Model>[]> => {
-      const histories: IAgenticaPrompt<Model>[] = [];
+    async (ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> => {
+      const histories: AgenticaPrompt<Model>[] = [];
 
       // FUNCTIONS ARE NOT LISTED YET
       if (ctx.ready() === false) {
@@ -49,19 +50,19 @@ export namespace ChatGptAgent {
       // FUNCTION CALLING LOOP
       while (true) {
         // EXECUTE FUNCTIONS
-        const prompts: IAgenticaPrompt<Model>[] = await (
+        const prompts: AgenticaPrompt<Model>[] = await (
           executor?.call ?? ChatGptCallFunctionAgent.execute
         )(ctx);
         histories.push(...prompts);
 
         // EXPLAIN RETURN VALUES
-        const executes: IAgenticaPrompt.IExecute<Model>[] = prompts.filter(
+        const executes: AgenticaExecutePrompt<Model>[] = prompts.filter(
           (prompt) => prompt.type === "execute",
         );
         for (const e of executes)
           await ChatGptCancelFunctionAgent.cancelFunction(ctx, {
             reason: "completed",
-            name: e.function.name,
+            name: e.operation.name,
           });
         histories.push(
           ...(await (

@@ -1,4 +1,4 @@
-import { IAgenticaPrompt } from "@agentica/core";
+import { AgenticaDescribePrompt } from "@agentica/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Button,
@@ -14,7 +14,9 @@ import { useState } from "react";
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 import { AgenticaChatExecuteMessageMovie } from "./AgenticaChatExecuteMessageMovie";
 
-export const AgenticaChatDescribeMessageMovie = <Model extends ILlmSchema.Model>({
+export const AgenticaChatDescribeMessageMovie = <
+  Model extends ILlmSchema.Model,
+>({
   prompt,
 }: AgenticaChatDescribeMessageMovie.IProps<Model>) => {
   const [expanded, setExpanded] = useState(false);
@@ -47,7 +49,7 @@ export const AgenticaChatDescribeMessageMovie = <Model extends ILlmSchema.Model>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {prompt.executions.map((execute) => (
+          {prompt.executes.map((execute) => (
             <AgenticaChatExecuteMessageMovie execute={execute} />
           ))}
         </CardContent>
@@ -57,6 +59,6 @@ export const AgenticaChatDescribeMessageMovie = <Model extends ILlmSchema.Model>
 };
 export namespace AgenticaChatDescribeMessageMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    prompt: IAgenticaPrompt.IDescribe<Model>;
+    prompt: AgenticaDescribePrompt<Model>;
   }
 }

@@ -52,14 +52,14 @@ By the way, as `typia` is a transformer library analyzing TypeScript source code
 ### Chat with Backend Server
 ```typescript
 import { IHttpLlmApplication } from "@samchon/openapi";
-import { Agentica, createHttpLlmApplication } from "@agentica/core";
+import { Agentica, validateHttpLlmApplication } from "@agentica/core";
 import OpenAI from "openai";
 import { IValidation } from "typia";
 
 const main = async (): Promise<void> => {
   // LOAD SWAGGER DOCUMENT, AND CONVERT TO LLM APPLICATION SCHEMA
   const application: IValidation<IHttpLlmApplication<"chatgpt">> =
-    createHttpLlmApplication({
+    validateHttpLlmApplication({
       model: "chatgpt",
       document: await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(
         (r) => r.json()
@@ -257,6 +257,50 @@ In the `@agentica/core`, you can implement multi-agent orchestration super easil
 Just develop a TypeScript class which contains agent feature like Vector Store, and just deliver the TypeScript class type to the `@agentica/core` like above. The `@agentica/core` will centralize and realize the multi-agent orchestration by LLM function calling strategy to the TypeScript class.
 
 
+### If you want drastically improves function selection speed
+
+Use the [@agentica/pg-vector-selector](../pg-vector-selector/README.md)
+
+Just initialize and set the config  
+when use this adapter, you should run the [connector-hive](https://github.com/wrtnlabs/connector-hive)  
+
+```typescript
+import { Agentica } from "@agentica/core";
+import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+
+import typia from "typia";
+
+
+// Initialize with connector-hive server
+const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
+  'https://your-connector-hive-server.com'
+);
+
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: process.env.CHATGPT_API_KEY,
+    }),
+  },
+  controllers: [
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+  config: {
+    executor: {
+      select: selectorExecute,
+    }
+  }
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```
 
 
 ## Principles

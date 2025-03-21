@@ -1,15 +1,20 @@
 {
   "name": "agentica",
-  "version": "0.1.0",
+  "version": "0.12.21",
   "main": "bin/index.js",
   "typings": "bin/index.d.ts",
   "description": "Agentic AI Library specialized in LLM Function Calling",
-  "bin": {
-    "nestia": "bin/index.js"
+  "bin": "bin/index.js",
+  "exports": {
+    ".": "./bin/index.js"
   },
   "scripts": {
-    "build": "rimraf bin && tsc",
-    "dev": "rimraf bin && tsc --watch"
+    "prepare": "ts-patch install",
+    "build": "rslib build",
+    "dev": "rslib build --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build",
+    "lin1t": "eslint ."
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",
@@ -36,19 +41,27 @@
     "README.md",
     "LICENSE",
     "package.json",
-    "bin",
-    "src"
+    "bin"
   ],
   "dependencies": {
-    "commander": "^10.0.0",
-    "comment-json": "^4.2.3",
-    "inquirer": "^8.2.5",
-    "package-manager-detector": "^0.2.0"
+    "giget": "^1",
+    "inquirer": "^8.2.5"
+  },
+  "engines": {
+    "node": ">=20.12.0"
+  },
+  "optionalDependencies": {
+    "prettier": ">=2.4.0"
   },
   "devDependencies": {
+    "@rslib/core": "^0.5.4",
+    "@ryoppippi/unplugin-typia": "^1.2.0",
     "@types/inquirer": "^9.0.3",
-    "@types/node": "^18.19.76",
-    "rimraf": "^6.0.1",
+    "@types/node": "^20.14.8",
+    "commander": "^10.0.0",
+    "ts-node": "^10.9.2",
+    "ts-patch": "^3.3.0",
+    "typia": "^8.0.0",
     "typescript": "~5.8.2"
   }
 }

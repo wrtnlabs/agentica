@@ -1,4 +1,4 @@
-import { IAgenticaPrompt } from "@agentica/core";
+import { AgenticaPrompt } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaChatDescribeMessageMovie } from "./AgenticaChatDescribeMessageMovie";
@@ -11,7 +11,7 @@ export const AgenticaChatMessageMovie = <Model extends ILlmSchema.Model>({
   if (prompt.type === "text")
     return <AgenticaChatTextMessageMovie prompt={prompt} />;
   else if (prompt.type === "select")
-    return prompt.operations.map((selection) => (
+    return prompt.selections.map((selection) => (
       <AgenticaChatSelectMessageMovie selection={selection} />
     ));
   else if (prompt.type === "describe")
@@ -20,6 +20,6 @@ export const AgenticaChatMessageMovie = <Model extends ILlmSchema.Model>({
 };
 export namespace AgenticaChatMessageMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    prompt: IAgenticaPrompt<Model>;
+    prompt: AgenticaPrompt<Model>;
   }
 }
