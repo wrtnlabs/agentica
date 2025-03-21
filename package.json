@@ -14,8 +14,8 @@
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
     "release": "bumpp",
-    "lint": "pnpm -r --no-bail lint",
-    "lint:fix": "pnpm -r --no-bail lint:fix"
+    "lint": "pnpm --parallel -r --no-bail lint",
+    "lint:fix": "pnpm --parallel -r --no-bail lint:fix"
   },
   "repository": {
     "type": "git",
