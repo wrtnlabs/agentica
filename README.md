@@ -81,7 +81,11 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
 - [⇲ API Documents](https://wrtnlabs.io/agentica/api)
 
 
+## How to Contribute?
 
+Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more information.
+
+Thank you for your interest in contributing to Agentica!
 
 <!-- 
 ## Roadmap
