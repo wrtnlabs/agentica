@@ -109,6 +109,8 @@ export namespace AgenticaStarter {
       ): Promise<{ projectPaths: string[] }> => {
         await writeTemplate("react", input.projectName);
 
+        await setEnvFiles("react")(input);
+
         return { projectPaths: [input.projectPath] };
       },
     },
@@ -134,6 +136,12 @@ export namespace AgenticaStarter {
         });
 
         await writeTemplate("react", `${input.projectName}/client`);
+
+        await setEnvFiles("react")({
+          ...input,
+          projectPath: `${input.projectPath}/client`,
+          projectName: `${input.projectName}/client`,
+        });
 
         return {
           projectPaths: [
@@ -201,7 +209,7 @@ export namespace AgenticaStarter {
    * Set project .env files
    */
   const setEnvFiles =
-    (option: Exclude<ProjectOptionValue, "react" | "nestjs+react">) =>
+    (option: Exclude<ProjectOptionValue, "nestjs+react">) =>
     async (input: IAgenticaStartOption.IProject): Promise<void> => {
       // Create .env file
       const envPath = path.join(input.projectPath, ".env");
@@ -212,11 +220,14 @@ export namespace AgenticaStarter {
         },
         nodejs: {
           OPENAI_API_KEY: input.openAIKey,
-          PORT: "3001",
+          PORT: input.port,
         },
         nestjs: {
           OPENAI_API_KEY: input.openAIKey,
-          API_PORT: "37001",
+          API_PORT: input.port,
+        },
+        react: {
+          VITE_AGENTICA_WS_URL: `ws://localhost:${input.port}/chat`,
         },
       } as const;
 
