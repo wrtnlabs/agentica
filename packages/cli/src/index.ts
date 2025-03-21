@@ -25,19 +25,22 @@ async function main() {
         return;
       }
 
-      /** check valid project type */
-      try {
-        typia.assertGuard<StarterTemplate | undefined>(options.project);
-      }
-      catch (e) {
-        console.error(
-          `\n❌ The value of ${redBright("--project")} is invalid`,
-        );
-        return;
-      }
+      {
+        /** check valid project type */
+        try {
+          typia.assertGuard<StarterTemplate | undefined>(options.project);
+        }
+        catch (e) {
+          console.error(
+            `\n❌ The value of ${redBright("--project")} is invalid`,
+          );
+          return;
+        }
 
-      start({ project: directory, template: options.project });
-    });
+        await start({ project: directory, template: options.project });
+      }
+    },
+    );
 
   console.log("--------------------------------");
   console.log(`   🚀 ${"Agentica"} ${blueBright("Setup Wizard")}`);
