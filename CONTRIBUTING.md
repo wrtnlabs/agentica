@@ -2,17 +2,17 @@
 
 Thank you for your interest in contributing to @agentica/core! We welcome contributions from the community to help make this AI agent library even better. 🚀
 
-## Bug reports 🐛
+## 🐛 Bug reports
 
 We use GitHub issues to track bugs and errors.  
 Please search existing issues before filing a new one.  
 If you find a similar issue, add a comment to it instead of opening a new one.  
 
-## Feature requests
+## 💡 Feature requests
 
 Feature requests are welcome. For new features, open an issue first to discuss whether and what features you would like to see.
 
-## How to resolve issue?
+## 📝 How to resolve issue?
 
 If you're looking for somewhere to start, check out the [gfi(good first issue)](https://github.com/wrtnlabs/agentica/issues?q=is%3Aissue+is%3Aopen+label%3Agfi) tags.  
 
@@ -25,24 +25,27 @@ We use the ["fork and pull" model](https://docs.github.com/en/pull-requests/coll
 
 The contributors push changes to their personal fork and create a pull request to the upstream repository.  
 
-### How to start?
+### 💻 How to start?
 
 1. Fork the repository
-2. install `npm`, `pnpm`, `yarn` or any node package manager
-3. Run `npm install` to install the dependencies
-  - If not executed `npm prepare`, you should execute it
-4. Run `npm run dev` to start the development server
+2. install `pnpm` and `nodejs`
+3. Run `pnpm install` to install the dependencies
+  - If not executed `pnpm prepare`, you should execute it
+4. Run `pnpm dev` to start the development server
   - This server will check the compilation and type checking errors
-5. before pushing your changes, you should run `npm run test` and `npm run eslint` to build the project
+5. Before pushing your changes, run pnpm test for each package (if applicable) and pnpm lint to check code quality.
   - We use `CHATGPT_API_KEY` environment variable to test the agent
-  - 
+
 6. Push your changes to your fork
 7. Create a pull request
 
-### Structures
 
-- `typings`: Common types
-- `structures`: Agentica's structures
-- `internal`: These are codes that are not exposed externally but are commonly used internally.
-- `functional`: Pure functions that operate independently of our module's functionality are located here.
-- `chatgpt`: As a module that will soon be generalized, it defines the behavior for each API SDK. (but, currently, it only supports `chatgpt`)
+## 📦 Agentica Deployment Process
+
+We use the `pnpm release` command to automatically bump the version and create a git tag.
+
+This command will increment the version number and create a git tag, then push the tag to the remote repository.
+
+GitHub Actions will then automatically publish the package to the npm registry.
+
+Done! 🎉
