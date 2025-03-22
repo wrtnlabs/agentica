@@ -15,6 +15,10 @@ interface Connectors {
   version: string;
 }
 
+export function serviceToConnector(service: Service): Connector {
+  return `${CONNECTOR_PREFIX}${service}` as Connector;
+}
+
 /**
  * Get the list of connectors from the wrtnlabs/connectors repository.
  */

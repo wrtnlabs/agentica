@@ -1,5 +1,12 @@
 import type { Service } from "./connectors";
-import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList, insertCodeIntoAgenticaStarter } from "./connectors";
+import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList, insertCodeIntoAgenticaStarter, serviceToConnector } from "./connectors";
+
+describe("serviceToConnector", () => {
+  it("should return a connector name", () => {
+    const connector = serviceToConnector("google-map" as Service);
+    expect(connector).toBe("@wrtnlabs/connector-google-map");
+  });
+});
 
 describe("getConnectorsList", () => {
   it("should return a list of connectors", async () => {
