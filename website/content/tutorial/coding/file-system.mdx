@@ -1,8 +1,10 @@
 ---
-title: Agentica > Tutorial > File System Agents  
+title: Agentica > Tutorial > File System Agents
 ---
 
 ## Introduction
+
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-file-system?file=README.md) You can see the demo code on the playground.
 
 This tutorial guides you through setting up a **fully functional File System Agent** using **Agentica**. With the following code block, you can create an agent that interacts with the local file system, powered by **OpenAI's GPT model**.
 
@@ -16,7 +18,7 @@ npm install @types/node
 
 Then, add the following code to your project:
 
-```typescript
+````typescript
 import { Agentica } from "@agentica/core";
 import dotenv from "dotenv";
 import fs from "fs";
@@ -166,3 +168,4 @@ The agent would combine responses from the `readFileSync` and `__dirname` method
 You can inspect the available functions in the `FsClass` by reviewing the source code or the documentation comments within the class.
 
 With this **code block**, your AI-powered File System Agent is complete. Enjoy automating your file operations—but remember to apply caution and secure your implementation!
+````

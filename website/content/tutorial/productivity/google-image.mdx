@@ -4,6 +4,8 @@ title: Agentica > Tutorial > Google Image Agents
 
 ## Introduction
 
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-google-image?file=README.md) You can see the demo code on the playground.
+
 Set up a **fully functional Google Image Agent** powered by OpenAI's GPT model in a flash using the Agentica CLI.
 
 ## Quick CLI Setup
@@ -15,6 +17,7 @@ npx agentica start google-image-agent
 ```
 
 The wizard will walk you through:
+
 - Installing required packages (e.g., agentica@0.12.14)
 - Choosing your package manager and project type
 - Selecting the **GOOGLE IMAGE** controller
@@ -59,7 +62,6 @@ const main = async () => {
 };
 
 main();
-
 ```
 
 This code instantly sets up your Google Image Agent, ready to perform intelligent image searches on Google.
@@ -67,6 +69,7 @@ This code instantly sets up your Google Image Agent, ready to perform intelligen
 ## What This Does
 
 Your Google Image Agent will:
+
 - **Process Google Image Data:** Use the `GoogleImageService` connector.
 - **Leverage OpenAI's GPT Model:** For smart image search queries.
 - **Maintain Type Safety:** With `typia`.
