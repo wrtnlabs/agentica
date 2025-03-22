@@ -1,5 +1,5 @@
-import { AgenticaOperation } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
+import type { AgenticaOperation } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
 
 /**
  * Expected operation determinant.
