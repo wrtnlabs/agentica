@@ -15,7 +15,9 @@
     "preinstall": "npx only-allow pnpm",
     "release": "bumpp",
     "lint": "pnpm --parallel -r --no-bail lint",
-    "format": "pnpm --parallel -r --no-bail lint:fix"
+    "format": "pnpm --parallel -r --no-bail lint:fix",
+    "lint:root": "eslint .",
+    "format:root": "eslint . --fix"
   },
   "repository": {
     "type": "git",
