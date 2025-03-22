@@ -14,7 +14,8 @@
     "build": "rimraf lib && tsc && rollup -c",
     "dev": "rimraf lib && tsc --watch",
     "prepublishOnly": "pnpm run build",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "eslint --fix ."
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",
