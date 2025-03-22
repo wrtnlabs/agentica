@@ -5,12 +5,13 @@
 */
 
 import { existsSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
 import inquirer from "inquirer";
-import { type Service, generateServiceImportsCode, generateConnectorsArrayCode, getConnectors } from "../connectors";
+import { type Service, generateServiceImportsCode, generateConnectorsArrayCode, getConnectors, insertCodeIntoAgenticaStarter } from "../connectors";
 import { PackageManager } from "../packages";
-import { redBright, blueBright, yellow } from "../utils";
+import { redBright, blueBright, yellow, formatWithPrettier } from "../utils";
 import typia from "typia";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 
@@ -170,6 +171,52 @@ export async function start({ project, template }: StartOptions) {
 
   const imoprtsCode = generateServiceImportsCode(context.services);
   const connectorsCode = generateConnectorsArrayCode(context.services);
+
+  // setup project
+  let indexFilePath: string | undefined;
+  let indexFileContent: string | undefined;
+  if(context.template === 'standalone'){
+    indexFilePath = join(projectAbsolutePath, "src/index.ts");
+    indexFileContent = await readFile(indexFilePath, "utf-8");
+  } else if(context.template === 'nodejs'){
+    indexFilePath = join(projectAbsolutePath, "src/index.ts");
+    indexFileContent = await readFile(indexFilePath, "utf-8")
+    indexFileContent = indexFileContent
+      .replace(/import { BbsArticleService }.*;\n/g, "")
+      .replace(
+        /controllers:\s*\[[\s\S]*?\],\n/,
+        "controllers: [/// INSERT CONTROLLER HERE],\n",
+      );
+  }else if(context.template === 'nestjs'){
+    indexFilePath = join(
+      projectAbsolutePath,
+      "src/controllers/chat/ChatController.ts",
+    );
+    indexFileContent = await readFile(indexFilePath, "utf-8");
+  }else if(context.template === 'react'){
+    // react projects don't need to modify index file
+  }else{
+    context.template satisfies never;
+    throw new Error(`❌ Invalid template: ${context.template}`);
+  }
+
+  if(indexFilePath != null && indexFileContent != null){
+    // insert code into index file
+    const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
+      content: indexFileContent,
+      importCode: imoprtsCode,
+      connectorCode: connectorsCode
+    });
+
+    // format with prettier if possible
+    const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
+    
+    // write index file
+    await writeFile(indexFilePath, formattedIndexFileContent);
+
+    console.log(`\n🎉 Project ${project} created`);
+  }
+
   // write .env file
   await writeEnvKeysToDotEnv({
     projectPath: projectAbsolutePath,
@@ -180,7 +227,6 @@ export async function start({ project, template }: StartOptions) {
   });
   console.log("✅ .env created");
 
-  console.log(`\n🎉 Project ${project} created`);
   console.log(
     `\n⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
   );
