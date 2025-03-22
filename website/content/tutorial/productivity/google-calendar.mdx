@@ -1,8 +1,10 @@
 ---
-title: Agentica > Tutorial > Google Calendar Agents  
+title: Agentica > Tutorial > Google Calendar Agents
 ---
 
 ## Introduction
+
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-google-calendar?file=README.md) You can see the demo code on the playground.
 
 Set up a **fully functional Google Calendar Agent** powered by OpenAI's GPT model effortlessly—using the Agentica CLI.
 
@@ -15,6 +17,7 @@ npx agentica start google-calendar-agent
 ```
 
 The wizard will guide you to:
+
 - Install required packages (e.g., agentica@0.12.14)
 - Choose your package manager and project type
 - Select embedded controllers (choose **GOOGLE CALENDAR**)
@@ -75,14 +78,16 @@ GOOGLE_CALENDAR_REFRESH_TOKEN=your-google-calendar-refresh-token
 ```
 
 To get these credentials:
-1. **Create a Project in Google Cloud Console:**  
+
+1. **Create a Project in Google Cloud Console:**
    - Enable the **Google Calendar API**.
-2. **Obtain Credentials:**  
+2. **Obtain Credentials:**
    - Generate OAuth 2.0 credentials to get your Client ID, Client Secret, and Refresh Token.
 
 ## What This Does
 
 With this setup, your Google Calendar Agent:
+
 - **Interacts with Google Calendar:** Using the `GoogleCalendarService` connector.
 - **Leverages OpenAI's GPT Model:** For intelligent calendar management.
 - **Maintains Type Safety:** With `typia`.

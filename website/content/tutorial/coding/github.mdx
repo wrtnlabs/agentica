@@ -1,8 +1,10 @@
 ---
-title: Agentica > Tutorial > Github Agents  
+title: Agentica > Tutorial > Github Agents
 ---
 
 ## Introduction
+
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-github?file=README.md) You can see the demo code on the playground.
 
 Set up a **fully functional Github Agent** powered by OpenAI's GPT model quickly using the Agentica CLI. This agent lets you interact with Github—search users, retrieve profiles, and list repositories—through natural language commands.
 
@@ -15,6 +17,7 @@ npx agentica start github-agent
 ```
 
 The wizard guides you through:
+
 - Installing required packages (e.g., agentica@0.12.14)
 - Choosing your package manager and project type
 - Selecting the **GITHUB** controller
@@ -62,14 +65,17 @@ This code instantly sets up your Github Agent to interact with Github via its AP
 
 Before running your agent, configure your Github API credentials:
 
-1. **Create a Github Application:**  
+1. **Create a Github Application:**
+
    - Visit [Github Developer Settings](https://github.com/settings/developers) to create a new OAuth application.
    - An OAuth application allows you to obtain a token (starting with `gho_`), which boosts your API rate limit for more stable usage.
 
-2. **Obtain Credentials:**  
+2. **Obtain Credentials:**
+
    - Generate the necessary token and ensure you have the required permissions.
 
-3. **Set Up Environment Variables:**  
+3. **Set Up Environment Variables:**
+
    - Create or update your `.env` file with:
 
    ```env
@@ -80,6 +86,7 @@ Before running your agent, configure your Github API credentials:
 ## What This Does
 
 Your Github Agent will:
+
 - **Process Github Data:** Use the `GithubService` connector to search users, fetch profiles, and list repositories.
 - **Leverage OpenAI's GPT Model:** Translate natural language queries into Github API calls.
 - **Maintain Type Safety:** With `typia`.

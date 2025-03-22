@@ -1,8 +1,10 @@
 ---
-title: Agentica > Tutorial > RAG Agents  
+title: Agentica > Tutorial > RAG Agents
 ---
 
 ## Introduction
+
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-vector-store?file=README.md) You can see the demo code on the playground.
 
 This tutorial guides you through setting up a **Retrieval-Augmented Generation (RAG) Agent** using **Agentica**. With the code below, you can create an agent that combines OpenAI's GPT model with a vector store for document retrieval and summarization.
 
@@ -85,18 +87,19 @@ OPENAI_API_KEY=your-openai-api-key
 
 ## Final Notes & Tips
 
-- **Testing and Debugging:**  
+- **Testing and Debugging:**
+
   - During development, log responses and verify that your queries return the expected results.
   - Consider adding error handling to manage potential issues like API timeouts or vector store response delays.
 
-- **Security and Environment Variables:**  
+- **Security and Environment Variables:**
+
   - Ensure that your API keys in the `.env` file are not committed to version control.
   - For production environments, use a secure secret management system.
 
-- **Vector Store Functionality:**  
+- **Vector Store Functionality:**
   - The vector store is key to mapping natural language queries to relevant documents. Understanding its role can help you optimize search results.
-  
-- **Additional Use Cases:**  
+- **Additional Use Cases:**
   - Beyond summarization, the agent can support various document retrieval tasks such as Q&A, content aggregation, or even generating insights based on a corpus of documents.
 
 This code block sets up a fully functional RAG Agent using Agentica. Enjoy harnessing the power of natural language interactions combined with vector-based document retrieval to create dynamic, intelligent responses!
