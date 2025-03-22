@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync } from "node:fs";
-import { rm, writeFile, mkdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { rm, appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { downloadTemplate } from "giget";
 
@@ -36,3 +36,34 @@ export async function createDirectory(input: { projectPath: string }): Promise<v
   await mkdir(input.projectPath);
 };
 
+interface WriteEnvKeysToDotEnvProps {
+  projectPath: string;
+  dotEnvfileName?: string;
+  apiKeys: {
+    key: string;
+    value: string;
+  }[];
+}
+
+/**
+   * Set project .env files
+   */
+export async function writeEnvKeysToDotEnv({projectPath, dotEnvfileName, apiKeys}: WriteEnvKeysToDotEnvProps): Promise<void> {
+  if (!existsSync(projectPath)) {
+    throw new Error(
+      `${projectPath} directory does not exist.`,
+    );
+  }
+
+  const dotEnvPath = join(projectPath, dotEnvfileName ?? ".env");
+  const isDotEnvExists = existsSync(dotEnvPath);
+
+  /** create .env content */
+  const envKeys = 
+    /** if .env file exists, add a new line */
+    (isDotEnvExists ? "\n" : "") +
+    /** join api keys */
+    apiKeys.map(({ key, value }) => `${key}=${value}`).join("\n");
+
+  await appendFile(dotEnvPath, envKeys);
+}
