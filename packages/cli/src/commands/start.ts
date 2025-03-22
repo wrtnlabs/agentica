@@ -8,7 +8,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
 import inquirer from "inquirer";
-import { type Service, generateServiceImportsCode, getConnectors } from "../connectors";
+import { type Service, generateServiceImportsCode, generateConnectorsArrayCode, getConnectors } from "../connectors";
 import { PackageManager } from "../packages";
 import { redBright, blueBright, yellow } from "../utils";
 import typia from "typia";
@@ -168,6 +168,8 @@ export async function start({ project, template }: StartOptions) {
   })
   console.log("✅ Template downloaded");
 
+  const imoprtsCode = generateServiceImportsCode(context.services);
+  const connectorsCode = generateConnectorsArrayCode(context.services);
   // write .env file
   await writeEnvKeysToDotEnv({
     projectPath: projectAbsolutePath,
