@@ -14,10 +14,12 @@
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
     "release": "bumpp",
-    "lint": "pnpm --parallel -r --no-bail lint",
-    "format": "pnpm --parallel -r --no-bail lint:fix",
+    "lint": "pnpm --no-bail /^lint:/",
     "lint:root": "eslint .",
-    "format:root": "eslint . --fix"
+    "lint:submodules": "pnpm --parallel -r --no-bail /^lint/",
+    "format": "pnpm --no-bail /^format:/",
+    "format:root": "eslint . --fix",
+    "format:submodules": "pnpm --parallel -r --no-bail /^format/"
   },
   "repository": {
     "type": "git",
