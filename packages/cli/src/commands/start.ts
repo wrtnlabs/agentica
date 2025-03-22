@@ -8,7 +8,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
 import inquirer from "inquirer";
-import { type Connector, getConnectors } from "../connectors";
+import { type Service, generateServiceImportsCode, getConnectors } from "../connectors";
 import { PackageManager } from "../packages";
 import { redBright, blueBright, yellow } from "../utils";
 import typia from "typia";
@@ -55,7 +55,7 @@ interface StartOptions {
 interface Context {
   packageManager: PackageManager;
   template: StarterTemplate;
-  services: Connector[];
+  services: Service[];
   openAIKey: string | null;
 }
 
@@ -130,8 +130,8 @@ export async function start({ project, template }: StartOptions) {
     }else{
       const connectors = await getConnectors();
       const sortedConnectors = connectors.sort((a, b) => a.displayName.localeCompare(b.displayName));
-      const serviceChoices = sortedConnectors.map(({displayName, packageName}) => ({name: displayName, value: packageName}));
-      const { services } = await inquirer.prompt<{ services: Connector[] }>([
+      const serviceChoices = sortedConnectors.map(({displayName, serviceName}) => ({name: displayName, value: serviceName}));
+      const { services } = await inquirer.prompt<{ services: Service[] }>([
         {
           type: "checkbox",
           name: "services",
