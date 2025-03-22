@@ -13,7 +13,6 @@ export const capitalize = (service: string): string => {
     .join("");
 };
 
-
 export function blueBright(text: string) {
   return styleText("blueBright", text);
 }
@@ -24,4 +23,15 @@ export function redBright(text: string) {
 
 export function yellow(text: string) {
   return styleText("yellow", text);
+}
+
+export async function formatWithPrettier(content: string) {
+  // /** prettier is not in the dependencies */
+  const prettier = await import("prettier").catch(() => undefined);
+  if(prettier == null) {
+    return content;
+  }
+  return prettier.format(content, {
+    parser: "typescript",
+  });
 }

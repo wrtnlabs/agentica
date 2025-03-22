@@ -72,19 +72,3 @@ interface WriteFileWithPrettierFormatProps {
   filePath: string;
   content: string;
 }
-
-/**
-  * Write file with prettier format.
-  */
-export async function writeFileWithPrettierFormat({ filePath, content }: WriteFileWithPrettierFormatProps): Promise<void> {
-  /** prettier is not in the dependencies */
-  const formattedFileContent = await import("prettier")
-    .then((prettier) =>
-      prettier.format(content, {
-        parser: "typescript",
-      }),
-    )
-    .catch(() => content);
-
-  await writeFile(filePath, formattedFileContent);
-}
