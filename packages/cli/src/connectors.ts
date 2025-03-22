@@ -85,3 +85,30 @@ export function generateServiceImportsCode(services: Service[]): string {
 
   return serviceImports;
 }
+
+interface InsertCodeIntoAgenticaStarterProps {
+  /** original content of the Agentica Starter template */
+  content: string;
+
+  /** generated import statements, replace "/// INSERT IMPORT HERE" */
+  importCode: string;
+
+  /** generated connectors array code, replace "/// INSERT CONTROLLER HERE" */
+  connectorCode: string;
+}
+
+/**
+  * Insert generated code into the Agentica Starter template.
+  * @param content - original content of the Agentica Starter template
+  * @param importCode - generated import statements, replace "/// INSERT IMPORT HERE"
+  * @param connectorCode - generated connectors array code, replace "/// INSERT CONTROLLER HERE"
+  */
+export function insertCodeIntoAgenticaStarter({
+  content,
+  importCode,
+  connectorCode,
+}: InsertCodeIntoAgenticaStarterProps): string {
+  return content
+    .replace("/// INSERT IMPORT HERE", importCode)
+    .replace("/// INSERT CONTROLLER HERE", connectorCode);
+}

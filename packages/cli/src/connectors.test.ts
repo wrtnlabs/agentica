@@ -1,4 +1,4 @@
-import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList } from "./connectors";
+import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList, insertCodeIntoAgenticaStarter } from "./connectors";
 import type { Service } from "./connectors";
 
 describe('getConnectorsList', () => {
@@ -98,3 +98,30 @@ import { OpenaiService } from "@wrtnlabs/connector-openai";`);
 import { ChatgptService } from "@wrtnlabs/connector-chatgpt";`);
   });
 });
+
+describe("insertCodeIntoAgenticaStarter", () => {
+  it("should insert import and connector code into Agentica Starter template", () => {
+    const content = `
+/// INSERT IMPORT HERE
+/// INSERT CONTROLLER HERE
+`;
+    const importCode = `import { ChatgptService } from "@wrtnlabs/connector-chatgpt";`;
+    const connectorCode = `{
+name: "Chatgpt Connector",
+protocol: "class",
+application: typia.llm.application<ChatgptService, "chatgpt">(),
+execute: new ChatgptService(),
+}`;
+    const result = insertCodeIntoAgenticaStarter({ content, importCode, connectorCode });
+    expect(result).toBe(`
+import { ChatgptService } from "@wrtnlabs/connector-chatgpt";
+{
+name: "Chatgpt Connector",
+protocol: "class",
+application: typia.llm.application<ChatgptService, "chatgpt">(),
+execute: new ChatgptService(),
+}
+`);
+  });
+});
+
