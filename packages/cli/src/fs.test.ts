@@ -122,3 +122,19 @@ describe("writeEnvKeysToDotEnv", () => {
   });
  })
 
+describe("writeFileWithPrettierFormat", () => {
+  it("should write a file with prettier format", async () => {
+    /** ensure the directory exists */
+    vol.mkdirSync("/my-new-project", { recursive: true })
+
+    await writeFileWithPrettierFormat({
+      filePath: "/my-new-project/index.ts",
+      content: "const foo = 'bar';"
+    });
+
+    expect(vol.existsSync("/my-new-project/index.ts")).toBe(true);
+
+    const content = vol.readFileSync("/my-new-project/index.ts", "utf-8");
+    expect(content).toBe(`const foo = "bar";\n`);
+  });
+});

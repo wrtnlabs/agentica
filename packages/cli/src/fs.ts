@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { rm, appendFile, mkdir } from "node:fs/promises";
+import { rm, appendFile, mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { downloadTemplate } from "giget";
 
@@ -66,4 +66,25 @@ export async function writeEnvKeysToDotEnv({projectPath, dotEnvfileName, apiKeys
     apiKeys.map(({ key, value }) => `${key}=${value}`).join("\n");
 
   await appendFile(dotEnvPath, envKeys);
+}
+
+interface WriteFileWithPrettierFormatProps {
+  filePath: string;
+  content: string;
+}
+
+/**
+  * Write file with prettier format.
+  */
+export async function writeFileWithPrettierFormat({ filePath, content }: WriteFileWithPrettierFormatProps): Promise<void> {
+  /** prettier is not in the dependencies */
+  const formattedFileContent = await import("prettier")
+    .then((prettier) =>
+      prettier.format(content, {
+        parser: "typescript",
+      }),
+    )
+    .catch(() => content);
+
+  await writeFile(filePath, formattedFileContent);
 }
