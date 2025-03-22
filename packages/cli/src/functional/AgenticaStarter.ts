@@ -2,10 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { downloadTemplate } from "giget";
 
-import { Connector } from "../bases/Connector";
-import { IAgenticaStartOption } from "../structures/IAgenticaStartOption";
-import { blueBright } from "../utils/styleText";
-import type { ProjectOptionValue } from "../types/ProjectOption";
+import type { IAgenticaStartOption, ProjectOptionValue } from "../types";
+import { blueBright } from "../utils";
 
 export namespace AgenticaStarter {
   export const execute = (option: ProjectOptionValue) => {

@@ -4,13 +4,11 @@ import path from "node:path";
 import inquirer, { QuestionCollection } from "inquirer";
 import typia from "typia";
 
-import { Package } from "../bases/Package";
+import type { IAgenticaStart, ProjectOptionValue } from "../types";
+import { getConnectors } from "../connectors";
 import { AgenticaStarter } from "../functional/AgenticaStarter";
-import { IAgenticaStart } from "../structures/IAgenticaStart";
-import { blueBright, getConnectors } from "../utils";
-import { redBright, yellow } from "../utils";
-import { PackageManager } from "../packages/consts";
-import type { ProjectOptionValue } from "../types";
+import { PackageManager } from "../packages";
+import { blueBright, redBright, yellow } from "../utils";
 
 export interface IGetQuestionsProps {
   services: {

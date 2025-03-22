@@ -5,6 +5,7 @@
 */
 
 import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
 import inquirer from "inquirer";
@@ -12,6 +13,7 @@ import { type Connector, getConnectors } from "../connectors";
 import { PackageManager } from "../packages";
 import { redBright, blueBright, yellow } from "../utils";
 import typia from "typia";
+import { downloadTemplateAndPlaceInProject } from "../fs";
 
 /** supported starter templates */
 const STARTER_TEMPLATES = [
@@ -117,7 +119,7 @@ export async function start({ project, template }: StartOptions) {
         }
       ]);
       context.template = templateType;
-    }
+}
   }
 
 
@@ -160,7 +162,42 @@ export async function start({ project, template }: StartOptions) {
     throw new Error(`❌ ${(e as string).toString()}`);
   }
 
-  // install and setup the project
+  // setup project
+  if(context.template === 'standalone'){
+    const indexFilePath = join(projectAbsolutePath, "src/index.ts");
+    const indexFileContent = await readFile(indexFilePath, "utf-8");
+    // return { indexFilePath, indexFileContent };
+  } else if(context.template === 'nodejs'){
+    const indexFilePath = join(projectAbsolutePath, "src/index.ts");
+    const indexFileContent = await readFile(indexFilePath, "utf-8")
+      .then((content) => {
+        if (context.services.length !== 0) {
+          return content
+            .replace(/import { BbsArticleService }.*;\n/g, "")
+            .replace(
+              /controllers:\s*\[[\s\S]*?\],\n/,
+              "controllers: [/// INSERT CONTROLLER HERE],\n",
+            );
+        }
+        return content;
+      })
+  }else if(context.template === 'nestjs'){
+    const indexFilePath = join(
+      projectAbsolutePath,
+      "src/controllers/chat/ChatController.ts",
+    );
+
+    const indexFileContent = await readFile(indexFilePath, "utf-8");
+    // return { indexFilePath, indexFileContent };
+  }else if(context.template === 'react'){
+    await downloadTemplateAndPlaceInProject({template: 'react', project: projectAbsolutePath});
+    console.log("✅ Template downloaded");
+  }else{
+    context.template satisfies never;
+    throw new Error(`❌ Invalid template: ${context.template}`);
+  }
+
+
 
 
   console.log(`\n🎉 Project ${project} created`);
