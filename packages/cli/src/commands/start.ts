@@ -12,8 +12,7 @@ import { type Connector, getConnectors } from "../connectors";
 import { PackageManager } from "../packages";
 import { redBright, blueBright, yellow } from "../utils";
 import typia from "typia";
-import { downloadTemplateAndPlaceInProject } from "../fs";
-import { writeEnvKeysToDotEnv } from "../fs";
+import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 
 /** supported starter templates */
 const STARTER_TEMPLATES = [
@@ -162,7 +161,12 @@ export async function start({ project, template }: StartOptions) {
     throw new Error(`❌ ${(e as string).toString()}`);
   }
 
-  // install and setup the project
+  // download and place template in project
+  await downloadTemplateAndPlaceInProject({
+    template: context.template,
+    project: projectAbsolutePath
+  })
+  console.log("✅ Template downloaded");
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -172,6 +176,7 @@ export async function start({ project, template }: StartOptions) {
       value: context.openAIKey ?? "",
     }]
   });
+  console.log("✅ .env created");
 
   console.log(`\n🎉 Project ${project} created`);
   console.log(
