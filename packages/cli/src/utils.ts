@@ -1,5 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
 import { styleText } from 'node:util';
 
 /**
@@ -15,17 +13,6 @@ export const capitalize = (service: string): string => {
     .join("");
 };
 
-export const createProjectDirectory = (input: {
-  projectPath: string;
-}): void => {
-  if (fs.existsSync(input.projectPath)) {
-    throw new Error(
-      `${path.basename(input.projectPath)} directory already exists.`,
-    );
-  }
-
-  fs.mkdirSync(input.projectPath);
-};
 
 export function blueBright(text: string) {
   return styleText("blueBright", text);
