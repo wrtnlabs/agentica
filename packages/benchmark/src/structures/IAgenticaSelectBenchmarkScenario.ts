@@ -1,6 +1,6 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaBenchmarkExpected } from "./IAgenticaBenchmarkExpected";
+import type { IAgenticaBenchmarkExpected } from "./IAgenticaBenchmarkExpected";
 
 /**
  * Scenario of function selection.
