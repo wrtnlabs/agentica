@@ -1,5 +1,6 @@
 import type { StarterTemplate } from "./commands/start";
 
+import process from "node:process";
 import { Command } from "commander";
 import typia from "typia";
 import { start } from "./commands/start";
@@ -28,20 +29,18 @@ async function main() {
         return;
       }
 
-      {
-        /** check valid project type */
-        try {
-          typia.assertGuard<StarterTemplate | undefined>(options.project);
-        }
-        catch (e) {
-          console.error(
-            `\n❌ The value of ${redBright("--project")} is invalid`,
-          );
-          return;
-        }
-
-        await start({ project: directory, template: options.project });
+      /** check valid project type */
+      try {
+        typia.assertGuard<StarterTemplate | undefined>(options.project);
       }
+      catch {
+        console.error(
+          `\n❌ The value of ${redBright("--project")} is invalid`,
+        );
+        return;
+      }
+
+      await start({ project: directory, template: options.project });
     },
     );
 
@@ -52,7 +51,7 @@ async function main() {
   program.parse(process.argv);
 }
 
-main().catch((exp) => {
+main().catch((exp: { message: string }) => {
   console.error(exp.message);
   process.exit(-1);
 });

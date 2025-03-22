@@ -5,7 +5,7 @@ describe("capitalize", () => {
     expect(capitalize("aws-s3")).toBe("AwsS3");
     expect(capitalize("chatgpt")).toBe("Chatgpt");
   });
-})
+});
 
 describe("formatWithPrettier", () => {
   it("should return the same content if prettier is not available", async () => {

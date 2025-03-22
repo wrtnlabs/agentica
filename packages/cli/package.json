@@ -1,25 +1,10 @@
 {
   "name": "agentica",
   "version": "0.12.21",
-  "main": "bin/index.js",
-  "typings": "bin/index.d.ts",
   "description": "Agentic AI Library specialized in LLM Function Calling",
-  "bin": "bin/index.js",
-  "exports": {
-    ".": "./bin/index.js"
-  },
-  "scripts": {
-    "prepare": "ts-patch install",
-    "build": "rslib build",
-    "dev": "rslib build --watch",
-    "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build",
-    "lint": "eslint .",
-    "test": "vitest"
-  },
   "author": "Wrtn Technologies",
-  "homepage": "https://wrtnlabs.io/agentica",
   "license": "MIT",
+  "homepage": "https://wrtnlabs.io/agentica",
   "repository": {
     "type": "git",
     "url": "https://github.com/wrtnlabs/agentica"
@@ -38,18 +23,33 @@
     "swagger",
     "openapi"
   ],
+  "exports": {
+    ".": "./bin/index.js"
+  },
+  "main": "bin/index.js",
+  "typings": "bin/index.d.ts",
+  "bin": "bin/index.js",
   "files": [
-    "README.md",
     "LICENSE",
-    "package.json",
-    "bin"
+    "README.md",
+    "bin",
+    "package.json"
   ],
+  "engines": {
+    "node": ">=20.12.0"
+  },
+  "scripts": {
+    "prepare": "ts-patch install",
+    "build": "rslib build",
+    "dev": "rslib build --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build",
+    "lint": "eslint .",
+    "test": "vitest"
+  },
   "dependencies": {
     "giget": "^1",
     "inquirer": "^8.2.5"
-  },
-  "engines": {
-    "node": ">=20.12.0"
   },
   "optionalDependencies": {
     "prettier": ">=2.4.0"
@@ -60,7 +60,9 @@
     "@ryoppippi/unplugin-typia": "^2.0.0",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^20.14.8",
+    "@wrtnlabs/eslint-config": "^0.1.2",
     "commander": "^10.0.0",
+    "eslint": "^9.23.0",
     "memfs": "^4.17.0",
     "msw": "^2.7.3",
     "ts-node": "^10.9.2",

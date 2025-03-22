@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config'
-import UnpluginTypia from '@ryoppippi/unplugin-typia/vite'
+import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [
@@ -7,7 +7,7 @@ export default defineConfig({
   ],
   test: {
     globals: true,
-    exclude: ['**/node_modules/**', '**/dist/**'],
+    exclude: ["**/node_modules/**", "**/dist/**"],
     setupFiles: ["vitest.setup.ts"],
   },
-})
+});

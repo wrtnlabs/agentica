@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { rm, appendFile, mkdir, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { downloadTemplate } from "giget";
 
@@ -11,8 +11,8 @@ interface DownloadTemplateAndPlaceInProjectProps {
 }
 
 /**
-   * Download template from repository and place in project directory.
-   */
+ * Download template from repository and place in project directory.
+ */
 export async function downloadTemplateAndPlaceInProject({ template, project }: DownloadTemplateAndPlaceInProjectProps): Promise<void> {
   // COPY PROJECTS
   await downloadTemplate(`github:wrtnlabs/agentica.template.${template}`, {
@@ -24,8 +24,8 @@ export async function downloadTemplateAndPlaceInProject({ template, project }: D
 }
 
 /**
-  * Create a new directory.
-  */
+ * Create a new directory.
+ */
 export async function createDirectory(input: { projectPath: string }): Promise<void> {
   if (existsSync(input.projectPath)) {
     throw new Error(
@@ -46,9 +46,9 @@ interface WriteEnvKeysToDotEnvProps {
 }
 
 /**
-   * Set project .env files
-   */
-export async function writeEnvKeysToDotEnv({projectPath, dotEnvfileName, apiKeys}: WriteEnvKeysToDotEnvProps): Promise<void> {
+ * Set project .env files
+ */
+export async function writeEnvKeysToDotEnv({ projectPath, dotEnvfileName, apiKeys }: WriteEnvKeysToDotEnvProps): Promise<void> {
   if (!existsSync(projectPath)) {
     throw new Error(
       `${projectPath} directory does not exist.`,
@@ -59,16 +59,11 @@ export async function writeEnvKeysToDotEnv({projectPath, dotEnvfileName, apiKeys
   const isDotEnvExists = existsSync(dotEnvPath);
 
   /** create .env content */
-  const envKeys = 
+  const envKeys
     /** if .env file exists, add a new line */
-    (isDotEnvExists ? "\n" : "") +
+    = (isDotEnvExists ? "\n" : "")
     /** join api keys */
-    apiKeys.map(({ key, value }) => `${key}=${value}`).join("\n");
+      + apiKeys.map(({ key, value }) => `${key}=${value}`).join("\n");
 
   await appendFile(dotEnvPath, envKeys);
-}
-
-interface WriteFileWithPrettierFormatProps {
-  filePath: string;
-  content: string;
 }

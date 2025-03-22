@@ -1,30 +1,30 @@
-import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList, insertCodeIntoAgenticaStarter } from "./connectors";
 import type { Service } from "./connectors";
+import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList, insertCodeIntoAgenticaStarter } from "./connectors";
 
-describe('getConnectorsList', () => {
-  it('should return a list of connectors', async () => {
+describe("getConnectorsList", () => {
+  it("should return a list of connectors", async () => {
     const connectors = await getConnectorsList();
     expect(connectors).toEqual({
       connectors: [
-        '@wrtnlabs/connector-google-map',
+        "@wrtnlabs/connector-google-map",
       ],
-      version: '1.0.0',
+      version: "1.0.0",
     });
   });
-})
+});
 
-describe('getConnectors', () => {
-  it('should return a list of connectors', async () => {
+describe("getConnectors", () => {
+  it("should return a list of connectors", async () => {
     const connectors = await getConnectors();
     expect(connectors).toEqual([
       {
-        packageName: '@wrtnlabs/connector-google-map',
-        serviceName: 'google-map',
-        displayName: 'GOOGLE MAP',
+        packageName: "@wrtnlabs/connector-google-map",
+        serviceName: "google-map",
+        displayName: "GOOGLE MAP",
       },
     ]);
   });
-})
+});
 
 describe("generateConnectorsArrayCode", () => {
   it("should be empty string when services is empty", () => {
@@ -67,8 +67,7 @@ application: typia.llm.application<OpenaiService, "chatgpt">(),
 execute: new OpenaiService(),
 }`);
   });
-} )
-
+});
 
 describe("generateServiceImportsCode", () => {
   it("should be empty string when services is empty", () => {
@@ -124,4 +123,3 @@ execute: new ChatgptService(),
 `);
   });
 });
-
