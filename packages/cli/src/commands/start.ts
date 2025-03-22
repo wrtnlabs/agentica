@@ -25,6 +25,7 @@ const STARTER_TEMPLATES = [
   "nestjs",
   "react",
   "standalone",
+  "nestjs+react"
 ] as const;
 
 /** supported starter templates */
@@ -100,6 +101,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       nodejs: `NodeJS ${blueBright("Agent Server")}`,
       nestjs: `NestJS ${blueBright("Agent Server")}`,
       react: `React ${blueBright("Application")}`,
+      "nestjs+react":`NestJS + React ${blueBright("Agent Server + Client Application")}`,
     } as const satisfies Record<StarterTemplate, string>;
 
     const { templateType } = await inquirer.prompt<{ templateType: StarterTemplate }>([
