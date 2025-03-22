@@ -18,7 +18,7 @@ npm install @types/node
 
 Then, add the following code to your project:
 
-````typescript
+```typescript
 import { Agentica } from "@agentica/core";
 import dotenv from "dotenv";
 import fs from "fs";
@@ -33,12 +33,9 @@ class FsClass {
   /**
    * Indicates the current folder path.
    *
-   * ```ts
    * The directory name of the current module. This is the same as the
    * `path.dirname()` of the `__filename`.
    * @since v0.1.27
-   * __dirname;
-   * ```
    *
    * @returns dirname
    */
@@ -85,7 +82,7 @@ class FsClass {
    * Similar to {@link readFile}, when the path is a directory, the behavior of
    * `fs.readFileSync()` is platform-specific.
    *
-   * ```js
+   * @example
    * import { readFileSync } from 'fs';
    *
    * // macOS, Linux, and Windows
@@ -94,7 +91,7 @@ class FsClass {
    *
    * //  FreeBSD
    * readFileSync('<directory>'); // => <data>
-   * ```
+   *
    * @since v0.1.8
    * @param path filename
    */
@@ -168,4 +165,3 @@ The agent would combine responses from the `readFileSync` and `__dirname` method
 You can inspect the available functions in the `FsClass` by reviewing the source code or the documentation comments within the class.
 
 With this **code block**, your AI-powered File System Agent is complete. Enjoy automating your file operations—but remember to apply caution and secure your implementation!
-````
