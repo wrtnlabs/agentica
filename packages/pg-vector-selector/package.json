@@ -10,10 +10,10 @@
   },
   "scripts": {
     "build": "tsc && rollup -c",
-    "eslint": "eslint ./**/*.ts",
     "test": "vitest",
     "prepublishOnly": "pnpm run build",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "eslint --fix ."
   },
   "repository": {
     "type": "git",
