@@ -18,7 +18,7 @@ export default defineConfig({
   },
   lib: [
     {
-      format: "cjs",
+      format: "esm",
       bundle: true,
       banner: {
         js: "#!/usr/bin/env node", // Add shebang to the output file
