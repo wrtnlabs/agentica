@@ -1,4 +1,4 @@
-import { AgenticaContext } from "@agentica/core";
+import type { AgenticaContext } from "@agentica/core";
 
 export const Tools = {
   extract_query: {
