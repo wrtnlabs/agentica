@@ -12,6 +12,8 @@ import { type Connector, getConnectors } from "../connectors";
 import { PackageManager } from "../packages";
 import { redBright, blueBright, yellow } from "../utils";
 import typia from "typia";
+import { downloadTemplateAndPlaceInProject } from "../fs";
+import { writeEnvKeysToDotEnv } from "../fs";
 
 /** supported starter templates */
 const STARTER_TEMPLATES = [
@@ -162,6 +164,14 @@ export async function start({ project, template }: StartOptions) {
 
   // install and setup the project
 
+  // write .env file
+  await writeEnvKeysToDotEnv({
+    projectPath: projectAbsolutePath,
+    apiKeys: [{
+      key: "OPENAI_API_KEY",
+      value: context.openAIKey ?? "",
+    }]
+  });
 
   console.log(`\n🎉 Project ${project} created`);
   console.log(
