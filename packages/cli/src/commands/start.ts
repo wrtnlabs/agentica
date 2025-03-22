@@ -66,19 +66,11 @@ interface Context {
 }
 
 /**
- * Start a new project
+ * Ask questions to the user
  */
-export async function start({ project, template }: StartOptions) {
+async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "template">): Promise<Context> {
   /** store context for the start command */
-  const context: Partial<Context> = {};
-
-  const projectAbsolutePath = join(process.cwd(), project);
-
-  // Check if project already exists
-  if (existsSync(projectAbsolutePath)) {
-    console.error(`❌ Project ${redBright(projectAbsolutePath)} already exists`);
-    return;
-  }
+  const context: Partial<Context> = { template: defaultTemplate };
 
   // Ask which package manager to use
   {
@@ -102,10 +94,7 @@ export async function start({ project, template }: StartOptions) {
   }
 
   // Ask for template type
-  if (template != null) {
-    context.template = template;
-  }
-  else {
+  if (context.template == null) {
     const choices = {
       standalone: `Standalone ${blueBright("Agent Server")}`,
       nodejs: `NodeJS ${blueBright("Agent Server")}`,
@@ -138,7 +127,7 @@ export async function start({ project, template }: StartOptions) {
   }
 
   // ask if you need connectors
-  if (template === "react") {
+  if (context.template === "react") {
     // React projects don't need connectors
     context.services = [];
   }
@@ -175,6 +164,24 @@ export async function start({ project, template }: StartOptions) {
   catch (e) {
     throw new Error(`❌ ${(e as string).toString()}`);
   }
+
+  return context;
+}
+
+/**
+ * Start a new project
+ */
+export async function start({ project, template }: StartOptions) {
+  const projectAbsolutePath = join(process.cwd(), project);
+
+  // Check if project already exists
+  if (existsSync(projectAbsolutePath)) {
+    console.error(`❌ Project ${redBright(projectAbsolutePath)} already exists`);
+    return;
+  }
+
+  /** context for the start command */
+  const context = await askQuestions({ template });
 
   // download and place template in project
   await downloadTemplateAndPlaceInProject({
