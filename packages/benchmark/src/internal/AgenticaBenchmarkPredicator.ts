@@ -1,28 +1,25 @@
-import { Agentica, AgenticaOperation, AgenticaPrompt } from "@agentica/core";
-import { ILlmFunction, ILlmSchema } from "@samchon/openapi";
-import OpenAI from "openai";
+import type { Agentica, AgenticaOperation, AgenticaPrompt } from "@agentica/core";
+import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
+import type OpenAI from "openai";
+import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
+
 import typia from "typia";
 
-import { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
-
 export namespace AgenticaBenchmarkPredicator {
-  export const isNext = async <Model extends ILlmSchema.Model>(
-    agent: Agentica<Model>,
-  ): Promise<string | null> => {
+  export async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): Promise<string | null> {
     const last: AgenticaPrompt<Model> | undefined = agent
       .getPromptHistories()
       .at(-1);
-    if (last?.type !== "text" || last.role !== "assistant") return null;
+    if (last?.type !== "text" || last.role !== "assistant")
+      return null;
 
     const consent: ILlmFunction<"chatgpt"> = typia.llm.application<
       IPredicatorApplication,
       "chatgpt"
     >().functions[0]!;
-    const result: OpenAI.ChatCompletion = await agent[
-      "props"
-    ].vendor.api.chat.completions.create(
+    const result: OpenAI.ChatCompletion = await agent.props.vendor.api.chat.completions.create(
       {
-        model: agent["props"].vendor.model,
+        model: agent.props.vendor.model,
         messages: [
           {
             role: "system",
@@ -52,17 +49,18 @@ export namespace AgenticaBenchmarkPredicator {
         tool_choice: "required",
         parallel_tool_calls: false,
       },
-      agent["props"].vendor.options,
+      agent.props.vendor.options,
     );
     const toolCall: OpenAI.ChatCompletionMessageToolCall | undefined = (
       result.choices[0]?.message.tool_calls ?? []
     ).filter(
-      (tc) => tc.type === "function" && tc.function.name === consent.name,
+      tc => tc.type === "function" && tc.function.name === consent.name,
     )?.[0];
-    if (toolCall === undefined) return null;
+    if (toolCall === undefined)
+      return null;
     const input: IConsentProps = JSON.parse(toolCall.function.arguments);
     return typia.is(input) ? input.reply : null;
-  };
+  }
 
   /**
    * Check if the called operations match the expected operations.
@@ -73,7 +71,7 @@ export namespace AgenticaBenchmarkPredicator {
    * @returns `true` if the called operations match the expected operations,
    * otherwise `false`.
    */
-  export const success = <Model extends ILlmSchema.Model>(props: {
+  export function success<Model extends ILlmSchema.Model>(props: {
     /**
      * Expected operations to be called.
      *
@@ -92,18 +90,20 @@ export namespace AgenticaBenchmarkPredicator {
      * @default `false`
      */
     strict?: boolean;
-  }): boolean => successInner(props).result;
+  }): boolean {
+    return successInner(props).result;
+  }
 
   const successInner = <Model extends ILlmSchema.Model>(
     props: Parameters<typeof success<Model>>[0],
   ):
     | {
-        result: true;
-        take: number;
-      }
+      result: true;
+      take: number;
+    }
     | {
-        result: false;
-      } => {
+      result: false;
+    } => {
     const call = (
       expected: IAgenticaBenchmarkExpected<Model>,
       overrideOperations?: Array<AgenticaOperation<Model>>,
@@ -146,7 +146,7 @@ export namespace AgenticaBenchmarkPredicator {
       }
       case "standalone": {
         const target = props.expected.operation;
-        const result = props.operations.some((op) => op.name === target.name);
+        const result = props.operations.some(op => op.name === target.name);
         if (result) {
           return { result, take: 1 };
         }
@@ -171,8 +171,8 @@ export namespace AgenticaBenchmarkPredicator {
          *
          * { result: true, take: 3 };
          */
-        const result = props.expected.allOf.map((expected) => call(expected));
-        if (result.every((r) => r.result)) {
+        const result = props.expected.allOf.map(expected => call(expected));
+        if (result.every(r => r.result)) {
           return {
             result: true,
             take: result.reduce((acc, r) => Math.max(acc, r.take), 0),
@@ -197,7 +197,7 @@ interface IPredicatorApplication {
    *
    * @param props Properties for asking the user's consent
    */
-  consent(props: IConsentProps): void;
+  consent: (props: IConsentProps) => void;
 }
 
 /**

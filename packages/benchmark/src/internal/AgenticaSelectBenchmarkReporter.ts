@@ -1,8 +1,8 @@
-import { AgenticaTokenUsage } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
+import type { AgenticaTokenUsage } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaSelectBenchmarkEvent } from "../structures/IAgenticaSelectBenchmarkEvent";
-import { IAgenticaSelectBenchmarkResult } from "../structures/IAgenticaSelectBenchmarkResult";
+import type { IAgenticaSelectBenchmarkEvent } from "../structures/IAgenticaSelectBenchmarkEvent";
+import type { IAgenticaSelectBenchmarkResult } from "../structures/IAgenticaSelectBenchmarkResult";
 import { MathUtil } from "../utils/MathUtil";
 import { AgenticaBenchmarkUtil } from "./AgenticaBenchmarkUtil";
 
@@ -10,13 +10,11 @@ import { AgenticaBenchmarkUtil } from "./AgenticaBenchmarkUtil";
  * @internal
  */
 export namespace AgenticaSelectBenchmarkReporter {
-  export const markdown = <Model extends ILlmSchema.Model>(
-    result: IAgenticaSelectBenchmarkResult<Model>,
-  ): Record<string, string> =>
-    Object.fromEntries([
+  export function markdown<Model extends ILlmSchema.Model>(result: IAgenticaSelectBenchmarkResult<Model>): Record<string, string> {
+    return Object.fromEntries([
       ["./README.md", writeIndex(result)],
       ...result.experiments
-        .map((exp) => [
+        .map(exp => [
           [`./${exp.scenario.name}/README.md`, writeExperimentIndex(exp)],
           ...exp.events.map((event, i) => [
             `./${exp.scenario.name}/${i + 1}.${event.type}.md`,
@@ -25,16 +23,17 @@ export namespace AgenticaSelectBenchmarkReporter {
         ])
         .flat(),
     ]);
+  }
 
   const writeIndex = <Model extends ILlmSchema.Model>(
     result: IAgenticaSelectBenchmarkResult<Model>,
   ): string => {
     const events: IAgenticaSelectBenchmarkEvent<Model>[] = result.experiments
-      .map((r) => r.events)
+      .map(r => r.events)
       .flat();
-    const average: number =
-      events
-        .map((e) => e.completed_at.getTime() - e.started_at.getTime())
+    const average: number
+      = events
+        .map(e => e.completed_at.getTime() - e.started_at.getTime())
         .reduce((a, b) => a + b, 0) / events.length;
     const aggregate: AgenticaTokenUsage.IComponent = result.usage.aggregate;
     return [
@@ -43,8 +42,8 @@ export namespace AgenticaSelectBenchmarkReporter {
       `  - Aggregation:`,
       `    - Scenarios: #${result.experiments.length.toLocaleString()}`,
       `    - Trial: ${events.length}`,
-      `    - Success: ${events.filter((e) => e.type === "success").length}`,
-      `    - Failure: ${events.filter((e) => e.type === "failure").length}`,
+      `    - Success: ${events.filter(e => e.type === "success").length}`,
+      `    - Failure: ${events.filter(e => e.type === "failure").length}`,
       `    - Average Time: ${MathUtil.round(average).toLocaleString()} ms`,
       `  - Token Usage`,
       `    - Total: ${aggregate.total.toLocaleString()}`,
@@ -60,28 +59,28 @@ export namespace AgenticaSelectBenchmarkReporter {
       "## Experiments",
       " Name | Status | Time/Avg  ",
       ":-----|:-------|----------:",
-      ...result.experiments.map((exp) =>
+      ...result.experiments.map(exp =>
         [
           `[${exp.scenario.name}](./${exp.scenario.name}/README.md)`,
           (() => {
             const success: number = Math.floor(
-              (exp.events.filter((e) => e.type === "success").length /
-                exp.events.length) *
-                10,
+              (exp.events.filter(e => e.type === "success").length
+                / exp.events.length)
+              * 10,
             );
             return (
-              new Array(success).fill("■").join("") +
-              new Array(10 - success).fill("□").join("")
+              new Array(success).fill("■").join("")
+                + Array.from({ length: 10 - success }).fill("□").join("")
             );
           })(),
-          MathUtil.round(
+          `${MathUtil.round(
             exp.events
               .map(
-                (event) =>
+                event =>
                   event.completed_at.getTime() - event.started_at.getTime(),
               )
               .reduce((a, b) => a + b, 0) / exp.events.length,
-          ).toLocaleString() + " ms",
+          ).toLocaleString()} ms`,
         ].join(" | "),
       ),
     ].join("\n");
@@ -96,12 +95,12 @@ export namespace AgenticaSelectBenchmarkReporter {
       "## Summary",
       "  - Aggregation:",
       `    - Trial: ${exp.events.length}`,
-      `    - Success: ${exp.events.filter((e) => e.type === "success").length}`,
-      `    - Failure: ${exp.events.filter((e) => e.type === "failure").length}`,
+      `    - Success: ${exp.events.filter(e => e.type === "success").length}`,
+      `    - Failure: ${exp.events.filter(e => e.type === "failure").length}`,
       `    - Average Time: ${MathUtil.round(
         exp.events
           .map(
-            (event) =>
+            event =>
               event.completed_at.getTime() - event.started_at.getTime(),
           )
           .reduce((a, b) => a + b, 0) / exp.events.length,
@@ -124,8 +123,8 @@ export namespace AgenticaSelectBenchmarkReporter {
         [
           `[${i + 1}.](./${i + 1}.${e.type}.md)`,
           e.type,
-          MathUtil.round(e.completed_at.getTime() - e.started_at.getTime()) +
-            " ms",
+          `${MathUtil.round(e.completed_at.getTime() - e.started_at.getTime())
+          } ms`,
         ].join(" | "),
       ),
       "",
@@ -185,7 +184,7 @@ export namespace AgenticaSelectBenchmarkReporter {
       ...(event.type === "success" || event.type === "failure"
         ? [
             "## Result",
-            ...event.selected.map((s) =>
+            ...event.selected.map(s =>
               [
                 `### ${s.operation.name}`,
                 `  - Controller: \`${s.operation.controller.name}\``,

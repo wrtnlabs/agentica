@@ -1,8 +1,8 @@
-import { AgenticaTokenUsage } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
+import type { AgenticaTokenUsage } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaSelectBenchmarkEvent } from "./IAgenticaSelectBenchmarkEvent";
-import { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmarkScenario";
+import type { IAgenticaSelectBenchmarkEvent } from "./IAgenticaSelectBenchmarkEvent";
+import type { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmarkScenario";
 
 /**
  * Result of the LLM function selection benchmark.
