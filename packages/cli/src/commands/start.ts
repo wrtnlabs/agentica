@@ -62,6 +62,7 @@ interface Context {
   template: StarterTemplate;
   services: Service[];
   openAIKey: string | null;
+  port?: number;
 }
 
 /**
@@ -121,6 +122,19 @@ export async function start({ project, template }: StartOptions) {
       },
     ]);
     context.template = templateType;
+  }
+
+  // Ask for port
+  if (context.template !== "standalone") {
+    const { port } = await inquirer.prompt<{ port: number }>([
+      {
+        type: "input",
+        name: "port",
+        message: "Server Port(if project is client app, this port mean ws server port):",
+        default: 3000,
+      },
+    ]);
+    context.port = port;
   }
 
   // ask if you need connectors
