@@ -6,14 +6,16 @@
 
 import type { Service } from "../connectors";
 import type { PackageManager } from "../packages";
+import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
 import inquirer from "inquirer";
 import typia from "typia";
-import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter } from "../connectors";
+import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
+import { installCommand } from "../packages";
 import { blueBright, formatWithPrettier, redBright, yellow } from "../utils";
 
 /** supported starter templates */
@@ -230,6 +232,20 @@ export async function start({ project, template }: StartOptions) {
     }],
   });
   console.log("✅ .env created");
+
+  // install dependencies
+  const allDependencies = [
+    ...dependencies,
+    ...devDependencies,
+    ...context.services.map(service => serviceToConnector(service)),
+  ] as const;
+
+  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
+  console.log("📦 Package installation in progress...");
+  execSync(command, {
+    cwd: projectAbsolutePath,
+    stdio: "inherit",
+  });
 
   console.log(
     `\n⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
