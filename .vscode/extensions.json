@@ -1,6 +1,6 @@
 {
   "recommendations": [
     "tekumara.typos-vscode",
-    "dbaeumer.vscode-eslint",
+    "dbaeumer.vscode-eslint"
   ]
 }
