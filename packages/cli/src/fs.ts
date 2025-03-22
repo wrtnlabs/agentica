@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync } from "node:fs";
-import { rm, writeFile } from "node:fs/promises";
-import { join, basename } from "node:path";
+import { rm, writeFile, mkdir } from "node:fs/promises";
+import { join } from "node:path";
 import { downloadTemplate } from "giget";
 
 interface DownloadTemplateAndPlaceInProjectProps {
@@ -26,12 +26,13 @@ export async function downloadTemplateAndPlaceInProject({ template, project }: D
 /**
   * Create a new directory.
   */
-export function createDirectory(input: { projectPath: string }): void{
+export async function createDirectory(input: { projectPath: string }): Promise<void> {
   if (existsSync(input.projectPath)) {
     throw new Error(
       `${input.projectPath} directory already exists.`,
     );
   }
 
-  mkdirSync(input.projectPath);
+  await mkdir(input.projectPath);
 };
+
