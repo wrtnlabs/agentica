@@ -14,7 +14,7 @@ const CONNECTOR_PREFIX = "@wrtnlabs/connector-";
 export type Service = Tagged<string, "Service">;
 
 /** Connector name. String literal type. */
-export type Connector = `${typeof CONNECTOR_PREFIX}${string}`;
+export type Connector = `${typeof CONNECTOR_PREFIX}${Service}`;
 
 interface Connectors {
   connectors: Connector[];
@@ -22,7 +22,7 @@ interface Connectors {
 }
 
 export function serviceToConnector(service: Service): Connector {
-  return `${CONNECTOR_PREFIX}${service}` as Connector;
+  return `${CONNECTOR_PREFIX}${service}`;
 }
 
 export function connectorToService(connector: Connector): Service {
