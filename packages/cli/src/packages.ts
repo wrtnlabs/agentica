@@ -5,14 +5,12 @@
 
 import type { PackageJson } from "type-fest";
 
-export const packageManagers = [
-  "npm",
-  "yarn",
-  "pnpm",
-  "bun",
-] as const;
-
-export type PackageManager = typeof packageManagers[number];
+/** supported package managers */
+export type PackageManager =
+  | "npm"
+  | "yarn"
+  | "pnpm"
+  | "bun";
 
 export const basePackageJson = {
   version: "0.0.1",

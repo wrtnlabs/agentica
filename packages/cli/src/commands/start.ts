@@ -19,17 +19,12 @@ import { installCommand } from "../packages";
 import { blueBright, formatWithPrettier, redBright, yellow } from "../utils";
 
 /** supported starter templates */
-// eslint-disable-next-line unused-imports/no-unused-vars
-const STARTER_TEMPLATES = [
-  "nodejs",
-  "nestjs",
-  "react",
-  "standalone",
-  "nestjs+react",
-] as const;
-
-/** supported starter templates */
-export type StarterTemplate = typeof STARTER_TEMPLATES[number];
+export type StarterTemplate =
+  | "nodejs"
+  | "nestjs"
+  | "react"
+  | "standalone"
+  | "nestjs+react";
 
 /**
  * Start command options
