@@ -3,8 +3,12 @@ title: Agentica > Guide Documents > Concepts > Document Driven Development
 ---
 import { Tabs } from "nextra/components";
 
-import BbsArticleServiceSnippet from "../../snippets/BbsArticleServiceSnippet.mdx";
+import RemoteSource from "../../../components/RemoteSource";
+
 import ShoppingSaleControllerSnippet from "../../snippets/ShoppingSaleControllerSnippet.mdx";
+import BbsArticleServiceSnippet from "../../snippets/BbsArticleServiceSnippet.mdx";
+import IBbsArticleSnippet from "../../snippets/IBbsArticleSnippet.mdx";
+import LlmApplicationExampleSnippet from "../../snippets/LlmApplicationExampleSnippet.mdx";
 
 ## Preface
 ### Agent Workflow Problem
@@ -92,13 +96,249 @@ In the [`@samchon/shopping-backend`](https://github.com/samchon/shopping-backend
 
 ## Schema Documentation
 ### DTO Documentation
+<Tabs items={[
+  <code>IShoppingSaleUnitStock</code>,
+  <code>IShoppingSaleUnit</code>,
+  <code>IShoppingSale</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="@samchon/shopping-backend/IShoppingSaleUnitStock" showLineNumbers
+/**
+ * Final component information on units for sale.
+ *
+ * `IShoppingSaleUnitStock` is a subsidiary entity of {@link IShoppingSaleUnit}
+ * that represents a product catalog for sale, and is a kind of final stock that is
+ * constructed by selecting all {@link IShoppingSaleUnitSelectableOption options}
+ * (variable "select" type) and their
+ * {@link IShoppingSaleUnitOptionCandidate candidate} values in the belonging unit.
+ * It is the "good" itself that customers actually purchase.
+ *
+ * - Product Name) MacBook
+ *   - Options
+ *     - CPU: { i3, i5, i7, i9 }
+ *     - RAM: { 8GB, 16GB, 32GB, 64GB, 96GB }
+ *     - SSD: { 256GB, 512GB, 1TB }
+ *   - Number of final stocks: 4 * 5 * 3 = 60
+ *
+ * For reference, the total number of `IShoppingSaleUnitStock` records in an
+ * attribution unit can be obtained using Cartesian Product. In other words, the
+ * value obtained by multiplying all the candidate values that each
+ * (variable "select" type) option can have by the number of cases is the total
+ * number of final stocks in the unit.
+ *
+ * Of course, without a single variable "select" type option, the final stocks
+ * count in the unit is only 1.
+ *
+ * @author Samchon
+ */
+export interface IShoppingSaleUnitStock { ... }
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="@samchon/shopping-backend/IShoppingSaleUnit" showLineNumbers
+/**
+ * Product composition information handled in the sale.
+ *
+ * `IShoppingSaleUnit` is an entity that embodies the "individual product"
+ * information handled in the {@link IShoppingSale sale}.
+ *
+ * For reference, the reason why `IShoppingSaleUnit` is separated from
+ * {@link IShoppingSaleSnapshot} by an algebraic relationship of 1: N is because
+ * there are some cases where multiple products are sold in one listing. This is
+ * the case with so-called "bundled products".
+ *
+ * - Bundle from regular product (Mackbook Set)
+ *   - Main Body
+ *   - Keyboard
+ *   - Mouse
+ *   - Apple Care (Free A/S Voucher)
+ *
+ * And again, `IShoppingSaleUnit` does not in itself refer to the
+ * {@link IShoppingSaleUnitStock final stock} that the
+ * {@link IShoppingCustomer customer} will {@link IShoppingOrder purchase}.
+ * The final stock can be found only after selecting all given
+ * {@link IShoppingSaleUnitOption options} and their
+ * {@link IShoppingSaleUnitOptionCandidate candidate values}.
+ *
+ * For example, even if you buy a Macbook, the final stocks are determined only
+ * after selecting all the options (CPU / RAM / SSD), etc.
+ *
+ * @author Samchon
+ */
+export interface IShoppingSaleUnit { ... }
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="@samchon/shopping-backend/IShoppingSale" showLineNumbers
+/**
+ * Seller sales products.
+ *
+ * `IShoppingSale` is an entity that embodies "product sales" (sales)
+ * information registered by the {@link ISoppingSeller seller}. And the main
+ * information of the sale is recorded in the sub {@link IShoppingSaleSnapshot},
+ * not in the main `IShoppingSale`. When a seller changes a previously registered
+ * item, the existing `IShoppingSale` record is not changed, but a new
+ * {@link IShoppingSaleSnapshot snapshot} record be created.
+ *
+ * This is to preserve the {@link IShoppingCustomer customer}'s
+ * {@link IShoppingOrder purchase history} flawlessly after the customer
+ * purchases a specific item, even if the seller changes the components or
+ * price of the item. It is also intended to support sellers in so-called A/B
+ * testing, which involves changing components or prices and measuring the
+ * performance in each case.
+ *
+ * @author Samchon
+ */
+export interface IShoppingSale { ... }
+```
+  </Tabs.Tab>
+</Tabs>
+
+Describe within framework of entity.
+
+When documenting DTO (Data Transfer Object) types, it would better to describe them within framework of entity. Try to describe conceptually what each DTO type represents, and explain what the related types (entities) are. When explaining the related types, using `{@link Target}` tag is recommended.
+
+In actually, above DTO types are come from [`@samchon/shopping-backend`](https://github.com/samchon/shopping-backend), and their descriptions are similar with [ERD (Entity Relationship Diagram) manual](https://github.com/samchon/shopping-backend/blob/master/docs/ERD.md) explaining entities. If you open the ERD manual and read the description of [`shopping_sale_snapshot_unit_stocks`](https://github.com/samchon/shopping-backend/blob/master/docs/ERD.md#shopping_sale_snapshot_unit_stocks) entity, you may easily understand what I am talking about.
+
+Also, if concept of a DTO type is difficult to understand for human, it is difficult for AI agent too. In that case, it would better to use some examples or analogies. For example, above `IShoppingSaleUnitStock` contains SKU (Stock Keeping Unit) concept, and it is hard to understand for someone who is not an e-commerce professional. So, `IShoppingSaleUnitStock` is explaining the SKU concept with an example of MacBook's (CPU, RAM, and SSD) options.
+
 ### Property Documentation
+<Tabs items={[
+  <code>IShoppingCouponRestriction</code>,
+  <code>IShoppingCartCommodityStock</code>,
+  <code>IShoppingSaleUnitStock</code>,
+]}>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/coupons/IShoppingCouponRestriction.ts"
+      filename="@samchon/shopping-backend/IShoppingCouponRestriction"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/orders/IShoppingCartCommodityStock.ts"
+      filename="@samchon/shopping-backend/IShoppingCartCommodityStock"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/sales/IShoppingSaleUnitStock.ts"
+      filename="@samchon/shopping-backend/IShoppingSaleUnitStock"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+Describe what value must be filled in the property.
+
+When documenting DTO properties, concentrate on what value must be filled in the property. In other words, describe the property's purpose and the value's meaning with its domain restrictions. `IShoppingCouponRestriction` is a good example describing the domain restrictions.
+
+Also, if target property is a reference to another entity by foreign key, it would better to utilizing the `{@link target}` tag. Looking at above example type `IShoppingCartCommodityStock`, it has a property `stock_id` which is a foreign key to the `IShoppingSaleUnitStock` entity with `{@link target}` tag.
+
 ### Namespace Strategy
+<Tabs items={[
+  <code>IBbsArticle</code>,
+  <code>BbArticleService</code>,
+  "TypeScript Source Code",
+  "Console Output",
+]}>
+  <Tabs.Tab>
+```typescript filename="IBbsArticle.ts" showLineNumbers {3-8, 25-28, 55-60}
+import { tags } from "typia";
+ 
+/**
+ * Article entity.
+ *
+ * `IBbsArticle` is an entity representing an article in the BBS (Bulletin Board System).
+ */
+export interface IBbsArticle extends IBbsArticle.ICreate {
+  /**
+   * Primary Key.
+   */
+  id: string & tags.Format<"uuid">;
+ 
+  /**
+   * Creation time of the article.
+   */
+  created_at: string & tags.Format<"date-time">;
+ 
+  /**
+   * Last updated time of the article.
+   */
+  updated_at: string & tags.Format<"date-time">;
+}
+export namespace IBbsArticle {
+  /**
+   * Information of the article to create.
+   */
+  export interface ICreate {
+    /**
+     * Title of the article.
+     *
+     * Representative title of the article.
+     */
+    title: string;
+ 
+    /**
+     * Content body.
+     *
+     * Content body of the article writtn in the markdown format.
+     */
+    body: string;
+ 
+    /**
+     * Thumbnail image URI.
+     *
+     * Thumbnail image URI which can represent the article.
+     *
+     * If configured as `null`, it means that no thumbnail image in the article.
+     */
+    thumbnail:
+      | null
+      | (string & tags.Format<"uri"> & tags.ContentMediaType<"image/*">);
+  }
+ 
+  /**
+   * Information of the article to update.
+   *
+   * Only the filled properties will be updated.
+   */
+  export type IUpdate = Partial<ICreate>;
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <BbsArticleServiceSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <LlmApplicationExampleSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Console Output"
+Information of the article to create.
+ 
+------------------------------
+ 
+Description of the current {@link IBbsArticle.ICreate} type:
+ 
+Information of the article to create.
+ 
+> Description of the parent {@link IBbsArticle} type: Article entity.
+> 
+> `IBbsArticle` is an entity representing an article in the BBS (Bulletin Board System).
+```
+  </Tabs.Tab>
+</Tabs>
+
+[`typia.llm.application<App, Model>()`](https://typia.io/docs/llm/application) and [`HttpLlm.application()`](https://github.com/samchon/openapi) function copy the parent namespaced type description comment to the children types. `@agentica` calls this comment writing strategy as namespace documentation, and it is recommended for the efficient documentation.
+
+As you can see from the above example, `BbsArticleService` has many CRUD functions about the `IBbsArticle` namespaced type. By the way, the above `IBbsArticle.ICreate` and `IBbsArticle.IUpdate` types are not repeating same description comments about the `IBbsArticle` type. Instead, just writing the short description comment about them, and just compose the LLM function calling application schema.
+
+In that case, the `IBbsArticle` type’s description comment would be copied to the `IBbsArticle.ICreate` and `IBbsArticle.IUpdate` types like above “Console Output” case. It’s a good strategy to avoid repeating same description comments, and also to deliver enough information to the LLM function calling.
 
 
 
 
-## Domain Driven development
+## Domain Driven Development
 Document Driven Development is the AI agent ​​version of Domain Driven Development.
 
 There's a development methodology called "Domain Driven Development". It separates complicate project to small domains, and concentrate on each domain independently. It's because the complexity of the project is not from the project itself, but from the interaction between domains.
