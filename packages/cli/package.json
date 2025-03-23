@@ -58,7 +58,7 @@
   "devDependencies": {
     "@inquirer/testing": "^2.1.45",
     "@rslib/core": "^0.5.4",
-    "@ryoppippi/unplugin-typia": "^2.0.0",
+    "@ryoppippi/unplugin-typia": "^2.1.3",
     "@types/inquirer": "^9.0.3",
     "@types/node": "^20.14.8",
     "@wrtnlabs/eslint-config": "^0.1.2",
