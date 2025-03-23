@@ -10,48 +10,40 @@ interface CliOptions {
   project?: StarterTemplate;
 }
 
-async function main() {
-  const program = new Command();
+const program = new Command();
 
-  // TODO: project option should be template
-  program
-    .command("start <directory>")
-    .description("Start a new project")
-    .option(
-      "-p, --project [nodejs|nestjs|react|nestjs+react|standalone]",
-      "The project type",
-    )
-    .action(async (directory: string, options: CliOptions) => {
-      if ((options.project as any) === true) {
-        console.error(
-          `\n❌ The value of ${redBright("--project")} is required`,
-        );
-        return;
-      }
+// TODO: project option should be template
+program
+  .command("start <directory>")
+  .description("Start a new project")
+  .option(
+    "-p, --project [nodejs|nestjs|react|nestjs+react|standalone]",
+    "The project type",
+  )
+  .action(async (directory: string, options: CliOptions) => {
+    if ((options.project as any) === true) {
+      console.error(
+        `\n❌ The value of ${redBright("--project")} is required`,
+      );
+      return;
+    }
 
-      /** check valid project type */
-      try {
-        typia.assertGuard<StarterTemplate | undefined>(options.project);
-      }
-      catch {
-        console.error(
-          `\n❌ The value of ${redBright("--project")} is invalid`,
-        );
-        return;
-      }
+    /** check valid project type */
+    try {
+      typia.assertGuard<StarterTemplate | undefined>(options.project);
+    }
+    catch {
+      console.error(
+        `\n❌ The value of ${redBright("--project")} is invalid`,
+      );
+      return;
+    }
 
-      await start({ project: directory, template: options.project });
-    },
-    );
+    await start({ project: directory, template: options.project });
+  });
 
-  console.log("--------------------------------");
-  console.log(`   🚀 ${"Agentica"} ${blueBright("Setup Wizard")}`);
-  console.log("--------------------------------");
+console.log("--------------------------------");
+console.log(`   🚀 ${"Agentica"} ${blueBright("Setup Wizard")}`);
+console.log("--------------------------------");
 
-  program.parse(process.argv);
-}
-
-main().catch((exp: { message: string }) => {
-  console.error(exp.message);
-  process.exit(-1);
-});
+program.parse(process.argv);
