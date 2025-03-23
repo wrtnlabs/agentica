@@ -25,7 +25,7 @@ const STARTER_TEMPLATES = [
   "nestjs",
   "react",
   "standalone",
-  "nestjs+react"
+  "nestjs+react",
 ] as const;
 
 /** supported starter templates */
@@ -66,6 +66,11 @@ interface Context {
   port?: number;
 }
 
+interface SetupProjectOptions {
+  projectAbsolutePath: string;
+  context: Context;
+}
+
 /**
  * Ask questions to the user
  */
@@ -97,11 +102,11 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   // Ask for template type
   if (context.template == null) {
     const choices = {
-      standalone: `Standalone ${blueBright("Agent Server")}`,
-      nodejs: `NodeJS ${blueBright("Agent Server")}`,
-      nestjs: `NestJS ${blueBright("Agent Server")}`,
-      react: `React ${blueBright("Application")}`,
-      "nestjs+react":`NestJS + React ${blueBright("Agent Server + Client Application")}`,
+      "standalone": `Standalone ${blueBright("Agent Server")}`,
+      "nodejs": `NodeJS ${blueBright("Agent Server")}`,
+      "nestjs": `NestJS ${blueBright("Agent Server")}`,
+      "react": `React ${blueBright("Application")}`,
+      "nestjs+react": `NestJS + React ${blueBright("Agent Server + Client Application")}`,
     } as const satisfies Record<StarterTemplate, string>;
 
     const { templateType } = await inquirer.prompt<{ templateType: StarterTemplate }>([
@@ -170,81 +175,27 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   return context;
 }
 
-/**
- * Start a new project
- */
-export async function start({ project, template }: StartOptions) {
-  const projectAbsolutePath = join(process.cwd(), project);
-
-  // Check if project already exists
-  if (existsSync(projectAbsolutePath)) {
-    console.error(`❌ Project ${redBright(projectAbsolutePath)} already exists`);
-    return;
-  }
-
-  /** context for the start command */
-  const context = await askQuestions({ template });
-
+async function setupStandAloneProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
   // download and place template in project
   await downloadTemplateAndPlaceInProject({
-    template: context.template,
+    template: "standalone",
     project: projectAbsolutePath,
   });
   console.log("✅ Template downloaded");
 
-  {
-    const imoprtsCode = generateServiceImportsCode(context.services);
-    const connectorsCode = generateConnectorsArrayCode(context.services);
-
-    // setup project
-    let indexFilePath: string | undefined;
-    let indexFileContent: string | undefined;
-    if (context.template === "standalone") {
-      indexFilePath = join(projectAbsolutePath, "src/index.ts");
-      indexFileContent = await readFile(indexFilePath, "utf-8");
-    }
-    else if (context.template === "nodejs") {
-      indexFilePath = join(projectAbsolutePath, "src/index.ts");
-      indexFileContent = await readFile(indexFilePath, "utf-8");
-      indexFileContent = indexFileContent
-        .replace(/import \{ BbsArticleService \}.*;\n/g, "")
-        .replace(
-          /controllers:\s*\[[\s\S]*?\],\n/,
-          "controllers: [/// INSERT CONTROLLER HERE],\n",
-        );
-    }
-    else if (context.template === "nestjs") {
-      indexFilePath = join(
-        projectAbsolutePath,
-        "src/controllers/chat/ChatController.ts",
-      );
-      indexFileContent = await readFile(indexFilePath, "utf-8");
-    }
-    else if (context.template === "react") {
-      // react projects don't need to modify index file
-    }
-    else {
-      context.template satisfies never;
-      throw new Error(`❌ Invalid template: ${context.template as unknown as string}`);
-    }
-
-    if (indexFilePath != null && indexFileContent != null) {
-      // insert code into index file
-      const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
-        content: indexFileContent,
-        importCode: imoprtsCode,
-        connectorCode: connectorsCode,
-      });
-
-      // format with prettier if possible
-      const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
-
-      // write index file
-      await writeFile(indexFilePath, formattedIndexFileContent);
-
-      console.log(`\n🎉 Project ${project} created`);
-    }
-  }
+  // modify index file
+  const imoprtsCode = generateServiceImportsCode(context.services);
+  const connectorsCode = generateConnectorsArrayCode(context.services);
+  const indexFilePath = join(projectAbsolutePath, "src/index.ts");
+  const indexFileContent = await readFile(indexFilePath, "utf-8");
+  const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
+    content: indexFileContent,
+    importCode: imoprtsCode,
+    connectorCode: connectorsCode,
+  });
+  const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
+  await writeFile(indexFilePath, formattedIndexFileContent);
+  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -269,6 +220,195 @@ export async function start({ project, template }: StartOptions) {
     cwd: projectAbsolutePath,
     stdio: "inherit",
   });
+}
+
+async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+  // download and place template in project
+  await downloadTemplateAndPlaceInProject({
+    template: "nodejs",
+    project: projectAbsolutePath,
+  });
+  console.log("✅ Template downloaded");
+
+  // modify index file
+  const imoprtsCode = generateServiceImportsCode(context.services);
+  const connectorsCode = generateConnectorsArrayCode(context.services);
+  const indexFilePath = join(projectAbsolutePath, "src/index.ts");
+  let indexFileContent = await readFile(indexFilePath, "utf-8");
+  indexFileContent = indexFileContent
+    .replace(/import \{ BbsArticleService \}.*;\n/g, "")
+    .replace(
+      /controllers:\s*\[[\s\S]*?\],\n/,
+      "controllers: [/// INSERT CONTROLLER HERE],\n",
+    );
+  const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
+    content: indexFileContent,
+    importCode: imoprtsCode,
+    connectorCode: connectorsCode,
+  });
+  const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
+  await writeFile(indexFilePath, formattedIndexFileContent);
+  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
+
+  // write .env file
+  await writeEnvKeysToDotEnv({
+    projectPath: projectAbsolutePath,
+    apiKeys: [{
+      key: "OPENAI_API_KEY",
+      value: context.openAIKey ?? "",
+    }, {
+      key: "PORT",
+      value: context.port?.toString() ?? "3000",
+    }],
+  });
+  console.log("✅ .env created");
+
+  // install dependencies
+  const allDependencies = [
+    ...dependencies,
+    ...devDependencies,
+    ...context.services.map(service => serviceToConnector(service)),
+  ] as const;
+
+  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
+  console.log("📦 Package installation in progress...");
+  execSync(command, {
+    cwd: projectAbsolutePath,
+    stdio: "inherit",
+  });
+}
+
+async function setupNestJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+  // download and place template in project
+  await downloadTemplateAndPlaceInProject({
+    template: "nestjs",
+    project: projectAbsolutePath,
+  });
+  console.log("✅ Template downloaded");
+
+  // modify index file
+  const imoprtsCode = generateServiceImportsCode(context.services);
+  const connectorsCode = generateConnectorsArrayCode(context.services);
+  const indexFilePath = join(
+    projectAbsolutePath,
+    "src/controllers/chat/ChatController.ts",
+  );
+  const indexFileContent = await readFile(indexFilePath, "utf-8");
+  const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
+    content: indexFileContent,
+    importCode: imoprtsCode,
+    connectorCode: connectorsCode,
+  });
+  const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
+  await writeFile(indexFilePath, formattedIndexFileContent);
+  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
+
+  // write .env file
+  await writeEnvKeysToDotEnv({
+    projectPath: projectAbsolutePath,
+    apiKeys: [{
+      key: "OPENAI_API_KEY",
+      value: context.openAIKey ?? "",
+    }, {
+      key: "API_PORT",
+      value: context.port?.toString() ?? "3000",
+    }],
+  });
+  console.log("✅ .env created");
+
+  // install dependencies
+  const allDependencies = [
+    ...dependencies,
+    ...devDependencies,
+    ...context.services.map(service => serviceToConnector(service)),
+  ] as const;
+
+  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
+  console.log("📦 Package installation in progress...");
+  execSync(command, {
+    cwd: projectAbsolutePath,
+    stdio: "inherit",
+  });
+}
+
+async function setupReactProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+  // download and place template in project
+  await downloadTemplateAndPlaceInProject({
+    template: "react",
+    project: projectAbsolutePath,
+  });
+  console.log("✅ Template downloaded");
+
+  // write .env file
+  await writeEnvKeysToDotEnv({
+    projectPath: projectAbsolutePath,
+    apiKeys: [{
+      key: "OPENAI_API_KEY",
+      value: context.openAIKey ?? "",
+    }, {
+      key: "VITE_AGENTICA_WS_URL",
+      value: `ws://localhost:${context.port}/chat`,
+    }],
+  });
+  console.log("✅ .env created");
+
+  // install dependencies
+  const allDependencies = [
+    ...dependencies,
+    ...devDependencies,
+    ...context.services.map(service => serviceToConnector(service)),
+  ] as const;
+
+  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
+  console.log("📦 Package installation in progress...");
+  execSync(command, {
+    cwd: projectAbsolutePath,
+    stdio: "inherit",
+  });
+}
+
+/**
+ * Start a new project
+ */
+export async function start({ project, template }: StartOptions) {
+  const projectAbsolutePath = join(process.cwd(), project);
+
+  // Check if project already exists
+  if (existsSync(projectAbsolutePath)) {
+    console.error(`❌ Project ${redBright(projectAbsolutePath)} already exists`);
+    return;
+  }
+
+  /** context for the start command */
+  const context = await askQuestions({ template });
+
+  switch (context.template) {
+    case "standalone":
+      await setupStandAloneProject({ projectAbsolutePath, context });
+      break;
+    case "nodejs":
+      await setupNodeJSProject({ projectAbsolutePath, context });
+      break;
+    case "nestjs":
+      await setupNestJSProject({ projectAbsolutePath, context });
+      break;
+    case "react":
+      await setupReactProject({ projectAbsolutePath, context });
+      break;
+    case "nestjs+react":
+      await setupNestJSProject({
+        projectAbsolutePath: join(projectAbsolutePath, "server"),
+        context,
+      });
+      await setupReactProject({
+        projectAbsolutePath: join(projectAbsolutePath, "client"),
+        context,
+      });
+      break;
+    default:
+      context.template satisfies never;
+      throw new Error(`❌ Template ${context.template as unknown as string} not supported`);
+  }
 
   console.log(
     `\n⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
