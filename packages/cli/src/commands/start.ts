@@ -31,21 +31,6 @@ const STARTER_TEMPLATES = [
 /** supported starter templates */
 export type StarterTemplate = typeof STARTER_TEMPLATES[number];
 
-/** dependencies for each template */
-const dependencies = [
-  "openai",
-  "typia",
-  "dotenv",
-  "@agentica/core",
-  "readline",
-] as const;
-
-/** dev dependencies for each template */
-const devDependencies = [
-  "ts-node",
-  "typescript",
-] as const;
-
 /**
  * Start command options
  */
@@ -69,6 +54,23 @@ interface Context {
 interface SetupProjectOptions {
   projectAbsolutePath: string;
   context: Context;
+}
+
+interface InstallDependenciesOptions {
+  packageManager: PackageManager;
+  projectAbsolutePath: string;
+  services: Service[];
+}
+
+/** dependencies for the project */
+function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): void {
+  console.log("📦 Package installation in progress...");
+  const command = installCommand({ packageManager, pkg: services.map(service => serviceToConnector(service)).join(" ") });
+  console.log("📦 Package installation in progress...");
+  execSync(command, {
+    cwd: projectAbsolutePath,
+    stdio: "inherit",
+  });
 }
 
 /**
@@ -208,17 +210,10 @@ async function setupStandAloneProject({ projectAbsolutePath, context }: SetupPro
   console.log("✅ .env created");
 
   // install dependencies
-  const allDependencies = [
-    ...dependencies,
-    ...devDependencies,
-    ...context.services.map(service => serviceToConnector(service)),
-  ] as const;
-
-  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
-  console.log("📦 Package installation in progress...");
-  execSync(command, {
-    cwd: projectAbsolutePath,
-    stdio: "inherit",
+  installServicesAsDependencies({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+    services: context.services,
   });
 }
 
@@ -264,17 +259,10 @@ async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProject
   console.log("✅ .env created");
 
   // install dependencies
-  const allDependencies = [
-    ...dependencies,
-    ...devDependencies,
-    ...context.services.map(service => serviceToConnector(service)),
-  ] as const;
-
-  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
-  console.log("📦 Package installation in progress...");
-  execSync(command, {
-    cwd: projectAbsolutePath,
-    stdio: "inherit",
+  installServicesAsDependencies({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+    services: context.services,
   });
 }
 
@@ -317,17 +305,10 @@ async function setupNestJSProject({ projectAbsolutePath, context }: SetupProject
   console.log("✅ .env created");
 
   // install dependencies
-  const allDependencies = [
-    ...dependencies,
-    ...devDependencies,
-    ...context.services.map(service => serviceToConnector(service)),
-  ] as const;
-
-  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
-  console.log("📦 Package installation in progress...");
-  execSync(command, {
-    cwd: projectAbsolutePath,
-    stdio: "inherit",
+  installServicesAsDependencies({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+    services: context.services,
   });
 }
 
@@ -353,17 +334,10 @@ async function setupReactProject({ projectAbsolutePath, context }: SetupProjectO
   console.log("✅ .env created");
 
   // install dependencies
-  const allDependencies = [
-    ...dependencies,
-    ...devDependencies,
-    ...context.services.map(service => serviceToConnector(service)),
-  ] as const;
-
-  const command = installCommand({ packageManager: context.packageManager, pkg: allDependencies.join(" ") });
-  console.log("📦 Package installation in progress...");
-  execSync(command, {
-    cwd: projectAbsolutePath,
-    stdio: "inherit",
+  installServicesAsDependencies({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+    services: context.services,
   });
 }
 
