@@ -46,6 +46,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
     "lint": "eslint .",
+    "format": "eslint --fix .",
     "test": "vitest"
   },
   "dependencies": {
