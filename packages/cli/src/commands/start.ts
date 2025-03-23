@@ -198,7 +198,6 @@ async function setupStandAloneProject({ projectAbsolutePath, context }: SetupPro
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
   await writeFile(indexFilePath, formattedIndexFileContent);
-  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -244,7 +243,6 @@ async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProject
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
   await writeFile(indexFilePath, formattedIndexFileContent);
-  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -290,7 +288,6 @@ async function setupNestJSProject({ projectAbsolutePath, context }: SetupProject
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
   await writeFile(indexFilePath, formattedIndexFileContent);
-  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -385,6 +382,7 @@ export async function start({ project, template }: StartOptions) {
       throw new Error(`❌ Template ${context.template as unknown as string} not supported`);
   }
 
+  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
   console.log(
     `\n⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
   );
