@@ -65,7 +65,6 @@ interface InstallDependenciesOptions {
 
 /** dependencies for the project */
 function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): void {
-  console.log("📦 Package installation in progress...");
   const command = installCommand({ packageManager, pkg: services.map(service => serviceToConnector(service)).join(" ") });
   console.log("📦 Package installation in progress...");
   execSync(command, {
