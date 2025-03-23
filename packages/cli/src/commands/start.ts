@@ -4,6 +4,7 @@
  * @module
  */
 
+import type { SimplifyDeep, UnwrapTagged } from "type-fest";
 import type { Service } from "../connectors";
 import type { PackageManager } from "../packages";
 import { execSync } from "node:child_process";
@@ -168,7 +169,8 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   }
 
   try {
-    typia.assertGuard<Context>(context);
+    type UnwrappedContext = SimplifyDeep<Omit<Context, "services"> & { services: UnwrapTagged<Service>[] }>;
+    typia.assertGuard<UnwrappedContext>(context);
   }
   catch (e) {
     throw new Error(`❌ ${(e as string).toString()}`);
