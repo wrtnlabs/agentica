@@ -30,12 +30,20 @@ export function yellow(text: string) {
   return styleText("yellow", text);
 }
 
+/**
+ * Format the given content with prettier.
+ * If prettier is not installed, it returns the content as is.
+ */
 export async function formatWithPrettier(content: string) {
-  // /** prettier is not in the dependencies */
+  /** if prettier is not installed, return undefined */
   const prettier = await import("prettier").catch(() => undefined);
+
+  // if prettier is not installed, return the content as is
   if (prettier == null) {
     return content;
   }
+
+  // format the content with prettier
   return prettier.format(content, {
     parser: "typescript",
   });
