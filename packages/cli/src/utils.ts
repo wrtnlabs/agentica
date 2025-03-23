@@ -1,3 +1,8 @@
+/**
+ * @module
+ * This file contains tiny utility functions that should not be in rest of the modules.
+ */
+
 import { styleText } from "node:util";
 
 /**

@@ -1,7 +1,6 @@
 /**
- * Start command
- *
  * @module
+ * Start command
  */
 
 import type { SimplifyDeep, UnwrapTagged } from "type-fest";

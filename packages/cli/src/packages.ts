@@ -1,3 +1,8 @@
+/**
+ * @module
+ * This file contains functions to work with packages.
+ */
+
 import type { PackageJson } from "type-fest";
 
 export const packageManagers = [

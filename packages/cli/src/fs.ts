@@ -1,3 +1,8 @@
+/**
+ * @module
+ * This file contains functions to work with fs.
+ */
+
 import { existsSync } from "node:fs";
 import { appendFile, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";

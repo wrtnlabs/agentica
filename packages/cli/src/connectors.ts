@@ -1,3 +1,8 @@
+/**
+ * @module
+ * This file contains functions to work with connectors/services.
+ */
+
 import type { Tagged, UnwrapTagged } from "type-fest";
 import typia from "typia";
 import { capitalize } from "./utils";
