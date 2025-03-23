@@ -29,10 +29,7 @@ program
     }
 
     /** check valid project type */
-    try {
-      typia.assertGuard<StarterTemplate | undefined>(options.project);
-    }
-    catch {
+    if (!typia.is<StarterTemplate | undefined>(options.project)) {
       console.error(
         `\n❌ The value of ${redBright("--project")} is invalid`,
       );
