@@ -8,6 +8,7 @@ const CONNECTOR_PREFIX = "@wrtnlabs/connector-";
 /** Service name. Opaque type. */
 export type Service = Tagged<string, "Service">;
 
+/** Connector name. String literal type. */
 export type Connector = `${typeof CONNECTOR_PREFIX}${string}`;
 
 interface Connectors {
@@ -17,6 +18,10 @@ interface Connectors {
 
 export function serviceToConnector(service: Service): Connector {
   return `${CONNECTOR_PREFIX}${service}` as Connector;
+}
+
+export function connectorToService(connector: Connector): Service {
+  return (connector.replace(CONNECTOR_PREFIX, "") satisfies UnwrapTagged<Service>) as Service;
 }
 
 /**
@@ -53,7 +58,7 @@ export async function getConnectors(): Promise<GetConnectorsReturn[]> {
   const data = await getConnectorsList();
   return data.connectors
     .map((name) => {
-      const serviceName = (name.replace(CONNECTOR_PREFIX, "") satisfies UnwrapTagged<Service>) as Service;
+      const serviceName = connectorToService(name);
       const displayName = serviceName.replace("-", " ").toUpperCase();
       return {
         packageName: name,
