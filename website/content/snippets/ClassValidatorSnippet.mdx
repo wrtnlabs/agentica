@@ -1,0 +1,97 @@
+```typescript showLineNumbers
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  ArrayNotEmpty,
+  Format,
+  IsArray,
+  IsObject,
+  IsOptional,
+  IsString,
+  Match,
+  MaxLength,
+  Type,
+  ValidateNested,
+} from "class-validator";
+ 
+export class BbsArticle {
+  @ApiProperty({
+    format: "uuid",
+  })
+  @IsString()
+  id!: string;
+ 
+  // DUPLICATED SCHEMA DEFINITION
+  // - duplicated function call + property type
+  // - have to specify `isArray` and `nullable` props by yourself
+  @ApiProperty({
+    type: () => AttachmentFile,
+    nullable: true,
+    isArray: true,
+    description: "List of attached files.",
+  })
+  @Type(() => AttachmentFile)
+  @IsArray()
+  @IsOptional()
+  @IsObject({ each: true })
+  @ValidateNested({ each: true })
+  files!: AttachmentFile[] | null;
+ 
+  @ApiProperty({
+    type: "string",
+    nullable: true,
+    minLength: 5,
+    maxLength: 100,
+    description: "Title of the article.",
+  })
+  @IsOptional()
+  @IsString()
+  title!: string | null;
+ 
+  @ApiProperty({
+    description: "Main content body of the article.",
+  })
+  @IsString()
+  body!: string;
+ 
+  @ApiProperty({
+    format: "date-time",
+    description: "Creation time of article",
+  })
+  @IsString()
+  created_at!: string;
+}
+ 
+export class AttachmentFile {
+  @ApiProperty({
+    type: "string",
+    maxLength: 255,
+    pattern: "^[a-zA-Z0-9-_]+$",
+    description: "File name.",
+  })
+  @Matches(/^[a-z0-9]+$/)
+  @MaxLength(255)
+  @IsString()
+  name!: string | null;
+ 
+  @ApiProperty({
+    type: "string",
+    nullable: true,
+    maxLength: 255,
+    pattern: "^[a-zA-Z0-9-_]+$",
+    description: "File extension.",
+  })
+  @Matches(/^[a-z0-9]+$/)
+  @MaxLength(8)
+  @IsOptional()
+  @IsString()
+  extension!: string | null;
+ 
+  @ApiProperty({
+    format: "url",
+    description: "URL of the file.",
+  })
+  @Format("uri")
+  @IsString()
+  url!: string;
+}
+```

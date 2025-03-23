@@ -4,12 +4,21 @@ title: Agentica > Guide Documents > Concepts > Compiler Driven Development
 import { Tabs } from "nextra/components";
 
 import RemoteSource from "../../../components/RemoteSource";
+
 import AgenticaExamplePseudoSnippet from "../../snippets/AgenticaExamplePseudoSnippet.mdx";
 import AgenticaExampleActualSnippet from "../../snippets/AgenticaExampleActualSnippet.mdx";
 import KotlinSpringSnippet from "../../snippets/KotlinSpringSnippet.mdx";
 import PhpLaravelSnippet from "../../snippets/PhpLaravelSnippet.mdx";
 import PythonDjangoSnippet from "../../snippets/PythonDjangoSnippet.mdx";
 import PythonFastApiSnippet from "../../snippets/PythonFastApiSnippet.mdx";
+
+import ClassValidatorSnippet from "../../snippets/ClassValidatorSnippet.mdx";
+
+import LlmApplicationExampleSnippet from "../../snippets/LlmApplicationExampleSnippet.mdx";
+import LlmApplicationJavaScriptSnippet from "../../snippets/LlmApplicationJavaScriptSnippet.mdx";
+import BbsArticleControllerSnippet from "../../snippets/BbsArticleControllerSnippet.mdx";
+import BbsArticleServiceSnippet from "../../snippets/BbsArticleServiceSnippet.mdx";
+import IBbsArticleSnippet from "../../snippets/IBbsArticleSnippet.mdx";
 
 ## Preface
 ### Function Calling Schema
@@ -22,20 +31,44 @@ import PythonFastApiSnippet from "../../snippets/PythonFastApiSnippet.mdx";
   </Tabs.Tab>
 </Tabs>
 
-LLM function calling schema must be built by compiler.
+LLM function calling schema must be built by compiler, without any duplicated code.
 
-`@agentica` is specialized in LLM (Large Language Model) function calling, and doing everything with the function calling. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica`. Only LLM function calling schema is important, and `@agentica` will do everything with it. Therefore, the most important thing in `@agentica` based development is, how safely and efficiently build the LLM function calling schema.
+`@agentica` is specialized in LLM (Large Language Model) function calling. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica`. `@agentica` will do everything with the function calling. Therefore, the most important thing in `@agentica` based development is, how safely and efficiently build the LLM function calling schema.
 
 By the way, what if a person writes a function calling schema by hand and makes a mistake? It will break the entire AI agent system, because the LLM function calling would never be successful with the wrong schema. For example, in the case of a traditional backend development, if a backend developer takes a mistake in the API documentation, the frontend developer (human) can intuitively avoid it. However, **AI never forgives** such mistakes.
 
-To prevent such human mistakes, the LLM function calling schema must be constructed by the compiler. I call this concept as "Compiler Driven Development".
+To prevent such human mistakes, the LLM function calling schema must be constructed by the compiler. Also, it must not require any duplicated code. I call this concept as "Compiler Driven Development".
 
 ### TypeScript Class
+<Tabs items={[
+  "TypeScript Source Code",
+  "Compiled JavaScript",
+  <code>BbsArticleService</code>,
+  <code>IBbsArticle</code>,
+]}>
+  <Tabs.Tab>
+    <LlmApplicationExampleSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <LlmApplicationJavaScriptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <BbsArticleServiceSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IBbsArticleSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+> [💻 Playground Link](https://typia.io/playground/?script=JYWwDg9gTgLgBAbzgSQDIBsQEExncAYwEMZgIA7OAXzgDMoIQ4AiAAQGciQCALCgeghgApuSJhgzANwAoUJFhwYATwlEANIiVEA5u2p0GTZirXSZMghXbxxYAFwoM2XPmKkKAHma8SOsDDMAHxwALxKqsBEAHTomNF2biRk5J4ycHAAQgBG7FiwhOjCAMrCUABuhMLq6Sy+MP6BMkEAFACUslbk7BBFsRA6LXYdFsDkMGW0RATCWbn5pARFpRVViLX8AFSbtXCbcADiwrZxcEQFS8Ls0bs7GXtwqMA2cACuYHDC5WXKZxdF+nOvGA3wAJnAxkoeLNMplinAACKZG73O4ZfasKDHV5QbqPZ7wCC0T7fKC-c6LAG3fi1Mag4QAD3ajmQOTy-2EAG0ALqyOAbba3OAAYSxJFmRDg5GEAHc-pThCj0UKAOpQYATQFS2XywoS8jgoE8EFXCHwMYwCBQ2ZIpV7IWsMDnLhwMAMMD6AAK7rKpFNRLgBDFEzor3IBA85AdWJgOLxADlZehfkHhOLDRzqbVU+KWm6hOxHAhdnAtmjUShyLRoCBkhQ4AGYNDdZclFacxMS3safcIeQwK8YCy2Qs9dFkKK0xM+dQ2sP5hy+QLy-sAKpgUHis6UClj25C9ebzXbltFOAyjU8bVyroTcZ2ldwR3Opj5j1wb1CX3Af3E95H2ZaDDCMUgdJ0oBdMYB3gRMbwoO94EtN4N3FLMMn-XM30LdZezLLt9gAFXOHRjlPYQAHJ9AQVh8HIABrFARw5aJgFBKg7XRHt7lYxwbHVcgdDgAAybQ9GiAAxGsSG8V5XlY4Il1wwVeweWDA3g0REKtDCJg47sSygwd53ZBVx0PcUZyoOc4HKCBWMU0tlPROAAFEIPYfUyIfIU3KIDzAR3DlDEYa1EWRfcK2fCDX3dL0fQKX9PncwDgMjNCkr84Q81iosSzwlTCOI0jd0uSjEBosYGNZBdTNY9j8K4jIeLgPixkEkSYF0a5JKgWsYBkuTQQU2orMcWz7JkKgLHy-ZR1bTSNWUFE7n2AADaqTL1VaIQCz5xkWuAsTdK4FoEk8SrPSEmxhOE4BaTJXjiY5IUyCBznBYplBsYQQDaZaaQtSZplmDa5rPRk71BfRQeYidg1mYsMny5zvVAc5fgAaWEJb0ua1qzo6rqJKk-rmFk+Sggc5GHknOtKFIEBZkbZsLsVdKO2EUEAH0SF4mB+Pa0TupJ7wAIAWgZ4Rhv5JGnIeVA-PgHTOaUUAmeJa6vPS5Xud5lr+ba4SheJ3rpOYcXJeGqaxEZ9gnRmRiar1HDHMfZAqxJlIGw1lmgqQjmHy4xkFHNcYgYduGpwRvK5ecgiNTPZmJWY-D8LgAAlYRjo88Zkm+VWYETn3k9MhqS1IQvhD5gWHNl8tnOFDTxjgbIIFBHGCrTxuw+b1v2+90LWfPdUYBgSgrubWsoDo0EIBlShq1NmA9M2RqW7b5Rq7a2vXbTgieFeEBsjEYB0AhWsSLgVd0+QFe94Po+T7PtHL+v5Bz2NXhAyISgjqxHPEK+1Lp3AqKBiRdFoMAHQOIVZ+TgKtcgj10CrU0BqOAjMf76CbCQKUVomyH2PkQU+59dCzAniXPcBU174MfkQ9A9guxwAAD5SiQYwlhLR8aC06mJHqfUZLqmCEbHh1xu4IQALKcyiARVQwhvAv2EFsYIIwMhTRlrvCs7tF59S9knMibZkIAW8hWAA8uQZMoVIFPXBG+b8poLynGyLMHWgdajB2gIhWRKBzIhnCJ6XcRB0CeEjuKSmk0gA)
+
 Use [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application) function.
 
-`@agentica` is guiding to use `typia.llm.application<Class, Model>()` function when constructing a function calling schema for a TypeScript class method. The compiler library `typia` will analyze the source code for the target class type `Class`, and automatically create an LLM (Large Language Model) function calling schema.
+`@agentica` is guiding to use `typia.llm.application<Class, Model>()` function when constructing a function calling schema for a TypeScript class method. The compiler library `typia` will analyze the source code for the target class type `Class`, and automatically create an LLM (Large Language Model) function calling schemas.
 
-By the way, `@agentica` is the only one framework that supporting TypeScript class function calling. And `typia` is the only one library which can create LLM function calling schema from the TypeScript class type. Regardless of whether you follow the "Compiler Driven Development" rule or not, this is the only way to call a function for a TypeScript class method in AI agent.
+If you visit above [💻 Playground Link](https://typia.io/playground/?script=JYWwDg9gTgLgBAbzgSQDIBsQEExncAYwEMZgIA7OAXzgDMoIQ4AiAAQGciQCALCgeghgApuSJhgzANwAoUJFhwYATwlEANIiVEA5u2p0GTZirXSZMghXbxxYAFwoM2XPmKkKAHma8SOsDDMAHxwALxKqsBEAHTomNF2biRk5J4ycHAAQgBG7FiwhOjCAMrCUABuhMLq6Sy+MP6BMkEAFACUslbk7BBFsRA6LXYdFsDkMGW0RATCWbn5pARFpRVViLX8AFSbtXCbcADiwrZxcEQFS8Ls0bs7GXtwqMA2cACuYHDC5WXKZxdF+nOvGA3wAJnAxkoeLNMplinAACKZG73O4ZfasKDHV5QbqPZ7wCC0T7fKC-c6LAG3fi1Mag4QAD3ajmQOTy-2EAG0ALqyOAbba3OAAYSxJFmRDg5GEAHc-pThCj0UKAOpQYATQFS2XywoS8jgoE8EFXCHwMYwCBQ2ZIpV7IWsMDnLhwMAMMD6AAK7rKpFNRLgBDFEzor3IBA85AdWJgOLxADlZehfkHhOLDRzqbVU+KWm6hOxHAhdnAtmjUShyLRoCBkhQ4AGYNDdZclFacxMS3safcIeQwK8YCy2Qs9dFkKK0xM+dQ2sP5hy+QLy-sAKpgUHis6UClj25C9ebzXbltFOAyjU8bVyroTcZ2ldwR3Opj5j1wb1CX3Af3E95H2ZaDDCMUgdJ0oBdMYB3gRMbwoO94EtN4N3FLMMn-XM30LdZezLLt9gAFXOHRjlPYQAHJ9AQVh8HIABrFARw5aJgFBKg7XRHt7lYxwbHVcgdDgAAybQ9GiAAxGsSG8V5XlY4Il1wwVeweWDA3g0REKtDCJg47sSygwd53ZBVx0PcUZyoOc4HKCBWMU0tlPROAAFEIPYfUyIfIU3KIDzAR3DlDEYa1EWRfcK2fCDX3dL0fQKX9PncwDgMjNCkr84Q81iosSzwlTCOI0jd0uSjEBosYGNZBdTNY9j8K4jIeLgPixkEkSYF0a5JKgWsYBkuTQQU2orMcWz7JkKgLHy-ZR1bTSNWUFE7n2AADaqTL1VaIQCz5xkWuAsTdK4FoEk8SrPSEmxhOE4BaTJXjiY5IUyCBznBYplBsYQQDaZaaQtSZplmDa5rPRk71BfRQeYidg1mYsMny5zvVAc5fgAaWEJb0ua1qzo6rqJKk-rmFk+Sggc5GHknOtKFIEBZkbZsLsVdKO2EUEAH0SF4mB+Pa0TupJ7wAIAWgZ4Rhv5JGnIeVA-PgHTOaUUAmeJa6vPS5Xud5lr+ba4SheJ3rpOYcXJeGqaxEZ9gnRmRiar1HDHMfZAqxJlIGw1lmgqQjmHy4xkFHNcYgYduGpwRvK5ecgiNTPZmJWY-D8LgAAlYRjo88Zkm+VWYETn3k9MhqS1IQvhD5gWHNl8tnOFDTxjgbIIFBHGCrTxuw+b1v2+90LWfPdUYBgSgrubWsoDo0EIBlShq1NmA9M2RqW7b5Rq7a2vXbTgieFeEBsjEYB0AhWsSLgVd0+QFe94Po+T7PtHL+v5Bz2NXhAyISgjqxHPEK+1Lp3AqKBiRdFoMAHQOIVZ+TgKtcgj10CrU0BqOAjMf76CbCQKUVomyH2PkQU+59dCzAniXPcBU174MfkQ9A9guxwAAD5SiQYwlhLR8aC06mJHqfUZLqmCEbHh1xu4IQALKcyiARVQwhvAv2EFsYIIwMhTRlrvCs7tF59S9knMibZkIAW8hWAA8uQZMoVIFPXBG+b8poLynGyLMHWgdajB2gIhWRKBzIhnCJ6XcRB0CeEjuKSmk0gA) or click the "Compiled JavaScript" tab, you can see how the compiler changes your class type (`BbsArticleService`) to LLM function calling schemas. LLM function calling schema must be constructed by compiler without any duplicated code like this way. This is the concept "Compiler Driven Development" what I am saying.
+
+For reference, `@agentica` is the only one framework that supporting TypeScript class function calling. And `typia` is the only one library which can create LLM function calling schema from the TypeScript class type. Regardless of whether you follow the "Compiler Driven Development" rule or not, this is the only way to call a function for a TypeScript class method in AI agent.
 
 ### Backend Development
 <Tabs items={["Java/Kotlin Spring", "Php Laravel", "Python Django"]}>
@@ -67,15 +100,15 @@ To overcome such human mistakes, `@agentica` recommends to adapt new era's backe
 ### Java/Kotlin Spring Framework
 <KotlinSpringSnippet />
 
-In the existing backend development ecosystem, as API documents are written by hands, it is very difficult, dangerous and not suitable for Super AI Chatbot development. As I am a Korean, I will talk about this story within framework of the Korean backend ecosystem.
+In the existing backend development ecosystem, as API documents are written by hands, it is very difficult, dangerous and not suitable for Agentic AI agent development. As I am a Korean, I will talk about this story within framework of the Korean backend ecosystem.
 
 In Korea, **Java** takes about 90% of the backend development ecosystem of major IT companies (experience of other languages are not recognized in Korea). And in the Java ecosystem, most of them have adopted [Spring Framework](https://spring.io/projects/spring-framework), and force to use [Spring RectDocs](https://spring.io/projects/spring-restdocs) for the API documentation purpose. Even when generating Swagger/OpenAPI documents, company policy dictates to convert from the `RestDocs`.
 
-And in the `RestDocs`, you have to write the API documents manually by your hands. As you can see from the above example code, you have to write the API endpoint (`"/api/v1/samples/{sampleId}"`) by yourself, and also must write the schema types (`fieldWithPath("name").type(JsonFieldType.STRING).description("The name of sample.")`) manually.
-
-If you take some mistakes on the documentation, it only can be caught by the runtime level test functions. The mistake never can be caught in the compilation level, so that API documentation is extremely hard work for backend developers.
+And in the `RestDocs`, you have to write the API documents manually by your hands. As you can see from the above example code, you have to write the API endpoint (`"/api/v1/samples/{sampleId}"`) by yourself, and also must write the schema types (`fieldWithPath("name").type(JsonFieldType.STRING).description("The name of sample.")`) manually. If you take some mistakes on the documentation, it only can be caught by the runtime level test functions. The mistake never can be caught in the compilation level, so that API documentation is extremely hard work for backend developers.
 
 And in most cases, backend developers in Korea have roles divided within the team, with those who develop the main program, those who write test code, and those who write API documentation. And in most cases, the main program is developed by senior developers, and test programs or API documentations are shifted to the junior developers.
+
+Hand writing the API documentation with extra schema definition of duplicated code. Do you think it is suitable for the new era of AI agent development? I think it is not. Java Spring Framework is not suitable for Agentic AI development.
 
 > I am not a backend dedicated developer and have never used Java/Spring, so I do not know this ecosystem in detail. I wrote this article based on company regulations and interviews with backend developers and technical blog articles of them.
 >
@@ -83,7 +116,7 @@ And in most cases, backend developers in Korea have roles divided within the tea
 >
 > "Swagger is invasive to the operation code, and RestDocs is not"
 >
-> This is probably the answer to why there is a division of main program developers, test developers, and documentation developers within the backend team. However, as I am not a developer in this ecosystem, so I cannot understand it exactly. If anyone knows more about this subject, please let me know in the comments.
+> This is probably the answer to why there is a division of main program developers, test developers, and documentation developers within the backend team. However, as I am not a developer in this ecosystem, so I cannot understand it exactly. If anyone knows more about this subject, please let me know the reason why.
 
 References:
 
@@ -95,20 +128,20 @@ References:
 ### Php Laravel Framework
 <PhpLaravelSnippet />
 
-In globally, Php seems like the major language of backend development ecosystem, and [Laravel](https://laravel.com/) is the most popular framework in the Php language. When making a Swagger/OpenAPI document in the Php Laravel Framework, you have to write documentation comments like above with `@OA` tags.
+In globally, Php seems like the major language of backend development ecosystem, and [Laravel](https://laravel.com/) is the most popular framework in the Php language. By the way, when making a Swagger/OpenAPI document in the Php Laravel Framework, you have to write documentation comments like above with `@OA` tags hand manually.
 
 This is the most horrible and dangerous way of building swagger documents I have ever seen. At this point, CDD (Contract Driven Development) advocated by OpenAPI Foundation seems better. Isn't it the same thing as writing Swagger specs by hand as Php comments, versus writing Swagger documents by hand?
 
 Researching it, I understood one thing. If you take mistake when writing the Swagger documentation comment, it never can be caught automatically as `RestDocs` case. And even just typo mistake like `OAA\Respons()` or `QA\Proper(type='stringggg')` never can be caught until actually opening the Swagger document. Unless `RestDocs ` forces user to write a test program validating the operation and its schemas, the Laravel's swagger generator does not any restriction, so that I could hear that no one of Php co-working client developer believes the Swagger document.
 
-I can clearly say that, Php has fuXXing ecosystem for Super AI chatbot development. This is the most terrible solution I've ever seen.
+I can clearly say that, Php has the worst ecosystem for Super AI chatbot development. This is the most terrible solution I've ever seen.
 
 ### Python Django Framework
 <PythonDjangoSnippet />
 
-In the Python backend ecosystem, there are two major frameworks [`Django`](https://www.djangoproject.com/) and [`FastAPI`](https://fastapi.tiangolo.com/).
+In the Python backend ecosystem, there is a major frameworks [`Django`](https://www.djangoproject.com/).
 
-Above example code is demonstrating the way to generate the Swagger document in the Django framework with [`DRF-Speculator`](https://drf-spectacular.readthedocs.io/). As you can see, it is horrible like `Spring RestDocs` and `Php Laravel` cases. Human must write the most of Swagger document parts manually by their hands. If human takes some mistake, it will break the Super AI chatbot.
+Above example code is demonstrating the way to generate the Swagger document in the Django framework with [`DRF-Speculator`](https://drf-spectacular.readthedocs.io/). As you can see, it is horrible like `Spring RestDocs` and `Php Laravel` cases. Human must write the most of Swagger document parts manually by their hands. If human takes some mistake, it will break the AI agent.
 
 Therefore, `DJango` is not suitable for new AI era.
 
@@ -117,27 +150,157 @@ Therefore, `DJango` is not suitable for new AI era.
 
 ## Compiler Driven Development
 ### TypeScript Class
-
-### TypeScript NestJS Framework
-<Tabs items={["Controller", "DTO Schema"]}>
+<Tabs items={[
+  "TypeScript Source Code",
+  "Compiled JavaScript",
+  <code>BbsArticleService</code>,
+  <code>IBbsArticle</code>,
+]}>
   <Tabs.Tab>
-    <RemoteSource 
-      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/sales/IShoppingSaleUnitStock.ts" 
-      filename="@samchon/shopping-backend/IShoppingSaleUnitStock" 
-      showLineNumbers />
-    </Tabs.Tab>
+    <LlmApplicationExampleSnippet />
+  </Tabs.Tab>
   <Tabs.Tab>
-    <RemoteSource 
-      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/sales/IShoppingSaleUnitSelectableOption.ts" 
-      filename="@samchon/shopping-backend/IShoppingSaleUnitSelectableOption" 
-      showLineNumbers />
+    <LlmApplicationJavaScriptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <BbsArticleServiceSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IBbsArticleSnippet />
   </Tabs.Tab>
 </Tabs>
 
-### Python FastAPI Framework
-<PythonFastApiSnippet />
+> [💻 Playground Link](https://typia.io/playground/?script=JYWwDg9gTgLgBAbzgSQDIBsQEExncAYwEMZgIA7OAXzgDMoIQ4AiAAQGciQCALCgeghgApuSJhgzANwAoUJFhwYATwlEANIiVEA5u2p0GTZirXSZMghXbxxYAFwoM2XPmKkKAHma8SOsDDMAHxwALxKqsBEAHTomNF2biRk5J4ycHAAQgBG7FiwhOjCAMrCUABuhMLq6Sy+MP6BMkEAFACUslbk7BBFsRA6LXYdFsDkMGW0RATCWbn5pARFpRVViLX8AFSbtXCbcADiwrZxcEQFS8Ls0bs7GXtwqMA2cACuYHDC5WXKZxdF+nOvGA3wAJnAxkoeLNMplinAACKZG73O4ZfasKDHV5QbqPZ7wCC0T7fKC-c6LAG3fi1Mag4QAD3ajmQOTy-2EAG0ALqyOAbba3OAAYSxJFmRDg5GEAHc-pThCj0UKAOpQYATQFS2XywoS8jgoE8EFXCHwMYwCBQ2ZIpV7IWsMDnLhwMAMMD6AAK7rKpFNRLgBDFEzor3IBA85AdWJgOLxADlZehfkHhOLDRzqbVU+KWm6hOxHAhdnAtmjUShyLRoCBkhQ4AGYNDdZclFacxMS3safcIeQwK8YCy2Qs9dFkKK0xM+dQ2sP5hy+QLy-sAKpgUHis6UClj25C9ebzXbltFOAyjU8bVyroTcZ2ldwR3Opj5j1wb1CX3Af3E95H2ZaDDCMUgdJ0oBdMYB3gRMbwoO94EtN4N3FLMMn-XM30LdZezLLt9gAFXOHRjlPYQAHJ9AQVh8HIABrFARw5aJgFBKg7XRHt7lYxwbHVcgdDgAAybQ9GiAAxGsSG8V5XlY4Il1wwVeweWDA3g0REKtDCJg47sSygwd53ZBVx0PcUZyoOc4HKCBWMU0tlPROAAFEIPYfUyIfIU3KIDzAR3DlDEYa1EWRfcK2fCDX3dL0fQKX9PncwDgMjNCkr84Q81iosSzwlTCOI0jd0uSjEBosYGNZBdTNY9j8K4jIeLgPixkEkSYF0a5JKgWsYBkuTQQU2orMcWz7JkKgLHy-ZR1bTSNWUFE7n2AADaqTL1VaIQCz5xkWuAsTdK4FoEk8SrPSEmxhOE4BaTJXjiY5IUyCBznBYplBsYQQDaZaaQtSZplmDa5rPRk71BfRQeYidg1mYsMny5zvVAc5fgAaWEJb0ua1qzo6rqJKk-rmFk+Sggc5GHknOtKFIEBZkbZsLsVdKO2EUEAH0SF4mB+Pa0TupJ7wAIAWgZ4Rhv5JGnIeVA-PgHTOaUUAmeJa6vPS5Xud5lr+ba4SheJ3rpOYcXJeGqaxEZ9gnRmRiar1HDHMfZAqxJlIGw1lmgqQjmHy4xkFHNcYgYduGpwRvK5ecgiNTPZmJWY-D8LgAAlYRjo88Zkm+VWYETn3k9MhqS1IQvhD5gWHNl8tnOFDTxjgbIIFBHGCrTxuw+b1v2+90LWfPdUYBgSgrubWsoDo0EIBlShq1NmA9M2RqW7b5Rq7a2vXbTgieFeEBsjEYB0AhWsSLgVd0+QFe94Po+T7PtHL+v5Bz2NXhAyISgjqxHPEK+1Lp3AqKBiRdFoMAHQOIVZ+TgKtcgj10CrU0BqOAjMf76CbCQKUVomyH2PkQU+59dCzAniXPcBU174MfkQ9A9guxwAAD5SiQYwlhLR8aC06mJHqfUZLqmCEbHh1xu4IQALKcyiARVQwhvAv2EFsYIIwMhTRlrvCs7tF59S9knMibZkIAW8hWAA8uQZMoVIFPXBG+b8poLynGyLMHWgdajB2gIhWRKBzIhnCJ6XcRB0CeEjuKSmk0gA)
 
-### Compiler Driven Development
+LLM function calling schemas from TypeScript class functions.
+
+The easiest way to build LLM (Large Language Model) function calling schemas type safely without any duplicated code is to use [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application) function to a TypeScript class type. The compiler will analyze the target class type (`BbsArticleService`), and automatically create the LLM function calling schemas.
+
+If you visit above [💻 Playground Link](https://typia.io/playground/?script=JYWwDg9gTgLgBAbzgSQDIBsQEExncAYwEMZgIA7OAXzgDMoIQ4AiAAQGciQCALCgeghgApuSJhgzANwAoUJFhwYATwlEANIiVEA5u2p0GTZirXSZMghXbxxYAFwoM2XPmKkKAHma8SOsDDMAHxwALxKqsBEAHTomNF2biRk5J4ycHAAQgBG7FiwhOjCAMrCUABuhMLq6Sy+MP6BMkEAFACUslbk7BBFsRA6LXYdFsDkMGW0RATCWbn5pARFpRVViLX8AFSbtXCbcADiwrZxcEQFS8Ls0bs7GXtwqMA2cACuYHDC5WXKZxdF+nOvGA3wAJnAxkoeLNMplinAACKZG73O4ZfasKDHV5QbqPZ7wCC0T7fKC-c6LAG3fi1Mag4QAD3ajmQOTy-2EAG0ALqyOAbba3OAAYSxJFmRDg5GEAHc-pThCj0UKAOpQYATQFS2XywoS8jgoE8EFXCHwMYwCBQ2ZIpV7IWsMDnLhwMAMMD6AAK7rKpFNRLgBDFEzor3IBA85AdWJgOLxADlZehfkHhOLDRzqbVU+KWm6hOxHAhdnAtmjUShyLRoCBkhQ4AGYNDdZclFacxMS3safcIeQwK8YCy2Qs9dFkKK0xM+dQ2sP5hy+QLy-sAKpgUHis6UClj25C9ebzXbltFOAyjU8bVyroTcZ2ldwR3Opj5j1wb1CX3Af3E95H2ZaDDCMUgdJ0oBdMYB3gRMbwoO94EtN4N3FLMMn-XM30LdZezLLt9gAFXOHRjlPYQAHJ9AQVh8HIABrFARw5aJgFBKg7XRHt7lYxwbHVcgdDgAAybQ9GiAAxGsSG8V5XlY4Il1wwVeweWDA3g0REKtDCJg47sSygwd53ZBVx0PcUZyoOc4HKCBWMU0tlPROAAFEIPYfUyIfIU3KIDzAR3DlDEYa1EWRfcK2fCDX3dL0fQKX9PncwDgMjNCkr84Q81iosSzwlTCOI0jd0uSjEBosYGNZBdTNY9j8K4jIeLgPixkEkSYF0a5JKgWsYBkuTQQU2orMcWz7JkKgLHy-ZR1bTSNWUFE7n2AADaqTL1VaIQCz5xkWuAsTdK4FoEk8SrPSEmxhOE4BaTJXjiY5IUyCBznBYplBsYQQDaZaaQtSZplmDa5rPRk71BfRQeYidg1mYsMny5zvVAc5fgAaWEJb0ua1qzo6rqJKk-rmFk+Sggc5GHknOtKFIEBZkbZsLsVdKO2EUEAH0SF4mB+Pa0TupJ7wAIAWgZ4Rhv5JGnIeVA-PgHTOaUUAmeJa6vPS5Xud5lr+ba4SheJ3rpOYcXJeGqaxEZ9gnRmRiar1HDHMfZAqxJlIGw1lmgqQjmHy4xkFHNcYgYduGpwRvK5ecgiNTPZmJWY-D8LgAAlYRjo88Zkm+VWYETn3k9MhqS1IQvhD5gWHNl8tnOFDTxjgbIIFBHGCrTxuw+b1v2+90LWfPdUYBgSgrubWsoDo0EIBlShq1NmA9M2RqW7b5Rq7a2vXbTgieFeEBsjEYB0AhWsSLgVd0+QFe94Po+T7PtHL+v5Bz2NXhAyISgjqxHPEK+1Lp3AqKBiRdFoMAHQOIVZ+TgKtcgj10CrU0BqOAjMf76CbCQKUVomyH2PkQU+59dCzAniXPcBU174MfkQ9A9guxwAAD5SiQYwlhLR8aC06mJHqfUZLqmCEbHh1xu4IQALKcyiARVQwhvAv2EFsYIIwMhTRlrvCs7tF59S9knMibZkIAW8hWAA8uQZMoVIFPXBG+b8poLynGyLMHWgdajB2gIhWRKBzIhnCJ6XcRB0CeEjuKSmk0gA) or click the "Compiled JavaScript" tab, you can see how the compiler changes your class type (`BbsArticleService`) to LLM function calling schemas. LLM function calling schema must be constructed by compiler without any duplicated code like this way. This is the concept "Compiler Driven Development" what I am saying.
+
+<Tabs 
+  items={["Correct Class", "Violated Class", "Console Output"]}
+  defaultIndex={2}>
+  <Tabs.Tab>
+    <LlmApplicationExampleSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="example/src/llm.application.violation.ts" showLineNumbers
+import { ILlmApplication } from "@samchon/openapi";
+import typia, { tags } from "typia";
+
+const app: ILlmApplication<"chatgpt"> = typia.llm.application<
+  BbsArticleController,
+  "chatgpt"
+>();
+
+console.log(app);
+
+interface BbsArticleController {
+  /**
+   * Create a new article.
+   *
+   * Writes a new article and archives it into the DB.
+   *
+   * @param props Properties of create function
+   * @returns Newly created article
+   */
+  create(props: {
+    /**
+     * Information of the article to create
+     */
+    input: IBbsArticle.ICreate;
+  }): Promise<IBbsArticle | undefined>;
+
+  erase(id: string & tags.Format<"uuid">): Promise<void>;
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Terminal"
+src/examples/llm.application.violation.ts:4:41 - error TS(typia.llm.application): unsupported type detected    
+
+- BbsArticleController.create: unknown
+  - LLM application's function ("create")'s return type must not be union type with undefined.    
+
+- BbsArticleController.erase: unknown
+  - LLM application's function ("erase")'s parameter must be an object type.
+
+4 const app: ILlmApplication<"chatgpt"> = typia.llm.application<
+                                          ~~~~~~~~~~~~~~~~~~~~~~
+5   BbsArticleController,
+  ~~~~~~~~~~~~~~~~~~~~~~~
+6   "chatgpt"
+  ~~~~~~~~~~~
+7 >();
+  ~~~
+
+
+Found 1 error in src/examples/llm.application.violation.ts:4
+```
+  </Tabs.Tab>
+</Tabs>
+
+By the way, there're some restrictions in the `typia.llm.application<Class, Model>()` function. And the resctrions come from the characteristics of the LLM function calling schema. If you violate some of these restrictions, the `typia.llm.application<Class, Model>()` function will throw a compilation error with detailed reasons like above.
+
+At first, every function must have only one object typed parameter with static key names. Looking at `BbsArticleService.update()` or `BbsArticleService.erase()` functions, you can find that their parameters are capsuled into an object with static key names like `input` or `id`. This is the rule of the LLM function calling schema, and called as "keyworded parameters".
+
+At second, parameters and return types must be primitive types which can be converted to or converted from the JSON. `bigint` and user defined class types are not allowed. Also, some native classes like `Date` or `Uint8Array` are now allowed either.
+
+At last, you have to follow domain restrictions of the target model. For example, Gemini does not allow union types, so if your class has the union type, the `typia.llm.application<Class, "gemini">()` would be failed with the compilation error. Here is the list of LLM schema types, and you have to follow the domain restrictions of the target model.
+
+  - [`IChatGptSchema`](/api/types/_samchon_openapi.IChatGptSchema-1.html): OpenAI GPT
+  - [`IClaudeSchema`](/api/types/_samchon_openapi.IClaudeSchema-1.html): Anthropic Claude
+  - [`IGeminiSchema`](/api/types/_samchon_openapi.IGeminiSchema-1.html): Google Gemini
+  - [`ILlamaSchema`](/api/types/_samchon_openapi.ILlamaSchema-1.html): Meta Llama
+- Midldle layer schemas
+  - [`ILlmSchemaV3`](/api/types/_samchon_openapi.ILlmSchemaV3-1.html): middle layer based on OpenAPI v3.0 specification
+  - [`ILlmSchemaV3_1`](/api/types/_samchon_openapi.ILlmSchemaV3_1-1.html): middle layer based on OpenAPI v3.1 specification
+
+### TypeScript NestJS Framework
+<Tabs items={["Controller", "DTO Schema", "Traditional NestJS DTO"]}>
+  <Tabs.Tab>
+    <BbsArticleControllerSnippet /> 
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IBbsArticleSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <ClassValidatorSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+The best framework for AI agent development, if combine with [`@nestia`](https://nestia.io).
+
+In the TypeScript backend development ecosystem, there is a framework called [`NestJS`](https://nestjs.com/). And it is not suitable for AI agent development. It's because the `@nestjs` needs triple duplicated code for the DTO schema definition with `@nestjs/swagger` and `class-validator`. Furthermore, such duplicated code even cannot be assured safety by the compiler.
+
+However, if combine with its helper library [`@nestia`](https://nestia.io), it becomes the best framework for AI agent development. `@nestia` is a helper library for `@nestjs`, which can generate the Swagger/OpenAPI document by the compiler. No more need to define duplicated schema definitions, so that you can ensure the safety of the API documentation by the compiler.
+
+Just define TypeScript interface based DTO schemas like above. About the controllers, just write description comments on each controller functions. Then `@nestia` will analyze your TypeScript source files, and generate the Swagger/OpenAPI document by the compiler.
+
+Also, if you're considering to develop hybrid application that is composed with both human side appliication and AI agent chatbot at the same time, `@nestia` is also can be the best choice. It will analyze your TypeScript source codes, and generate [SDK (Software Development Kit)](https://nestia.io/docs/sdk/) for frontend developers. With the compiler driven developed SDK, human also can call the API functions safely and conveniently.
+
+![Nestia SDK gif](https://user-images.githubusercontent.com/13158709/215004990-368c589d-7101-404e-b81b-fbc936382f05.gif)
+
+> Left is NestJS server code, and right is client (frontend) code utilizing SDK
+
+### Python FastAPI Framework
+<Tabs items={["Python FastAPI Framework", "Python DJango Framework"]}>
+  <Tabs.Tab>
+    <PythonFastApiSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <PythonDjangoSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+FastAPI is good framework for AI agent development.
+
+Even though `@agentica` is a framework for TypeScript developers, it is okay to using another language's framework for the backend development, unless the framework needs to write the Swagger/OpenAPI document by hand.
+
+In the Python ecosystem, there is another good framework called [`FastAPI`](https://fastapi.tiangolo.com/) which can build the Swagger/OpenAPI document by the reflection system of the Python language. With the reflection system of Python and FastAPI, you don't need to write the Swagger/OpenAPI document by hand, and no more need to implement duplicated schema definition either.
+
+Therefore, FastAPI is suitable for the new era's Agentic AI development. If you know more languages or frameworks which can build the Swagger/OpenAPI document by compiler or reflection like system without duplicated code, please let us know. It may suitable for AI agent development too.
 
 
 
