@@ -104,13 +104,13 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
 
   // Ask for template type
   if (context.template == null) {
-    const choices = {
-      "standalone": `Standalone ${blueBright("Agent Server")}`,
-      "nodejs": `NodeJS ${blueBright("Agent Server")}`,
-      "nestjs": `NestJS ${blueBright("Agent Server")}`,
-      "react": `React ${blueBright("Application")}`,
-      "nestjs+react": `NestJS + React ${blueBright("Agent Server + Client Application")}`,
-    } as const satisfies Record<StarterTemplate, string>;
+    const choices = [
+      { name: `Standalone ${blueBright("Agent Server")}`, value: "standalone" },
+      { name: `NodeJS ${blueBright("Agent Server")}`, value: "nodejs" },
+      { name: `NestJS ${blueBright("Agent Server")}`, value: "nestjs" },
+      { name: `React ${blueBright("Application")}`, value: "react" },
+      { name: `NestJS + React ${blueBright("Agent Server + Client Application")}`, value: "nestjs+react" },
+    ] as const satisfies { name: string; value: StarterTemplate }[];
 
     const { templateType } = await inquirer.prompt<{ templateType: StarterTemplate }>([
       {
