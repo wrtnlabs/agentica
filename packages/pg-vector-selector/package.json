@@ -1,23 +1,15 @@
 {
   "name": "@agentica/pg-vector-selector",
   "version": "0.12.21",
-  "main": "src/index.ts",
-  "publishConfig": {
-    "main": "lib/index.js",
-    "module": "lib/index.mjs",
-    "typings": "lib/index.d.ts",
-    "access": "public"
-  },
-  "scripts": {
-    "build": "tsc && rollup -c",
-    "test": "vitest",
-    "prepublishOnly": "pnpm run build",
-    "lint": "eslint .",
-    "format": "eslint --fix ."
-  },
+  "author": "Wrtn Technologies",
+  "license": "MIT",
+  "homepage": "https://wrtnlabs.io",
   "repository": {
     "type": "git",
     "url": "https://github.com/wrtnlabs/agentica"
+  },
+  "bugs": {
+    "url": "https://github.com/wrtnlabs/agent/issues"
   },
   "keywords": [
     "openai",
@@ -30,36 +22,42 @@
     "swagger",
     "openapi"
   ],
-  "author": "Wrtn Technologies",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/wrtnlabs/agent/issues"
+  "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js",
+    "module": "lib/index.mjs",
+    "typings": "lib/index.d.ts",
+    "access": "public"
   },
-  "homepage": "https://wrtnlabs.io",
   "files": [
-    "README.md",
     "LICENSE",
-    "package.json",
+    "README.md",
     "lib",
+    "package.json",
     "prompts",
     "src"
   ],
+  "scripts": {
+    "build": "tsc && rollup -c",
+    "eslint": "eslint ./**/*.ts",
+    "prepublishOnly": "pnpm run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "peerDependencies": {
+    "@agentica/core": "workspace:^"
+  },
+  "dependencies": {
+    "@wrtnlabs/connector-hive-api": "^1.4.1"
+  },
   "devDependencies": {
     "@agentica/core": "workspace:^",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
     "@samchon/openapi": "^3",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "^22.10.5",
-    "prettier": "^3.5.0",
     "rimraf": "^6.0.1",
     "rollup": "^4.29.1",
     "typescript": "~5.7.3"
-  },
-  "dependencies": {
-    "@wrtnlabs/connector-hive-api": "^1.4.1"
-  },
-  "peerDependencies": {
-    "@agentica/core": "workspace:^"
   }
 }
