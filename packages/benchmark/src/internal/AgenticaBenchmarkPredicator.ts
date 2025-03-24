@@ -55,10 +55,10 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): P
     .at(-1);
 
   /**
-   * it's black magic, but Agentica Props is private
+   * Agentica Props is private, we can't access it
    * The provided code follows the original source prior to modification.
    * However, due to compilation errors, a workaround was implemented.
-   * Please apply any available patches to resolve this issue
+   * Please apply any available patches to resolve this issue.
    */
   const llmVendor = (agent as unknown as { props: IAgenticaProps<Model> }).props.vendor;
   const isTextPrompt = last?.type === "text" && last.role === "assistant";
