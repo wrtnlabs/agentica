@@ -6,17 +6,17 @@
 import type { SimplifyDeep } from "type-fest";
 import type { Service, UnwrapTaggedService } from "../connectors";
 import type { PackageManager } from "../packages";
-import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
 import * as p from "@clack/prompts";
+import { x } from "tinyexec";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand } from "../packages";
-import { blueBright, formatWithPrettier, redBright, yellow } from "../utils";
+import { blueBright, formatWithPrettier, yellow } from "../utils";
 
 /** supported starter templates */
 export type StarterTemplate =
@@ -57,18 +57,20 @@ interface InstallDependenciesOptions {
 }
 
 /** dependencies for the project */
-function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): void {
+async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
   // in case service is empty we add dummy package. we use typescript for sure, so we use it.
   const pkg = ([...services.map(service => serviceToConnector(service)), "typescript"]).join(" ");
-  const command = installCommand({ packageManager, pkg });
+  const commands = installCommand({ packageManager, pkg });
+  const [command, ...args] = commands.split(" ");
 
   const s = p.spinner();
 
   s.start("📦 Package installation in progress...");
 
-  execSync(command, {
-    cwd: projectAbsolutePath,
-    stdio: [],
+  await x(command, args, {
+    nodeOptions: {
+      cwd: projectAbsolutePath,
+    },
   });
 
   s.stop("✅ Package installation completed");
@@ -248,7 +250,7 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
   p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
@@ -296,7 +298,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
   p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
@@ -341,7 +343,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
   p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
@@ -370,7 +372,7 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
   p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
