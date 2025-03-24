@@ -48,7 +48,7 @@ interface Context {
 
 interface SetupProjectOptions {
   projectAbsolutePath: string;
-  context: Context;
+  context: Pick<Context, "packageManager" | "services" | "openAIKey" | "port">;
 }
 
 interface InstallDependenciesOptions {
@@ -59,8 +59,12 @@ interface InstallDependenciesOptions {
 
 /** dependencies for the project */
 function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): void {
-  const command = installCommand({ packageManager, pkg: services.map(service => serviceToConnector(service)).join(" ") });
+  // in case service is empty we add dummy package. we use typescript for sure, so we use it.
+  const pkg = ([...services.map(service => serviceToConnector(service)), "typescript"]).join(" ");
+  const command = installCommand({ packageManager, pkg });
+
   console.log("📦 Package installation in progress...");
+
   execSync(command, {
     cwd: projectAbsolutePath,
     stdio: "inherit",
@@ -173,7 +177,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   return context;
 }
 
-async function setupStandAloneProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+export async function setupStandAloneProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
   // download and place template in project
   await downloadTemplateAndPlaceInProject({
     template: "standalone",
@@ -212,7 +216,7 @@ async function setupStandAloneProject({ projectAbsolutePath, context }: SetupPro
   });
 }
 
-async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+export async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
   // download and place template in project
   await downloadTemplateAndPlaceInProject({
     template: "nodejs",
@@ -260,7 +264,7 @@ async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProject
   });
 }
 
-async function setupNestJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+export async function setupNestJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
   // download and place template in project
   await downloadTemplateAndPlaceInProject({
     template: "nestjs",
@@ -305,7 +309,7 @@ async function setupNestJSProject({ projectAbsolutePath, context }: SetupProject
   });
 }
 
-async function setupReactProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+export async function setupReactProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
   // download and place template in project
   await downloadTemplateAndPlaceInProject({
     template: "react",
