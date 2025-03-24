@@ -11,6 +11,7 @@ import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
+import * as p from "@clack/prompts";
 import inquirer from "inquirer";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
@@ -342,6 +343,8 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
  * Start a new project
  */
 export async function start({ project, template }: StartOptions) {
+  p.intro("Agentica Start Wizard");
+
   const projectAbsolutePath = join(process.cwd(), project);
 
   // Check if project already exists
@@ -382,8 +385,8 @@ export async function start({ project, template }: StartOptions) {
       throw new Error(`❌ Template ${context.template as unknown as string} not supported`);
   }
 
-  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
-  console.log(
-    `\n⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
-  );
+  p.outro(`
+🎉 Project ${projectAbsolutePath} created
+⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts
+`);
 }
