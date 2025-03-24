@@ -49,13 +49,13 @@ describe("writeEnvKeysToDotEnv", () => {
       projectPath: "/my-new-project",
       dotEnvfileName: ".env",
       apiKeys: [
-        { key: "OPNEAI_API_KEY", value: "sk-foo" },
+        { key: "OPENAI_API_KEY", value: "sk-foo" },
       ],
     });
 
     const content = vol.readFileSync("/my-new-project/.env", "utf-8");
 
-    expect(content).toBe("OPNEAI_API_KEY=sk-foo");
+    expect(content).toBe("OPENAI_API_KEY=sk-foo");
   });
 
   it("should add multiple api keys to the .env file", async () => {
@@ -66,14 +66,14 @@ describe("writeEnvKeysToDotEnv", () => {
       projectPath: "/my-new-project",
       dotEnvfileName: ".env",
       apiKeys: [
-        { key: "OPNEAI_API_KEY", value: "sk-foo" },
-        { key: "OPNEAI_API_SECRET", value: "sk-bar" },
+        { key: "OPENAI_API_KEY", value: "sk-foo" },
+        { key: "OPENAI_API_SECRET", value: "sk-bar" },
       ],
     });
 
     const content = vol.readFileSync("/my-new-project/.env", "utf-8");
 
-    expect(content).toBe("OPNEAI_API_KEY=sk-foo\nOPNEAI_API_SECRET=sk-bar");
+    expect(content).toBe("OPENAI_API_KEY=sk-foo\nOPENAI_API_SECRET=sk-bar");
   });
 
   it("should set default .env file name if not provided", async () => {
@@ -83,7 +83,7 @@ describe("writeEnvKeysToDotEnv", () => {
     await writeEnvKeysToDotEnv({
       projectPath: "/my-new-project",
       apiKeys: [
-        { key: "OPNEAI_API_KEY", value: "sk-foo" },
+        { key: "OPENAI_API_KEY", value: "sk-foo" },
       ],
     });
 
@@ -94,19 +94,19 @@ describe("writeEnvKeysToDotEnv", () => {
     /** ensure the directory exists */
     vol.mkdirSync("/my-new-project", { recursive: true });
 
-    vol.writeFileSync("/my-new-project/.env", "OPNEAI_API_KEY=sk-foo");
+    vol.writeFileSync("/my-new-project/.env", "OPENAI_API_KEY=sk-foo");
 
     await writeEnvKeysToDotEnv({
       projectPath: "/my-new-project",
       dotEnvfileName: ".env",
       apiKeys: [
-        { key: "OPNEAI_API_SECRET", value: "sk-bar" },
+        { key: "OPENAI_API_SECRET", value: "sk-bar" },
       ],
     });
 
     const content = vol.readFileSync("/my-new-project/.env", "utf-8");
 
-    expect(content).toBe("OPNEAI_API_KEY=sk-foo\nOPNEAI_API_SECRET=sk-bar");
+    expect(content).toBe("OPENAI_API_KEY=sk-foo\nOPENAI_API_SECRET=sk-bar");
   });
 
   it("should throw an error if the directory does not exist", async () => {
