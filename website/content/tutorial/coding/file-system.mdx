@@ -1,8 +1,10 @@
 ---
-title: Agentica > Tutorial > File System Agents  
+title: Agentica > Tutorial > File System Agents
 ---
 
 ## Introduction
+
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-file-system?file=README.md) You can see the demo code on the playground.
 
 This tutorial guides you through setting up a **fully functional File System Agent** using **Agentica**. With the following code block, you can create an agent that interacts with the local file system, powered by **OpenAI's GPT model**.
 
@@ -31,12 +33,9 @@ class FsClass {
   /**
    * Indicates the current folder path.
    *
-   * ```ts
    * The directory name of the current module. This is the same as the
    * `path.dirname()` of the `__filename`.
    * @since v0.1.27
-   * __dirname;
-   * ```
    *
    * @returns dirname
    */
@@ -83,7 +82,7 @@ class FsClass {
    * Similar to {@link readFile}, when the path is a directory, the behavior of
    * `fs.readFileSync()` is platform-specific.
    *
-   * ```js
+   * @example
    * import { readFileSync } from 'fs';
    *
    * // macOS, Linux, and Windows
@@ -92,7 +91,7 @@ class FsClass {
    *
    * //  FreeBSD
    * readFileSync('<directory>'); // => <data>
-   * ```
+   *
    * @since v0.1.8
    * @param path filename
    */

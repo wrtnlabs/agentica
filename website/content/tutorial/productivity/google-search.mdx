@@ -4,6 +4,8 @@ title: Agentica > Tutorial > Google Search Agents
 
 ## Introduction
 
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-google-search?file=README.md) You can see the demo code on the playground.
+
 Set up a **fully functional Google Search Agent** powered by OpenAI's GPT model quickly using the Agentica CLI.
 
 ## Quick CLI Setup
@@ -15,6 +17,7 @@ npx agentica start google-search-agent
 ```
 
 The wizard guides you through:
+
 - Installing required packages (e.g., agentica@0.12.14)
 - Choosing your package manager and project type
 - Selecting the **GOOGLE SEARCH** controller
@@ -59,7 +62,6 @@ const main = async () => {
 };
 
 main();
-
 ```
 
 This code instantly sets up your Google Search Agent, ready to perform intelligent search queries on Google.
@@ -67,6 +69,7 @@ This code instantly sets up your Google Search Agent, ready to perform intellige
 ## What This Does
 
 Your Google Search Agent will:
+
 - **Process Google Search Data:** Use the `GoogleSearchService` connector.
 - **Leverage OpenAI's GPT Model:** For smart search queries.
 - **Maintain Type Safety:** With `typia`.

@@ -1,8 +1,10 @@
 ---
-title: Agentica > Tutorial > Notion Agents  
+title: Agentica > Tutorial > Notion Agents
 ---
 
 ## Introduction
+
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-notion?file=README.md) You can see the demo code on the playground.
 
 Set up a **fully functional Notion Agent** powered by OpenAI's GPT model quickly using the Agentica CLI. This agent lets you read, create, and update Notion pages effortlessly.
 
@@ -15,6 +17,7 @@ npx agentica start notion-agent
 ```
 
 The wizard will guide you through:
+
 - Installing required packages (e.g., agentica@0.12.14)
 - Choosing your package manager and project type
 - Selecting the **NOTION** controller
@@ -59,7 +62,6 @@ const main = async () => {
 };
 
 main();
-
 ```
 
 This code instantly sets up your Notion Agent, ready to interact with your Notion workspace by reading pages, retrieving content, and creating or updating pages using natural language commands.
@@ -68,13 +70,15 @@ This code instantly sets up your Notion Agent, ready to interact with your Notio
 
 Before running the agent, configure your Notion API credentials:
 
-1. **Integration:**  
+1. **Integration:**
+
    - Create your integration at [Notion Integrations](https://www.notion.so/profile/integrations) and add your Private API Integration Secret to your `.env` file.
 
-2. **Permissions:**  
+2. **Permissions:**
+
    - Enable the necessary permissions (reading, updating, creating pages, etc.) during setup.
 
-3. **Data Sharing:**  
+3. **Data Sharing:**
    - Share your relevant Notion pages or databases with your integration.
 
 Add the following to your `.env` file:
@@ -87,6 +91,7 @@ NOTION_SECRET_KEY=your-notion-secret-key
 ## What This Does
 
 Your Notion Agent can:
+
 - **Retrieve a List of Pages:** Use `readPageList` to get your Notion pages.
 - **Read Page Contents:** Fetch detailed content via `readPageContents`.
 - **Create New Pages:** Automatically format and create pages using `createPageByMarkdown`.
