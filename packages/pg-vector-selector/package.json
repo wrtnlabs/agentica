@@ -40,7 +40,6 @@
   "scripts": {
     "build": "tsc && rollup -c",
     "eslint": "eslint ./**/*.ts",
-    "test": "vitest",
     "prepublishOnly": "pnpm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."

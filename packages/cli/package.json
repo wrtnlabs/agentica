@@ -14,7 +14,7 @@
     "dev": "rslib build --watch",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm run build",
-    "lin1t": "eslint ."
+    "lint": "eslint ."
   },
   "author": "Wrtn Technologies",
   "homepage": "https://wrtnlabs.io/agentica",

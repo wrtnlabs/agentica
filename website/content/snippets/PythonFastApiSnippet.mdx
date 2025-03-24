@@ -1,10 +1,13 @@
-```python
+```python showLineNumbers
 class Item(BaseModel):
   id: int
   name: str
   description: str = Field(None, description="The description of the item")
   price: float = Field(..., description="The price of the item")
-  tags: List[str] = Field(default_factory=list, description="A list of tags associated with the item")
+  tags: List[str] = Field(
+    default_factory=list,
+    description="A list of tags associated with the item"
+  )
 
 @app.post("/items/")
 async def create_item(item: Item):
