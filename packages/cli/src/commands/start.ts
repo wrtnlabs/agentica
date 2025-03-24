@@ -33,12 +33,11 @@ interface StartOptions {
   /** project template */
   template?: Readonly<StarterTemplate>;
 
-  /** project relative directory */
-  project: Readonly<string>;
 }
 
 /** Context for the start command */
 interface Context {
+  projectAbsolutePath: string;
   packageManager: PackageManager;
   template: StarterTemplate;
   services: Service[];
@@ -81,6 +80,31 @@ function installServicesAsDependencies({ packageManager, projectAbsolutePath, se
 async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "template">): Promise<Context> {
   /** store context for the start command */
   const context: Partial<Context> = { template: defaultTemplate };
+
+  // Ask for project directory
+  {
+    const projectRelativePath = await p.text({
+      message: "Enter the project directory path:",
+      placeholder: "./my-agentica-project",
+      validate(value) {
+        if (value === "") {
+          return "Please enter a directory path";
+        }
+        if (value[0] !== ".") {
+          return "Please enter a relative path.";
+        }
+        if (existsSync(value)) {
+          return "Directory already exists";
+        }
+        return undefined;
+      },
+    });
+    if (p.isCancel(projectRelativePath)) {
+      process.exit(0);
+    }
+    const projectAbsolutePath = join(process.cwd(), projectRelativePath);
+    context.projectAbsolutePath = projectAbsolutePath;
+  }
 
   // Ask which package manager to use
   {
@@ -148,6 +172,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     const services = await p.multiselect({
       message: "Which connectors do you want to include?",
       options: serviceChoices,
+      required: false,
     });
     if (p.isCancel(services)) {
       process.exit(0);
@@ -159,6 +184,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   {
     const isConfirm = await p.confirm({
       message: "Do you want to use OpenAI?",
+      initialValue: false,
     });
     if (p.isCancel(isConfirm)) {
       process.exit(0);
@@ -354,19 +380,13 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
 /**
  * Start a new project
  */
-export async function start({ project, template }: StartOptions) {
+export async function start({ template }: StartOptions) {
   p.intro("Agentica Start Wizard");
-
-  const projectAbsolutePath = join(process.cwd(), project);
-
-  // Check if project already exists
-  if (existsSync(projectAbsolutePath)) {
-    console.error(`❌ Project ${redBright(projectAbsolutePath)} already exists`);
-    return;
-  }
 
   /** context for the start command */
   const context = await askQuestions({ template });
+
+  const { projectAbsolutePath } = context;
 
   switch (context.template) {
     case "standalone":
