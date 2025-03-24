@@ -49,6 +49,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@clack/prompts": "^0.10.0",
     "giget": "^1",
     "inquirer": "^8.2.5"
   },
