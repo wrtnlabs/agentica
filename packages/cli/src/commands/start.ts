@@ -159,7 +159,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       {
         type: "input",
         name: "openAIKey",
-        message: "Please enter your OPEN_AI_KEY:",
+        message: "Please enter your OPENAI API key (optional):",
       },
     ]);
     context.openAIKey = openAIKey;
