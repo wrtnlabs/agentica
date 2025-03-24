@@ -12,9 +12,6 @@ import {
   setupStandAloneProject,
 } from "./start";
 
-const isDev = process.env.NODE_ENV === "development";
-console.log("isDev", isDev);
-
 beforeAll(async () => {
   await rm(resolve(import.meta.dirname, ".tmp"), { recursive: true, force: true });
 });
