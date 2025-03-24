@@ -47,7 +47,7 @@
     "prepublishOnly": "pnpm run build",
     "lint": "eslint .",
     "format": "eslint --fix .",
-    "test": "vitest"
+    "test": "vitest --typecheck"
   },
   "dependencies": {
     "giget": "^1",

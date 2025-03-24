@@ -3,6 +3,7 @@
  * This file contains tiny utility functions that should not be in rest of the modules.
  */
 
+import type { tags } from "typia";
 import { styleText } from "node:util";
 
 /**
@@ -48,3 +49,17 @@ export async function formatWithPrettier(content: string) {
     parser: "typescript",
   });
 }
+
+type BrandName = string | number | symbol;
+
+/**
+ * Create a brand type with typia
+ * I'll contribute this to typia
+ * @see https://michalzalecki.com/nominal-typing-in-typescript/#approach-4-intersection-types-and-brands
+ */
+export type Brand<TName extends BrandName> = tags.TagBase<{
+  kind: "brand type";
+  value: TName;
+  target: "any";
+  validate: never;
+}>;
