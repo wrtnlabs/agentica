@@ -17,13 +17,12 @@ import {
  * mock child_process execSync in vitest to mock npm/pnpm install command
  * because it causes timeout when running on CI
  */
-vi.mock("child_process", () => ({
-  execSync: (command: string, options: ExecSyncOptions) => {
-    const directory = (options.cwd ?? import.meta.dirname) as string;
-    const [, ..._pkgs] = command.split(" ");
+vi.mock("tinyexec", () => ({
+  x: (_: string, args: string[], options: { nodeOptions: ExecSyncOptions }) => {
+    const directory = (options.nodeOptions.cwd ?? import.meta.dirname) as string;
     const packageJson = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8")) as PackageJson;
     packageJson.dependencies ??= {};
-    for (const pkg of _pkgs) {
+    for (const pkg of args) {
       packageJson.dependencies[pkg] = "latest";
     }
     writeFileSync(resolve(directory, "package.json"), JSON.stringify(packageJson, null, 2));
