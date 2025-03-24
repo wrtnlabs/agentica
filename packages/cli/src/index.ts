@@ -1,6 +1,7 @@
 import type { StarterTemplate } from "./commands/start";
 
 import process from "node:process";
+import * as p from "@clack/prompts";
 import { Command } from "commander";
 import typia from "typia";
 import { start } from "./commands/start";
@@ -22,7 +23,7 @@ program
   )
   .action(async (directory: string, options: CliOptions) => {
     if ((options.project as any) === true) {
-      console.error(
+      p.log.error(
         `\n❌ The value of ${redBright("--project")} is required`,
       );
       return;
@@ -30,7 +31,7 @@ program
 
     /** check valid project type */
     if (!typia.is<StarterTemplate | undefined>(options.project)) {
-      console.error(
+      p.log.error(
         `\n❌ The value of ${redBright("--project")} is invalid`,
       );
       return;
@@ -39,8 +40,6 @@ program
     await start({ project: directory, template: options.project });
   });
 
-console.log("--------------------------------");
-console.log(`   🚀 ${"Agentica"} ${blueBright("Setup Wizard")}`);
-console.log("--------------------------------");
+p.intro("🚀 ${blueBright('Agentica')} Setup Wizard");
 
 program.parse(process.argv);
