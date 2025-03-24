@@ -5,7 +5,7 @@
  * @author Wrtn Technologies
  */
 
-import type { Agentica, AgenticaOperation, AgenticaPrompt, IAgenticaProps } from "@agentica/core";
+import type { Agentica, AgenticaOperation, AgenticaPrompt } from "@agentica/core";
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
@@ -60,7 +60,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): P
    * However, due to compilation errors, a workaround was implemented.
    * Please apply any available patches to resolve this issue.
    */
-  const llmVendor = (agent as unknown as { props: IAgenticaProps<Model> }).props.vendor;
+  const llmVendor = agent.getVendor();
   const isTextPrompt = last?.type === "text" && last.role === "assistant";
   if (!isTextPrompt) {
     return null;
@@ -115,8 +115,8 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): P
     return null;
   }
 
-  const input: IConsentProps = JSON.parse(toolCall.function.arguments);
-  return typia.is(input) ? input.reply : null;
+  const input = typia.json.isParse<IConsentProps>(toolCall.function.arguments);
+  return input !== null ? input.reply : null;
 }
 
 /**
@@ -176,7 +176,7 @@ function successInner<Model extends ILlmSchema.Model>(props: Parameters<typeof s
       let targeted = targetIterator.next();
 
       while (true) {
-        if (targeted.done) {
+        if (targeted.done === true) {
           return {
             result: true,
             take,
@@ -188,11 +188,11 @@ function successInner<Model extends ILlmSchema.Model>(props: Parameters<typeof s
 
         const result = call(targeted.value, props.operations.slice(take));
         if (!result.result) {
-          if (!props.strict) {
-            take += 1;
-            continue;
+          if (props.strict === true) {
+            return { result: false };
           }
-          return { result: false };
+          take += 1;
+          continue;
         }
 
         take += result.take;

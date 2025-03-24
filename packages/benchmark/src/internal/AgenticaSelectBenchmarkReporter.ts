@@ -20,18 +20,20 @@ export const AgenticaSelectBenchmarkReporter = {
 };
 
 export function markdown<Model extends ILlmSchema.Model>(result: IAgenticaSelectBenchmarkResult<Model>): Record<string, string> {
-  return Object.fromEntries([
+  const iterator = [
     ["./README.md", writeIndex(result)],
     ...result.experiments
-      .map(exp => [
+      .map<[string, string][]>(exp => [
         [`./${exp.scenario.name}/README.md`, writeExperimentIndex(exp)],
-        ...exp.events.map((event, i) => [
+        ...exp.events.map<[string, string]>((event, i) => [
           `./${exp.scenario.name}/${i + 1}.${event.type}.md`,
           writeExperimentEvent(event, i),
         ]),
       ])
       .flat(),
-  ]);
+  ] satisfies [string, string][];
+
+  return Object.fromEntries(iterator);
 }
 
 function writeIndex<Model extends ILlmSchema.Model>(result: IAgenticaSelectBenchmarkResult<Model>): string {
@@ -193,7 +195,7 @@ function writeExperimentEvent<Model extends ILlmSchema.Model>(event: IAgenticaSe
               `  - Function: \`${s.operation.function.name}\``,
               `  - Reason: ${s.reason}`,
               "",
-              ...(s.operation.function.description
+              ...(s.operation.function.description !== undefined && s.operation.function.description !== ""
                 ? [s.operation.function.description, ""]
                 : []),
             ].join("\n"),

@@ -20,17 +20,20 @@ function markdown<Model extends ILlmSchema.Model>(p: AgenticaPrompt<Model>): str
     return [
       `### ${p.type === "select" ? "Select" : "Cancel"}`,
       ...p.selections
-        .map(s => [
-          `#### ${s.operation.name}`,
-          `  - controller: ${s.operation.controller.name}`,
-          `  - function: ${s.operation.function.name}`,
-          `  - reason: ${s.reason}`,
-          "",
-          ...(s.operation.function.description?.length
-            ? [s.operation.function.description, ""]
-            : []),
-        ])
-        .flat(),
+        .flatMap((s) => {
+          const functionDescriptionCount = s.operation.function.description?.length ?? 0;
+
+          return [
+            `#### ${s.operation.name}`,
+            `  - controller: ${s.operation.controller.name}`,
+            `  - function: ${s.operation.function.name}`,
+            `  - reason: ${s.reason}`,
+            "",
+            ...(functionDescriptionCount > 0
+              ? [s.operation.function.description, ""]
+              : []),
+          ];
+        }),
     ].join("\n");
   }
   else if (p.type === "describe") {

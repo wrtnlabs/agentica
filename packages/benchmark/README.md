@@ -85,8 +85,9 @@ async function main(): Promise<void> {
           && op.function.method === method
           && op.function.path === path,
       );
-    if (!found)
+    if (!found) {
       throw new Error(`Operation not found: ${method} ${path}`);
+    }
     return found;
   };
   const benchmark: AgenticaSelectBenchmark<"chatgpt">
@@ -229,8 +230,9 @@ async function main(): Promise<void> {
           && op.function.method === method
           && op.function.path === path,
       );
-    if (!found)
+    if (!found) {
       throw new Error(`Operation not found: ${method} ${path}`);
+    }
     return found;
   };
   const benchmark: AgenticaSelectBenchmark<"chatgpt">
