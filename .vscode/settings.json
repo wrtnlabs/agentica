@@ -5,6 +5,7 @@
       "mode": "auto"
     }
   ],
+
   "[javascript][typescript][typescriptreact][json]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
