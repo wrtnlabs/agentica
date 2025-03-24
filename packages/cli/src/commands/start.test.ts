@@ -1,8 +1,9 @@
 /** it is hard to mock fs because we have gigetDownload here, so we use tmp directory */
 
+import type { ExecSyncOptions } from "node:child_process";
 import type { PackageJson } from "type-fest";
 import type { Service } from "../connectors";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { readFile, rm } from "node:fs/promises";
 import { resolve } from "node:path";
 import {
@@ -11,6 +12,23 @@ import {
   setupReactProject,
   setupStandAloneProject,
 } from "./start";
+
+/**
+ * mock child_process execSync in vitest to mock npm/pnpm install command
+ * because it causes timeout when running on CI
+ */
+vi.mock("child_process", () => ({
+  execSync: (command: string, options: ExecSyncOptions) => {
+    const directory = (options.cwd ?? import.meta.dirname) as string;
+    const [, ..._pkgs] = command.split(" ");
+    const packageJson = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8")) as PackageJson;
+    packageJson.dependencies ??= {};
+    for (const pkg of _pkgs) {
+      packageJson.dependencies[pkg] = "latest";
+    }
+    writeFileSync(resolve(directory, "package.json"), JSON.stringify(packageJson, null, 2));
+  },
+}));
 
 beforeAll(async () => {
   await rm(resolve(import.meta.dirname, ".tmp"), { recursive: true, force: true });
