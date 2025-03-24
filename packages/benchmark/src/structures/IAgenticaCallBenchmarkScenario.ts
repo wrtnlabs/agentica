@@ -1,3 +1,9 @@
+/**
+ * @module
+ * This file contains the implementation of the IAgenticaCallBenchmarkScenario class.
+ *
+ * @author Wrtn Technologies
+ */
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaBenchmarkExpected } from "./IAgenticaBenchmarkExpected";

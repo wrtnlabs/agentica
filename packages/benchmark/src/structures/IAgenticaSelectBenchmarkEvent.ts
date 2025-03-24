@@ -1,3 +1,9 @@
+/**
+ * @module
+ * This file contains the implementation of the IAgenticaSelectBenchmarkEvent class.
+ *
+ * @author Wrtn Technologies
+ */
 import type {
   AgenticaOperationSelection,
   AgenticaTextPrompt,

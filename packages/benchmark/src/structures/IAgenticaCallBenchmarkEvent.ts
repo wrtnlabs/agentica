@@ -1,3 +1,9 @@
+/**
+ * @module
+ * This file contains the implementation of the IAgenticaCallBenchmarkEvent class.
+ *
+ * @author Wrtn Technologies
+ */
 import type { AgenticaPrompt, AgenticaTokenUsage } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 

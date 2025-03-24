@@ -1,3 +1,9 @@
+/**
+ * @module
+ * This file contains the implementation of the AgenticaCallBenchmark class.
+ *
+ * @author Wrtn Technologies
+ */
 import type { Agentica } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
@@ -76,13 +82,16 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
     const task = this.scenarios_.map(async (scenario) => {
       const events: IAgenticaCallBenchmarkEvent<Model>[]
         = await Promise.all(
-          new Array(this.config_.repeat).fill(0).map(async () => {
+          Array.from({ length: this.config_.repeat }).map(async () => {
             await semaphore.acquire();
             const e: IAgenticaCallBenchmarkEvent<Model>
               = await this.step(scenario);
             await semaphore.release();
-            if (listener !== undefined)
+
+            if (listener !== undefined) {
               listener(e);
+            }
+
             return e;
           }),
         );
@@ -126,8 +135,9 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
    * @returns Dictionary of markdown files.
    */
   public report(): Record<string, string> {
-    if (this.result_ === null)
+    if (this.result_ === null) {
       throw new Error("Benchmark is not executed yet.");
+    }
     return AgenticaCallBenchmarkReporter.markdown(this.result_);
   }
 
@@ -171,17 +181,21 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
 
     try {
       await agent.conversate(scenario.text);
-      if (success())
+      if (success()) {
         return out();
+      }
+
       for (let i: number = 0; i < this.config_.consent; ++i) {
         const next: string | null
           = await AgenticaBenchmarkPredicator.isNext(agent);
-        if (next === null)
+        if (next === null) {
           break;
+        }
 
         await agent.conversate(next);
-        if (success())
+        if (success()) {
           return out();
+        }
       }
       return out();
     }

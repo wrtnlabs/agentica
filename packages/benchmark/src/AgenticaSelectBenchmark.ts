@@ -1,3 +1,9 @@
+/**
+ * @module
+ * This file contains the implementation of the AgenticaSelectBenchmark class.
+ *
+ * @author Wrtn Technologies
+ */
 import type {
   Agentica,
   AgenticaContext,
@@ -85,13 +91,14 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         this.scenarios_.map(async (scenario) => {
           const events: IAgenticaSelectBenchmarkEvent<Model>[]
             = await Promise.all(
-              new Array(this.config_.repeat).fill(0).map(async () => {
+              Array.from({ length: this.config_.repeat }).map(async () => {
                 await semaphore.acquire();
                 const e: IAgenticaSelectBenchmarkEvent<Model>
                   = await this.step(scenario);
                 await semaphore.release();
-                if (listener !== undefined)
+                if (listener !== undefined) {
                   listener(e);
+                }
                 return e;
               }),
             );
@@ -135,8 +142,9 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
    * @returns Dictionary of markdown files.
    */
   public report(): Record<string, string> {
-    if (this.result_ === null)
+    if (this.result_ === null) {
       throw new Error("Benchmark is not executed yet.");
+    }
     return AgenticaSelectBenchmarkReporter.markdown(this.result_);
   }
 
