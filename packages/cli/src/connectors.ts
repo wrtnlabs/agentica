@@ -10,11 +10,18 @@ import { capitalize } from "./utils";
 const CONNECTORS_LIST_URL = "https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json";
 const CONNECTOR_PREFIX = "@wrtnlabs/connector-";
 
-/** Service name. Opaque type. */
+/**
+ * Service name. Opaque type. or Branded type.
+ * @see https://michalzalecki.com/nominal-typing-in-typescript/#approach-4-intersection-types-and-brands
+ */
 export type Service = Tagged<string, "Service">;
 
 /** Connector name. String literal type. */
 export type Connector = `${typeof CONNECTOR_PREFIX}${Service}`;
+
+/** Unwrap tagged service type because typia doesn't support tagged types */
+export type UnwrapTaggedService = UnwrapTagged<Service>;
+export type UnwrapTaggedConnector = `${typeof CONNECTOR_PREFIX}${UnwrapTaggedService}`;
 
 interface Connectors {
   connectors: Connector[];
@@ -26,7 +33,7 @@ export function serviceToConnector(service: Service): Connector {
 }
 
 export function connectorToService(connector: Connector): Service {
-  return (connector.replace(CONNECTOR_PREFIX, "") satisfies UnwrapTagged<Service>) as Service;
+  return (connector.replace(CONNECTOR_PREFIX, "") satisfies UnwrapTaggedService) as Service;
 }
 
 /**
@@ -35,7 +42,7 @@ export function connectorToService(connector: Connector): Service {
 export async function getConnectorsList(): Promise<Connectors> {
   const response = await fetch(CONNECTORS_LIST_URL);
   const responseJson = await response.json() as unknown;
-  const data = typia.assert<Connectors>(responseJson);
+  const data = typia.assert<UnwrapTaggedConnector>(responseJson) as unknown as Connectors;
   return data;
 }
 

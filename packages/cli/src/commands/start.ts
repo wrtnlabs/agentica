@@ -3,8 +3,8 @@
  * Start command
  */
 
-import type { SimplifyDeep, UnwrapTagged } from "type-fest";
-import type { Service } from "../connectors";
+import type { SimplifyDeep } from "type-fest";
+import type { Service, UnwrapTaggedService } from "../connectors";
 import type { PackageManager } from "../packages";
 import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -162,7 +162,8 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   }
 
   try {
-    type UnwrappedContext = SimplifyDeep<Omit<Context, "services"> & { services: UnwrapTagged<Service>[] }>;
+    /** create a unwrapped context because typia doesn't support tagged types */
+    type UnwrappedContext = SimplifyDeep<Omit<Context, "services"> & { services: UnwrapTaggedService[] }>;
     typia.assertGuard<UnwrappedContext>(context);
   }
   catch (e) {
