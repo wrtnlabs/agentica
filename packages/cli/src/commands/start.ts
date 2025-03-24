@@ -362,6 +362,7 @@ export async function start({ project, template }: StartOptions) {
       await setupReactProject({ projectAbsolutePath, context });
       break;
     case "nestjs+react":
+      // nestjs+rect project is a combination of nestjs and react projects
       await setupNestJSProject({
         projectAbsolutePath: join(projectAbsolutePath, "server"),
         context,
