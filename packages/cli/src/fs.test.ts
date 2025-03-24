@@ -36,8 +36,6 @@ describe("writeEnvKeysToDotEnv", () => {
       apiKeys: [],
     });
 
-    console.log("File system contents:", vol.toJSON());
-
     expect(vol.existsSync("/my-new-project/.env")).toBe(true);
   });
 
