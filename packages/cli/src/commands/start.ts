@@ -63,12 +63,16 @@ function installServicesAsDependencies({ packageManager, projectAbsolutePath, se
   const pkg = ([...services.map(service => serviceToConnector(service)), "typescript"]).join(" ");
   const command = installCommand({ packageManager, pkg });
 
-  p.log.info("📦 Package installation in progress...");
+  const s = p.spinner();
+
+  s.start("📦 Package installation in progress...");
 
   execSync(command, {
     cwd: projectAbsolutePath,
-    stdio: "inherit",
+    stdio: [],
   });
+
+  s.stop("✅ Package installation completed");
 }
 
 /**
