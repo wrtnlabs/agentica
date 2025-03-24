@@ -28,6 +28,11 @@ interface Connectors {
   version: string;
 }
 
+interface UnwrapTaggedConnectors {
+  connectors: UnwrapTaggedConnector[];
+  version: string;
+}
+
 export function serviceToConnector(service: Service): Connector {
   return `${CONNECTOR_PREFIX}${service}`;
 }
@@ -42,7 +47,7 @@ export function connectorToService(connector: Connector): Service {
 export async function getConnectorsList(): Promise<Connectors> {
   const response = await fetch(CONNECTORS_LIST_URL);
   const responseJson = await response.json() as unknown;
-  const data = typia.assert<UnwrapTaggedConnector>(responseJson) as unknown as Connectors;
+  const data = typia.assert<UnwrapTaggedConnectors>(responseJson) as unknown as Connectors;
   return data;
 }
 
