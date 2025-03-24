@@ -1,13 +1,20 @@
-import { Agentica, AgenticaTokenUsage } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
-import { Semaphore } from "tstl";
-import { tags } from "typia";
+/**
+ * @module
+ * This file contains the implementation of the AgenticaCallBenchmark class.
+ *
+ * @author Wrtn Technologies
+ */
+import type { Agentica } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+import type { tags } from "typia";
+import type { IAgenticaCallBenchmarkEvent } from "./structures/IAgenticaCallBenchmarkEvent";
+import type { IAgenticaCallBenchmarkResult } from "./structures/IAgenticaCallBenchmarkResult";
 
+import type { IAgenticaCallBenchmarkScenario } from "./structures/IAgenticaCallBenchmarkScenario";
+import { AgenticaTokenUsage } from "@agentica/core";
+import { Semaphore } from "tstl";
 import { AgenticaBenchmarkPredicator } from "./internal/AgenticaBenchmarkPredicator";
 import { AgenticaCallBenchmarkReporter } from "./internal/AgenticaCallBenchmarkReporter";
-import { IAgenticaCallBenchmarkEvent } from "./structures/IAgenticaCallBenchmarkEvent";
-import { IAgenticaCallBenchmarkResult } from "./structures/IAgenticaCallBenchmarkResult";
-import { IAgenticaCallBenchmarkScenario } from "./structures/IAgenticaCallBenchmarkScenario";
 
 /**
  * LLM function calling selection benchmark.
@@ -72,37 +79,40 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
   ): Promise<IAgenticaCallBenchmarkResult<Model>> {
     const started_at: Date = new Date();
     const semaphore: Semaphore = new Semaphore(this.config_.simultaneous);
-    const experiments: IAgenticaCallBenchmarkResult.IExperiment<Model>[] =
-      await Promise.all(
-        this.scenarios_.map(async (scenario) => {
-          const events: IAgenticaCallBenchmarkEvent<Model>[] =
-            await Promise.all(
-              new Array(this.config_.repeat).fill(0).map(async () => {
-                await semaphore.acquire();
-                const e: IAgenticaCallBenchmarkEvent<Model> =
-                  await this.step(scenario);
-                await semaphore.release();
-                if (listener !== undefined) listener(e);
-                return e;
-              }),
-            );
-          return {
-            scenario,
-            events,
-            usage: events
-              .filter((e) => e.type !== "error")
-              .map((e) => e.usage)
-              .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
-          };
-        }),
-      );
+    const task = this.scenarios_.map(async (scenario) => {
+      const events: IAgenticaCallBenchmarkEvent<Model>[]
+        = await Promise.all(
+          Array.from({ length: this.config_.repeat }).map(async () => {
+            await semaphore.acquire();
+            const e: IAgenticaCallBenchmarkEvent<Model>
+              = await this.step(scenario);
+            await semaphore.release();
+
+            if (listener !== undefined) {
+              listener(e);
+            }
+
+            return e;
+          }),
+        );
+      return {
+        scenario,
+        events,
+        usage: events
+          .filter(e => e.type !== "error")
+          .map(e => e.usage)
+          .reduce((acc, cur) => AgenticaTokenUsage.plus(acc, cur), AgenticaTokenUsage.zero()),
+      };
+    });
+    const experiments: IAgenticaCallBenchmarkResult.IExperiment<Model>[]
+      = await Promise.all(task);
     return (this.result_ = {
       experiments,
       started_at,
       completed_at: new Date(),
       usage: experiments
-        .map((p) => p.usage)
-        .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
+        .map(p => p.usage)
+        .reduce((acc, cur) => AgenticaTokenUsage.plus(acc, cur), AgenticaTokenUsage.zero()),
     });
   }
 
@@ -125,8 +135,9 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
    * @returns Dictionary of markdown files.
    */
   public report(): Record<string, string> {
-    if (this.result_ === null)
+    if (this.result_ === null) {
       throw new Error("Benchmark is not executed yet.");
+    }
     return AgenticaCallBenchmarkReporter.markdown(this.result_);
   }
 
@@ -140,8 +151,8 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         expected: scenario.expected,
         operations: agent
           .getPromptHistories()
-          .filter((p) => p.type === "execute")
-          .map((p) => p.operation),
+          .filter(p => p.type === "execute")
+          .map(p => p.operation),
         strict: false,
       });
     const out = (): IAgenticaCallBenchmarkEvent<Model> => {
@@ -149,10 +160,10 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         expected: scenario.expected,
         operations: agent
           .getPromptHistories()
-          .filter((p) => p.type === "select")
-          .map((p) => p.selections)
+          .filter(p => p.type === "select")
+          .map(p => p.selections)
           .flat()
-          .map((p) => p.operation),
+          .map(p => p.operation),
         strict: false,
       });
       const call = success();
@@ -170,17 +181,25 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
 
     try {
       await agent.conversate(scenario.text);
-      if (success()) return out();
+      if (success()) {
+        return out();
+      }
+
       for (let i: number = 0; i < this.config_.consent; ++i) {
-        const next: string | null =
-          await AgenticaBenchmarkPredicator.isNext(agent);
-        if (next === null) break;
+        const next: string | null
+          = await AgenticaBenchmarkPredicator.isNext(agent);
+        if (next === null) {
+          break;
+        }
 
         await agent.conversate(next);
-        if (success()) return out();
+        if (success()) {
+          return out();
+        }
       }
       return out();
-    } catch (error) {
+    }
+    catch (error) {
       return {
         type: "error",
         scenario,

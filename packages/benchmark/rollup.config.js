@@ -1,5 +1,5 @@
-const typescript = require("@rollup/plugin-typescript");
 const terser = require("@rollup/plugin-terser");
+const typescript = require("@rollup/plugin-typescript");
 
 module.exports = {
   input: "./src/index.ts",

@@ -1,7 +1,13 @@
-import { AgenticaPrompt, AgenticaTokenUsage } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
+/**
+ * @module
+ * This file contains the implementation of the IAgenticaCallBenchmarkEvent class.
+ *
+ * @author Wrtn Technologies
+ */
+import type { AgenticaPrompt, AgenticaTokenUsage } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaCallBenchmarkScenario } from "./IAgenticaCallBenchmarkScenario";
+import type { IAgenticaCallBenchmarkScenario } from "./IAgenticaCallBenchmarkScenario";
 
 /**
  * Event of LLM function selection benchmark.
