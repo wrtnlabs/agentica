@@ -15,8 +15,6 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Test packages
         run: pnpm run test:packages
-        env:
-          CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
 
   e2e-test:
     runs-on: ubuntu-latest
