@@ -186,13 +186,13 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
   console.log("✅ Template downloaded");
 
   // modify index file
-  const imoprtsCode = generateServiceImportsCode(context.services);
+  const importCode = generateServiceImportsCode(context.services);
   const connectorsCode = generateConnectorsArrayCode(context.services);
   const indexFilePath = join(projectAbsolutePath, "src/index.ts");
   const indexFileContent = await readFile(indexFilePath, "utf-8");
   const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
     content: indexFileContent,
-    importCode: imoprtsCode,
+    importCode,
     connectorCode: connectorsCode,
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
@@ -225,7 +225,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
   console.log("✅ Template downloaded");
 
   // modify index file
-  const imoprtsCode = generateServiceImportsCode(context.services);
+  const importCode = generateServiceImportsCode(context.services);
   const connectorsCode = generateConnectorsArrayCode(context.services);
   const indexFilePath = join(projectAbsolutePath, "src/index.ts");
   let indexFileContent = await readFile(indexFilePath, "utf-8");
@@ -237,7 +237,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     );
   const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
     content: indexFileContent,
-    importCode: imoprtsCode,
+    importCode,
     connectorCode: connectorsCode,
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
@@ -273,7 +273,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
   console.log("✅ Template downloaded");
 
   // modify index file
-  const imoprtsCode = generateServiceImportsCode(context.services);
+  const importCode = generateServiceImportsCode(context.services);
   const connectorsCode = generateConnectorsArrayCode(context.services);
   const indexFilePath = join(
     projectAbsolutePath,
@@ -282,7 +282,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
   const indexFileContent = await readFile(indexFilePath, "utf-8");
   const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
     content: indexFileContent,
-    importCode: imoprtsCode,
+    importCode,
     connectorCode: connectorsCode,
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
