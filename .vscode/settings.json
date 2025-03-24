@@ -1,13 +1,18 @@
 {
   "editor.tabSize": 2,
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+
   "[javascript][typescript][typescriptreact][json]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
-    },
+    }
   },
   "[mdx]": {
     "editor.wordWrap": "on"
-  },
+  }
 }

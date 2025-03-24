@@ -1,8 +1,10 @@
 ---
-title: Agentica > Tutorial > Gmail Agents  
+title: Agentica > Tutorial > Gmail Agents
 ---
 
 ## Introduction
+
+- [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-gmail?file=README.md) You can see the demo code on the playground.
 
 Set up a **fully functional Gmail Agent** powered by OpenAI's GPT model in no time—using the Agentica CLI.
 
@@ -15,6 +17,7 @@ npx agentica start gmail-agent
 ```
 
 The wizard guides you through:
+
 - Installing the required packages (e.g., agentica@0.12.14)
 - Choosing your package manager and project type
 - Selecting the **GMAIL** controller
@@ -75,14 +78,16 @@ GMAIL_REFRESH_TOKEN=your-gmail-refresh-token
 ```
 
 To get these credentials:
-1. **Create a Project in Google Cloud Console:**  
+
+1. **Create a Project in Google Cloud Console:**
    - Enable the **Gmail API**.
-2. **Obtain Credentials:**  
+2. **Obtain Credentials:**
    - Generate OAuth 2.0 credentials to get your Client ID, Client Secret, and Refresh Token.
 
 ## What This Does
 
 Your Gmail Agent will:
+
 - **Process Gmail Data:** Use the `GmailService` connector.
 - **Leverage OpenAI's GPT Model:** For smart email interactions.
 - **Maintain Type Safety:** With `typia`.
@@ -91,6 +96,7 @@ Your Gmail Agent will:
 ## Selecting Specific Functions
 
 You can restrict available functions using TypeScript’s `Pick` utility. For example, to expose only these functions:
+
 - `createDraft`
 - `findEmails`
 - `deleteMailList`

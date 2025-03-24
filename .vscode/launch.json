@@ -11,16 +11,16 @@
       "program": "${workspaceFolder}/test/index.ts",
       "runtimeArgs": [
         "--require",
-        "ts-node/register",
-        //----
+        "ts-node/register"
+        // ----
         // You can run specific test functions
-        //----
+        // ----
         // "--include", "llm",
         // "--exclude", "chatgpt",
       ],
       "env": {
-        "TS_NODE_PROJECT": "test/tsconfig.json",
-      },
-    },
-  ],
+        "TS_NODE_PROJECT": "test/tsconfig.json"
+      }
+    }
+  ]
 }

@@ -5,4 +5,5 @@ export default wrtnlabs({
   rules: {
     "no-console": "off", // because this is cli tool, we need to use console
   },
+  ignores: ["eslint.config.mts", "bin"],
 });
