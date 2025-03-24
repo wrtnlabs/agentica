@@ -1,5 +1,11 @@
-import { AgenticaOperation } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
+/**
+ * @module
+ * This file contains the implementation of the IAgenticaBenchmarkExpected class.
+ *
+ * @author Wrtn Technologies
+ */
+import type { AgenticaOperation } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
 
 /**
  * Expected operation determinant.
@@ -18,6 +24,7 @@ export type IAgenticaBenchmarkExpected<Model extends ILlmSchema.Model> =
   | IAgenticaBenchmarkExpected.IAnyOf<Model>
   | IAgenticaBenchmarkExpected.IArray<Model>
   | IAgenticaBenchmarkExpected.IStandalone<Model>;
+
 export namespace IAgenticaBenchmarkExpected {
   /**
    * All of them must meet the condition, but sequence is not important.

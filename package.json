@@ -38,17 +38,20 @@
   },
   "scripts": {
     "build": "pnpm -r build",
-    "build:package": "pnpm --filter='./packages/**' -r build",
+    "build:packages": "pnpm --filter='./packages/**' -r build",
     "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
     "release": "bumpp",
-    "lint": "pnpm --no-bail /^lint:/",
+    "lint": "pnpm --no-bail --aggregate-output /^lint:/",
     "lint:root": "eslint .",
-    "lint:submodules": "pnpm --parallel -r --no-bail /^lint/",
+    "lint:submodules": "pnpm --parallel -r --no-bail --aggregate-output /^lint/",
     "format": "pnpm --aggregate-output /^format:/",
     "format:root": "eslint . --fix",
-    "format:submodules": "pnpm --parallel -r --aggregate-output /^format/"
+    "format:submodules": "pnpm --parallel -r --aggregate-output /^format/",
+    "test": "pnpm --aggregate-output /^test:/",
+    "test:e2e": "pnpm --filter='./test' -r start",
+    "test:packages": "pnpm --filter='./packages/**' --parallel -r --aggregate-output /^test:/"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

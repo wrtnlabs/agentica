@@ -1,11 +1,17 @@
-import {
+/**
+ * @module
+ * This file contains the implementation of the IAgenticaSelectBenchmarkEvent class.
+ *
+ * @author Wrtn Technologies
+ */
+import type {
   AgenticaOperationSelection,
   AgenticaTextPrompt,
   AgenticaTokenUsage,
 } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmarkScenario";
+import type { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmarkScenario";
 
 /**
  * Event of LLM function selection benchmark.
