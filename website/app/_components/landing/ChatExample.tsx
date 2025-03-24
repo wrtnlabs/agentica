@@ -24,9 +24,7 @@ export function ChatExample() {
   useEffect(() => {
     if (visibleMessage < CHAT_EXAMPLE_MESSAGE_LIST.length) {
       const delay =
-        CHAT_EXAMPLE_MESSAGE_LIST[visibleMessage].message
-          .split(/\n/)
-          .filter((s) => s.trim() !== "").length *
+        CHAT_EXAMPLE_MESSAGE_LIST[visibleMessage].message.split(/\n/).length *
           50 +
         1000;
 
@@ -60,12 +58,14 @@ export function ChatExample() {
         className="h-full px-3 flex flex-col gap-6 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-400"
       >
         {CHAT_EXAMPLE_MESSAGE_LIST.slice(0, visibleMessage).map(
-          (message, i) => (
-            <ChatBubble key={i} {...message} />
-          ),
-        )}
-        {visibleMessage === CHAT_EXAMPLE_MESSAGE_LIST.length && (
-          <div ref={bottomBoundaryRef} />
+          (message, i) => {
+            const isLast = i === CHAT_EXAMPLE_MESSAGE_LIST.length - 1;
+            return (
+              <div key={i} ref={isLast ? bottomBoundaryRef : undefined}>
+                <ChatBubble {...message} />
+              </div>
+            );
+          },
         )}
       </div>
 

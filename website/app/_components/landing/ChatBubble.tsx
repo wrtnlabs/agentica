@@ -3,7 +3,7 @@ import { cva } from "class-variance-authority";
 import { motion } from "framer-motion";
 import { SquareArrowDownRight, SquareCheckBig, UserRound } from "lucide-react";
 import Image from "next/image";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import { Markdown } from "./Markdown";
 
@@ -38,16 +38,20 @@ export function ChatBubble({ author, message, type }: ChatMessageType) {
 
   const sentences = message.split(/\n/);
 
-  const funcRef = useRef(() => {
+  useEffect(() => {
+    const timeouts: NodeJS.Timeout[] = [];
+
     sentences.forEach((sentence, index) => {
       const timeoutId = setTimeout(() => {
         setViewSentences((prev) => [...prev, sentence]);
       }, 50 * index);
-      return () => clearTimeout(timeoutId);
+      timeouts.push(timeoutId);
     });
-  });
 
-  useEffect(() => () => funcRef.current(), []);
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
+  }, []);
 
   return (
     <div className="flex gap-2 w-full">
@@ -77,7 +81,7 @@ export function ChatBubble({ author, message, type }: ChatMessageType) {
         <div className="flex flex-col">
           {viewSentences.map((sentence, i) => (
             <motion.div
-              key={sentence + i}
+              key={i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
@@ -85,7 +89,7 @@ export function ChatBubble({ author, message, type }: ChatMessageType) {
                 transition: "opacity 0.4s ease-in-out",
               }}
             >
-              <Markdown key={sentence + i}>{sentence}</Markdown>
+              <Markdown>{sentence}</Markdown>
             </motion.div>
           ))}
         </div>
