@@ -28,7 +28,6 @@
     ".": "./bin/index.js"
   },
   "main": "bin/index.js",
-  "typings": "bin/index.d.ts",
   "bin": "bin/index.js",
   "files": [
     "LICENSE",
