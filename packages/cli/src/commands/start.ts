@@ -15,7 +15,7 @@ import inquirer from "inquirer";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
-import { installCommand } from "../packages";
+import { detectPackageManager, installCommand } from "../packages";
 import { blueBright, formatWithPrettier, redBright, yellow } from "../utils";
 
 /** supported starter templates */
@@ -80,11 +80,14 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
 
   // Ask which package manager to use
   {
+    const currentPackageManager = detectPackageManager();
+    console.log(`📦 Detected package manager: ${blueBright(currentPackageManager)}`);
     const { packageManager } = await inquirer.prompt<{ packageManager: PackageManager }>([
       {
         type: "list",
         name: "packageManager",
         message: "Which package manager do you want to use?",
+        default: currentPackageManager,
         choices: [
           "npm",
           "pnpm",
