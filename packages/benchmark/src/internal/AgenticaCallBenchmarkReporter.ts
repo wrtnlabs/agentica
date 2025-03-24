@@ -21,9 +21,9 @@ export function markdown<Model extends ILlmSchema.Model>(result: IAgenticaCallBe
   return Object.fromEntries([
     ["./README.md", writeIndex<Model>(result)],
     ...result.experiments
-      .map(exp => [
+      .map<[string, string][]>(exp => [
         [`./${exp.scenario.name}/README.md`, writeExperimentIndex(exp)],
-        ...exp.events.map((event, i) => [
+        ...exp.events.map<[string, string]>((event, i) => [
           `./${exp.scenario.name}/${i + 1}.${event.type}.md`,
           writeExperimentEvent(event, i),
         ]),

@@ -101,7 +101,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         usage: events
           .filter(e => e.type !== "error")
           .map(e => e.usage)
-          .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
+          .reduce((acc, cur) => AgenticaTokenUsage.plus(acc, cur), AgenticaTokenUsage.zero()),
       };
     });
     const experiments: IAgenticaCallBenchmarkResult.IExperiment<Model>[]
@@ -112,7 +112,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       completed_at: new Date(),
       usage: experiments
         .map(p => p.usage)
-        .reduce(AgenticaTokenUsage.plus, AgenticaTokenUsage.zero()),
+        .reduce((acc, cur) => AgenticaTokenUsage.plus(acc, cur), AgenticaTokenUsage.zero()),
     });
   }
 
