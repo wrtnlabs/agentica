@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url(https://db.onlinewebfonts.com/c/88f10bf18a36407ef36bf30bc25a3618?family=SuisseIntl-Regular);
 
 @plugin "tailwindcss-animate";
 
@@ -123,6 +124,6 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50
   }
 }
