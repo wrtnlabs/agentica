@@ -5,7 +5,7 @@
  * @author Wrtn Technologies
  */
 
-import type { Agentica, AgenticaOperation, AgenticaPrompt } from "@agentica/core";
+import type { Agentica, AgenticaOperation, AgenticaPrompt, IAgenticaProps } from "@agentica/core";
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
@@ -54,6 +54,13 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): P
     .getPromptHistories()
     .at(-1);
 
+  /**
+   * it's black magic, but Agentica Props is private
+   * The provided code follows the original source prior to modification.
+   * However, due to compilation errors, a workaround was implemented.
+   * Please apply any available patches to resolve this issue
+   */
+  const llmVendor = (agent as unknown as { props: IAgenticaProps<Model> }).props.vendor;
   const isTextPrompt = last?.type === "text" && last.role === "assistant";
   if (!isTextPrompt) {
     return null;
@@ -63,9 +70,9 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): P
     IPredicatorApplication,
     "chatgpt"
   >().functions[0]!;
-  const result: OpenAI.ChatCompletion = await agent.props.vendor.api.chat.completions.create(
+  const result: OpenAI.ChatCompletion = await llmVendor.api.chat.completions.create(
     {
-      model: agent.props.vendor.model,
+      model: llmVendor.model,
       messages: [
         {
           role: "system",
@@ -95,7 +102,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): P
       tool_choice: "required",
       parallel_tool_calls: false,
     },
-    agent.props.vendor.options,
+    llmVendor.options,
   );
 
   const toolCall: OpenAI.ChatCompletionMessageToolCall | undefined = (

@@ -1,26 +1,26 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaContext } from "./context/AgenticaContext";
+import type { AgenticaOperation } from "./context/AgenticaOperation";
+import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
+import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
+import type { AgenticaEvent } from "./events/AgenticaEvent";
+import type { AgenticaPrompt } from "./prompts/AgenticaPrompt";
+import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
+import type { IAgenticaController } from "./structures/IAgenticaController";
+import type { IAgenticaProps } from "./structures/IAgenticaProps";
+import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
 import { ChatGptCompletionMessageUtil } from "./chatgpt/ChatGptCompletionMessageUtil";
-import { AgenticaContext } from "./context/AgenticaContext";
-import { AgenticaOperation } from "./context/AgenticaOperation";
-import { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
-import { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { AgenticaEvent } from "./events/AgenticaEvent";
 import { AgenticaInitializeEvent } from "./events/AgenticaInitializeEvent";
 import { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import { AgenticaTextEvent } from "./events/AgenticaTextEvent";
+import { __map_take } from "./internal/__map_take";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
 import { StreamUtil } from "./internal/StreamUtil";
-import { __map_take } from "./internal/__map_take";
-import { AgenticaPrompt } from "./prompts/AgenticaPrompt";
 import { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
-import { IAgenticaConfig } from "./structures/IAgenticaConfig";
-import { IAgenticaController } from "./structures/IAgenticaController";
-import { IAgenticaProps } from "./structures/IAgenticaProps";
-import { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
 
 /**
@@ -84,7 +84,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     // STATUS
     this.stack_ = [];
     this.listeners_ = new Map();
-    this.prompt_histories_ = (props.histories ?? []).map((input) =>
+    this.prompt_histories_ = (props.histories ?? []).map(input =>
       AgenticaPromptTransformer.transform({
         operations: this.operations_.group,
         prompt: input,
@@ -94,8 +94,8 @@ export class Agentica<Model extends ILlmSchema.Model> {
     // STATUS
     this.token_usage_ = AgenticaTokenUsage.zero();
     this.ready_ = false;
-    this.executor_ =
-      typeof props.config?.executor === "function"
+    this.executor_
+      = typeof props.config?.executor === "function"
         ? props.config.executor
         : ChatGptAgent.execute(props.config?.executor ?? null);
   }
@@ -229,7 +229,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       prompt: props.prompt,
 
       // HANDLERS
-      dispatch: (event) => this.dispatch(event),
+      dispatch: event => this.dispatch(event),
       request: async (source, body) => {
         // request information
         const event: AgenticaRequestEvent = new AgenticaRequestEvent({
@@ -254,7 +254,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
 
         const [streamForEvent, temporaryStream] = StreamUtil.transform(
           completion.toReadableStream() as ReadableStream<Uint8Array>,
-          (value) =>
+          value =>
             ChatGptCompletionMessageUtil.transformCompletionChunk(value),
         ).tee();
 
@@ -264,7 +264,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
           const reader = streamForAggregate.getReader();
           while (true) {
             const chunk = await reader.read();
-            if (chunk.done) break;
+            if (chunk.done) { break; }
             if (chunk.value.usage) {
               AgenticaTokenUsageAggregator.aggregate({
                 kind: source,
@@ -278,7 +278,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
         const [streamForStream, streamForJoin] = streamForEvent.tee();
         await dispatch({
           type: "response",
-          source: source,
+          source,
           stream: streamForStream,
           body: event.body,
           options: event.options,
@@ -335,7 +335,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     const set = this.listeners_.get(type);
     if (set) {
       set.delete(listener);
-      if (set.size === 0) this.listeners_.delete(type);
+      if (set.size === 0) { this.listeners_.delete(type); }
     }
     return this;
   }
@@ -350,7 +350,8 @@ export class Agentica<Model extends ILlmSchema.Model> {
           try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             await listener(event);
-          } catch {
+          }
+          catch {
             /* empty */
           }
         }),
