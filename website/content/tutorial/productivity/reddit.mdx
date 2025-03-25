@@ -1,0 +1,123 @@
+---
+title: Agentica > Tutorial > Reddit Agents
+---
+
+## Introduction
+
+- [playground]() You can see the demo code on the playground.
+
+Set up a **fully functional Reddit Agent** powered by OpenAI's GPT model quickly using the Agentica CLI.
+
+## Quick CLI Setup
+
+Launch the Agentica Setup Wizard with a single command:
+
+```bash
+npx agentica start reddit-agent
+```
+
+The wizard guides you through:
+
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **REDDIT** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { RedditService } from "@wrtnlabs/connector-reddit";
+
+dotenv.config();
+
+const agent: Agentica<"chatgpt"> = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Reddit Connector",
+      protocol: "class",
+      application: typia.llm.application<RedditService, "chatgpt">(),
+      execute: new RedditService({
+        secret: process.env.REDDIT_SECRET!,
+        clientSecret: process.env.REDDIT_CLIENT_SECRET!,
+        clientId: process.env.REDDIT_CLIENT_ID!,
+      }),
+    },
+  ],
+});
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+```
+
+This code instantly sets up your Reddit Agent, ready to intelligently interact with Reddit.
+
+## What This Does
+
+Your Reddit Agent will:
+
+- **Interact with Reddit** using the `Reddit` connector.
+- `getHotPosts` - Fetch the most popular posts.
+- `getNewPosts` - Retrieve the latest posts.
+- `getTopPosts` - Get top-ranked posts.
+- `flatComments` - Fetch comments for a specific Reddit post.
+- `getComments` - Retrieve comments for a specific Reddit post.
+- `getUserAbout` - Fetch user information.
+- `getUserSubmitted` - Retrieve posts submitted by a user.
+- `getUserComments` - Get comments made by a user.
+- `searchSubreddits` - Search for subreddits.
+- `getSubredditAbout` - Retrieve subreddit details.
+- `getPopularSubreddits` - Fetch a list of popular subreddits.
+- `getBaseContent` - Retrieve base content.
+
+- **Leverage OpenAI’s GPT model** for intelligent Reddit queries.
+- **Ensure type safety** with `typia`.
+- **Securely manage credentials** using `dotenv`.
+
+Just set up your **environment variables** in a `.env` file:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+REDDIT_SECRET=your_reddit_refresh_token
+REDDIT_CLIENT_SECRET=your_reddit_client_secret
+REDDIT_CLIENT_ID=your_reddit_client_id
+```
+
+To get these credentials:
+
+1. **Create a Reddit App:**
+  - Visit this [link](https://www.reddit.com/prefs/apps) to create a Reddit App.
+  - Create a Reddit App to get your `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET`.
+2. **Obtain Refresh Token:**
+  - Generate a refresh token to get your `REDDIT_SECRET`.
+
+## Use Case Example
+
+Imagine you want to create a Reddit Agent that can:
+
+> "Find the top posts in the r/Programming subreddit."
+
+Your Reddit Agent can easily handle this request and provide you with the most upvoted posts in the r/Programming subreddit.
+
+## Available Functions
+
+For a complete list of available functions in `RedditService`, check out the source code:
+👉 [wrtnlabs/connectors - RedditService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/reddit/src/reddit/RedditService.ts)
+
+Your AI-powered Reddit Agent is ready to go! 🚀
