@@ -63,7 +63,9 @@ It supports every versions of Swagger/OpenAPI specifications, and also supports 
 
 Therefore, the first thing what should do is composing the OpenAPI v3.1 emended specified document by the calling the `OpenApi.convert()` function. And then, compose the `IHttpLlmApplication` typed structure by calling the `HttpLlm.application()` function with target model and emended OpenAPI document.
 
-```typescript
+<!-- eslint-skip -->
+
+```ts
 import {
   HttpLlm,
   IHttpLlmApplication,
@@ -96,6 +98,8 @@ main().catch(console.error);
 > [💻 Playground Link](https://typia.io/playground/?script=JYWwDg9gTgLgBAbwFBzgCRjMAZANiAGhTgEkMs8QBBMMXYAYwEMZgIA7I1AeTAFN2NYFzi8BQgGoBmEWMFhg0gPoBGEQGUA7kwDmOvlAkAmIgF84AMygQQcAEQABAM5MQDABYcA9BH7smCnYA3EhIDBxO8CBMwOxwALxwTE4AnuwMcAAUAJQAXHAACtYgwE58ADwAbhDAACYAfAmNyKjh7JFwsWAArjC5xKgAPnBauvqGRgB0JAAiEAzdIAIwA3DDcpJS03MLS+wrqEOifpuq2-OLywlJ2sDwFnwwHpmrdu6YYE65Xl5QTJqTHR3dzdABG3TKUDaMGWk3CIC8LjcnnYiM8tFiOgAtKCmAwANYCWq-PgWJxedx8Ji1cnRSIGLxgPH43R8ckBYCI7R6AyTABWTg4dhE2UmMEp7EymSg2SacCg-MFkuy2RCrQi8FqFz2fWO4gU512V0SGwNbUqBhgmS6vVVxDaHQCdEYLDY7HyZA+lBozuYrA45TsHhYOjAMDsjUS5Bw+EmTvofrdmRahxAEFqfFw+SD7hDYeFqy1Rv2IlQvn97XyKcO8tJBgEDD4+RgUG6fFLcFMIlMdvV7QguD4k1wEB0mXjLordtMIWisRycJYzwdA6HBmsMqCQA)
 
 ### 2.2. Super AI Chatbot Development
+
+<!-- eslint-skip -->
 
 ```typescript
 import { HttpLlm, IHttpLlmApplication, OpenApi } from "@samchon/openapi";
@@ -143,6 +147,8 @@ main().catch(console.error);
 https://nestia.io/chat/shopping/
 
 ### 2.3. Frontend Application Development
+
+<!-- eslint-skip -->
 
 ```typescript
 import { Agentica } from "@agentica/core";
@@ -477,7 +483,7 @@ However, as Python is a script language which does not have the compilation step
 
 As you can see from the above section [3. Human forgives mistake, but AI never forgives](#3-human-forgives-mistake-but-ai-never-forgives), **Java (Spring RestDocs)** can detect compilation error, but its documentation is not automated and needs duplicated extra schema definitions. Besides, **FastAPI** can automate the Swagger documentation and it does not require extra schema definition, but as its basic language **Python** cannot detect compilation errors, human mistake risk still remains.
 
-How great would it be if swagger documentation in compiled languages ​​like `Java` were automated like `FastAPI`, without the need to define duplicate schemas? Conversely, how great would it be if a framework that could automate swagger documentation and JSON schema composition, like `FastAPI`, was launched in compiled languages?
+How great would it be if swagger documentation in compiled languages like `Java` were automated like `FastAPI`, without the need to define duplicate schemas? Conversely, how great would it be if a framework that could automate swagger documentation and JSON schema composition, like `FastAPI`, was launched in compiled languages?
 
 ### 4.2. Software Development Kit
 
