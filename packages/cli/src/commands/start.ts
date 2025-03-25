@@ -11,11 +11,12 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
 import * as p from "@clack/prompts";
+import picocolors from "picocolors";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand } from "../packages";
-import { blueBright, execAsync, formatWithPrettier, yellow } from "../utils";
+import { execAsync, formatWithPrettier } from "../utils";
 
 /** supported starter templates */
 export type StarterTemplate =
@@ -112,7 +113,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       options: [
         { value: "npm", label: "npm" },
         { value: "pnpm", label: "pnpm" },
-        { value: "yarn", label: `yarn (${blueBright("berry is not supported")})` },
+        { value: "yarn", label: `yarn (${picocolors.blueBright("berry is not supported")})` },
         { value: "bun", label: "bun" },
       ] as const satisfies { value: PackageManager; label: string }[],
     });
@@ -128,11 +129,11 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     const templateType = await p.select({
       message: "Which project type do you want to start?",
       options: [
-        { value: "standalone", label: `Standalone ${blueBright("Agent Server")}` },
-        { value: "nodejs", label: `NodeJS ${blueBright("Agent Server")}` },
-        { value: "nestjs", label: `NestJS ${blueBright("Agent Server")}` },
-        { value: "react", label: `React ${blueBright("Application")}` },
-        { value: "nestjs+react", label: `NestJS + React ${blueBright("Agent Server + Client Application")}` },
+        { value: "standalone", label: `Standalone ${picocolors.blueBright("Agent Server")}` },
+        { value: "nodejs", label: `NodeJS ${picocolors.blueBright("Agent Server")}` },
+        { value: "nestjs", label: `NestJS ${picocolors.blueBright("Agent Server")}` },
+        { value: "react", label: `React ${picocolors.blueBright("Application")}` },
+        { value: "nestjs+react", label: `NestJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
       ] as const satisfies { value: StarterTemplate; label: string }[],
     });
 
@@ -417,6 +418,6 @@ export async function start({ template }: StartOptions) {
 
   p.outro(`
 🎉 Project ${projectAbsolutePath} created
-⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts
+⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts
 `);
 }
