@@ -40,6 +40,5 @@ program
     await start({ template: options.project });
   });
 
-p.intro("🚀 ${blueBright('Agentica')} Setup Wizard");
-
+p.intro(`🚀 ${blueBright("Agentica")} Setup Wizard`);
 program.parse(process.argv);
