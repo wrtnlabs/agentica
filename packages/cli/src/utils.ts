@@ -35,16 +35,14 @@ export function yellow(text: string) {
  * If prettier is not installed, it returns the content as is.
  */
 export async function formatWithPrettier(content: string) {
+  try {
   /** if prettier is not installed, return undefined */
-  const prettier = await import("prettier").catch(() => undefined);
-
-  // if prettier is not installed, return the content as is
-  if (prettier == null) {
+    const prettier = await import("prettier");
+    return await prettier.format(content, {
+      parser: "typescript",
+    });
+  }
+  catch {
     return content;
   }
-
-  // format the content with prettier
-  return prettier.format(content, {
-    parser: "typescript",
-  });
 }
