@@ -1,6 +1,6 @@
 /** it is hard to mock fs because we have gigetDownload here, so we use tmp directory */
 
-import type { ExecSyncOptions } from "node:child_process";
+import type { exec } from "node:child_process";
 import type { PackageJson } from "type-fest";
 import type { Service } from "../connectors";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -14,16 +14,20 @@ import {
 } from "./start";
 
 /**
- * mock child_process execSync in vitest to mock npm/pnpm install command
+ * mock execAsync to avoid installing packages
  * because it causes timeout when running on CI
  */
-vi.mock("child_process", () => ({
-  execSync: (command: string, options: ExecSyncOptions) => {
-    const directory = (options.cwd ?? import.meta.dirname) as string;
-    const [, ..._pkgs] = command.split(" ");
+vi.mock("../utils", async () => ({
+  /** import actual utils module */
+  ...(await vi.importActual("../utils")),
+  /** mock execAsync */
+  execAsync(...args: Parameters<typeof exec>) {
+    const [command, options] = args;
+    const directory = (options?.cwd ?? import.meta.dirname) as string;
+    const [, ...packages] = command.split(" ");
     const packageJson = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8")) as PackageJson;
     packageJson.dependencies ??= {};
-    for (const pkg of _pkgs) {
+    for (const pkg of packages) {
       packageJson.dependencies[pkg] = "latest";
     }
     writeFileSync(resolve(directory, "package.json"), JSON.stringify(packageJson, null, 2));

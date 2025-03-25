@@ -6,17 +6,16 @@
 import type { SimplifyDeep } from "type-fest";
 import type { Service, UnwrapTaggedService } from "../connectors";
 import type { PackageManager } from "../packages";
-import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
-import inquirer from "inquirer";
+import * as p from "@clack/prompts";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand } from "../packages";
-import { blueBright, formatWithPrettier, redBright, yellow } from "../utils";
+import { blueBright, execAsync, formatWithPrettier, yellow } from "../utils";
 
 /** supported starter templates */
 export type StarterTemplate =
@@ -33,12 +32,11 @@ interface StartOptions {
   /** project template */
   template?: Readonly<StarterTemplate>;
 
-  /** project relative directory */
-  project: Readonly<string>;
 }
 
 /** Context for the start command */
 interface Context {
+  projectAbsolutePath: string;
   packageManager: PackageManager;
   template: StarterTemplate;
   services: Service[];
@@ -58,17 +56,20 @@ interface InstallDependenciesOptions {
 }
 
 /** dependencies for the project */
-function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): void {
+async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
   // in case service is empty we add dummy package. we use typescript for sure, so we use it.
   const pkg = ([...services.map(service => serviceToConnector(service)), "typescript"]).join(" ");
   const command = installCommand({ packageManager, pkg });
 
-  console.log("📦 Package installation in progress...");
+  const s = p.spinner();
 
-  execSync(command, {
+  s.start("📦 Package installation in progress...");
+
+  await execAsync(command, {
     cwd: projectAbsolutePath,
-    stdio: "inherit",
   });
+
+  s.stop("✅ Package installation completed");
 }
 
 /**
@@ -78,62 +79,86 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   /** store context for the start command */
   const context: Partial<Context> = { template: defaultTemplate };
 
+  // Ask for project directory
+  {
+    const projectRelativePath = await p.text({
+      message: "Enter the project directory path:",
+      placeholder: "./my-agentica-project",
+      validate(value) {
+        if (value === "") {
+          return "Please enter a directory path";
+        }
+        if (value[0] !== ".") {
+          return "Please enter a relative path.";
+        }
+        if (existsSync(value)) {
+          return "Directory already exists";
+        }
+        return undefined;
+      },
+    });
+    if (p.isCancel(projectRelativePath)) {
+      process.exit(0);
+    }
+    const projectAbsolutePath = join(process.cwd(), projectRelativePath);
+    context.projectAbsolutePath = projectAbsolutePath;
+  }
+
   // Ask which package manager to use
   {
-    const currentPackageManager = detectPackageManager();
-    console.log(`📦 Detected package manager: ${blueBright(currentPackageManager)}`);
-    const { packageManager } = await inquirer.prompt<{ packageManager: PackageManager }>([
-      {
-        type: "list",
-        name: "packageManager",
-        message: "Which package manager do you want to use?",
-        default: currentPackageManager,
-        choices: [
-          "npm",
-          "pnpm",
-          {
-            name: `yarn (berry ${blueBright("is not supported")})`,
-            value: "yarn",
-          },
-          "bun",
-        ],
-      },
-    ]);
+    const packageManager = await p.select({
+      message: "Which package manager do you want to use?",
+      initialValue: detectPackageManager(),
+      options: [
+        { value: "npm", label: "npm" },
+        { value: "pnpm", label: "pnpm" },
+        { value: "yarn", label: `yarn (${blueBright("berry is not supported")})` },
+        { value: "bun", label: "bun" },
+      ] as const satisfies { value: PackageManager; label: string }[],
+    });
+    if (p.isCancel(packageManager)) {
+      process.exit(0);
+    }
+    p.log.info(`📦 Using ${packageManager} as package manager`);
     context.packageManager = packageManager;
   }
 
   // Ask for template type
   if (context.template == null) {
-    const choices = [
-      { name: `Standalone ${blueBright("Agent Server")}`, value: "standalone" },
-      { name: `NodeJS ${blueBright("Agent Server")}`, value: "nodejs" },
-      { name: `NestJS ${blueBright("Agent Server")}`, value: "nestjs" },
-      { name: `React ${blueBright("Application")}`, value: "react" },
-      { name: `NestJS + React ${blueBright("Agent Server + Client Application")}`, value: "nestjs+react" },
-    ] as const satisfies { name: string; value: StarterTemplate }[];
+    const templateType = await p.select({
+      message: "Which project type do you want to start?",
+      options: [
+        { value: "standalone", label: `Standalone ${blueBright("Agent Server")}` },
+        { value: "nodejs", label: `NodeJS ${blueBright("Agent Server")}` },
+        { value: "nestjs", label: `NestJS ${blueBright("Agent Server")}` },
+        { value: "react", label: `React ${blueBright("Application")}` },
+        { value: "nestjs+react", label: `NestJS + React ${blueBright("Agent Server + Client Application")}` },
+      ] as const satisfies { value: StarterTemplate; label: string }[],
+    });
 
-    const { templateType } = await inquirer.prompt<{ templateType: StarterTemplate }>([
-      {
-        type: "list",
-        name: "templateType",
-        message: "Which project type do you want to start?",
-        choices,
-      },
-    ]);
+    if (p.isCancel(templateType)) {
+      process.exit(0);
+    }
+
     context.template = templateType;
   }
 
   // Ask for port
   if (context.template !== "standalone") {
-    const { port } = await inquirer.prompt<{ port: number }>([
-      {
-        type: "input",
-        name: "port",
-        message: "Server Port(if project is client app, this port mean ws server port):",
-        default: 3000,
+    const port = await p.text({
+      message: "Server Port(if project is client app, this port mean ws server port):",
+      initialValue: "3000",
+      validate(value) {
+        if (Number.isNaN(Number.parseInt(value))) {
+          return "Port must be an integer";
+        }
+        return undefined;
       },
-    ]);
-    context.port = port;
+    });
+    if (p.isCancel(port)) {
+      process.exit(0);
+    }
+    context.port = Number(port);
   }
 
   // ask if you need connectors
@@ -141,28 +166,40 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   if (context.template !== "react") {
     const connectors = await getConnectors();
     const sortedConnectors = connectors.sort((a, b) => a.displayName.localeCompare(b.displayName));
-    const serviceChoices = sortedConnectors.map(({ displayName, serviceName }) => ({ name: displayName, value: serviceName }));
-    const { services } = await inquirer.prompt<{ services: Service[] }>([
-      {
-        type: "checkbox",
-        name: "services",
-        message: "Which connectors do you want to include?",
-        choices: serviceChoices,
-      },
-    ]);
+    const serviceChoices = sortedConnectors.map(({ displayName, serviceName }) => ({ label: displayName, value: serviceName }));
+    const services = await p.multiselect({
+      message: "Which connectors do you want to include?",
+      options: serviceChoices,
+      required: false,
+    });
+    if (p.isCancel(services)) {
+      process.exit(0);
+    }
     context.services = services;
   }
 
   // Ask for openAI key
   {
-    const { openAIKey } = await inquirer.prompt<{ openAIKey: string | null }>([
-      {
-        type: "input",
-        name: "openAIKey",
-        message: "Please enter your OPENAI API key (optional):",
-      },
-    ]);
-    context.openAIKey = openAIKey;
+    const isConfirm = await p.confirm({
+      message: "Enter your OpenAI API key?",
+      initialValue: false,
+    });
+    if (p.isCancel(isConfirm)) {
+      process.exit(0);
+    }
+
+    if (isConfirm) {
+      const openAIKey = await p.text({
+        message: "Please enter your OPENAI API key:",
+      });
+      if (p.isCancel(openAIKey)) {
+        process.exit(0);
+      }
+      context.openAIKey = openAIKey;
+    }
+    else {
+      context.openAIKey = null;
+    }
   }
 
   try {
@@ -183,7 +220,7 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     template: "standalone",
     project: projectAbsolutePath,
   });
-  console.log("✅ Template downloaded");
+  p.log.success("✅ Template downloaded");
 
   // modify index file
   const importCode = generateServiceImportsCode(context.services);
@@ -206,10 +243,10 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
       value: context.openAIKey ?? "",
     }],
   });
-  console.log("✅ .env created");
+  p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
@@ -222,7 +259,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     template: "nodejs",
     project: projectAbsolutePath,
   });
-  console.log("✅ Template downloaded");
+  p.log.success("✅ Template downloaded");
 
   // modify index file
   const importCode = generateServiceImportsCode(context.services);
@@ -254,10 +291,10 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
       value: context.port?.toString() ?? "3000",
     }],
   });
-  console.log("✅ .env created");
+  p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
@@ -270,7 +307,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     template: "nestjs",
     project: projectAbsolutePath,
   });
-  console.log("✅ Template downloaded");
+  p.log.success("✅ Template downloaded");
 
   // modify index file
   const importCode = generateServiceImportsCode(context.services);
@@ -299,10 +336,10 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
       value: context.port?.toString() ?? "3000",
     }],
   });
-  console.log("✅ .env created");
+  p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
@@ -315,7 +352,7 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
     template: "react",
     project: projectAbsolutePath,
   });
-  console.log("✅ Template downloaded");
+  p.log.success("✅ Template downloaded");
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -328,10 +365,10 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
       value: `ws://localhost:${context.port}/chat`,
     }],
   });
-  console.log("✅ .env created");
+  p.log.success("✅ .env created");
 
   // install dependencies
-  installServicesAsDependencies({
+  await installServicesAsDependencies({
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
@@ -341,17 +378,13 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
 /**
  * Start a new project
  */
-export async function start({ project, template }: StartOptions) {
-  const projectAbsolutePath = join(process.cwd(), project);
-
-  // Check if project already exists
-  if (existsSync(projectAbsolutePath)) {
-    console.error(`❌ Project ${redBright(projectAbsolutePath)} already exists`);
-    return;
-  }
+export async function start({ template }: StartOptions) {
+  p.intro("Agentica Start Wizard");
 
   /** context for the start command */
   const context = await askQuestions({ template });
+
+  const { projectAbsolutePath } = context;
 
   switch (context.template) {
     case "standalone":
@@ -382,8 +415,8 @@ export async function start({ project, template }: StartOptions) {
       throw new Error(`❌ Template ${context.template as unknown as string} not supported`);
   }
 
-  console.log(`\n🎉 Project ${projectAbsolutePath} created`);
-  console.log(
-    `\n⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts`,
-  );
+  p.outro(`
+🎉 Project ${projectAbsolutePath} created
+⚠️  ${yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts
+`);
 }

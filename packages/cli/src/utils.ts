@@ -3,7 +3,8 @@
  * This file contains tiny utility functions that should not be in rest of the modules.
  */
 
-import { styleText } from "node:util";
+import { exec } from "node:child_process";
+import { promisify, styleText } from "node:util";
 
 /**
  * Convert a string to a capitalized string.
@@ -47,3 +48,6 @@ export async function formatWithPrettier(content: string) {
     return content;
   }
 }
+
+/** promisified exec */
+export const execAsync = promisify(exec);
