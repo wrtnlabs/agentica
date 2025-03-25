@@ -1,5 +1,5 @@
-import { defineConfig } from '@rslib/core';
-import UnpluginTypia from '@ryoppippi/unplugin-typia/rspack';
+import { defineConfig } from "@rslib/core";
+import UnpluginTypia from "@ryoppippi/unplugin-typia/rspack";
 
 export default defineConfig({
   tools: {
@@ -12,20 +12,20 @@ export default defineConfig({
   source: {
     entry: {
       index: [
-        './src/index.ts',
+        "./src/index.ts",
       ],
     },
   },
   lib: [
     {
-      format: 'cjs',
+      format: "esm",
       bundle: true,
       banner: {
-        js: '#!/usr/bin/env node' // Add shebang to the output file
+        js: "#!/usr/bin/env node", // Add shebang to the output file
       },
       output: {
         distPath: {
-          root: './bin',
+          root: "./bin",
         },
         minify: true,
       },
