@@ -4,7 +4,7 @@
  */
 
 import { exec } from "node:child_process";
-import { promisify, styleText } from "node:util";
+import { promisify } from "node:util";
 
 /**
  * Convert a string to a capitalized string.
@@ -18,18 +18,6 @@ export function capitalize(service: string): string {
     .split("-")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join("");
-}
-
-export function blueBright(text: string) {
-  return styleText("blueBright", text);
-}
-
-export function redBright(text: string) {
-  return styleText("redBright", text);
-}
-
-export function yellow(text: string) {
-  return styleText("yellow", text);
 }
 
 /**

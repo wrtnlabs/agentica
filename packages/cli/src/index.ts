@@ -3,9 +3,9 @@ import type { StarterTemplate } from "./commands/start";
 import process from "node:process";
 import * as p from "@clack/prompts";
 import { Command } from "commander";
+import * as picocolors from "picocolors";
 import typia from "typia";
 import { start } from "./commands/start";
-import { blueBright, redBright } from "./utils";
 
 interface CliOptions {
   project?: StarterTemplate;
@@ -24,7 +24,7 @@ program
   .action(async (options: CliOptions) => {
     if ((options.project as any) === true) {
       p.log.error(
-        `\n❌ The value of ${redBright("--project")} is required`,
+        `\n❌ The value of ${picocolors.redBright("--project")} is required`,
       );
       return;
     }
@@ -32,7 +32,7 @@ program
     /** check valid project type */
     if (!typia.is<StarterTemplate | undefined>(options.project)) {
       p.log.error(
-        `\n❌ The value of ${redBright("--project")} is invalid`,
+        `\n❌ The value of ${picocolors.redBright("--project")} is invalid`,
       );
       return;
     }
@@ -40,5 +40,5 @@ program
     await start({ template: options.project });
   });
 
-p.intro(`🚀 ${blueBright("Agentica")} Setup Wizard`);
+p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
 program.parse(process.argv);
