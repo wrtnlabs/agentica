@@ -4,6 +4,7 @@
  */
 
 import type { PackageJson } from "type-fest";
+import process from "node:process";
 
 /** supported package managers */
 export type PackageManager =
@@ -46,5 +47,26 @@ export function installCommand({ packageManager, pkg }: InstallProps) {
       packageManager satisfies never;
 
       throw new Error(`Unsupported package manager: ${packageManager as unknown as string}`);
+  }
+}
+
+/**
+ * detect package manager from environment
+ */
+export function detectPackageManager(): PackageManager {
+  const agent = process.env.npm_config_user_agent;
+
+  // eslint-disable-next-line ts/switch-exhaustiveness-check
+  switch (true) {
+    case agent?.startsWith("npm"):
+      return "npm";
+    case agent?.startsWith("yarn"):
+      return "yarn";
+    case agent?.startsWith("pnpm"):
+      return "pnpm";
+    case agent?.startsWith("bun"):
+      return "bun";
+    default:
+      return "npm";
   }
 }
