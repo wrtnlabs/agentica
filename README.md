@@ -5,6 +5,8 @@
 [![npm version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
 [![Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
 [![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
+[![Guide Documents](https://img.shields.io/badge/Guide-Documents-forestgreen)](https://wrtnlabs.io/agentica/docs/)
+[![Gurubase](https://img.shields.io/badge/Gurubase-Document%20Chatbot-006BFF)](https://gurubase.io/g/agentica)
 
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
@@ -53,8 +55,8 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
 - [📦 Setup](https://wrtnlabs.io/agentica/docs/setup)
 - 🔍 Concepts
   - [Function Calling](https://wrtnlabs.io/agentica/docs/concepts/function-calling)
-  - [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
   - [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
+  - [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
 
 ### 📖 Features
 - **📚 Core Library**
