@@ -15,7 +15,7 @@
     "build:prompt": "ts-node build/prompt.ts",
     "dev": "rimraf lib && tsc --watch",
     "eslint": "eslint ./**/*.ts",
-    "prepublishOnly": "pnpm run build",
+    "prepack": "pnpm run build",
     "lint": "eslint .",
     "format": "eslint --fix ."
   },

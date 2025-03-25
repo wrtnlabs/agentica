@@ -43,7 +43,7 @@
     "build": "rslib build",
     "dev": "rslib build --watch",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build",
+    "prepack": "pnpm run build",
     "lint": "eslint .",
     "format": "eslint --fix .",
     "test": "vitest"
