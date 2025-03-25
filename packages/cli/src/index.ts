@@ -5,7 +5,7 @@ import * as p from "@clack/prompts";
 import { Command } from "commander";
 import * as picocolors from "picocolors";
 import typia from "typia";
-import { start } from "./commands/start";
+import { start } from "./commands";
 
 interface CliOptions {
   project?: StarterTemplate;
