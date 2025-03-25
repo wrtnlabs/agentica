@@ -6,6 +6,8 @@ title: Typia (20,000x faster validator) challenges to Agentic AI with TypeScript
 
 ## Preface
 
+<!-- eslint-skip -->
+
 ```typescript
 import { Agentica } from "@agentica/core";
 import typia from "typia";

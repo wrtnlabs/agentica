@@ -19,6 +19,8 @@ Below is a demonstration of my alternative solution, searching and purchasing pr
   - [`@samchon/shopping-backend`](https://github.com/samchon/shopping-backend): Backend server built by [`@nestia`](https://github.com/samchon/nestia)
   - [`ShoppingChatApplication.tsx`](https://github.com/wrtnlabs/agentica/tree/main/packages/chat/src/examples/shopping): Agent application code built by React.
 
+<!-- eslint-skip -->
+
 ```typescript
 import { Agentica } from "@agentica/core";
 import { HttpLlm, OpenApi } from "@samchon/openapi";
@@ -89,6 +91,8 @@ To resolve this problem, I've made [`@samchon/openapi`](https://github.com/samch
 Also, when converting Swagger/OpenAPI document to LLM function calling schemas, [`@samchon/openapi`](https://github.com/samchon/openapi) embeds runtime validator of parameters for the [#Validation Feedback](#validation-feedback) strategy.
 
 ## Validation Feedback
+
+<!-- eslint-skip -->
 
 ```typescript
 import { FunctionCall } from "pseudo";
@@ -180,6 +184,8 @@ Such perfect schema generation by compiler skills, I think that my alternative s
 
 - [`ShoppingSaleController.ts`](https://github.com/samchon/shopping-backend/blob/master/src/controllers/shoppings/base/sales/ShoppingSaleController.ts)
 - [`IShoppingSale`](https://github.com/samchon/shopping-backend/blob/master/src/api/structures/shoppings/sales/IShoppingSale.ts)
+
+<!-- eslint-skip -->
 
 ```typescript
 @Controller("shoppings/customers/sales")

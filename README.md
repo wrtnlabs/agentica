@@ -15,6 +15,8 @@ Don't compose complicate agent graph or workflow, but just deliver **Swagger/Ope
 
 Look at the below demonstration, and feel how `agentica` is easy and powerful.
 
+<!-- eslint-skip -->
+
 ```typescript
 import { Agentica } from "@agentica/core";
 import typia from "typia";
