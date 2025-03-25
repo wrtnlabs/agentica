@@ -50,8 +50,7 @@
   },
   "dependencies": {
     "@clack/prompts": "^0.10.0",
-    "giget": "^1",
-    "inquirer": "^8.2.5"
+    "giget": "^1"
   },
   "optionalDependencies": {
     "prettier": ">=2.4.0"
@@ -59,7 +58,6 @@
   "devDependencies": {
     "@rslib/core": "^0.5.4",
     "@ryoppippi/unplugin-typia": "^2.1.3",
-    "@types/inquirer": "^9.0.3",
     "@types/node": "^20.14.8",
     "@wrtnlabs/eslint-config": "^0.3.1",
     "commander": "^10.0.0",
