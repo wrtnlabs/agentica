@@ -181,7 +181,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   // Ask for openAI key
   {
     const isConfirm = await p.confirm({
-      message: "Do you want to use OpenAI?",
+      message: "Enter your OpenAI API key?",
       initialValue: false,
     });
     if (p.isCancel(isConfirm)) {
