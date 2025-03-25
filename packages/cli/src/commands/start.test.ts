@@ -14,11 +14,13 @@ import {
 } from "./start";
 
 /**
- * mock child_process execSync in vitest to mock npm/pnpm install command
+ * mock execAsync to avoid installing packages
  * because it causes timeout when running on CI
  */
 vi.mock("../utils", async () => ({
+  /** import actual utils module */
   ...(await vi.importActual("../utils")),
+  /** mock execAsync */
   execAsync(...args: Parameters<typeof exec>) {
     const [command, options] = args;
     const directory = (options?.cwd ?? import.meta.dirname) as string;
