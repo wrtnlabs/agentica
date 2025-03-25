@@ -31,7 +31,7 @@ const agent = new Agentica({
 await agent.conversate("I wanna buy MacBook Pro");
 ```
 
-> https://github.com/user-attachments/assets/01604b53-aca4-41cb-91aa-3faf63549ea6
+> https://github.com/user-attachments/assets/e1faf30b-c703-4451-b68b-2e7a8170bce5
 >
 > Demonstration video of Shopping AI Chatbot
 
