@@ -1,8 +1,9 @@
 "use client";
 
 import { Markdown } from "@/app/_components/blog/Markdown";
+import { formatDate } from "@/app/_lib/funcs/blogs";
 import { BlogType } from "@/app/_lib/types/blogs";
-import { ArrowLeft } from "lucide-react";
+import { ArrowUpIcon, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -28,7 +29,7 @@ export default function BlogDetail() {
         const data = (await response.json()) as BlogType;
         setBlog(data);
       } catch (error) {
-        console.error("Failed to fetch blog:", error);
+        router.push("/blog");
       } finally {
         setLoading(false);
       }
@@ -37,8 +38,8 @@ export default function BlogDetail() {
     fetchData();
   }, [id, router]);
 
-  if (loading) return <div>Loading...</div>;
-  if (!blog) return <div>Blog not found</div>;
+  if (loading) return null;
+  if (!blog) return router.push("/blog");
 
   return (
     <div className="relative mx-auto flex flex-col gap-4 max-w-2xl py-5">
@@ -46,13 +47,28 @@ export default function BlogDetail() {
         href="/blog"
         className="absolute -left-[100px] top-8 flex gap-2 items-center"
       >
-        <ArrowLeft size={16} />
+        <ChevronLeft size={16} />
         Blog
       </Link>
 
-      <h1 className="text-3xl font-bold">{blog.title.rendered}</h1>
+      <h1 className="text-3xl font-semibold text-zinc-100">
+        {blog.title.rendered}
+      </h1>
+      <p className="text-base text-zinc-400">{formatDate(blog.date)}</p>
       <hr />
-      <Markdown>{blog.content.rendered}</Markdown>
+
+      <div className="flex flex-col gap-2">
+        <Markdown>{blog.content.rendered}</Markdown>
+      </div>
+
+      <div className="absolute -right-12">
+        <button
+          className="fixed bottom-12 bg-zinc-800/30 p-2 rounded-full cursor-pointer"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <ArrowUpIcon size={20} />
+        </button>
+      </div>
     </div>
   );
 }

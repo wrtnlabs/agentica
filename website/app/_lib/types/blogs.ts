@@ -1,3 +1,6 @@
+/**
+ * Object type for the "blog" object in the route /wp/v2/blog.
+ */
 export type BlogType = {
   /** The date the post was published, in the site's timezone. */
   date: string | null;
@@ -58,4 +61,28 @@ export type BlogType = {
   template: string;
   /** Are sharing buttons enabled? */
   jetpack_sharing_enabled: boolean;
+};
+
+/**
+ * Object type for the "blog_category" object in the route /wp/v2/blog_category.
+ */
+export type BlogCategory = {
+  /** Unique identifier for the term. */
+  id: number;
+  /** Number of published posts for the term. */
+  count: number;
+  /** HTML description of the term. */
+  description: string;
+  /** URL of the term. */
+  link: string;
+  /** HTML title for the term. */
+  name: string;
+  /** An alphanumeric identifier for the term unique to its type. */
+  slug: string;
+  /** Type attribution for the term. */
+  taxonomy: "blog_category";
+  /** The parent term ID. */
+  parent: number;
+  /** Meta fields. */
+  meta: {};
 };
