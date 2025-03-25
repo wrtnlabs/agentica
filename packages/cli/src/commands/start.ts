@@ -6,18 +6,16 @@
 import type { SimplifyDeep } from "type-fest";
 import type { Service, UnwrapTaggedService } from "../connectors";
 import type { PackageManager } from "../packages";
-import { exec } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
-import { promisify } from "node:util";
 import * as p from "@clack/prompts";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand } from "../packages";
-import { blueBright, formatWithPrettier, yellow } from "../utils";
+import { blueBright, execAsync, formatWithPrettier, yellow } from "../utils";
 
 /** supported starter templates */
 export type StarterTemplate =
@@ -56,9 +54,6 @@ interface InstallDependenciesOptions {
   projectAbsolutePath: string;
   services: Service[];
 }
-
-/** promisified exec */
-const execAsync = promisify(exec);
 
 /** dependencies for the project */
 async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
