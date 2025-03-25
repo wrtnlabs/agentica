@@ -12,6 +12,7 @@ import { styleText } from "node:util";
  * capitalize("aws-s3") // "AwsS3"
  */
 export function capitalize(service: string): string {
+  // @TODO cover the snake case or apply string literal type return type(ex: HOTScript)
   return service
     .split("-")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
