@@ -2,9 +2,9 @@ name: test
 on:
   pull_request:
     paths:
-      - 'packages/*/src/**'
-      - 'test/**'
-      - 'package.json'
+      - "packages/*/src/**"
+      - "test/**"
+      - package.json
 jobs:
   packages-test:
     runs-on: ubuntu-latest
@@ -27,4 +27,3 @@ jobs:
         run: pnpm run test:e2e
         env:
           CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
-

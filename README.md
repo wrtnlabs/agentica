@@ -1,4 +1,5 @@
 # Agentica
+
 ![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
@@ -23,7 +24,7 @@ const agent = new Agentica({
     await fetch(
       "https://shopping-be.wrtn.ai/editor/swagger.json",
     ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingCounselor>,
     typia.llm.application<ShoppingPolicy>(),
     typia.llm.application<ShoppingSearchRag>(),
   ],
@@ -37,20 +38,18 @@ await agent.conversate("I wanna buy MacBook Pro");
 
 <!-- To do: re-capture demonstration video with Wrtnlabs title -->
 
-
-
-
 ## Playground
+
 You can experience how typia works by playground website:
 
 💻 https://wrtnlabs.io/agentica/playground
 
-
-
 ## Guide Documents
+
 Check out the document in the [website](https://wrtnlabs.io/agentica):
 
 ### 🏠 Home
+
 - [🚀 Getting Started](https://wrtnlabs.io/agentica/docs)
 - [📦 Setup](https://wrtnlabs.io/agentica/docs/setup)
 - 🔍 Concepts
@@ -59,6 +58,7 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
   - [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
 
 ### 📖 Features
+
 - **📚 Core Library**
   - [Agentic AI](https://wrtnlabs.io/agentica/docs/core)
   - [Facade Controller](https://wrtnlabs.io/agentica/docs/core/facade)
@@ -76,12 +76,12 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
   - [PG Vector Selector](https://wrtnlabs.io/agentica/docs/plugins/pg-vector-selector)
 
 ### 🔗 Appendix
+
 - [📅 Roadmap](https://wrtnlabs.io/agentica/docs/roadmap)
 - 📊 Related Projects
   - [Agent OS](https://wrtnlabs.io/agentica/docs/related/os)
   - [AutoView](https://wrtnlabs.io/agentica/docs/related/autoview)
 - [⇲ API Documents](https://wrtnlabs.io/agentica/api)
-
 
 ## How to Contribute?
 
@@ -89,10 +89,10 @@ Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more informati
 
 Thank you for your interest in contributing to Agentica!
 
-<!-- 
+<!--
 ## Roadmap
 ### Guide Documents
-In here README document, `@agentica/core` is introducing its key concepts, principles, and demonstrating some examples. 
+In here README document, `@agentica/core` is introducing its key concepts, principles, and demonstrating some examples.
 
 However, this contents are not fully enough for new comers of AI Chatbot development. We need much more guide documents and example projects are required for education. We have to guide backend developers to write proper definitions optimized for LLM function calling. We should introduce the best way of multi-agent orchestration implementation.
 
