@@ -39,7 +39,7 @@ export function WelcomeSection() {
       <img
         src="/agentica/welcome_bg.png"
         alt="background"
-        className="absolute top-[50%] left-[50%] transform-[translate(-50%,-50%)] h-screen object-cover opacity-30 md:w-[75%] md:h-auto select-none"
+        className="absolute top-[50%] left-[50%] transform-[translate(-50%,-50%)] h-[60vh] object-cover opacity-30 md:w-[50%] md:h-auto select-none"
       />
     </div>
   );

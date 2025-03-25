@@ -72,9 +72,9 @@ export function ChatExample() {
       {visibleMessage >= 4 && (
         <button
           onClick={isEnd ? scrollToTop : scrollToBottom}
-          className="cursor-pointer absolute bottom-4 left-[50%] transform-[translate(-50%,-50%)] bg-zinc-700/70 text-zinc-100 p-2 rounded-full w-fit"
+          className="cursor-pointer absolute bottom-4 left-[50%] bg-zinc-700/70 text-zinc-100 p-2 rounded-full w-fit"
           style={{
-            transform: isEnd ? "rotate(180deg)" : "rotate(0)",
+            transform: isEnd ? "translate(-50%,-50%) rotate(180deg)" : "translate(-50%,-50%) rotate(0)",
             transition: "transform 0.3s",
           }}
         >
