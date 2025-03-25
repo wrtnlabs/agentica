@@ -55,8 +55,8 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
 - [📦 Setup](https://wrtnlabs.io/agentica/docs/setup)
 - 🔍 Concepts
   - [Function Calling](https://wrtnlabs.io/agentica/docs/concepts/function-calling)
-  - [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
   - [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
+  - [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
 
 ### 📖 Features
 - **📚 Core Library**

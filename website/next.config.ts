@@ -13,7 +13,4 @@ export default withNextra({
   images: {
     unoptimized: true,
   },
-  nextThemes: {
-    theme: "dark",
-  },
 });
