@@ -24,7 +24,7 @@ const agent = new Agentica({
     await fetch(
       "https://shopping-be.wrtn.ai/editor/swagger.json",
     ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>,
+    typia.llm.application<ShoppingCounselor>(),
     typia.llm.application<ShoppingPolicy>(),
     typia.llm.application<ShoppingSearchRag>(),
   ],
