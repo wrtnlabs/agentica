@@ -134,11 +134,8 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
   }
 
   // ask if you need connectors
-  if (context.template === "react") {
-    // React projects don't need connectors
-    context.services = [];
-  }
-  else {
+  // if template is react, we don't need connectors
+  if (context.template !== "react") {
     const connectors = await getConnectors();
     const sortedConnectors = connectors.sort((a, b) => a.displayName.localeCompare(b.displayName));
     const serviceChoices = sortedConnectors.map(({ displayName, serviceName }) => ({ name: displayName, value: serviceName }));
