@@ -17,12 +17,13 @@ import {
  * mock tinyexec to avoid installing packages
  * because it causes timeout when running on CI
  */
-vi.mock("tinyexec", () => ({
-  x: (_: string, args: string[], options: { nodeOptions: ExecSyncOptions }) => {
-    const directory = (options.nodeOptions.cwd ?? import.meta.dirname) as string;
+vi.mock("child_process", () => ({
+  execSync: (command: string, options: ExecSyncOptions) => {
+    const directory = (options.cwd ?? import.meta.dirname) as string;
+    const [, ..._pkgs] = command.split(" ");
     const packageJson = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf-8")) as PackageJson;
     packageJson.dependencies ??= {};
-    for (const pkg of args) {
+    for (const pkg of _pkgs) {
       packageJson.dependencies[pkg] = "latest";
     }
     writeFileSync(resolve(directory, "package.json"), JSON.stringify(packageJson, null, 2));
