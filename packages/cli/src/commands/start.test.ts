@@ -14,7 +14,7 @@ import {
 } from "./start";
 
 /**
- * mock tinyexec to avoid installing packages
+ * mock child_process execSync in vitest to mock npm/pnpm install command
  * because it causes timeout when running on CI
  */
 vi.mock("child_process", () => ({
