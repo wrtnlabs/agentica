@@ -15,7 +15,7 @@
     "prepare": "ts-patch install",
     "preview": "vite preview",
     "deploy": "node build/deploy.mjs",
-    "prepublishOnly": "pnpm run build"
+    "prepack": "pnpm run build"
   },
   "repository": {
     "type": "git",

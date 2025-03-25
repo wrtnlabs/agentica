@@ -41,7 +41,7 @@
     "prepare": "ts-patch install",
     "build": "rimraf lib && tsc && rollup -c",
     "dev": "rimraf lib && tsc --watch",
-    "prepublishOnly": "pnpm run build",
+    "prepack": "pnpm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },

@@ -39,7 +39,7 @@
   ],
   "scripts": {
     "build": "tsc && rollup -c",
-    "prepublishOnly": "pnpm run build",
+    "prepack": "pnpm run build",
     "lint": "eslint .",
     "format": "eslint --fix ."
   },
