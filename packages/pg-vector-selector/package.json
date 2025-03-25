@@ -39,10 +39,9 @@
   ],
   "scripts": {
     "build": "tsc && rollup -c",
-    "eslint": "eslint ./**/*.ts",
     "prepublishOnly": "pnpm run build",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "format": "eslint --fix ."
   },
   "peerDependencies": {
     "@agentica/core": "workspace:^"
