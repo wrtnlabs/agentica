@@ -34,10 +34,10 @@ export default async function RootLayout(props) {
       suppressHydrationWarning
     >
       <Head
-        backgroundColor={{
-          dark: "rgb(9, 15, 27)",
-          light: "rgb(250, 250, 250)",
-        }}
+        // backgroundColor={{
+        //   dark: "rgb(9, 15, 27)",
+        //   light: "rgb(250, 250, 250)",
+        // }}
         // color={{
         //   hue: { dark: 120, light: 0 },
         //   saturation: { dark: 100, light: 100 },
@@ -111,6 +111,7 @@ export default async function RootLayout(props) {
           nextThemes={{
             defaultTheme: "dark",
           }}
+          darkMode={false}
           // ...Your additional theme config options
         >
           {props.children}

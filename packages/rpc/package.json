@@ -48,9 +48,6 @@
   "dependencies": {
     "@agentica/core": "workspace:^",
     "@samchon/openapi": "^3.0.0",
-    "chalk": "4.1.2",
-    "openai": "^4.80.0",
-    "tstl": "^3.0.0",
     "typia": "^8.0.0"
   },
   "devDependencies": {
