@@ -90,15 +90,15 @@ export default async function RootLayout(props) {
 })(window, document, "clarity", "script", "qt7e6ysbbd");
 `
         }} />
-        <Script
+        {/* <Script
           async
           src="https://widget.gurubase.io/widget.latest.min.js"
-          data-widget-id="bh4xkn6ORPt9IhVcr1-wwW4Z0WXhXBubl90_Q7G4NJc"
+          data-widget-id="YVDFrawzFh5RCuDpaFXXR8WKTTi5kH3x-7ASp0HmT44"
           data-text="Ask AI"
           data-margins='{"bottom": "1rem", "right": "1rem"}'
           data-light-mode="true"
           id="guru-widget-id"
-      />
+        /> */}
       </Head>
       <body>
         <Layout
