@@ -202,13 +202,13 @@ importers:
 
   packages/cli:
     dependencies:
-      '@clack/prompts':
-        specifier: ^0.10.0
-        version: 0.10.0
       giget:
         specifier: ^1
         version: 1.2.5
     devDependencies:
+      '@clack/prompts':
+        specifier: ^0.10.0
+        version: 0.10.0
       '@rslib/core':
         specifier: ^0.5.4
         version: 0.5.5(typescript@5.8.2)
