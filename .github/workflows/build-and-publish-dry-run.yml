@@ -10,14 +10,4 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run build:packages
-      - name: expand publishConfig
-        shell: bash
-        run: |
-          find packages -type f -name "package.json" | while read -r file; do
-            echo "Processing: $file"
-            cp "$file" "$file.bak"
-            jq '. + .publishConfig | del(.publishConfig)' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
-            rm "$file.bak"
-          done
-      - run: pnpm dlx pkg-pr-new publish './packages/*'
+      - run: pnpm dlx pkg-pr-new publish --pnpm './packages/*'
