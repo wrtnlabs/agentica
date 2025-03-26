@@ -1,8 +1,8 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaContext } from "../context/AgenticaContext";
-import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaContext } from "../context/AgenticaContext";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 
 /**
  * Executor of the Agentic AI.

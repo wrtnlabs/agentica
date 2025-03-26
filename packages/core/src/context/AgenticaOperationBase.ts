@@ -1,4 +1,4 @@
-import { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
+import type { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
 
 export abstract class AgenticaOperationBase<
   Protocol extends "http" | "class",

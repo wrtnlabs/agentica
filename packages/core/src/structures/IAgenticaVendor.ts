@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import type OpenAI from "openai";
 
 /**
  * LLM service vendor for Nestia Chat.

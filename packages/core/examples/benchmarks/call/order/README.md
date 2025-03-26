@@ -1,20 +1,25 @@
 # order
+
 ## Summary
-  - Scenarios: #4
-  - Success: 2
-  - Failure: 2
-  - Average Time: 173,549.5 ms
+
+- Scenarios: #4
+- Success: 2
+- Failure: 2
+- Average Time: 173,549.5 ms
 
 ## Events
- Name | Type | Time
-:-----|:-----|----:
-[1.](./1.failure.md) | failure | 89333 ms
-[2.](./2.success.md) | success | 203062 ms
-[3.](./3.failure.md) | failure | 143959 ms
-[4.](./4.success.md) | success | 257844 ms
+
+| Name                 | Type    |      Time |
+| :------------------- | :------ | --------: |
+| [1.](./1.failure.md) | failure |  89333 ms |
+| [2.](./2.success.md) | success | 203062 ms |
+| [3.](./3.failure.md) | failure | 143959 ms |
+| [4.](./4.success.md) | success | 257844 ms |
 
 ## Scenario
+
 ### User Prompt
+
 I wanna see every sales in the shopping mall
 
 And then show me the detailed information about the Macbook.
@@ -25,12 +30,13 @@ And take the shopping cart to the order.
 
 At last, I'll publish it by cash payment, and my address is
 
-  - country: South Korea
-  - city/province: Seoul
-  - department: Wrtn Apartment
-  - Possession: 101-1411
+- country: South Korea
+- city/province: Seoul
+- department: Wrtn Apartment
+- Possession: 101-1411
 
 ### Expected
+
 ```json
 {
   "type": "array",

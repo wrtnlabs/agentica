@@ -1,8 +1,8 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import { IAgenticaConfig } from "./IAgenticaConfig";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { IAgenticaConfig } from "./IAgenticaConfig";
 
 /**
  * System prompt collection of the A.I. chatbot.
