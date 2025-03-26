@@ -6,7 +6,9 @@ import type {
   OpenApiV3_1,
   SwaggerV2,
 } from "@samchon/openapi";
+import type { RequestOptions } from "openai/core";
 import fs from "node:fs";
+import process from "node:process";
 import { Agentica } from "@agentica/core";
 import {
   HttpLlm,
@@ -16,18 +18,20 @@ import ShoppingApi from "@samchon/shopping-api";
 import chalk from "chalk";
 import OpenAI from "openai";
 import typia from "typia";
-
 import { TestGlobal } from "./TestGlobal";
 import { ConsoleScanner } from "./utils/ConsoleScanner";
 
-function trace(...args: any[]): void {
+function trace(...args: unknown[]): void {
   console.log("----------------------------------------------");
   console.log(...args);
   console.log("----------------------------------------------");
 }
 
 async function main(): Promise<void> {
-  if (!TestGlobal.env.CHATGPT_API_KEY?.length) { return; }
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    trace(chalk.redBright("CHATGPT_API_KEY is not set"));
+    return;
+  }
 
   // GET LLM APPLICATION SCHEMA
   const application: IHttpLlmApplication<"chatgpt"> = HttpLlm.application({
@@ -79,8 +83,8 @@ async function main(): Promise<void> {
         baseURL: TestGlobal.env.CHATGPT_BASE_URL,
       }),
       model: "gpt-4o-mini",
-      options: TestGlobal.env.CHATGPT_OPTIONS
-        ? JSON.parse(TestGlobal.env.CHATGPT_OPTIONS)
+      options: TestGlobal.env.CHATGPT_OPTIONS !== undefined
+        ? JSON.parse(TestGlobal.env.CHATGPT_OPTIONS) as RequestOptions
         : undefined,
     },
     controllers: [
@@ -109,7 +113,8 @@ async function main(): Promise<void> {
       chalk.greenBright("execute"),
       e.operation.function.name,
       (e.value as { status: string }).status,
-    ),
+    );
+
     fs.writeFileSync(
       `${TestGlobal.ROOT}/logs/${e.operation.function.name}.log`,
       JSON.stringify(
@@ -137,7 +142,9 @@ async function main(): Promise<void> {
     const content: string = await ConsoleScanner.read("Input: ");
     console.log("----------------------------------------------");
 
-    if (content === "$exit") { break; }
+    if (content === "$exit") {
+      break;
+    }
     else if (content === "$usage") {
       trace(
         chalk.redBright("Token Usage"),
@@ -148,7 +155,9 @@ async function main(): Promise<void> {
       const histories: AgenticaPrompt<"chatgpt">[]
         = await agent.conversate(content);
       for (const h of histories.slice(1)) {
-        if (h.type === "text") { trace(chalk.yellow("Text"), chalk.blueBright(h.role), "\n\n", h.text); }
+        if (h.type === "text") {
+          trace(chalk.yellow("Text"), chalk.blueBright(h.role), "\n\n", h.text);
+        }
         else if (h.type === "describe") {
           trace(
             chalk.whiteBright("Describe"),
