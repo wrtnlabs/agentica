@@ -2,15 +2,16 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   arxiv: "ArXiv",
+  crawler: "Crawler",
   gmail: "Gmail",
   "google-calendar": "Google Calendar",
-  "google-shopping": "Google Shopping",
-  "google-image": "Google Image",
-  "google-search": "Google Search",
-  notion: "Notion",
-  slack: "Slack",
   "google-docs": "Google Docs",
+  "google-image": "Google Image",
   "google-scholar": "Google Scholar",
+  "google-search": "Google Search",
+  "google-shopping": "Google Shopping",
+  notion: "Notion",
   reddit: "Reddit",
+  slack: "Slack",
 };
 export default meta;
