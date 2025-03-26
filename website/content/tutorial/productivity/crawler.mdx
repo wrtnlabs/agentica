@@ -1,0 +1,96 @@
+---
+title: Agentica > Tutorial > Productivity > Crawler
+---
+
+## Introduction
+
+- [playground](https://stackblitz.com/github/wrtnlabs/agentica-tutorial-crawler) you can see the demo code on the playground.
+
+Set up a **fully functional Crawler Agent** powered by OpenAI's GPT model quickly using the Agentica CLI.
+
+## Quick CLI Setup
+
+Launch the Agentica Setup Wizard with a single command:
+
+```bash
+npx agentica start crawler-agent
+```
+
+The wizard guides you through:
+
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **WEB_CRAWLER** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import typia from "typia";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+
+import { WebCrawlerService } from "@wrtnlabs/connector-web-crawler";
+
+dotenv.config();
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Web Crawler Connector",
+      protocol: "class",
+      application: typia.llm.application<WebCrawlerService, "chatgpt">(),
+      execute: new WebCrawlerService({
+        zenRowsApiKey: process.env.ZENROWS_API_KEY!,
+      }),
+    },
+  ],
+});
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+```
+
+This code instantly sets up your Web Crawler Agent, ready to intelligently crawl the web.
+
+## What This Does
+
+Your Web Crawler Agent will:
+
+- **Process Arxiv Search Data:** Interact with the Arxiv Search API using the `WebCrawlerService`.
+- **Leverage OpenAI's GPT Model:** Use OpenAI's GPT model to generate responses to user queries.
+- **Automate Web Crawling:** Automatically crawl the web to gather data for your project.
+- **Securely Store API Keys:** Store your API keys securely in a `.env` file.
+
+Set up your environment variables in the `.env` file:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+ZENROWS_API_KEY=your-zenrows-api-key
+```
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Crawl this https://wrtnlabs.io/agentica/docs/ and summarize the content."
+
+## Available Functions
+
+For a complete list of available functions in `WebCrawlerService`, check out the source code:
+👉 [wrtnlabs/connectors - WebCrawlerService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/arxiv_search/src/web_crawler/WebCrawlerService.ts)
+
+Your AI-powered Web Crawler Agent is ready to crawl the web and gather data for your project. 🚀
