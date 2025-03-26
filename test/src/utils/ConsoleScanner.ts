@@ -1,7 +1,8 @@
-import readline from "readline";
+import process from "node:process";
+import readline from "node:readline";
 
-export namespace ConsoleScanner {
-  export const read = (question: string): Promise<string> => {
+export const ConsoleScanner = {
+  read: async (question: string): Promise<string> => {
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -12,5 +13,5 @@ export namespace ConsoleScanner {
         resolve(answer);
       });
     });
-  };
-}
+  },
+};

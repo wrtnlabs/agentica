@@ -4,7 +4,9 @@ import OpenAI from "openai";
 import { TestGlobal } from "../TestGlobal";
 
 export async function test_base_event(): Promise<void | false> {
-  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    return false;
+  }
 
   // initialize count
   let initializeCount = 0;
@@ -17,7 +19,7 @@ export async function test_base_event(): Promise<void | false> {
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
-        apiKey: TestGlobal.env.CHATGPT_API_KEY,
+        apiKey: TestGlobal.chatgptApiKey,
       }),
     },
     controllers: [],

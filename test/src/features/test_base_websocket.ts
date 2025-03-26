@@ -1,18 +1,24 @@
-import { Agentica, IAgenticaEventJson } from "@agentica/core";
-import {
-  AgenticaRpcService,
+import type { IAgenticaEventJson } from "@agentica/core";
+import type {
   IAgenticaRpcListener,
   IAgenticaRpcService,
 } from "@agentica/rpc";
+import type { Driver } from "tgrid";
+import { Agentica } from "@agentica/core";
+import {
+  AgenticaRpcService,
+} from "@agentica/rpc";
 import { TestValidator } from "@nestia/e2e";
 import OpenAI from "openai";
-import { Driver, WebSocketConnector, WebSocketServer } from "tgrid";
+import { WebSocketConnector, WebSocketServer } from "tgrid";
 import { randint } from "tstl";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_base_websocket = async (): Promise<void | false> => {
-  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+export async function test_base_websocket(): Promise<void | false> {
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    return false;
+  }
 
   const port: number = randint(30_001, 65_001);
   const server: WebSocketServer<
@@ -26,7 +32,7 @@ export const test_base_websocket = async (): Promise<void | false> => {
       vendor: {
         model: "gpt-4o-mini",
         api: new OpenAI({
-          apiKey: TestGlobal.env.CHATGPT_API_KEY,
+          apiKey: TestGlobal.chatgptApiKey,
         }),
       },
       controllers: [],
@@ -76,4 +82,4 @@ export const test_base_websocket = async (): Promise<void | false> => {
       role: "assistant",
     },
   ])(events);
-};
+}

@@ -1,18 +1,22 @@
+import type { AgenticaOperation } from "@agentica/core";
+import type { IHttpConnection, OpenApi } from "@samchon/openapi";
+import fs from "node:fs";
+import path from "node:path";
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
-import { Agentica, AgenticaOperation } from "@agentica/core";
+import { Agentica } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
-import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
+import { HttpLlm } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
-import fs from "fs";
 import OpenAI from "openai";
-import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_calls_pg_vector_selector = async (): Promise<
+export async function test_benchmark_calls_pg_vector_selector(): Promise<
   void | false
-> => {
-  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+> {
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    return false;
+  }
   if (
     !(
       await fetch(
@@ -55,7 +59,7 @@ export const test_benchmark_calls_pg_vector_selector = async (): Promise<
       vendor: {
         model: "gpt-4o-mini",
         api: new OpenAI({
-          apiKey: process.env.CHATGPT_API_KEY,
+          apiKey: TestGlobal.chatgptApiKey,
         }),
       },
       controllers: [
@@ -66,7 +70,7 @@ export const test_benchmark_calls_pg_vector_selector = async (): Promise<
             model: "chatgpt",
             document: await fetch(
               "https://shopping-be.wrtn.ai/editor/swagger.json",
-            ).then((res) => res.json()),
+            ).then(async res => res.json() as Promise<OpenApi.IDocument>),
           }),
           connection,
         },
@@ -79,7 +83,7 @@ export const test_benchmark_calls_pg_vector_selector = async (): Promise<
     });
 
   const warming = async () => {
-    await newAgentica().then((v) => v.conversate("What can you do?"));
+    await newAgentica().then(async v => v.conversate("What can you do?"));
   };
   await warming();
   const agent: Agentica<"chatgpt"> = await newAgentica();
@@ -92,12 +96,14 @@ export const test_benchmark_calls_pg_vector_selector = async (): Promise<
     const found = agent
       .getOperations()
       .find(
-        (op) =>
-          op.protocol === "http" &&
-          op.function.method === method &&
-          op.function.path === path,
+        op =>
+          op.protocol === "http"
+          && op.function.method === method
+          && op.function.path === path,
       );
-    if (!found) throw new Error(`Operation not found: ${method} ${path}`);
+    if (found === undefined) {
+      throw new Error(`Operation not found: ${method} ${path}`);
+    }
     return found;
   };
   const benchmark: AgenticaCallBenchmark<"chatgpt"> = new AgenticaCallBenchmark(
@@ -176,19 +182,21 @@ export const test_benchmark_calls_pg_vector_selector = async (): Promise<
     await mkdir(path.join(root, key.split("/").slice(0, -1).join("/")));
     await fs.promises.writeFile(path.join(root, key), value, "utf8");
   }
-};
+}
 
-const mkdir = async (str: string) => {
+async function mkdir(str: string) {
   try {
     await fs.promises.mkdir(str, {
       recursive: true,
     });
-  } catch {}
-};
-const rmdir = async (str: string) => {
+  }
+  catch {}
+}
+async function rmdir(str: string) {
   try {
     await fs.promises.rm(str, {
       recursive: true,
     });
-  } catch {}
-};
+  }
+  catch {}
+}

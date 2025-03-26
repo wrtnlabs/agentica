@@ -1,15 +1,14 @@
-import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
-import { ILlamaSchema, ILlmFunction } from "@samchon/openapi";
-import { Driver, WebSocketConnector } from "tgrid";
+import type { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
+import type { ILlamaSchema, ILlmFunction } from "@samchon/openapi";
+import type { Driver } from "tgrid";
+import process from "node:process";
+import { WebSocketConnector } from "tgrid";
 
-const fillArguments = async (
-  param: ILlamaSchema.IParameters,
-): Promise<Record<string, any>> => {
-  param;
-  return {} as any;
-};
+async function fillArguments(_param: ILlamaSchema.IParameters): Promise<Record<string, any>> {
+  return {};
+}
 
-const main = async () => {
+async function main() {
   const connector: WebSocketConnector<
     null,
     IAgenticaRpcListener,
@@ -22,12 +21,18 @@ const main = async () => {
       console.log("describer", evt.text);
     },
     call: async (event) => {
+      // @TODO Omg... I'm not sure how to fix it.
+      // eslint-disable-next-line ts/no-use-before-define
       const func: ILlmFunction<"llama"> | undefined = controllers
-        .find((c) => c.name === event.operation.controller)
-        ?.application.functions.find(
-          (f) => f.name === event.operation.function,
+        .find(c => c.name === event.operation.controller)
+        ?.application
+        .functions
+        .find(
+          f => f.name === event.operation.function,
         );
-      if (!func?.separated?.human) return null;
+      if (func === undefined || func.separated?.human == null) {
+        return null;
+      }
       return fillArguments(func.separated.human);
     },
   });
@@ -38,5 +43,8 @@ const main = async () => {
   await driver.conversate("I wanna create an article with file uploading.");
 
   await connector.close();
-};
-main;
+}
+main().catch((error) => {
+  console.error(error);
+  process.exit(-1);
+});
