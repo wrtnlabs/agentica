@@ -10,5 +10,7 @@ const meta: MetaRecord = {
   notion: "Notion",
   slack: "Slack",
   "google-docs": "Google Docs",
+  "google-scholar": "Google Scholar",
+  reddit: "Reddit",
 };
 export default meta;
