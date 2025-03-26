@@ -33,7 +33,7 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Test case 2: Close functionality
-  close();
+  mpsc.close();
   const readAfterClose = await reader.read();
   if (readAfterClose.done !== true) {
     throw new Error(

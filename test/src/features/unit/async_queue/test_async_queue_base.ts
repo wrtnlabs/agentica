@@ -130,7 +130,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 6: Test create function - close
-  close();
+  mpsc.close();
   const readAfterClose = await reader.read();
 
   if (readAfterClose.done !== true) {
