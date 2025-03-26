@@ -1,8 +1,9 @@
-import { MPSCUtil } from "@agentica/core/src/internal/MPSCUtil";
+import { AsyncQueue } from "@agentica/core/src/internal/AsyncQueue";
+import { MPSC } from "@agentica/core/src/internal/MPSC";
 
 export async function test_async_queue_base(): Promise<void | false> {
   // Test case 1: Basic AsyncQueue functionality
-  const basicQueue = new MPSCUtil.AsyncQueue<number>();
+  const basicQueue = new AsyncQueue<number>();
   basicQueue.enqueue(1);
   basicQueue.enqueue(2);
   basicQueue.enqueue(3);
@@ -30,7 +31,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 2: Dequeue from empty queue then enqueue
-  const emptyQueue = new MPSCUtil.AsyncQueue<string>();
+  const emptyQueue = new AsyncQueue<string>();
 
   // Start dequeue operation that will wait for an item
   const pendingDequeue = emptyQueue.dequeue();
@@ -48,17 +49,16 @@ export async function test_async_queue_base(): Promise<void | false> {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const duplicatedResult: false | IteratorResult<string, undefined> =
-    (await Promise.race([
+  const duplicatedResult
+    = (await Promise.race([
       emptyQueue.dequeue(),
-      new Promise((resolve) => setTimeout(resolve, 0, false)),
-    ])) as any;
+      new Promise(resolve => setTimeout(resolve, 0, false)),
+    ])) as false | IteratorResult<string, undefined>;
 
   if (
-    duplicatedResult !== false &&
-    duplicatedResult.value === "delayed item" &&
-    duplicatedResult.done === false
+    duplicatedResult !== false
+    && duplicatedResult.value === "delayed item"
+    && duplicatedResult.done === false
   ) {
     throw new Error(
       `Duplicated dequeue test failed: Expected {value: "delayed item", done: false}, got ${JSON.stringify(duplicatedResult)}`,
@@ -66,7 +66,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 3: Close queue
-  const closeQueue = new MPSCUtil.AsyncQueue<number>();
+  const closeQueue = new AsyncQueue<number>();
   closeQueue.enqueue(42);
   closeQueue.close();
 
@@ -86,7 +86,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 4: Wait for close
-  const waitCloseQueue = new MPSCUtil.AsyncQueue<string>();
+  const waitCloseQueue = new AsyncQueue<string>();
 
   // Start waiting for close
   const closePromise = waitCloseQueue.waitClosed();
@@ -99,13 +99,13 @@ export async function test_async_queue_base(): Promise<void | false> {
   await closePromise; // Should resolve when queue is closed
 
   // Test case 5: Test create function - basic functionality
-  const { consumer, produce, close } = MPSCUtil.create<number>();
-  const reader = consumer.getReader();
+  const mpsc = new MPSC<number>();
+  const reader = mpsc.consumer.getReader();
 
   // Produce values
-  produce(10);
-  produce(20);
-  produce(30);
+  mpsc.produce(10);
+  mpsc.produce(20);
+  mpsc.produce(30);
 
   const read1 = await reader.read();
   const read2 = await reader.read();
@@ -140,33 +140,30 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 7: Multiple producers
-  const {
-    consumer: multiConsumer,
-    produce: multiProduce,
-    close: multiClose,
-    waitClosed: multiWaitClosed,
-  } = MPSCUtil.create<string>();
-  const multiReader = multiConsumer.getReader();
+  const multiMpsc = new MPSC<string>();
+  const multiReader = multiMpsc.consumer.getReader();
 
   // Simulate multiple producers
   for (let i = 1; i <= 5; i++) {
-    multiProduce(`producer-${i}`);
+    multiMpsc.produce(`producer-${i}`);
   }
 
   // Read all values
   const multiResults: string[] = [];
   for (let i = 0; i < 5; i++) {
     const { value } = await multiReader.read();
-    if (value) multiResults.push(value);
+    if (value != null) {
+      multiResults.push(value);
+    }
   }
 
   if (
-    multiResults.length !== 5 ||
-    !multiResults.includes("producer-1") ||
-    !multiResults.includes("producer-2") ||
-    !multiResults.includes("producer-3") ||
-    !multiResults.includes("producer-4") ||
-    !multiResults.includes("producer-5")
+    multiResults.length !== 5
+    || !multiResults.includes("producer-1")
+    || !multiResults.includes("producer-2")
+    || !multiResults.includes("producer-3")
+    || !multiResults.includes("producer-4")
+    || !multiResults.includes("producer-5")
   ) {
     throw new Error(
       `Multiple producers test failed: Expected 5 values from producers, got ${JSON.stringify(multiResults)}`,
@@ -174,8 +171,8 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test waitClose functionality
-  const waitClosePromise = multiWaitClosed();
-  multiClose();
+  const waitClosePromise = multiMpsc.waitClosed();
+  multiMpsc.close();
   await waitClosePromise; // Should resolve when closed
 
   const multiAfterClose = await multiReader.read();

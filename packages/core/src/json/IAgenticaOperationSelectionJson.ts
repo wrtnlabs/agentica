@@ -1,4 +1,4 @@
-import { IAgenticaOperationJson } from "./IAgenticaOperationJson";
+import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 
 /**
  * Nestia agent operation selection.

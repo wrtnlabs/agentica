@@ -1,8 +1,8 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
-import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaDescribeEvent<
@@ -31,14 +31,14 @@ export class AgenticaDescribeEvent<
     this.join_ = props.join;
   }
 
-  public join(): Promise<string> {
+  public async join(): Promise<string> {
     return this.join_();
   }
 
   public toJSON(): IAgenticaEventJson.IDescribe {
     return {
       type: "describe",
-      executes: this.executes.map((e) => e.toJSON()),
+      executes: this.executes.map(e => e.toJSON()),
       text: this.text,
       done: this.done,
     };

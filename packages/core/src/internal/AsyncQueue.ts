@@ -1,0 +1,67 @@
+export class AsyncQueue<T> {
+  private queue: T[] = [];
+  private resolvers: ((value: IteratorResult<T, undefined>) => void)[] = [];
+  private closeResolvers: (() => void)[] = [];
+  private emptyResolvers: (() => void)[] = [];
+  private closed = false;
+
+  enqueue(item: T) {
+    this.queue.push(item);
+    if (this.resolvers.length > 0) {
+      this.resolvers.shift()?.({ value: this.queue.shift()!, done: false });
+    }
+  }
+
+  async dequeue(): Promise<IteratorResult<T, undefined>> {
+    if (this.queue.length > 0) {
+      return { value: this.queue.shift()!, done: false };
+    }
+    if (this.closed) {
+      if (this.emptyResolvers.length > 0) {
+        this.emptyResolvers.forEach(resolve => resolve());
+        this.emptyResolvers = [];
+      }
+      return { value: undefined, done: true };
+    }
+    return new Promise(resolve => this.resolvers.push(resolve));
+  }
+
+  isEmpty() {
+    return this.queue.length === 0;
+  }
+
+  isClosed() {
+    return this.closed;
+  }
+
+  done() {
+    return this.isClosed() && this.isEmpty();
+  }
+
+  close() {
+    this.closed = true;
+    while (this.resolvers.length > 0) {
+      this.resolvers.shift()?.({ value: undefined, done: true });
+    }
+    this.closeResolvers.forEach(resolve => resolve());
+  }
+
+  async waitUntilEmpty() {
+    if (this.isEmpty()) {
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve) => {
+      this.emptyResolvers.push(resolve);
+    });
+  }
+
+  async waitClosed() {
+    if (this.isClosed()) {
+      return Promise.resolve();
+    }
+
+    return new Promise<void>((resolve) => {
+      this.closeResolvers.push(resolve);
+    });
+  }
+}

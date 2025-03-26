@@ -1,11 +1,13 @@
-import {
-  HttpLlm,
+import type {
   IHttpLlmApplication,
   ILlmSchema,
-  OpenApi,
   OpenApiV3,
   OpenApiV3_1,
   SwaggerV2,
+} from "@samchon/openapi";
+import {
+  HttpLlm,
+  OpenApi,
 } from "@samchon/openapi";
 import typia from "typia";
 
@@ -26,7 +28,7 @@ import typia from "typia";
  * @throws {@link TypeGuardError} when the given document is invalid
  * @author Samchon
  */
-export const assertHttpLlmApplication = <
+export function assertHttpLlmApplication<
   Model extends ILlmSchema.Model,
 >(props: {
   /**
@@ -47,9 +49,10 @@ export const assertHttpLlmApplication = <
    * Options for the LLM function calling schema composition.
    */
   options?: Partial<IHttpLlmApplication.IOptions<Model>>;
-}): IHttpLlmApplication<Model> =>
-  HttpLlm.application({
+}): IHttpLlmApplication<Model> {
+  return HttpLlm.application({
     model: props.model,
     document: OpenApi.convert(typia.assert(props.document)),
     options: props.options,
   });
+}

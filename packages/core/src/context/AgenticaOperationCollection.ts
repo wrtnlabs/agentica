@@ -1,6 +1,6 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaOperation } from "./AgenticaOperation";
+import type { AgenticaOperation } from "./AgenticaOperation";
 
 /**
  * Collection of operations used in the Nestia Agent.

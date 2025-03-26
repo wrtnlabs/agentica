@@ -1,4 +1,4 @@
-import {
+import type {
   IHttpConnection,
   IHttpLlmApplication,
   IHttpLlmFunction,
@@ -97,21 +97,21 @@ export namespace IAgenticaController {
     execute:
       | object
       | ((props: {
-          /**
-           * Target application schema.
-           */
-          application: ILlmApplication<Model>;
+        /**
+         * Target application schema.
+         */
+        application: ILlmApplication<Model>;
 
-          /**
-           * Target function schema.
-           */
-          function: ILlmFunction<Model>;
+        /**
+         * Target function schema.
+         */
+        function: ILlmFunction<Model>;
 
-          /**
-           * Arguments of the function calling.
-           */
-          arguments: object;
-        }) => Promise<unknown>);
+        /**
+         * Arguments of the function calling.
+         */
+        arguments: object;
+      }) => Promise<unknown>);
   }
 
   interface IBase<Protocol, Application> {

@@ -1,4 +1,4 @@
-import { __IChatFunctionReference } from "./__IChatFunctionReference";
+import type { __IChatFunctionReference } from "./__IChatFunctionReference";
 
 export interface __IChatCancelFunctionsApplication {
   /**
@@ -19,5 +19,5 @@ export interface __IChatCancelFunctionsApplication {
    *
    * @param props Properties of the function
    */
-  cancelFunctions(props: __IChatFunctionReference.IProps): Promise<void>;
+  cancelFunctions: (props: __IChatFunctionReference.IProps) => Promise<void>;
 }

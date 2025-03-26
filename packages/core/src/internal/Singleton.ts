@@ -1,6 +1,11 @@
 /**
  * @internal
  */
+const NOT_MOUNTED_YET = {};
+
+/**
+ * @internal
+ */
 export class Singleton<T, Args extends any[] = []> {
   private readonly closure_: (...args: Args) => T;
   private value_: T | object;
@@ -11,12 +16,9 @@ export class Singleton<T, Args extends any[] = []> {
   }
 
   public get(...args: Args): T {
-    if (this.value_ === NOT_MOUNTED_YET) this.value_ = this.closure_(...args);
+    if (this.value_ === NOT_MOUNTED_YET) {
+      this.value_ = this.closure_(...args);
+    }
     return this.value_ as T;
   }
 }
-
-/**
- * @internal
- */
-const NOT_MOUNTED_YET = {};

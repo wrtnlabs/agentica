@@ -1,4 +1,4 @@
-import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaTextPrompt<

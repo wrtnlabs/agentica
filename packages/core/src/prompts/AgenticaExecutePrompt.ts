@@ -1,7 +1,7 @@
-import { IHttpResponse, ILlmSchema } from "@samchon/openapi";
+import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaOperation } from "../context/AgenticaOperation";
-import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaExecutePrompt<
@@ -14,8 +14,9 @@ export class AgenticaExecutePrompt<
     : Protocol extends "class"
       ? AgenticaOperation.Class<Model>
       : AgenticaOperation<Model>;
-  public readonly arguments: Record<string, any>;
-  public readonly value: Protocol extends "http" ? IHttpResponse : any;
+
+  public readonly arguments: Record<string, unknown>;
+  public readonly value: Protocol extends "http" ? IHttpResponse : unknown;
 
   public constructor(props: AgenticaExecutePrompt.IProps<Model, Protocol>) {
     super("execute");

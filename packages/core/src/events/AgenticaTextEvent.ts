@@ -1,4 +1,4 @@
-import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
@@ -27,7 +27,7 @@ export class AgenticaTextEvent extends AgenticaEventBase<"text"> {
     this.join_ = props.join;
   }
 
-  public join(): Promise<string> {
+  public async join(): Promise<string> {
     return this.join_();
   }
 

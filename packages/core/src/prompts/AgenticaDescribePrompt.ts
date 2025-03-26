@@ -1,7 +1,7 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
-import { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
+import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+import type { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaDescribePrompt<
@@ -28,7 +28,7 @@ export class AgenticaDescribePrompt<
   public toJSON(): IAgenticaPromptJson.IDescribe {
     return {
       type: this.type,
-      executes: this.executes.map((e) => e.toJSON()),
+      executes: this.executes.map(e => e.toJSON()),
       text: this.text,
     };
   }

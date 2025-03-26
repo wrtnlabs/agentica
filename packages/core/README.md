@@ -1,4 +1,5 @@
 # `@agentica/core`
+
 ![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
@@ -33,11 +34,10 @@ await agent.conversate("I wanna buy MacBook Pro");
 >
 > Demonstration video of Shopping AI Chatbot
 
-
-
-
 ## How to Use
+
 ### Setup
+
 ```bash
 npm install @agentica/core @samchon/openapi typia
 npx typia setup
@@ -50,19 +50,20 @@ Install not only `@agentica/core`, but also [`@samchon/openapi`](https://github.
 By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`. Also, if you're not using non-standard TypeScript compiler (not `tsc`) or developing the agent in the frontend environment, you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) too.
 
 ### Chat with Backend Server
+
 ```typescript
-import { IHttpLlmApplication } from "@samchon/openapi";
 import { Agentica, validateHttpLlmApplication } from "@agentica/core";
+import { IHttpLlmApplication } from "@samchon/openapi";
 import OpenAI from "openai";
 import { IValidation } from "typia";
 
-const main = async (): Promise<void> => {
+async function main(): Promise<void> {
   // LOAD SWAGGER DOCUMENT, AND CONVERT TO LLM APPLICATION SCHEMA
-  const application: IValidation<IHttpLlmApplication<"chatgpt">> =
-    validateHttpLlmApplication({
+  const application: IValidation<IHttpLlmApplication<"chatgpt">>
+    = validateHttpLlmApplication({
       model: "chatgpt",
       document: await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(
-        (r) => r.json()
+        r => r.json()
       ),
     });
   if (application.success === false) {
@@ -108,7 +109,7 @@ const main = async (): Promise<void> => {
 
   // CONVERSATE TO AI CHATBOT
   await agent.conversate("What you can do?");
-};
+}
 main().catch(console.error);
 ```
 
@@ -119,10 +120,11 @@ Then you can start conversation with your backend server, and the API functions 
 From now on, every backend developer is also an AI developer.
 
 ### Chat with TypeScript Class
+
 ```typescript
 import { Agentica } from "@agentica/core";
-import typia, { tags } from "typia";
 import OpenAI from "openai";
+import typia, { tags } from "typia";
 
 class BbsArticleService {
   /**
@@ -161,7 +163,7 @@ class BbsArticleService {
   }): Promise<void>;
 }
 
-const main = async (): Promise<void> => {
+async function main(): Promise<void> {
   const api: OpenAI = new OpenAI({
     apiKey: "YOUR_OPENAI_API_KEY",
   });
@@ -186,7 +188,7 @@ const main = async (): Promise<void> => {
     ],
   });
   await agent.conversate("I wanna write an article.");
-};
+}
 main().catch(console.error);
 ```
 
@@ -197,10 +199,11 @@ Just deliver the TypeScript type to the `@agentica/core`, and start conversation
 From now on, every TypeScript classes you've developed can be the AI chatbot.
 
 ### Multi Agent Orchestration
+
 ```typescript
 import { Agentica } from "@agentica/core";
-import typia from "typia";
 import OpenAI from "openai";
+import typia from "typia";
 
 class OpenAIVectorStoreAgent {
   /**
@@ -220,7 +223,7 @@ class OpenAIVectorStoreAgent {
   }): Promise<IVectorStoreQueryResult>;
 }
 
-const main = async (): Promise<void> => {
+async function main(): Promise<void> {
   const api: OpenAI = new OpenAI({
     apiKey: "YOUR_OPENAI_API_KEY",
   });
@@ -248,7 +251,7 @@ const main = async (): Promise<void> => {
     ],
   });
   await agent.conversate("I wanna research economic articles");
-};
+}
 main().catch(console.error);
 ```
 
@@ -256,13 +259,12 @@ In the `@agentica/core`, you can implement multi-agent orchestration super easil
 
 Just develop a TypeScript class which contains agent feature like Vector Store, and just deliver the TypeScript class type to the `@agentica/core` like above. The `@agentica/core` will centralize and realize the multi-agent orchestration by LLM function calling strategy to the TypeScript class.
 
-
 ### If you want drastically improves function selection speed
 
 Use the [@agentica/pg-vector-selector](../pg-vector-selector/README.md)
 
-Just initialize and set the config  
-when use this adapter, you should run the [connector-hive](https://github.com/wrtnlabs/connector-hive)  
+Just initialize and set the config
+when use this adapter, you should run the [connector-hive](https://github.com/wrtnlabs/connector-hive)
 
 ```typescript
 import { Agentica } from "@agentica/core";
@@ -270,12 +272,10 @@ import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 
 import typia from "typia";
 
-
 // Initialize with connector-hive server
 const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
-  'https://your-connector-hive-server.com'
+  "https://your-connector-hive-server.com"
 );
-
 
 const agent = new Agentica({
   model: "chatgpt",
@@ -302,9 +302,10 @@ const agent = new Agentica({
 await agent.conversate("I wanna buy MacBook Pro");
 ```
 
-
 ## Principles
+
 ### Agent Strategy
+
 ```mermaid
 sequenceDiagram
 actor User
@@ -360,18 +361,19 @@ And `@agentica/core` enters to a loop statement until the candidate functions to
 Such LLM (Large Language Model) function calling strategy separating `selector`, `caller`, and `describer` is the key logic of `@agentica/core`.
 
 ### Validation Feedback
+
 ```typescript
 import { FunctionCall } from "pseudo";
 import { ILlmFunction, IValidation } from "typia";
 
-export const correctFunctionCall = (p: {
+export function correctFunctionCall(p: {
   call: FunctionCall;
   functions: Array<ILlmFunction<"chatgpt">>;
   retry: (reason: string, errors?: IValidation.IError[]) => Promise<unknown>;
-}): Promise<unknown> => {
+}): Promise<unknown> {
   // FIND FUNCTION
-  const func: ILlmFunction<"chatgpt"> | undefined =
-    p.functions.find((f) => f.name === p.call.name);
+  const func: ILlmFunction<"chatgpt"> | undefined
+    = p.functions.find(f => f.name === p.call.name);
   if (func === undefined) {
     // never happened in my experience
     return p.retry(
@@ -396,7 +398,7 @@ export const correctFunctionCall = (p: {
 }
 ```
 
-Is LLM function calling perfect? 
+Is LLM function calling perfect?
 
 The answer is not, and LLM (Large Language Model) vendors like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an `Array<string>` type, LLM often fills it just by a `string` typed value.
 
@@ -406,29 +408,30 @@ About the validation feedback, `@agentica/core` is utilizing [`typia.validate<T>
 
 Such validation feedback strategy and combination with `typia` runtime validator, `@agentica/core` has achieved the most ideal LLM function calling. In my experience, when using OpenAI's `gpt-4o-mini` model, it tends to construct invalid function calling arguments at the first trial about 50% of the time. By the way, if correct it through validation feedback with `typia`, success rate soars to 99%. And I've never had a failure when trying validation feedback twice.
 
-Components               | `typia` | `TypeBox` | `ajv` | `io-ts` | `zod` | `C.V.`
--------------------------|--------|-----------|-------|---------|-------|------------------
-**Easy to use**          | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ 
-[Object (simple)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectSimple.ts)          | ✔ | ✔ | ✔ | ✔ | ✔ | ✔
-[Object (hierarchical)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectHierarchical.ts)    | ✔ | ✔ | ✔ | ✔ | ✔ | ✔
-[Object (recursive)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectRecursive.ts)       | ✔ | ❌ | ✔ | ✔ | ✔ | ✔ | ✔
-[Object (union, implicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectUnionImplicit.ts) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
-[Object (union, explicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectUnionExplicit.ts) | ✔ | ✔ | ✔ | ✔ | ✔ | ❌
-[Object (additional tags)](https://github.com/samchon/typia/#comment-tags)        | ✔ | ✔ | ✔ | ✔ | ✔ | ✔
-[Object (template literal types)](https://github.com/samchon/typia/blob/master/test/src/structures/TemplateUnion.ts) | ✔ | ✔ | ✔ | ❌ | ❌ | ❌
-[Object (dynamic properties)](https://github.com/samchon/typia/blob/master/test/src/structures/DynamicTemplate.ts) | ✔ | ✔ | ✔ | ❌ | ❌ | ❌
-[Array (rest tuple)](https://github.com/samchon/typia/blob/master/test/src/structures/TupleRestAtomic.ts) | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
-[Array (hierarchical)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayHierarchical.ts)     | ✔ | ✔ | ✔ | ✔ | ✔ | ✔
-[Array (recursive)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursive.ts)        | ✔ | ✔ | ✔ | ✔ | ✔ | ❌
-[Array (recursive, union)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursiveUnionExplicit.ts) | ✔ | ✔ | ❌ | ✔ | ✔ | ❌
-[Array (R+U, implicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursiveUnionImplicit.ts)    | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
-[Array (repeated)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRepeatedNullable.ts)    | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
-[Array (repeated, union)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRepeatedUnionWithTuple.ts)    | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
-[**Ultimate Union Type**](https://github.com/samchon/typia/blob/master/test/src/structures/UltimateUnion.ts)  | ✅ | ❌ | ❌ | ❌ | ❌ | ❌
+| Components                                                                                                                  | `typia` | `TypeBox` | `ajv` | `io-ts` | `zod` | `C.V.` |
+| --------------------------------------------------------------------------------------------------------------------------- | ------- | --------- | ----- | ------- | ----- | ------ | --- |
+| **Easy to use**                                                                                                             | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
+| [Object (simple)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectSimple.ts)                         | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
+| [Object (hierarchical)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectHierarchical.ts)             | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
+| [Object (recursive)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectRecursive.ts)                   | ✔      | ❌        | ✔    | ✔      | ✔    | ✔     | ✔  |
+| [Object (union, implicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectUnionImplicit.ts)         | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
+| [Object (union, explicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectUnionExplicit.ts)         | ✔      | ✔        | ✔    | ✔      | ✔    | ❌     |
+| [Object (additional tags)](https://github.com/samchon/typia/#comment-tags)                                                  | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
+| [Object (template literal types)](https://github.com/samchon/typia/blob/master/test/src/structures/TemplateUnion.ts)        | ✔      | ✔        | ✔    | ❌      | ❌    | ❌     |
+| [Object (dynamic properties)](https://github.com/samchon/typia/blob/master/test/src/structures/DynamicTemplate.ts)          | ✔      | ✔        | ✔    | ❌      | ❌    | ❌     |
+| [Array (rest tuple)](https://github.com/samchon/typia/blob/master/test/src/structures/TupleRestAtomic.ts)                   | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
+| [Array (hierarchical)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayHierarchical.ts)               | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
+| [Array (recursive)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursive.ts)                     | ✔      | ✔        | ✔    | ✔      | ✔    | ❌     |
+| [Array (recursive, union)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursiveUnionExplicit.ts) | ✔      | ✔        | ❌    | ✔      | ✔    | ❌     |
+| [Array (R+U, implicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursiveUnionImplicit.ts)    | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
+| [Array (repeated)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRepeatedNullable.ts)               | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
+| [Array (repeated, union)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRepeatedUnionWithTuple.ts)  | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
+| [**Ultimate Union Type**](https://github.com/samchon/typia/blob/master/test/src/structures/UltimateUnion.ts)                | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
 
 > `C.V.` means `class-validator`
 
 ### OpenAPI Specification
+
 ```mermaid
 flowchart
   subgraph "OpenAPI Specification"
@@ -448,7 +451,7 @@ flowchart
 
 `@agentica/core` obtains LLM function calling schemas from both Swagger/OpenAPI documents and TypeScript class types. The TypeScript class type can be converted to LLM function calling schema by [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application#application) function. Then how about OpenAPI document? How Swagger document can be LLM function calling schema.
 
-The secret is on the above diagram. 
+The secret is on the above diagram.
 
 In the OpenAPI specification, there are three versions with different definitions. And even in the same version, there are too much ambiguous and duplicated expressions. To resolve these problems, [`@samchon/openapi`](https://github.com/samchon/openapi) is transforming every OpenAPI documents to v3.1 emended specification. The `@samchon/openapi`'s emended v3.1 specification has removed every ambiguous and duplicated expressions for clarity.
 

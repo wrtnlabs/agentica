@@ -1,8 +1,8 @@
-import OpenAI from "openai";
+import type OpenAI from "openai";
 
-import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { AgenticaEventSource } from "./AgenticaEventSource";
 import { AgenticaEventBase } from "./AgenticaEventBase";
-import { AgenticaEventSource } from "./AgenticaEventSource";
 
 export class AgenticaRequestEvent extends AgenticaEventBase<"request"> {
   public readonly source: AgenticaEventSource;

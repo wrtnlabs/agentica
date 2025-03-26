@@ -1,28 +1,34 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaConfig } from "../structures/IAgenticaConfig";
+import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 import { AgenticaSystemPrompt } from "./AgenticaSystemPrompt";
 import { Singleton } from "./Singleton";
 
-export namespace AgenticaDefaultPrompt {
-  export const write = <Model extends ILlmSchema.Model>(
-    config?: IAgenticaConfig<Model>,
-  ): string => {
-    if (config?.systemPrompt?.common)
-      return config?.systemPrompt?.common(config);
+/**
+ * @TODO maybe this code will rewrite
+ */
+const isNode = new Singleton(() => {
+  const isObject = (obj: any) => typeof obj === "object" && obj !== null;
+  return (
+    // eslint-disable-next-line no-restricted-globals
+    typeof global === "object"
+    // eslint-disable-next-line no-restricted-globals
+    && isObject(global)
+    // eslint-disable-next-line node/prefer-global/process, no-restricted-globals
+    && isObject(global.process)
+    // eslint-disable-next-line node/prefer-global/process, no-restricted-globals
+    && isObject(global.process.versions)
+    // eslint-disable-next-line node/prefer-global/process, no-restricted-globals
+    && typeof global.process.versions.node !== "undefined"
+  );
+});
 
-    const locale: string = config?.locale ?? getLocale.get();
-    const timezone: string = config?.timezone ?? getTimezone.get();
-
-    return AgenticaSystemPrompt.COMMON.replace("${locale}", locale).replace(
-      "${timezone}",
-      timezone,
-    );
-  };
-}
-
+/**
+ * @TODO maybe replace `process` property for lint pass
+ */
 const getLocale = new Singleton(() =>
   isNode.get()
+    // eslint-disable-next-line node/prefer-global/process
     ? (process.env.LANG?.split(".")[0] ?? "en-US")
     : navigator.language,
 );
@@ -31,13 +37,21 @@ const getTimezone = new Singleton(
   () => Intl.DateTimeFormat().resolvedOptions().timeZone,
 );
 
-const isNode = new Singleton(() => {
-  const isObject = (obj: any) => typeof obj === "object" && obj !== null;
-  return (
-    typeof global === "object" &&
-    isObject(global) &&
-    isObject(global.process) &&
-    isObject(global.process.versions) &&
-    typeof global.process.versions.node !== "undefined"
-  );
-});
+export function write<Model extends ILlmSchema.Model>(config?: IAgenticaConfig<Model>): string {
+  if (config?.systemPrompt?.common !== undefined) {
+    return config?.systemPrompt?.common(config);
+  }
+
+  const locale: string = config?.locale ?? getLocale.get();
+  const timezone: string = config?.timezone ?? getTimezone.get();
+
+  return AgenticaSystemPrompt.COMMON
+    // intended code
+    // eslint-disable-next-line no-template-curly-in-string
+    .replace("${locale}", locale)
+    // eslint-disable-next-line no-template-curly-in-string
+    .replace("${timezone}", timezone);
+}
+export const AgenticaDefaultPrompt = {
+  write,
+};

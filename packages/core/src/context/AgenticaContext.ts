@@ -1,13 +1,13 @@
-import { ILlmSchema } from "@samchon/openapi";
-import OpenAI from "openai";
+import type { ILlmSchema } from "@samchon/openapi";
+import type OpenAI from "openai";
 
-import { AgenticaEvent } from "../events/AgenticaEvent";
-import { AgenticaEventSource } from "../events/AgenticaEventSource";
-import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
-import { IAgenticaConfig } from "../structures/IAgenticaConfig";
-import { AgenticaOperationCollection } from "./AgenticaOperationCollection";
-import { AgenticaOperationSelection } from "./AgenticaOperationSelection";
+import type { AgenticaEvent } from "../events/AgenticaEvent";
+import type { AgenticaEventSource } from "../events/AgenticaEventSource";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
+import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
+import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
 
 /**
  * Context of the Nestia A.I. agent.
@@ -41,9 +41,9 @@ import { AgenticaOperationSelection } from "./AgenticaOperationSelection";
  * @author Samchon
  */
 export interface AgenticaContext<Model extends ILlmSchema.Model> {
-  //----
+  // ----
   // APPLICATION
-  //----
+  // ----
   /**
    * Collection of operations.
    *
@@ -63,9 +63,9 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    */
   config: IAgenticaConfig<Model> | undefined;
 
-  //----
+  // ----
   // STATES
-  //----
+  // ----
   /**
    * Prompt histories.
    */
@@ -98,9 +98,9 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    */
   ready: () => boolean;
 
-  //----
+  // ----
   // HANDLERS
-  //----
+  // ----
   /**
    * Dispatch event.
    *

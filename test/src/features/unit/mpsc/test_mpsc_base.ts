@@ -1,13 +1,13 @@
-import { MPSCUtil } from "@agentica/core/src/internal/MPSCUtil";
+import { MPSC } from "@agentica/core/src/internal/MPSC";
 
 export async function test_mpsc_base(): Promise<void | false> {
   // Test case 1: Basic MPSC functionality with create
-  const { consumer, produce, close } = MPSCUtil.create<number>();
-  const reader = consumer.getReader();
+  const mpsc = new MPSC<number>();
+  const reader = mpsc.consumer.getReader();
   // Produce values
-  produce(10);
-  produce(20);
-  produce(30);
+  mpsc.produce(10);
+  mpsc.produce(20);
+  mpsc.produce(30);
   const read1 = await reader.read();
   const read2 = await reader.read();
   const read3 = await reader.read();
@@ -43,17 +43,12 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Test case 3: waitClose functionality
-  const {
-    consumer: consumer2,
-    produce: produce2,
-    close: close2,
-    waitClosed,
-  } = MPSCUtil.create<string>();
-  const reader2 = consumer2.getReader();
+  const mpsc2 = new MPSC<string>();
+  const reader2 = mpsc2.consumer.getReader();
   // Produce values first
-  produce2("test");
+  mpsc2.produce("test");
   // Start waiting for close
-  const closePromise = waitClosed();
+  const closePromise = mpsc2.waitClosed();
   // Read the value
   const readResult = await reader2.read();
   if (readResult.value !== "test" || readResult.done !== false) {
@@ -64,7 +59,7 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Close and wait
-  close2();
+  mpsc2.close();
   await closePromise; // Should resolve when closed
   const afterClose = await reader2.read();
   if (afterClose.done !== true) {
@@ -75,35 +70,34 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Test case 4: Multiple producers scenario
-  const {
-    consumer: multiConsumer,
-    produce: multiProduce,
-    close: multiClose,
-  } = MPSCUtil.create<string>();
-  const multiReader = multiConsumer.getReader();
+  const multiMpsc = new MPSC<string>();
+  const multiReader = multiMpsc.consumer.getReader();
   // Simulate multiple producers
   for (let i = 1; i <= 5; i++) {
-    multiProduce(`producer-${i}`);
+    multiMpsc.produce(`producer-${i}`);
   }
   // Read all values
   const multiResults: string[] = [];
   for (let i = 0; i < 5; i++) {
     const { value } = await multiReader.read();
-    if (value) multiResults.push(value);
+    if (value != null) {
+      multiResults.push(value);
+    }
   }
   if (
-    multiResults.length !== 5 ||
-    !multiResults.includes("producer-1") ||
-    !multiResults.includes("producer-2") ||
-    !multiResults.includes("producer-3") ||
-    !multiResults.includes("producer-4") ||
-    !multiResults.includes("producer-5")
+    multiResults.length !== 5
+    || !multiResults.includes("producer-1")
+    || !multiResults.includes("producer-2")
+    || !multiResults.includes("producer-3")
+    || !multiResults.includes("producer-4")
+    || !multiResults.includes("producer-5")
   ) {
     throw new Error(
       `Multiple producers test failed: Expected 5 values from producers, got ${JSON.stringify(multiResults)}`,
     );
   }
-  multiClose();
+  multiMpsc.close();
+
   const multiAfterClose = await multiReader.read();
   if (multiAfterClose.done !== true) {
     throw new Error(
@@ -111,17 +105,13 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Test case 5: Reading before producing
-  const {
-    consumer: delayConsumer,
-    produce: delayProduce,
-    close: delayClose,
-  } = MPSCUtil.create<number>();
-  const delayReader = delayConsumer.getReader();
+  const delayMpsc = new MPSC<number>();
+  const delayReader = delayMpsc.consumer.getReader();
   // Start reading before producing
   const readPromise = delayReader.read();
   // Produce after a small delay
   setTimeout(() => {
-    delayProduce(42);
+    delayMpsc.produce(42);
   }, 10);
   const delayResult = await readPromise;
   if (delayResult.value !== 42 || delayResult.done !== false) {
@@ -129,19 +119,15 @@ export async function test_mpsc_base(): Promise<void | false> {
       `Delayed production test failed: Expected {value: 42, done: false}, got ${JSON.stringify(delayResult)}`,
     );
   }
-  delayClose();
+  delayMpsc.close();
   // Test case 6: Producer-first, then consumer
-  const {
-    consumer: laterConsumer,
-    produce: laterProduce,
-    close: laterClose,
-  } = MPSCUtil.create<string>();
+  const laterMpsc = new MPSC<string>();
   // Produce values first
-  laterProduce("first");
-  laterProduce("second");
-  laterProduce("third");
+  laterMpsc.produce("first");
+  laterMpsc.produce("second");
+  laterMpsc.produce("third");
   // Then get reader and read
-  const laterReader = laterConsumer.getReader();
+  const laterReader = laterMpsc.consumer.getReader();
   const laterResult1 = await laterReader.read();
   const laterResult2 = await laterReader.read();
   const laterResult3 = await laterReader.read();
@@ -162,5 +148,5 @@ export async function test_mpsc_base(): Promise<void | false> {
       )}`,
     );
   }
-  laterClose();
+  laterMpsc.close();
 }
