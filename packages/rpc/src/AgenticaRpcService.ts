@@ -1,9 +1,9 @@
-import { Agentica, IAgenticaController } from "@agentica/core";
-import { ILlmSchema } from "@samchon/openapi";
-import { Primitive } from "typia";
+import type { Agentica, IAgenticaController } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+import type { Primitive } from "typia";
 
-import { IAgenticaRpcListener } from "./IAgenticaRpcListener";
-import { IAgenticaRpcService } from "./IAgenticaRpcService";
+import type { IAgenticaRpcListener } from "./IAgenticaRpcListener";
+import type { IAgenticaRpcService } from "./IAgenticaRpcService";
 
 /**
  * RPC service for the {@link Agentica}.
@@ -49,8 +49,7 @@ import { IAgenticaRpcService } from "./IAgenticaRpcService";
  * @author Samchon
  */
 export class AgenticaRpcService<Model extends ILlmSchema.Model>
-  implements IAgenticaRpcService<Model>
-{
+implements IAgenticaRpcService<Model> {
   /**
    * Initializer Constructor.
    *
@@ -60,26 +59,26 @@ export class AgenticaRpcService<Model extends ILlmSchema.Model>
     const { agent, listener } = props;
 
     // ESSENTIAL LISTENERS
-    agent.on("text", async (evt) =>
-      listener.text(Object.assign(primitive(evt), { text: await evt.join() })),
-    );
-    agent.on("describe", async (evt) =>
+    agent.on("text", async evt =>
+      listener.text(Object.assign(primitive(evt), { text: await evt.join() })));
+    agent.on("describe", async evt =>
       listener.describe(
         Object.assign(primitive(evt), { text: await evt.join() }),
-      ),
-    );
+      ));
 
     // OPTIONAL LISTENERS
-    agent.on("initialize", (evt) => listener.initialize!(primitive(evt)));
-    agent.on("select", (evt) => listener.select!(primitive(evt)));
-    agent.on("cancel", (evt) => listener.cancel!(primitive(evt)));
+    agent.on("initialize", async evt => listener.initialize!(primitive(evt)));
+    agent.on("select", async evt => listener.select!(primitive(evt)));
+    agent.on("cancel", async evt => listener.cancel!(primitive(evt)));
     agent.on("call", async (evt) => {
       const args: object | null | undefined = await listener.call!(
         primitive(evt),
       );
-      if (args) evt.arguments = args;
+      if (args != null) {
+        evt.arguments = args;
+      }
     });
-    agent.on("execute", (evt) => listener.execute!(primitive(evt as any)));
+    agent.on("execute", async evt => listener.execute!(primitive(evt)));
   }
 
   /**
@@ -116,5 +115,6 @@ export namespace AgenticaRpcService {
 /**
  * @internal
  */
-const primitive = <T>(obj: T): Primitive<T> =>
-  JSON.parse(JSON.stringify(obj)) as Primitive<T>;
+function primitive<T>(obj: T): Primitive<T> {
+  return JSON.parse(JSON.stringify(obj)) as Primitive<T>;
+}
