@@ -11,6 +11,7 @@ const meta: MetaRecord = {
   slack: "Slack",
   "google-docs": "Google Docs",
   "google-scholar": "Google Scholar",
+  "youtube-search": "Youtube Search",
   reddit: "Reddit",
 };
 export default meta;
