@@ -1,2 +1,2 @@
-export * from "./AgenticaPgVectorSelector";
+export * as AgenticaPgVectorSelector from "./AgenticaPgVectorSelector";
 export * from "./AgenticaPgVectorSelectorBootProps";
