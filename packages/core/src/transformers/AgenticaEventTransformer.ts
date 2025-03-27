@@ -2,7 +2,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json";
 import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
@@ -34,7 +34,7 @@ function findOperation<Model extends ILlmSchema.Model>(props: {
 
 export function transform<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
-  event: IAgenticaEventJson;
+  event: IAgenticaEventJson.Event;
 }): AgenticaEvent<Model> {
   if (props.event.type === "call") {
     return transformCall({

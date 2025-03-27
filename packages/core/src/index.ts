@@ -22,6 +22,7 @@ export * from "./events/AgenticaTextEvent";
 // FACADE CLASS
 export * from "./functional/assertHttpLlmApplication";
 export * from "./functional/validateHttpLlmApplication";
+export * from "./json";
 export * from "./json/IAgenticaEventJson";
 export * from "./json/IAgenticaOperationJson";
 export * from "./json/IAgenticaOperationSelectionJson";

@@ -1,6 +1,6 @@
 import type OpenAI from "openai";
 
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json";
 import type { AgenticaEventSource } from "./AgenticaEventSource";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 

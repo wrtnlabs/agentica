@@ -1,4 +1,4 @@
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json";
 import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 

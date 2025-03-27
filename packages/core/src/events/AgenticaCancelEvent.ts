@@ -1,7 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
 export class AgenticaCancelEvent<

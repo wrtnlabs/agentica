@@ -1,7 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json";
 import { v4 } from "uuid";
 import { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";

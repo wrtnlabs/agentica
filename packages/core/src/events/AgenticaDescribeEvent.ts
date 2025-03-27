@@ -1,6 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { IAgenticaEventJson } from "../json";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
