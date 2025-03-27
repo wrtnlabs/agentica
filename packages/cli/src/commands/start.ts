@@ -82,15 +82,12 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
 
   // Ask for project directory
   {
-    const projectRelativePath = await p.text({
+    const projectPath = await p.text({
       message: "Enter the project directory path:",
       placeholder: "./my-agentica-project",
       validate(value) {
         if (value === "") {
           return "Please enter a directory path";
-        }
-        if (value[0] !== ".") {
-          return "Please enter a relative path.";
         }
         if (existsSync(value)) {
           return "Directory already exists";
@@ -98,10 +95,11 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
         return undefined;
       },
     });
-    if (p.isCancel(projectRelativePath)) {
+    if (p.isCancel(projectPath)) {
       process.exit(0);
     }
-    const projectAbsolutePath = join(process.cwd(), projectRelativePath);
+
+    const projectAbsolutePath = join(process.cwd(), projectPath);
     context.projectAbsolutePath = projectAbsolutePath;
   }
 
@@ -169,7 +167,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     const sortedConnectors = connectors.sort((a, b) => a.displayName.localeCompare(b.displayName));
     const serviceChoices = sortedConnectors.map(({ displayName, serviceName }) => ({ label: displayName, value: serviceName }));
     const services = await p.multiselect({
-      message: "Which connectors do you want to include?",
+      message: `Which connectors do you want to include? (Press ${picocolors.cyan("<space>")} to select, ${picocolors.cyan("<a>")} to select all, ${picocolors.cyan("<enter>")} to proceed)`,
       options: serviceChoices,
       required: false,
     });
