@@ -1,7 +1,9 @@
-import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
-import { Driver, WebSocketConnector } from "tgrid";
+import type { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
+import type { Driver } from "tgrid";
+import process from "node:process";
+import { WebSocketConnector } from "tgrid";
 
-const main = async () => {
+async function main() {
   // Create WebSocketConnector with type specifications
   const connector: WebSocketConnector<
     null,
@@ -36,5 +38,8 @@ const main = async () => {
 
   // Disconnect after your job
   await connector.close();
-};
-main;
+}
+main().catch((error) => {
+  console.error(error);
+  process.exit(-1);
+});

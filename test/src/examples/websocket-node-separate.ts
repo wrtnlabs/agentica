@@ -1,15 +1,18 @@
+import type {
+  IAgenticaRpcListener,
+  IAgenticaRpcService,
+} from "@agentica/rpc";
+import process from "node:process";
 import { Agentica } from "@agentica/core";
 import {
   AgenticaRpcService,
-  IAgenticaRpcListener,
-  IAgenticaRpcService,
 } from "@agentica/rpc";
 import { LlamaTypeChecker } from "@samchon/openapi";
 import OpenAI from "openai";
 import { WebSocketServer } from "tgrid";
 import typia from "typia";
 
-const main = async (): Promise<void> => {
+async function main(): Promise<void> {
   const server: WebSocketServer<
     null,
     IAgenticaRpcService<"llama">,
@@ -27,10 +30,10 @@ const main = async (): Promise<void> => {
           name: "bbs",
           protocol: "class",
           application: typia.llm.application<BbsArticleService, "llama">({
-            separate: (schema) =>
-              LlamaTypeChecker.isString(schema) &&
-              schema.format === "uri" &&
-              schema.contentMediaType !== undefined,
+            separate: schema =>
+              LlamaTypeChecker.isString(schema)
+              && schema.format === "uri"
+              && schema.contentMediaType !== undefined,
           }),
           execute: new BbsArticleService(),
         },
@@ -42,8 +45,12 @@ const main = async (): Promise<void> => {
     });
     await acceptor.accept(service);
   });
-};
-main;
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(-1);
+});
 
 class BbsArticleService {
   public plus(props: { x: number; y: number }): number {

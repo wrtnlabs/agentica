@@ -10,6 +10,7 @@ const meta: MetaRecord = {
   "google-scholar": "Google Scholar",
   "google-search": "Google Search",
   "google-shopping": "Google Shopping",
+  "youtube-search": "Youtube Search",
   notion: "Notion",
   reddit: "Reddit",
   slack: "Slack",
