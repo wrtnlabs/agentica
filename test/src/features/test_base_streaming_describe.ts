@@ -1,8 +1,10 @@
-import {
-  Agentica,
+import type {
   AgenticaEvent,
   AgenticaPrompt,
   IAgenticaController,
+} from "@agentica/core";
+import {
+  Agentica,
 } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
@@ -33,7 +35,9 @@ class Calculator {
 }
 
 export async function test_base_streaming_describe(): Promise<void | false> {
-  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    return false;
+  }
 
   // Variables for event tracking
   const events: AgenticaEvent<"chatgpt">[] = [];
@@ -93,20 +97,24 @@ export async function test_base_streaming_describe(): Promise<void | false> {
         console.error(e);
         return { done: true, value: undefined };
       });
-      if (done) break;
+      if (done) {
+        break;
+      }
 
       // Extract text content from stream chunks
       try {
         if (typeof value === "string") {
           // If it's a string, store directly
           streamContentPieces.push(value);
-        } else {
+        }
+        else {
           console.error(value);
           throw new Error(
             "Error processing describe stream: value is not String, meaning stream is not String stream",
           );
         }
-      } catch (err) {
+      }
+      catch (err) {
         console.error("Error during describe stream processing:", err);
       }
     }
@@ -142,26 +150,26 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   }
 
   // Verify execution result
-  const executeEvent = events.find((e) => e.type === "execute");
-  if (!executeEvent) {
+  const executeEvent = events.find(e => e.type === "execute");
+  if (executeEvent === undefined) {
     throw new Error("Could not find execute event");
   }
 
   if (executeEvent.value !== a + b) {
     throw new Error(
-      `Result should be ${a + b}, but received ${executeEvent.value}`,
+      `Result should be ${a + b}, but received ${executeEvent.value as string}`,
     );
   }
 
   // Verify AI response
-  const aiResponse = result.find((prompt) => prompt.type === "describe");
+  const aiResponse = result.find(prompt => prompt.type === "describe");
 
   // Compare stream content with final response content
   const combinedStreamContent = streamContentPieces.join("");
   if (
-    combinedStreamContent.length === 0 ||
-    aiResponse?.text !== combinedStreamContent ||
-    combinedStreamContent !== describeJoinResult
+    combinedStreamContent.length === 0
+    || aiResponse?.text !== combinedStreamContent
+    || combinedStreamContent !== describeJoinResult
   ) {
     throw new Error(
       "describe stream content, final response content, and join result do not match",
@@ -169,20 +177,20 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   }
 
   // Verify describe event content
-  const describeEvent = events.find((e) => e.type === "describe");
-  if (!describeEvent) {
+  const describeEvent = events.find(e => e.type === "describe");
+  if (describeEvent === undefined) {
     throw new Error("Could not find describe event");
   }
 
   // Check if describe event includes executions array
-  if (!describeEvent.executes || describeEvent.executes.length === 0) {
+  if (describeEvent.executes === undefined || describeEvent.executes.length === 0) {
     throw new Error("describe event has no executions information");
   }
 
   // Check if calculator tool call is included
 
   const hasCalculatorExecution = describeEvent.executes.some(
-    (exec) =>
+    exec =>
       exec.operation.name === "add" || exec.operation.name === "subtract",
   );
   if (!hasCalculatorExecution) {
@@ -192,13 +200,13 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   }
 
   // Verify stream and join function exist
-  if (!describeEvent.stream || typeof describeEvent.join !== "function") {
+  if (describeEvent.stream === undefined || typeof describeEvent.join !== "function") {
     throw new Error("describe event is missing stream or join function");
   }
 
   // Verify text content through join function
   const describeText = await describeEvent.join();
-  if (!describeText || describeText.length < 5) {
+  if (describeText === undefined || describeText.length < 5) {
     throw new Error("describe event text content is too short or empty");
   }
 }

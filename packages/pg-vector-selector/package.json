@@ -1,6 +1,6 @@
 {
   "name": "@agentica/pg-vector-selector",
-  "version": "0.12.21",
+  "version": "0.13.1",
   "author": "Wrtn Technologies",
   "license": "MIT",
   "homepage": "https://wrtnlabs.io",
@@ -39,10 +39,9 @@
   ],
   "scripts": {
     "build": "tsc && rollup -c",
-    "eslint": "eslint ./**/*.ts",
-    "prepublishOnly": "pnpm run build",
+    "prepack": "pnpm run build",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "format": "eslint --fix ."
   },
   "peerDependencies": {
     "@agentica/core": "workspace:^"

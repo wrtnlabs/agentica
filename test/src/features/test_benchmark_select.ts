@@ -1,21 +1,25 @@
+import type { AgenticaOperation } from "@agentica/core";
+import type { OpenApi } from "@samchon/openapi";
+import fs from "node:fs";
+import path from "node:path";
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
-import { Agentica, AgenticaOperation } from "@agentica/core";
-import { HttpLlm, OpenApi } from "@samchon/openapi";
-import fs from "fs";
+import { Agentica } from "@agentica/core";
+import { HttpLlm } from "@samchon/openapi";
 import OpenAI from "openai";
-import path from "path";
 
 import { TestGlobal } from "../TestGlobal";
 
-export const test_benchmark_select = async (): Promise<void | false> => {
-  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+export async function test_benchmark_select(): Promise<void | false> {
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    return false;
+  }
 
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
-        apiKey: process.env.CHATGPT_API_KEY,
+        apiKey: TestGlobal.chatgptApiKey,
       }),
     },
     controllers: [
@@ -26,7 +30,7 @@ export const test_benchmark_select = async (): Promise<void | false> => {
           model: "chatgpt",
           document: await fetch(
             "https://shopping-be.wrtn.ai/editor/swagger.json",
-          ).then((res) => res.json()),
+          ).then(async res => res.json() as Promise<OpenApi.IDocument>),
         }),
         connection: {
           host: "https://shopping-be.wrtn.ai",
@@ -42,16 +46,18 @@ export const test_benchmark_select = async (): Promise<void | false> => {
     const found = agent
       .getOperations()
       .find(
-        (op) =>
-          op.protocol === "http" &&
-          op.function.method === method &&
-          op.function.path === path,
+        op =>
+          op.protocol === "http"
+          && op.function.method === method
+          && op.function.path === path,
       );
-    if (!found) throw new Error(`Operation not found: ${method} ${path}`);
+    if (found === undefined) {
+      throw new Error(`Operation not found: ${method} ${path}`);
+    }
     return found;
   };
-  const benchmark: AgenticaSelectBenchmark<"chatgpt"> =
-    new AgenticaSelectBenchmark({
+  const benchmark: AgenticaSelectBenchmark<"chatgpt">
+    = new AgenticaSelectBenchmark({
       agent,
       config: {
         repeat: 4,
@@ -124,19 +130,21 @@ export const test_benchmark_select = async (): Promise<void | false> => {
     await mkdir(path.join(root, key.split("/").slice(0, -1).join("/")));
     await fs.promises.writeFile(path.join(root, key), value, "utf8");
   }
-};
+}
 
-const mkdir = async (str: string) => {
+async function mkdir(str: string) {
   try {
     await fs.promises.mkdir(str, {
       recursive: true,
     });
-  } catch {}
-};
-const rmdir = async (str: string) => {
+  }
+  catch {}
+}
+async function rmdir(str: string) {
   try {
     await fs.promises.rm(str, {
       recursive: true,
     });
-  } catch {}
-};
+  }
+  catch {}
+}

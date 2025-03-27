@@ -1,19 +1,19 @@
 name: website
-on: 
-  push: 
+on:
+  push:
     branches:
       - main
     paths:
-      - 'packages/*/src/**'
-      - 'website/**'
-      - 'package.json'
+      - "packages/*/src/**"
+      - "website/**"
+      - package.json
       - .github/workflows/website.yml
   pull_request:
     paths:
-      - 'packages/*/src/**'
-      - 'website/**'
-      - 'package.json'
-      - '.github/workflows/website.yml'
+      - "packages/*/src/**"
+      - "website/**"
+      - package.json
+      - .github/workflows/website.yml
 jobs:
   website:
     runs-on: ubuntu-latest

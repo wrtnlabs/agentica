@@ -1,4 +1,4 @@
-import { IAgenticaEventJson } from "@agentica/core";
+import type { IAgenticaEventJson } from "@agentica/core";
 
 /**
  * RPC interface of AI agent listener.
@@ -51,14 +51,14 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of a description of function execution results
    */
-  describe(evt: IAgenticaEventJson.IDescribe): Promise<void>;
+  describe: (evt: IAgenticaEventJson.IDescribe) => Promise<void>;
 
   /**
    * Text conversation message.
    *
    * @param evt Event of a text conversation message
    */
-  text(evt: IAgenticaEventJson.IText): Promise<void>;
+  text: (evt: IAgenticaEventJson.IText) => Promise<void>;
 
   /**
    * Initialize the AI agent.
@@ -68,7 +68,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of initialization
    */
-  initialize?(evt: IAgenticaEventJson.IInitialize): Promise<void>;
+  initialize?: (evt: IAgenticaEventJson.IInitialize) => Promise<void>;
 
   /**
    * Select a function to call.
@@ -77,7 +77,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of selecting a function to call
    */
-  select?(evt: IAgenticaEventJson.ISelect): Promise<void>;
+  select?: (evt: IAgenticaEventJson.ISelect) => Promise<void>;
 
   /**
    * Cancel a function to call.
@@ -86,7 +86,7 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of canceling a function to call
    */
-  cancel?(evt: IAgenticaEventJson.ICancel): Promise<void>;
+  cancel?: (evt: IAgenticaEventJson.ICancel) => Promise<void>;
 
   /**
    * Call a function.
@@ -105,7 +105,7 @@ export interface IAgenticaRpcListener {
    * @param evt Event of a function calling
    * @return New arguments if you want to modify, otherwise null or undefined
    */
-  call?(evt: IAgenticaEventJson.ICall): Promise<object | null | undefined>;
+  call?: (evt: IAgenticaEventJson.ICall) => Promise<object | null | undefined>;
 
   /**
    * Executition of a function.
@@ -114,5 +114,5 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of a function execution
    */
-  execute?(evt: IAgenticaEventJson.IExecute): Promise<void>;
+  execute?: (evt: IAgenticaEventJson.IExecute) => Promise<void>;
 }

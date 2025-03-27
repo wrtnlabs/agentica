@@ -1,96 +1,105 @@
-import { ILlmApplication, ILlmSchema } from "@samchon/openapi";
-import OpenAI from "openai";
-import typia, { IValidation } from "typia";
-import { v4 } from "uuid";
+import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
+import type OpenAI from "openai";
+import type { IValidation } from "typia";
+import type { AgenticaContext } from "../context/AgenticaContext";
+import type { AgenticaOperation } from "../context/AgenticaOperation";
 
-import { AgenticaContext } from "../context/AgenticaContext";
-import { AgenticaOperation } from "../context/AgenticaOperation";
+import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
+import type { __IChatSelectFunctionsApplication } from "../context/internal/__IChatSelectFunctionsApplication";
+import type { AgenticaEvent } from "../events/AgenticaEvent";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import typia from "typia";
+import { v4 } from "uuid";
 import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
-import { __IChatSelectFunctionsApplication } from "../context/internal/__IChatSelectFunctionsApplication";
-import { AgenticaEvent } from "../events/AgenticaEvent";
 import { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
-import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
 import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
 
-export namespace ChatGptSelectFunctionAgent {
-  export const execute = async <Model extends ILlmSchema.Model>(
-    ctx: AgenticaContext<Model>,
-  ): Promise<AgenticaPrompt<Model>[]> => {
-    if (ctx.operations.divided === undefined)
-      return step(ctx, ctx.operations.array, 0);
+const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
+  __IChatSelectFunctionsApplication,
+  "chatgpt"
+>();
 
-    const stacks: AgenticaOperationSelection<Model>[][] =
-      ctx.operations.divided.map(() => []);
-    const events: AgenticaEvent<Model>[] = [];
-    const prompts: AgenticaPrompt<Model>[][] = await Promise.all(
-      ctx.operations.divided.map((operations, i) =>
-        step(
-          {
-            ...ctx,
-            stack: stacks[i]!,
-            dispatch: async (e) => {
-              events.push(e);
-            },
+interface IFailure {
+  id: string;
+  name: string;
+  validation: IValidation.IFailure;
+}
+
+export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+  if (ctx.operations.divided === undefined) {
+    return step(ctx, ctx.operations.array, 0);
+  }
+
+  const stacks: AgenticaOperationSelection<Model>[][]
+      = ctx.operations.divided.map(() => []);
+  const events: AgenticaEvent<Model>[] = [];
+  const prompts: AgenticaPrompt<Model>[][] = await Promise.all(
+    ctx.operations.divided.map(async (operations, i) =>
+      step(
+        {
+          ...ctx,
+          stack: stacks[i]!,
+          dispatch: async (e) => {
+            events.push(e);
           },
-          operations,
-          0,
-        ),
-      ),
-    );
-
-    // NO FUNCTION SELECTION, SO THAT ONLY TEXT LEFT
-    if (stacks.every((s) => s.length === 0)) return prompts[0]!;
-    // ELITICISM
-    else if ((ctx.config?.eliticism ?? AgenticaConstant.ELITICISM) === true)
-      return step(
-        ctx,
-        stacks
-          .flat()
-          .map(
-            (s) =>
-              ctx.operations.group
-                .get(s.operation.controller.name)!
-                .get(s.operation.function.name)!,
-          ),
+        },
+        operations,
         0,
-      );
+      ),
+    ),
+  );
 
-    // RE-COLLECT SELECT FUNCTION EVENTS
-    const collection: AgenticaSelectPrompt<Model> = new AgenticaSelectPrompt({
-      id: v4(),
-      selections: [],
-    });
-    for (const e of events)
-      if (e.type === "select") {
-        collection.selections.push(e.selection);
-        await selectFunction(ctx, {
-          name: e.selection.operation.name,
-          reason: e.selection.reason,
-        });
-      }
-    return [collection];
-  };
+  // NO FUNCTION SELECTION, SO THAT ONLY TEXT LEFT
+  if (stacks.every(s => s.length === 0)) {
+    return prompts[0]!;
+  }
+  // ELITICISM
+  else if ((ctx.config?.eliticism ?? AgenticaConstant.ELITICISM) === true) {
+    return step(
+      ctx,
+      stacks
+        .flat()
+        .map(
+          s =>
+            ctx.operations.group
+              .get(s.operation.controller.name)!
+              .get(s.operation.function.name)!,
+        ),
+      0,
+    );
+  }
 
-  const step = async <Model extends ILlmSchema.Model>(
-    ctx: AgenticaContext<Model>,
-    operations: AgenticaOperation<Model>[],
-    retry: number,
-    failures?: IFailure[],
-  ): Promise<AgenticaPrompt<Model>[]> => {
-    //----
-    // EXECUTE CHATGPT API
-    //----
-    const completionStream = await ctx.request("select", {
-      messages: [
+  // RE-COLLECT SELECT FUNCTION EVENTS
+  const collection: AgenticaSelectPrompt<Model> = new AgenticaSelectPrompt({
+    id: v4(),
+    selections: [],
+  });
+  for (const e of events) {
+    if (e.type === "select") {
+      collection.selections.push(e.selection);
+      await selectFunction(ctx, {
+        name: e.selection.operation.name,
+        reason: e.selection.reason,
+      });
+    }
+  }
+  return [collection];
+}
+
+async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, operations: AgenticaOperation<Model>[], retry: number, failures?: IFailure[]): Promise<AgenticaPrompt<Model>[]> {
+  // ----
+  // EXECUTE CHATGPT API
+  // ----
+  const completionStream = await ctx.request("select", {
+    messages: [
         // COMMON SYSTEM PROMPT
         {
           role: "system",
@@ -114,7 +123,7 @@ export namespace ChatGptSelectFunctionAgent {
           role: "tool",
           tool_call_id: "getApiFunctions",
           content: JSON.stringify(
-            operations.map((op) => ({
+            operations.map(op => ({
               name: op.name,
               description: op.function.description,
               ...(op.protocol === "http"
@@ -138,137 +147,159 @@ export namespace ChatGptSelectFunctionAgent {
         {
           role: "system",
           content:
-            ctx.config?.systemPrompt?.select?.(ctx.histories) ??
-            AgenticaSystemPrompt.SELECT,
+            ctx.config?.systemPrompt?.select?.(ctx.histories)
+            ?? AgenticaSystemPrompt.SELECT,
         },
         // TYPE CORRECTIONS
         ...emendMessages(failures ?? []),
-      ],
-      // STACK FUNCTIONS
-      tools: CONTAINER.functions.map(
-        (func) =>
+    ],
+    // STACK FUNCTIONS
+    tools: CONTAINER.functions.map(
+      func =>
           ({
             type: "function",
             function: {
               name: func.name,
               description: func.description,
-              parameters: func.parameters as any,
+              /**
+               * @TODO fix it
+               * The property and value have a type mismatch, but it works.
+               */
+              parameters: func.parameters as unknown as Record<string, unknown>,
             },
           }) satisfies OpenAI.ChatCompletionTool,
-      ),
-      tool_choice: "auto",
-      parallel_tool_calls: false,
-    });
+    ),
+    tool_choice: "auto",
+    parallel_tool_calls: false,
+  });
 
-    const chunks = await StreamUtil.readAll(completionStream);
-    const completion = ChatGptCompletionMessageUtil.merge(chunks);
-    //----
-    // VALIDATION
-    //----
-    if (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)) {
-      const failures: IFailure[] = [];
-      for (const choice of completion.choices)
-        for (const tc of choice.message.tool_calls ?? []) {
-          if (tc.function.name !== "selectFunctions") continue;
-          const input: object = JSON.parse(tc.function.arguments);
-          const validation: IValidation<__IChatFunctionReference.IProps> =
-            typia.validate<__IChatFunctionReference.IProps>(input);
-          if (validation.success === false)
-            failures.push({
-              id: tc.id,
-              name: tc.function.name,
-              validation,
-            });
-        }
-      if (failures.length > 0) return step(ctx, operations, retry, failures);
-    }
-
-    //----
-    // PROCESS COMPLETION
-    //----
-    const prompts: AgenticaPrompt<Model>[] = [];
+  const chunks = await StreamUtil.readAll(completionStream);
+  const completion = ChatGptCompletionMessageUtil.merge(chunks);
+  // ----
+  // VALIDATION
+  // ----
+  if (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)) {
+    const failures: IFailure[] = [];
     for (const choice of completion.choices) {
-      // TOOL CALLING HANDLER
-      if (choice.message.tool_calls)
-        for (const tc of choice.message.tool_calls) {
-          if (tc.type !== "function") continue;
+      for (const tc of choice.message.tool_calls ?? []) {
+        if (tc.function.name !== "selectFunctions") {
+          continue;
+        }
+        const input = JSON.parse(tc.function.arguments) as object;
+        const validation: IValidation<__IChatFunctionReference.IProps>
+            = typia.validate<__IChatFunctionReference.IProps>(input);
+        if (validation.success === false) {
+          failures.push({
+            id: tc.id,
+            name: tc.function.name,
+            validation,
+          });
+        }
+      }
+    }
+    if (failures.length > 0) {
+      return step(ctx, operations, retry, failures);
+    }
+  }
 
-          const input: __IChatFunctionReference.IProps = JSON.parse(
-            tc.function.arguments,
-          );
-          if (typia.is(input) === false) continue;
-          else if (tc.function.name === "selectFunctions") {
-            const collection: AgenticaSelectPrompt<Model> =
-              new AgenticaSelectPrompt({
+  // ----
+  // PROCESS COMPLETION
+  // ----
+  const prompts: AgenticaPrompt<Model>[] = [];
+  for (const choice of completion.choices) {
+    // TOOL CALLING HANDLER
+    if (choice.message.tool_calls != null) {
+      for (const tc of choice.message.tool_calls) {
+        if (tc.type !== "function") {
+          continue;
+        }
+
+        if (tc.function.name !== "selectFunctions") {
+          continue;
+        }
+        const input = typia.json.isParse<__IChatFunctionReference.IProps>(tc.function.arguments);
+
+        if (input === null) {
+          continue;
+        }
+
+        const collection: AgenticaSelectPrompt<Model>
+              = new AgenticaSelectPrompt({
                 id: tc.id,
                 selections: [],
               });
-            for (const reference of input.functions) {
-              const operation: AgenticaOperation<Model> | null =
-                await selectFunction(ctx, reference);
-              if (operation !== null)
-                collection.selections.push(
-                  new AgenticaOperationSelection({
-                    operation,
-                    reason: reference.reason,
-                  }),
-                );
-            }
-            if (collection.selections.length !== 0) prompts.push(collection);
+        for (const reference of input.functions) {
+          const operation: AgenticaOperation<Model> | null
+                = await selectFunction(ctx, reference);
+
+          if (operation === null) {
+            continue;
           }
+
+          collection.selections.push(
+            new AgenticaOperationSelection({
+              operation,
+              reason: reference.reason,
+            }),
+          );
         }
 
-      // ASSISTANT MESSAGE
-      if (
-        choice.message.role === "assistant" &&
-        !!choice.message.content?.length
-      ) {
-        const text: AgenticaTextPrompt = new AgenticaTextPrompt({
-          role: "assistant",
-          text: choice.message.content,
-        });
-        prompts.push(text);
-        await ctx.dispatch(
-          new AgenticaTextEvent({
-            role: "assistant",
-            stream: StreamUtil.to(text.text),
-            join: () => Promise.resolve(text.text),
-            done: () => true,
-            get: () => text.text,
-          }),
-        );
+        if (collection.selections.length !== 0) {
+          prompts.push(collection);
+        }
       }
     }
-    return prompts;
-  };
 
-  const selectFunction = async <Model extends ILlmSchema.Model>(
-    ctx: AgenticaContext<Model>,
-    reference: __IChatFunctionReference,
-  ): Promise<AgenticaOperation<Model> | null> => {
-    const operation: AgenticaOperation<Model> | undefined =
-      ctx.operations.flat.get(reference.name);
-    if (operation === undefined) return null;
+    // ASSISTANT MESSAGE
+    if (
+      choice.message.role === "assistant"
+      && choice.message.content != null
+    ) {
+      const text: AgenticaTextPrompt = new AgenticaTextPrompt({
+        role: "assistant",
+        text: choice.message.content,
+      });
+      prompts.push(text);
 
-    const selection: AgenticaOperationSelection<Model> =
-      new AgenticaOperationSelection({
+      await ctx.dispatch(
+        new AgenticaTextEvent({
+          role: "assistant",
+          stream: StreamUtil.to(text.text),
+          join: async () => Promise.resolve(text.text),
+          done: () => true,
+          get: () => text.text,
+        }),
+      );
+    }
+  }
+
+  return prompts;
+}
+
+async function selectFunction<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, reference: __IChatFunctionReference): Promise<AgenticaOperation<Model> | null> {
+  const operation: AgenticaOperation<Model> | undefined
+      = ctx.operations.flat.get(reference.name);
+  if (operation === undefined) {
+    return null;
+  }
+
+  const selection: AgenticaOperationSelection<Model>
+      = new AgenticaOperationSelection({
         operation,
         reason: reference.reason,
       });
-    ctx.stack.push(selection);
-    void ctx.dispatch(
-      new AgenticaSelectEvent({
-        selection,
-      }),
-    );
-    return operation;
-  };
+  ctx.stack.push(selection);
+  void ctx.dispatch(
+    new AgenticaSelectEvent({
+      selection,
+    }),
+  );
+  return operation;
+}
 
-  const emendMessages = (
-    failures: IFailure[],
-  ): OpenAI.ChatCompletionMessageParam[] =>
-    failures
-      .map((f) => [
+function emendMessages(failures: IFailure[]): OpenAI.ChatCompletionMessageParam[] {
+  return failures
+    .map(f => [
         {
           role: "assistant",
           tool_calls: [
@@ -295,17 +326,12 @@ export namespace ChatGptSelectFunctionAgent {
             "Correct it at the next function calling.",
           ].join("\n"),
         } satisfies OpenAI.ChatCompletionSystemMessageParam,
-      ])
-      .flat();
+    ])
+    .flat();
 }
 
-const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
-  __IChatSelectFunctionsApplication,
-  "chatgpt"
->();
-
-interface IFailure {
-  id: string;
-  name: string;
-  validation: IValidation.IFailure;
-}
+export const ChatGptSelectFunctionAgent = {
+  execute,
+  selectFunction,
+  emendMessages,
+};

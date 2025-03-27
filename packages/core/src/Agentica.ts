@@ -57,7 +57,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   // STACK
   private readonly stack_: AgenticaOperationSelection<Model>[];
   private readonly prompt_histories_: AgenticaPrompt<Model>[];
-  private readonly listeners_: Map<string, Set<Function>>;
+  private readonly listeners_: Map<string, Set<(event: AgenticaEvent<Model>) => Promise<void> | void>>;
 
   // STATUS
   private readonly token_usage_: AgenticaTokenUsage;
@@ -136,7 +136,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
         stream: StreamUtil.to(content),
         done: () => true,
         get: () => content,
-        join: () => Promise.resolve(content),
+        join: async () => Promise.resolve(content),
       }),
     );
 
@@ -180,7 +180,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * Get list of operations, which has capsuled the pair of controller
    * and function from the {@link getControllers controllers}.
    *
-   * @returns
+   * @returns List of operations
    */
   public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
     return this.operations_.array;
@@ -216,7 +216,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     prompt: AgenticaTextPrompt<"user">;
     usage: AgenticaTokenUsage;
   }): AgenticaContext<Model> {
-    const dispatch = (event: AgenticaEvent<Model>) => this.dispatch(event);
+    const dispatch = async (event: AgenticaEvent<Model>) => this.dispatch(event);
     return {
       // APPLICATION
       operations: this.operations_,
@@ -229,7 +229,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       prompt: props.prompt,
 
       // HANDLERS
-      dispatch: event => this.dispatch(event),
+      dispatch: async event => this.dispatch(event),
       request: async (source, body) => {
         // request information
         const event: AgenticaRequestEvent = new AgenticaRequestEvent({
@@ -264,8 +264,10 @@ export class Agentica<Model extends ILlmSchema.Model> {
           const reader = streamForAggregate.getReader();
           while (true) {
             const chunk = await reader.read();
-            if (chunk.done) { break; }
-            if (chunk.value.usage) {
+            if (chunk.done) {
+              break;
+            }
+            if (chunk.value.usage != null) {
               AgenticaTokenUsageAggregator.aggregate({
                 kind: source,
                 completionUsage: chunk.value.usage,
@@ -314,7 +316,10 @@ export class Agentica<Model extends ILlmSchema.Model> {
       event: AgenticaEvent.Mapper<Model>[Type],
     ) => void | Promise<void>,
   ): this {
-    __map_take(this.listeners_, type, () => new Set()).add(listener);
+    /**
+     * @TODO remove `as`
+     */
+    __map_take(this.listeners_, type, () => new Set()).add(listener as (event: AgenticaEvent<Model>) => void | Promise<void>);
     return this;
   }
 
@@ -333,9 +338,14 @@ export class Agentica<Model extends ILlmSchema.Model> {
     ) => void | Promise<void>,
   ): this {
     const set = this.listeners_.get(type);
-    if (set) {
-      set.delete(listener);
-      if (set.size === 0) { this.listeners_.delete(type); }
+    if (set !== undefined) {
+    /**
+     * @TODO remove `as`
+     */
+      set.delete(listener as (event: AgenticaEvent<Model>) => void | Promise<void>);
+      if (set.size === 0) {
+        this.listeners_.delete(type);
+      }
     }
     return this;
   }
@@ -344,11 +354,10 @@ export class Agentica<Model extends ILlmSchema.Model> {
     event: Event,
   ): Promise<void> {
     const set = this.listeners_.get(event.type);
-    if (set) {
+    if (set !== undefined) {
       await Promise.all(
         Array.from(set).map(async (listener) => {
           try {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             await listener(event);
           }
           catch {

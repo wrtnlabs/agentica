@@ -1,9 +1,9 @@
-import OpenAI from "openai";
+import type OpenAI from "openai";
 
-import { AgenticaEventSource } from "../events/AgenticaEventSource";
-import { IAgenticaOperationJson } from "./IAgenticaOperationJson";
-import { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
-import { IAgenticaPromptJson } from "./IAgenticaPromptJson";
+import type { AgenticaEventSource } from "../events/AgenticaEventSource";
+import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
+import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
+import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";
 
 /**
  * Nestia A.I. chatbot event.
@@ -25,7 +25,7 @@ export type IAgenticaEventJson =
   | IAgenticaEventJson.IText;
 export namespace IAgenticaEventJson {
   export type Type = IAgenticaEventJson["type"];
-  export type Mapper = {
+  export interface Mapper {
     initialize: IInitialize;
     select: ISelect;
     cancel: ICancel;
@@ -34,12 +34,11 @@ export namespace IAgenticaEventJson {
     describe: IDescribe;
     text: IText;
     request: IRequest;
-  };
+  }
 
   /**
    * Event of initializing the chatbot.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface IInitialize extends IBase<"initialize"> {}
 
   /**

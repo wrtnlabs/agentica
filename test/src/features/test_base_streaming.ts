@@ -1,15 +1,19 @@
-import {
-  Agentica,
+import type {
   AgenticaPrompt,
   AgenticaRequestEvent,
   AgenticaResponseEvent,
+} from "@agentica/core";
+import {
+  Agentica,
 } from "@agentica/core";
 import OpenAI from "openai";
 
 import { TestGlobal } from "../TestGlobal";
 
 export async function test_base_streaming(): Promise<void | false> {
-  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    return false;
+  }
 
   // Create a new Agentica instance
   const agent: Agentica<"chatgpt"> = new Agentica({
@@ -44,10 +48,12 @@ export async function test_base_streaming(): Promise<void | false> {
     const reader = event.stream.getReader();
     while (true) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        break;
+      }
       // Collect content from stream chunks
-      if (value.choices && value.choices[0]?.delta?.content) {
-        streamContentPieces.push(value.choices[0].delta.content);
+      if (value.choices !== undefined && value.choices[0]?.delta?.content !== undefined) {
+        streamContentPieces.push(value.choices[0].delta.content as string);
       }
     }
     // Verify we got some content in the stream
@@ -81,15 +87,15 @@ export async function test_base_streaming(): Promise<void | false> {
 
   // Verify the response contains a text from the AI
   const aiResponse = result.find(
-    (prompt) => prompt.type === "text" && prompt.role === "assistant",
+    prompt => prompt.type === "text" && prompt.role === "assistant",
   );
 
-  if (!aiResponse || aiResponse.type !== "text") {
+  if (aiResponse === undefined || aiResponse.type !== "text") {
     throw new Error("No assistant text response found");
   }
 
   // Verify the response contains actual content
-  if (!aiResponse.text || aiResponse.text.length < 10) {
+  if (aiResponse.text === undefined || aiResponse.text.length < 10) {
     throw new Error("Assistant response is too short or empty");
   }
 
@@ -97,8 +103,8 @@ export async function test_base_streaming(): Promise<void | false> {
   // We don't check for exact equality because there might be minor processing differences
   const combinedStreamContent = streamContentPieces.join("");
   if (
-    combinedStreamContent.length === 0 ||
-    !aiResponse.text.includes(combinedStreamContent.substring(0, 10))
+    combinedStreamContent.length === 0
+    || !aiResponse.text.includes(combinedStreamContent.substring(0, 10))
   ) {
     throw new Error("Stream content doesn't match final response content");
   }

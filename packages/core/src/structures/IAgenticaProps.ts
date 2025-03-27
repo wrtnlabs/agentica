@@ -1,9 +1,9 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
-import { IAgenticaConfig } from "./IAgenticaConfig";
-import { IAgenticaController } from "./IAgenticaController";
-import { IAgenticaVendor } from "./IAgenticaVendor";
+import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+import type { IAgenticaConfig } from "./IAgenticaConfig";
+import type { IAgenticaController } from "./IAgenticaController";
+import type { IAgenticaVendor } from "./IAgenticaVendor";
 
 /**
  * Properties of the Nestia Agent.

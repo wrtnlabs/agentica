@@ -1,11 +1,11 @@
-import { MPSCUtil } from "@agentica/core/src/internal/MPSCUtil";
+import { MPSC } from "@agentica/core/src/internal/MPSC";
 
 export async function test_mpsc_wait_close(): Promise<void | false> {
   // Test 1: Basic waitClose functionality
-  const { consumer, produce, close, waitClosed } = MPSCUtil.create<string>();
-  const reader = consumer.getReader();
+  const mpsc = new MPSC<string>();
+  const reader = mpsc.consumer.getReader();
 
-  produce("message");
+  mpsc.produce("message");
   const readResult = await reader.read();
 
   if (readResult.value !== "message" || readResult.done !== false) {
@@ -17,8 +17,8 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   }
 
   // Call waitClose then execute close
-  const closePromise = waitClosed();
-  close();
+  const closePromise = mpsc.waitClosed();
+  mpsc.close();
   await closePromise; // Should resolve when closed
 
   const afterClose = await reader.read();
@@ -31,38 +31,33 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   }
 
   // Test 2: Call waitClose on already closed queue
-  const { close: close2, waitClosed: waitClosed2 } = MPSCUtil.create<number>();
+  const mpsc2 = new MPSC<number>();
 
-  close2(); // Close first
-  const alreadyClosedPromise = waitClosed2();
+  mpsc2.close(); // Close first
+  const alreadyClosedPromise = mpsc2.waitClosed();
   // Should resolve immediately since already closed
   await alreadyClosedPromise;
 
   // Test 3: Multiple waitClose calls
-  const { close: close3, waitClosed: waitClosed3 } = MPSCUtil.create<number>();
+  const mpsc3 = new MPSC<number>();
 
   // Create multiple waitClose promises
-  const waitPromises = [waitClosed3(), waitClosed3(), waitClosed3()];
+  const waitPromises = [mpsc3.waitClosed(), mpsc3.waitClosed(), mpsc3.waitClosed()];
 
   // All promises should resolve
-  close3();
+  mpsc3.close();
   await Promise.all(waitPromises);
 
   // Test 4: Verify waitClose doesn't block other operations
-  const {
-    consumer: consumer4,
-    produce: produce4,
-    close: close4,
-    waitClosed: waitClosed4,
-  } = MPSCUtil.create<string>();
-  const reader4 = consumer4.getReader();
+  const mpsc4 = new MPSC<string>();
+  const reader4 = mpsc4.consumer.getReader();
 
   // Call waitClose
-  const waitPromise4 = waitClosed4();
+  const waitPromise4 = mpsc4.waitClosed();
 
   // Check if value production and consumption still work
-  produce4("first");
-  produce4("second");
+  mpsc4.produce("first");
+  mpsc4.produce("second");
 
   const read1 = await reader4.read();
   const read2 = await reader4.read();
@@ -83,7 +78,7 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
     );
   }
 
-  close4();
+  mpsc4.close();
   await waitPromise4;
 
   const afterClose4 = await reader4.read();
@@ -96,22 +91,17 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   }
 
   // Test 5: waitClose resolution after async close
-  const {
-    consumer: consumer5,
-    produce: produce5,
-    close: close5,
-    waitClosed: waitClosed5,
-  } = MPSCUtil.create<number>();
-  const reader5 = consumer5.getReader();
+  const mpsc5 = new MPSC<number>();
+  const reader5 = mpsc5.consumer.getReader();
 
-  produce5(100);
+  mpsc5.produce(100);
 
   // Call waitClose
-  const waitPromise5 = waitClosed5();
+  const waitPromise5 = mpsc5.waitClosed();
 
   // Perform async close
   setTimeout(() => {
-    close5();
+    mpsc5.close();
   }, 50);
 
   // Wait for waitClose to resolve

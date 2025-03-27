@@ -1,8 +1,10 @@
 {
-  "private": true,
   "name": "@agentica/test",
-  "version": "0.12.21",
+  "version": "0.13.1",
+  "private": true,
   "description": "Test program of Agentica",
+  "author": "Wrtn Technologies",
+  "license": "MIT",
   "scripts": {
     "build": "tsc --noEmit",
     "dev": "tsc --watch --noEmit",
@@ -11,13 +13,11 @@
     "lint": "eslint .",
     "format": "eslint --fix ."
   },
-  "author": "Wrtn Technologies",
-  "license": "MIT",
   "dependencies": {
     "@agentica/benchmark": "workspace:^",
     "@agentica/core": "workspace:^",
-    "@agentica/rpc": "workspace:^",
     "@agentica/pg-vector-selector": "workspace:^",
+    "@agentica/rpc": "workspace:^",
     "@nestia/e2e": "^0.8.2",
     "@samchon/openapi": "^3.0.0",
     "@samchon/shopping-api": "^0.16.0",

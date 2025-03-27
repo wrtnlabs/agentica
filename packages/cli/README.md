@@ -1,8 +1,9 @@
 # Agentica CLI Tool
+
 ```bash
 npx agentica start <directory>
 npx agentica backend <directory>
-npx agentica client <directory> 
+npx agentica client <directory>
 ```
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
@@ -12,14 +13,12 @@ npx agentica client <directory>
 
 Agentica CLI Tool cloning boilerplate project.
 
-  - `start`: a frontend application creating agent in browser
-  - `backend`: backend application serving the agent through websocket protocol
-  - `client`: frontend application connecting to above websocket server
-
-
-
+- `start`: a frontend application creating agent in browser
+- `backend`: backend application serving the agent through websocket protocol
+- `client`: frontend application connecting to above websocket server
 
 ## Introduction
+
 ![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
 
 ```typescript

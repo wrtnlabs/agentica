@@ -1,6 +1,6 @@
-import typia from "typia";
+import type { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
 
-import { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
+import typia from "typia";
 
 export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
   /**
@@ -42,7 +42,8 @@ export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
       this.cancel = zero.cancel;
       this.call = zero.call;
       this.describe = zero.describe;
-    } else {
+    }
+    else {
       this.aggregate = props.aggregate;
       this.initialize = props.initialize;
       this.select = props.select;

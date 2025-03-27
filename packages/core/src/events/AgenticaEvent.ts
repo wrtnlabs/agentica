@@ -1,14 +1,14 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaCallEvent } from "./AgenticaCallEvent";
-import { AgenticaCancelEvent } from "./AgenticaCancelEvent";
-import { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
-import { AgenticaExecuteEvent } from "./AgenticaExecuteEvent";
-import { AgenticaInitializeEvent } from "./AgenticaInitializeEvent";
-import { AgenticaRequestEvent } from "./AgenticaRequestEvent";
-import { AgenticaResponseEvent } from "./AgenticaResponseEvent";
-import { AgenticaSelectEvent } from "./AgenticaSelectEvent";
-import { AgenticaTextEvent } from "./AgenticaTextEvent";
+import type { AgenticaCallEvent } from "./AgenticaCallEvent";
+import type { AgenticaCancelEvent } from "./AgenticaCancelEvent";
+import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
+import type { AgenticaExecuteEvent } from "./AgenticaExecuteEvent";
+import type { AgenticaInitializeEvent } from "./AgenticaInitializeEvent";
+import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
+import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
+import type { AgenticaSelectEvent } from "./AgenticaSelectEvent";
+import type { AgenticaTextEvent } from "./AgenticaTextEvent";
 
 export type AgenticaEvent<Model extends ILlmSchema.Model> =
   | AgenticaCallEvent<Model>
@@ -22,7 +22,7 @@ export type AgenticaEvent<Model extends ILlmSchema.Model> =
   | AgenticaTextEvent;
 export namespace AgenticaEvent {
   export type Type = AgenticaEvent<any>["type"];
-  export type Mapper<Model extends ILlmSchema.Model> = {
+  export interface Mapper<Model extends ILlmSchema.Model> {
     call: AgenticaCallEvent<Model>;
     cancel: AgenticaCancelEvent<Model>;
     describe: AgenticaDescribeEvent<Model>;
@@ -32,5 +32,5 @@ export namespace AgenticaEvent {
     response: AgenticaResponseEvent;
     select: AgenticaSelectEvent<Model>;
     text: AgenticaTextEvent;
-  };
+  }
 }

@@ -1,0 +1,100 @@
+---
+title: Agentica > Tutorial > Google Scholar Agents
+---
+
+## Introduction
+
+- [playground](https://stackblitz.com/github/wrtnlabs/agentica-tutorial-google-scholar?file=README.md) You can see the demo code on the playground.
+
+Set up a **fully functional Google Scholar Agent** powered by OpenAI's GPT model in a flash using the Agentica CLI.
+
+## Quick CLI Setup
+
+Start the Agentica Setup Wizard with this single command:
+
+```bash
+npx agentica start google-scholar-agent
+```
+
+The wizard will walk you through:
+
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **GOOGLE SCHOLAR** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { GoogleScholarService } from "@wrtnlabs/connector-google-scholar";
+
+dotenv.config();
+
+const agent: Agentica<"chatgpt"> = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Google Scholar Connector",
+      protocol: "class",
+      application: typia.llm.application<GoogleScholarService, "chatgpt">(),
+      execute: new GoogleScholarService({
+        serpApiKey: process.env.SERP_API_KEY!,
+      }),
+    },
+  ],
+});
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+```
+
+This code instantly sets up your Google Scholar Agent, ready to perform intelligent searches on Google Scholar.
+
+## What This Does
+
+Your Google Scholar Agent will:
+
+- **Process Google Scholar Data:** Use the `GoogleScholarService` connector.
+- **Leverage OpenAI's GPT Model:** Use the `chatgpt` model.
+- **Maintain Security:** Store your API keys in a `.env` file.
+- **Securely Manage Credentials:** Use the `dotenv` package to manage your API keys.
+
+Set up your environment variables in a `.env` file:
+
+```bash
+OPENAI_API_KEY=your-openai-api-key
+SERP_API_KEY=your-serp-api-key
+```
+
+Make sure to include your SerpApi API key in the `SERP_API_KEY` field.
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Find the agentic ai."
+
+The agent will respond with the most relevant search results from Google Scholar.
+
+## Available Functions
+
+For a complete list of functions available in `GoogleScholarService`, check out the source code.
+👉 [wrtnlabs/connectors - GoogleScholarService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/google_scholar/src/google_scholar/GoogleScholarService.ts)
+
+Your AI-powered Google Scholar Agent is now ready to help you with your research needs. Enjoy! 🚀
