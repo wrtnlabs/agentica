@@ -29,7 +29,6 @@ import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
-import { cn } from "@/app/_lib/utils";
 
 
 const SIDE_WIDTH = 450;
