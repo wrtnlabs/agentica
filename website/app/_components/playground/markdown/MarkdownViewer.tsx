@@ -9,7 +9,7 @@ interface IProps {
 export const MarkdownViewer = (props: IProps) => {
   return (
     <Markdown
-      remarkPlugins={[remarkMermaidPlugin]}
+      remarkPlugins={[remarkMermaidPlugin] as unknown as null}
       rehypePlugins={[rehypeRaw, rehypeStringify]}
       components={{
         img: ({ ...props }) => (
