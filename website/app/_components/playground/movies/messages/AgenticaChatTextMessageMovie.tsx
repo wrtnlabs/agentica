@@ -5,9 +5,12 @@ import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../markdown/MarkdownViewer";
 
+interface IProps {
+  prompt: AgenticaTextPrompt;
+}
 export const AgenticaChatTextMessageMovie = ({
   prompt,
-}: AgenticaChatTextMessageMovie.IProps) => {
+}: IProps) => {
   return (
     <div
       style={{
@@ -39,8 +42,3 @@ export const AgenticaChatTextMessageMovie = ({
     </div>
   );
 };
-export namespace AgenticaChatTextMessageMovie {
-  export interface IProps {
-    prompt: AgenticaTextPrompt;
-  }
-}

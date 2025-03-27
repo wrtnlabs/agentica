@@ -11,17 +11,21 @@ import React from "react";
 
 import { MarkdownViewer } from "../../markdown/MarkdownViewer";
 
+interface IProps<Model extends ILlmSchema.Model> {
+  selections: AgenticaOperationSelection<Model>[];
+}
+
 export const AgenticaChatFunctionStackSideMovie = <
   Model extends ILlmSchema.Model,
 >(
-  props: AgenticaChatFunctionStackSideMovie.IProps<Model>,
+  props: IProps<Model>,
 ) => {
   return (
     <React.Fragment>
       <Typography variant="h5"> Function Stack </Typography>
       <hr />
-      {props.selections.map((select) => (
-        <Accordion>
+      {props.selections.map((select, idx) => (
+        <Accordion key={`idx-${idx}`}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography component="h6">
               {select.operation.protocol === "http"
@@ -43,8 +47,3 @@ export const AgenticaChatFunctionStackSideMovie = <
     </React.Fragment>
   );
 };
-export namespace AgenticaChatFunctionStackSideMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    selections: AgenticaOperationSelection<Model>[];
-  }
-}

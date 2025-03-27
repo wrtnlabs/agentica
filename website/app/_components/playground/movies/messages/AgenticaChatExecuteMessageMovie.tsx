@@ -5,11 +5,15 @@ import React from "react";
 
 import { MarkdownViewer } from "../../markdown/MarkdownViewer";
 
+interface IProps<Model extends ILlmSchema.Model> {
+  execute: AgenticaExecutePrompt<Model>;
+}
+
 export const AgenticaChatExecuteMessageMovie = <
   Model extends ILlmSchema.Model,
 >({
   execute,
-}: AgenticaChatExecuteMessageMovie.IProps<Model>) => {
+}: IProps<Model>) => {
   return (
     <React.Fragment>
       <Typography variant="h5"> {getTitle(execute)} </Typography>
@@ -31,11 +35,6 @@ export const AgenticaChatExecuteMessageMovie = <
     </React.Fragment>
   );
 };
-export namespace AgenticaChatExecuteMessageMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    execute: AgenticaExecutePrompt<Model>;
-  }
-}
 
 const getTitle = <Model extends ILlmSchema.Model>(
   exec: AgenticaExecutePrompt<Model>,

@@ -13,9 +13,13 @@ import { useState } from "react";
 
 import { MarkdownViewer } from "../../markdown/MarkdownViewer";
 
+interface IProps<Model extends ILlmSchema.Model> {
+  selection: AgenticaOperationSelection<Model>;
+}
+
 export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
   selection,
-}: AgenticaChatSelectMessageMovie.IProps<Model>) => {
+}: IProps<Model>) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <Card
@@ -63,8 +67,3 @@ export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
     </Card>
   );
 };
-export namespace AgenticaChatSelectMessageMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    selection: AgenticaOperationSelection<Model>;
-  }
-}

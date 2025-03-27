@@ -8,6 +8,6 @@ export function ClientOnly({ children }: { children: React.ReactNode }) {
     setMounted(true);
   }, []);
 
-  // if(typeof window === "undefined") return null
+  if(typeof window === "undefined") return null
   return <>{children}</>;
 }

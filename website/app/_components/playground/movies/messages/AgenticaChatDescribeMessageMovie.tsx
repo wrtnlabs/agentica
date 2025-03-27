@@ -14,11 +14,15 @@ import { useState } from "react";
 import { MarkdownViewer } from "../../markdown/MarkdownViewer";
 import { AgenticaChatExecuteMessageMovie } from "./AgenticaChatExecuteMessageMovie";
 
+interface IProps<Model extends ILlmSchema.Model> {
+  prompt: AgenticaDescribePrompt<Model>;
+}
+
 export const AgenticaChatDescribeMessageMovie = <
   Model extends ILlmSchema.Model,
 >({
   prompt,
-}: AgenticaChatDescribeMessageMovie.IProps<Model>) => {
+}: IProps<Model>) => {
   const [expanded, setExpanded] = useState(false);
   return (
     <Card
@@ -49,16 +53,11 @@ export const AgenticaChatDescribeMessageMovie = <
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {prompt.executes.map((execute) => (
-            <AgenticaChatExecuteMessageMovie execute={execute} />
+          {prompt.executes.map((execute, idx) => (
+            <AgenticaChatExecuteMessageMovie key={`idx-${idx}`} execute={execute} />
           ))}
         </CardContent>
       </Collapse>
     </Card>
   );
 };
-export namespace AgenticaChatDescribeMessageMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    prompt: AgenticaDescribePrompt<Model>;
-  }
-}

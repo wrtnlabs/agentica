@@ -9,8 +9,13 @@ import {
 } from "@mui/material";
 import React from "react";
 
+
+export interface IProps {
+  usage: AgenticaTokenUsage;
+}
+
 export const AgenticaChatTokenUsageSideMovie = (
-  props: AgenticaChatTokenUsageSideMovie.IProps,
+  props: IProps,
 ) => {
   const price: IPrice = compute(props.usage);
   return (
@@ -52,11 +57,6 @@ export const AgenticaChatTokenUsageSideMovie = (
     </React.Fragment>
   );
 };
-export namespace AgenticaChatTokenUsageSideMovie {
-  export interface IProps {
-    usage: AgenticaTokenUsage;
-  }
-}
 
 interface IPrice {
   total: number;

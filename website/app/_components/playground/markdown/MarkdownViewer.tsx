@@ -3,7 +3,10 @@ import rehypeRaw from "rehype-raw";
 import rehypeStringify from "rehype-stringify";
 import remarkMermaidPlugin from "remark-mermaid-plugin";
 
-export const MarkdownViewer = (props: MarkdownViewer.IProps) => {
+interface IProps {
+  children: string | null | undefined;
+}
+export const MarkdownViewer = (props: IProps) => {
   return (
     <Markdown
       remarkPlugins={[remarkMermaidPlugin]}
@@ -25,8 +28,3 @@ export const MarkdownViewer = (props: MarkdownViewer.IProps) => {
     </Markdown>
   );
 };
-export namespace MarkdownViewer {
-  export interface IProps {
-    children: string | null | undefined;
-  }
-}

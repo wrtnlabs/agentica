@@ -8,15 +8,15 @@ import { useState } from "react";
 import { load } from "js-yaml";
 
 
-// @ts-ignore
+// @ts-expect-error i don't know why this is error
 import JsonInput from "react-json-editor-ajrm";
-// @ts-ignore
+// @ts-expect-error i don't know why this is error
 import locale from "react-json-editor-ajrm/locale/en.js";
 
-// @ts-ignore
+// @ts-expect-error i don't know why this is error
 import FileUpload from "react-mui-fileuploader";
 
-// @ts-ignore
+// @ts-expect-error i don't know why this is error
 import { ExtendedFileProps } from "react-mui-fileuploader/dist/types/index.types";
 import { AgenticaChatMovie } from "../_components/playground/movies/AgenticaChatMovie";
 

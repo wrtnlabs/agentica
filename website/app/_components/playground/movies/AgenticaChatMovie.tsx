@@ -30,10 +30,18 @@ import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
 
+
+const SIDE_WIDTH = 450;
+
+interface IProps<Model extends ILlmSchema.Model> {
+  agent: Agentica<Model>;
+  title?: string;
+}
+
 export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   agent,
   title,
-}: AgenticaChatMovie.IProps<Model>) => {
+}: IProps<Model>) => {
   //----
   // VARIABLES
   //----
@@ -195,7 +203,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
         ref={bodyContainerRef}
       >
         {histories
-          .map((prompt) => <AgenticaChatMessageMovie prompt={prompt} />)
+          .map((prompt, idx) => <AgenticaChatMessageMovie key={`idx-${idx}`} prompt={prompt} />)
           .filter((elem) => elem !== null)}
       </Container>
     </div>
@@ -306,11 +314,3 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     </div>
   );
 };
-export namespace AgenticaChatMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    agent: Agentica<Model>;
-    title?: string;
-  }
-}
-
-const SIDE_WIDTH = 450;

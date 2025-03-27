@@ -10,8 +10,17 @@ import { ILlmSchema } from "@samchon/openapi";
 import { AgenticaChatFunctionStackSideMovie } from "./AgenticaChatFunctionStackSideMovie";
 import { AgenticaChatTokenUsageSideMovie } from "./AgenticaChatTokenUsageSideMovie";
 
+
+export interface IProps<Model extends ILlmSchema.Model> {
+  vendor: IAgenticaVendor;
+  config: IAgenticaConfig<Model> | undefined;
+  usage: AgenticaTokenUsage;
+  selections: AgenticaOperationSelection<Model>[];
+  error: Error | null;
+}
+
 export const AgenticaChatSideMovie = <Model extends ILlmSchema.Model>(
-  props: AgenticaChatSideMovie.IProps<Model>,
+  props: IProps<Model>,
 ) => {
   return (
     <div
@@ -54,12 +63,3 @@ export const AgenticaChatSideMovie = <Model extends ILlmSchema.Model>(
     </div>
   );
 };
-export namespace AgenticaChatSideMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    vendor: IAgenticaVendor;
-    config: IAgenticaConfig<Model> | undefined;
-    usage: AgenticaTokenUsage;
-    selections: AgenticaOperationSelection<Model>[];
-    error: Error | null;
-  }
-}

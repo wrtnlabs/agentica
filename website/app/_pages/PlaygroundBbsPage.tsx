@@ -77,7 +77,7 @@ import { FormControl } from "@mui/material";
  *
  * `IBbsArticle` is an entity representing an article in the BBS (Bulletin Board System).
  */
-interface IBbsArticle extends IBbsArticle.ICreate {
+interface IBbsArticle extends IBbsArticleICreate {
   /**
    * Primary Key.
    */
@@ -94,11 +94,11 @@ interface IBbsArticle extends IBbsArticle.ICreate {
   updated_at: string & tags.Format<"date-time">;
 }
 
-export namespace IBbsArticle {
+
   /**
    * Information of the article to create.
    */
-  export interface ICreate {
+  export interface IBbsArticleICreate {
     /**
      * Title of the article.
      *
@@ -130,8 +130,8 @@ export namespace IBbsArticle {
    *
    * Only the filled properties will be updated.
    */
-  export type IUpdate = Partial<ICreate>;
-}
+  export type IBbsArticleIUpdate = Partial<IBbsArticleICreate>;
+
 
 
 
@@ -161,7 +161,7 @@ class BbsArticleService {
     /**
      * Information of the article to create
      */
-    input: IBbsArticle.ICreate;
+    input: IBbsArticleICreate;
   }): IBbsArticle {
     const article: IBbsArticle = {
       id:v4(),
@@ -192,7 +192,7 @@ class BbsArticleService {
     /**
      * New content to update.
      */
-    input: IBbsArticle.IUpdate;
+    input: IBbsArticleIUpdate;
   }): void {
     const article: IBbsArticle | undefined = this.articles.find(
       (a) => a.id === props.id,
