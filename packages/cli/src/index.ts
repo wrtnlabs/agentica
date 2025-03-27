@@ -2,7 +2,7 @@ import type { StarterTemplate } from "./commands/start";
 
 import process from "node:process";
 import * as p from "@clack/prompts";
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import * as picocolors from "picocolors";
 import typia from "typia";
 import { start } from "./commands";
@@ -22,6 +22,7 @@ const program = new Command();
 // TODO: project option should be template
 program
   .version(VERSION)
+  .addOption(new Option("-v, --secretVersion").hideHelp())
   .command("start")
   .description("Start a new project")
   .option(
