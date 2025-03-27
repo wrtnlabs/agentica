@@ -14,6 +14,9 @@ export default defineBuildConfig({
   },
   rollup: {
     inlineDependencies: true,
+    output: {
+      banner: "#!/usr/bin/env node",
+    },
     esbuild: {
       minify: true,
     },
