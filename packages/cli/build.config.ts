@@ -1,4 +1,4 @@
-import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
+import UnpluginTypia from "@ryoppippi/unplugin-typia/rollup";
 import { defineBuildConfig } from "unbuild";
 import pkgJson from "./package.json";
 
