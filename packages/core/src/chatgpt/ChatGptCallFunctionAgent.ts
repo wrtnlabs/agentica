@@ -342,9 +342,7 @@ async function executeClassOperation<Model extends ILlmSchema.Model>(operation: 
   // One is a TypeError caused by referencing an undefined value, and the other is a TypeError caused by calling something that isn't a function.
   // These errors are intentional, and any call to this function must be wrapped in a try-catch block.
   // Unless there is an overall structural improvement, this function will remain as-is.
-
-  const executeFunction = (execute as Record<string, unknown>)[operation.function.name];
-  return (executeFunction as (...args: unknown[]) => Promise<unknown>)(operationArguments);
+  return ((execute as Record<string, unknown>)[operation.function.name] as (...args: unknown[]) => Promise<unknown>)(operationArguments);
 }
 
 async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, call: AgenticaCallEvent<Model>, retry: number, error: unknown): Promise<AgenticaExecutePrompt<Model> | null> {
