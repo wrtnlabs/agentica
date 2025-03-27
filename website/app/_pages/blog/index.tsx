@@ -1,5 +1,6 @@
 import { formatDate } from "@/app/_lib/funcs/blogs";
-import { BlogCategory, BlogType } from "@/app/_lib/types/blogs";
+import { BlogType } from "@/app/_lib/types/blogs";
+// import { BlogCategory, BlogType } from "@/app/_lib/types/blogs";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,10 +10,10 @@ function extractFirstImage(html: string) {
 }
 
 export default async function Blog() {
-  const categoryResponse = await fetch(
-    "https://wrtnlabs.io/wp-json/wp/v2/blog_category"
-  );
-  const categories = (await categoryResponse.json()) as BlogCategory[];
+  // const categoryResponse = await fetch(
+  //   "https://wrtnlabs.io/wp-json/wp/v2/blog_category"
+  // );
+  // const categories = (await categoryResponse.json()) as BlogCategory[];
 
   const blogsResponse = await fetch("https://wrtnlabs.io/wp-json/wp/v2/blog");
   const blogs = (await blogsResponse.json()) as BlogType[];

@@ -84,5 +84,5 @@ export type BlogCategory = {
   /** The parent term ID. */
   parent: number;
   /** Meta fields. */
-  meta: {};
+  meta: unknown;
 };

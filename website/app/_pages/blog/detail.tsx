@@ -13,8 +13,6 @@ export default function BlogDetail() {
   const router = useRouter();
   const id = searchParams.get("id");
 
-  if (!id) return router.push("/blog");
-
   const [blog, setBlog] = useState<BlogType | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +26,7 @@ export default function BlogDetail() {
         );
         const data = (await response.json()) as BlogType;
         setBlog(data);
-      } catch (error) {
+      } catch {
         router.push("/blog");
       } finally {
         setLoading(false);
@@ -37,7 +35,7 @@ export default function BlogDetail() {
 
     fetchData();
   }, [id, router]);
-
+  if (!id) return router.push("/blog");
   if (loading) return null;
   if (!blog) return router.push("/blog");
 
