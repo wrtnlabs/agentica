@@ -1,5 +1,6 @@
 import UnpluginTypia from "@ryoppippi/unplugin-typia/vite";
 import { defineBuildConfig } from "unbuild";
+import pkgJson from "./package.json";
 
 export default defineBuildConfig({
   outDir: "bin",
@@ -11,6 +12,9 @@ export default defineBuildConfig({
       // plugin should be added to the first
       options.plugins.unshift(UnpluginTypia());
     },
+  },
+  replace: {
+    "process.env.AGENTICA_VERSION": JSON.stringify(pkgJson.version), // replace version from package.json on build
   },
   rollup: {
     inlineDependencies: true,
