@@ -24,11 +24,7 @@ export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
   return (
     <Card
       elevation={3}
-      style={{
-        marginTop: 15,
-        marginBottom: 15,
-        marginRight: "15%",
-      }}
+      className="mt-3 mb-3 mr-[15%]"
     >
       <CardContent>
         <Chip
@@ -52,7 +48,7 @@ export const AgenticaChatSelectMessageMovie = <Model extends ILlmSchema.Model>({
         )}
         <MarkdownViewer>{selection.reason}</MarkdownViewer>
       </CardContent>
-      <CardActions style={{ textAlign: "right" }}>
+      <CardActions className="text-right">
         <Button onClick={() => setExpanded(!expanded)}>
           {expanded ? "Hide Function Description" : "Show Function Description"}
         </Button>

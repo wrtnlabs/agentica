@@ -4,6 +4,7 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../markdown/MarkdownViewer";
+import { cn } from "@/app/_lib/utils";
 
 interface IProps {
   prompt: AgenticaTextPrompt;
@@ -20,14 +21,10 @@ export const AgenticaChatTextMessageMovie = ({
     >
       <Card
         elevation={3}
-        style={{
-          marginTop: 15,
-          marginBottom: 15,
-          marginLeft: prompt.role === "user" ? "15%" : undefined,
-          marginRight: prompt.role === "assistant" ? "15%" : undefined,
-          textAlign: prompt.role === "user" ? "right" : "left",
-          backgroundColor: prompt.role === "user" ? "lightyellow" : undefined,
-        }}
+        className={cn(
+          "mt-3 mb-3",
+          prompt.role === "user" ? "mr-[15%] text-right lightyellow" : "ml-[15%] text-left",
+        )}
       >
         <CardContent>
           <Chip

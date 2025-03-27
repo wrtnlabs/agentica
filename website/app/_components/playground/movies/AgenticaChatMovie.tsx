@@ -29,6 +29,7 @@ import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
+import { cn } from "@/app/_lib/utils";
 
 
 const SIDE_WIDTH = 450;
@@ -185,19 +186,14 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   const isMobile: boolean = useMediaQuery(theme.breakpoints.down("lg"));
   const Body = (): ReactElement => (
     <div
-      style={{
-        overflowY: "auto",
-        width: "100%",
-        margin: 0,
-        backgroundColor: "lightblue",
-      }}
+      className={"overflow-y-auto w-full m-0 bg-blue-200"}
     >
       <Container
+        className="bg-blue-200"
         style={{
           paddingBottom: 50,
           width: "100%",
           minHeight: "100%",
-          backgroundColor: "lightblue",
           margin: 0,
         }}
         ref={bodyContainerRef}
@@ -210,11 +206,9 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   );
   const sideMovie = (): ReactElement => (
     <div
+      className='h-full overflow-y-auto bg-gray-100'
       style={{
         width: isMobile ? undefined : SIDE_WIDTH,
-        height: "100%",
-        overflowY: "auto",
-        backgroundColor: "#eeeeee",
       }}
     >
       <Container
