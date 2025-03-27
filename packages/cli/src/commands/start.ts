@@ -86,7 +86,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       message: "Enter the project directory path:",
       placeholder: "./my-agentica-project",
       validate(value) {
-        if (value === "") {
+        if (value.trim() === "") {
           return "Please enter a directory path";
         }
         if (existsSync(value)) {
@@ -99,7 +99,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       process.exit(0);
     }
 
-    const projectAbsolutePath = join(process.cwd(), projectPath);
+    const projectAbsolutePath = join(process.cwd(), projectPath.trim());
     context.projectAbsolutePath = projectAbsolutePath;
   }
 
