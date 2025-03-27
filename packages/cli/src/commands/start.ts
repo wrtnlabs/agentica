@@ -169,7 +169,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     const sortedConnectors = connectors.sort((a, b) => a.displayName.localeCompare(b.displayName));
     const serviceChoices = sortedConnectors.map(({ displayName, serviceName }) => ({ label: displayName, value: serviceName }));
     const services = await p.multiselect({
-      message: "Which connectors do you want to include?",
+      message: `Which connectors do you want to include? (Press ${picocolors.cyan("<space>")} to select, ${picocolors.cyan("<a>")} to select all, ${picocolors.cyan("<enter>")} to proceed)`,
       options: serviceChoices,
       required: false,
     });
