@@ -18,11 +18,11 @@ export default async function Page(props) {
 
   const result = await importPage(params.mdxPath);
   const { default: MDXContent, toc, metadata } = result;
-
-  if (params.mdxPath == null) {
+  
+  if (params.mdxPath == null || params.mdxPath.join("/").startsWith("playground")) {
     return <MDXContent {...props} params={params} />;
   }
-
+  
   return (
     <Wrapper toc={toc} metadata={metadata}>
       <MDXContent {...props} params={params} />
