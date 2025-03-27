@@ -1,0 +1,100 @@
+---
+title: Agentica > Tutorial > Youtube Search Agents
+---
+
+- [playground](https://stackblitz.com/github/wrtnlabs/agentica-tutorial-youtube-search) you can see the demo code on the playground.
+
+Set up a **fully functional Youtube Search Agent** powered by OpenAI's GPT model quickly using the Agentica CLI.
+
+## Quick CLI Setup
+
+Launch the Agentica Setup Wizard with a single command:
+
+```bash
+npx agentica start youtube-search-agent
+```
+
+The wizard guides you through:
+
+- Installing required packages (e.g., agentica@0.12.14)
+- Choosing your package manager and project type
+- Selecting the **YOUTUBE_SEARCH** controller
+- Entering your `OPENAI_API_KEY`
+
+Once complete, Agentica automatically generates your code, creates a `.env` file, and installs all dependencies.
+
+## Generated Code Overview
+
+The generated code looks like this:
+
+```typescript
+import { Agentica } from "@agentica/core";
+import typia from "typia";
+import dotenv from "dotenv";
+import { OpenAI } from "openai";
+
+import { YoutubeSearchService } from "@wrtnlabs/connector-youtube-search";
+
+dotenv.config();
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      name: "Youtube Search Connector",
+      protocol: "class",
+      application: typia.llm.application<YoutubeSearchService, "chatgpt">(),
+      execute: new YoutubeSearchService({
+        serpApiKey: process.env.SERP_API_KEY!,
+        googleApiKey: process.env.GOOGLE_API_KEY!,
+        searchApiKey: process.env.SEARCH_API_KEY!,
+      }),
+    },
+  ],
+});
+
+const main = async () => {
+  console.log(await agent.conversate("What can you do?"));
+};
+
+main();
+```
+
+This code instantly sets up your Youtube Search Agent, ready to intelligently search Youtube videos.
+
+## What This Does
+
+Your Youtube Search Agent will:
+
+- **Process Youtube Search Data:** Interact with the Youtube Search API using the `YoutubeSearchService`.
+- **Integrate with OpenAI:** Use OpenAI's GPT model to generate responses to user queries.
+- **Leverage External APIs:** Utilize external APIs like Serp, Google, and Search to enhance search capabilities.
+
+Set up your environment variable in a `.env` file:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+SERP_API_KEY=your-serp-api-key
+GOOGLE_API_KEY=your-google-api-key
+SEARCH_API_KEY=your-search-api-key
+```
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Find videos related to Agentica."
+
+Your Youtube Search Agent will intelligently search Youtube for videos related to Agentica and provide you with the results.
+
+## Available Functions
+
+For a complete list of available functions in `YoutubeSearchService`, check out the source code:
+
+👉 [wrtnlabs/connectors - WebCrawlerService.ts](https://github.com/wrtnlabs/connectors/blob/main/packages/web_crawler/src/web_crawler/WebCrawlerService.ts)
+
+Your AI-powered Youtube Search Agent is ready to search Youtube videos for your project. 🚀
