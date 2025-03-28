@@ -1,16 +1,21 @@
 # Agentica
+
 ![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
 [![npm version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
 [![Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
 [![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
+[![Guide Documents](https://img.shields.io/badge/Guide-Documents-forestgreen)](https://wrtnlabs.io/agentica/docs/)
+[![Gurubase](https://img.shields.io/badge/Gurubase-Document%20Chatbot-006BFF)](https://gurubase.io/g/agentica)
 
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
 Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `agentica`. Then `agentica` will do everything with the function calling.
 
 Look at the below demonstration, and feel how `agentica` is easy and powerful.
+
+<!-- eslint-skip -->
 
 ```typescript
 import { Agentica } from "@agentica/core";
@@ -29,26 +34,24 @@ const agent = new Agentica({
 await agent.conversate("I wanna buy MacBook Pro");
 ```
 
-> https://github.com/user-attachments/assets/01604b53-aca4-41cb-91aa-3faf63549ea6
+> https://github.com/user-attachments/assets/e1faf30b-c703-4451-b68b-2e7a8170bce5
 >
 > Demonstration video of Shopping AI Chatbot
 
 <!-- To do: re-capture demonstration video with Wrtnlabs title -->
 
-
-
-
 ## Playground
+
 You can experience how typia works by playground website:
 
 💻 https://wrtnlabs.io/agentica/playground
 
-
-
 ## Guide Documents
+
 Check out the document in the [website](https://wrtnlabs.io/agentica):
 
 ### 🏠 Home
+
 - [🚀 Getting Started](https://wrtnlabs.io/agentica/docs)
 - [📦 Setup](https://wrtnlabs.io/agentica/docs/setup)
 - 🔍 Concepts
@@ -57,6 +60,7 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
   - [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
 
 ### 📖 Features
+
 - **📚 Core Library**
   - [Agentic AI](https://wrtnlabs.io/agentica/docs/core)
   - [Facade Controller](https://wrtnlabs.io/agentica/docs/core/facade)
@@ -74,12 +78,12 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
   - [PG Vector Selector](https://wrtnlabs.io/agentica/docs/plugins/pg-vector-selector)
 
 ### 🔗 Appendix
+
 - [📅 Roadmap](https://wrtnlabs.io/agentica/docs/roadmap)
 - 📊 Related Projects
   - [Agent OS](https://wrtnlabs.io/agentica/docs/related/os)
   - [AutoView](https://wrtnlabs.io/agentica/docs/related/autoview)
 - [⇲ API Documents](https://wrtnlabs.io/agentica/api)
-
 
 ## How to Contribute?
 
@@ -87,10 +91,10 @@ Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more informati
 
 Thank you for your interest in contributing to Agentica!
 
-<!-- 
+<!--
 ## Roadmap
 ### Guide Documents
-In here README document, `@agentica/core` is introducing its key concepts, principles, and demonstrating some examples. 
+In here README document, `@agentica/core` is introducing its key concepts, principles, and demonstrating some examples.
 
 However, this contents are not fully enough for new comers of AI Chatbot development. We need much more guide documents and example projects are required for education. We have to guide backend developers to write proper definitions optimized for LLM function calling. We should introduce the best way of multi-agent orchestration implementation.
 

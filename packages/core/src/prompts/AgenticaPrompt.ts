@@ -1,10 +1,10 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-import { AgenticaDescribePrompt } from "./AgenticaDescribePrompt";
-import { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
-import { AgenticaSelectPrompt } from "./AgenticaSelectPrompt";
-import { AgenticaTextPrompt } from "./AgenticaTextPrompt";
+import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import type { AgenticaDescribePrompt } from "./AgenticaDescribePrompt";
+import type { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
+import type { AgenticaSelectPrompt } from "./AgenticaSelectPrompt";
+import type { AgenticaTextPrompt } from "./AgenticaTextPrompt";
 
 export type AgenticaPrompt<Model extends ILlmSchema.Model> =
   | AgenticaCancelPrompt<Model>

@@ -1,9 +1,9 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaContext } from "../context/AgenticaContext";
-import { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import { IAgenticaExecutor } from "./IAgenticaExecutor";
-import { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
+import type { AgenticaContext } from "../context/AgenticaContext";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { IAgenticaExecutor } from "./IAgenticaExecutor";
+import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
 
 /**
  * Configuration for Nestia Agent.

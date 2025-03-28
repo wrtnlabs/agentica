@@ -1,4 +1,5 @@
-import { Agentica, AgenticaEvent, IAgenticaController } from "@agentica/core";
+import type { AgenticaEvent, IAgenticaController } from "@agentica/core";
+import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -28,7 +29,9 @@ class Calculator {
 }
 
 export async function test_base_work_describe(): Promise<void | false> {
-  if (!TestGlobal.env.CHATGPT_API_KEY) return false;
+  if (TestGlobal.chatgptApiKey.length === 0) {
+    return false;
+  }
 
   // 이벤트 추적을 위한 변수들
   const events: AgenticaEvent<"chatgpt">[] = [];
@@ -83,15 +86,15 @@ export async function test_base_work_describe(): Promise<void | false> {
   }
 
   // 결과 확인
-  const executeEvent = events.find((e) => e.type === "execute");
+  const executeEvent = events.find(e => e.type === "execute");
 
-  if (!executeEvent) {
+  if (executeEvent === undefined) {
     throw new Error("Execute event not found");
   }
 
   if (executeEvent.value !== a + b) {
     throw new Error(
-      `Expected result to be ${a + b}, but got ${executeEvent.value}`,
+      `Expected result to be ${a + b}, but got ${executeEvent.value as string}`,
     );
   }
 }

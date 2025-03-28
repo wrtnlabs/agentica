@@ -1,5 +1,5 @@
 import { Footer, Layout, Navbar } from "nextra-theme-docs";
-// Required for theme styles, previously was imported under the hood
+import Script from "next/script";
 import "nextra-theme-docs/style.css";
 import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
@@ -34,10 +34,10 @@ export default async function RootLayout(props) {
       suppressHydrationWarning
     >
       <Head
-        backgroundColor={{
-          dark: "rgb(9, 15, 27)",
-          light: "rgb(250, 250, 250)",
-        }}
+        // backgroundColor={{
+        //   dark: "rgb(9, 15, 27)",
+        //   light: "rgb(250, 250, 250)",
+        // }}
         // color={{
         //   hue: { dark: 120, light: 0 },
         //   saturation: { dark: 100, light: 100 },
@@ -81,6 +81,24 @@ export default async function RootLayout(props) {
           name="twitter:description"
           content="Agentic AI Framework specialized in LLM Function Calling enhanced by TypeScript Compiler"
         />
+        <Script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+(function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "qt7e6ysbbd");
+`
+        }} />
+        {/* <Script
+          async
+          src="https://widget.gurubase.io/widget.latest.min.js"
+          data-widget-id="YVDFrawzFh5RCuDpaFXXR8WKTTi5kH3x-7ASp0HmT44"
+          data-text="Ask AI"
+          data-margins='{"bottom": "1rem", "right": "1rem"}'
+          data-light-mode="true"
+          id="guru-widget-id"
+        /> */}
       </Head>
       <body>
         <Layout
@@ -93,6 +111,7 @@ export default async function RootLayout(props) {
           nextThemes={{
             defaultTheme: "dark",
           }}
+          darkMode={false}
           // ...Your additional theme config options
         >
           {props.children}

@@ -1,4 +1,5 @@
 # `@agentica/rpc`
+
 ![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
@@ -32,11 +33,10 @@ const driver: Driver<IAgenticaRpcService> = connector.getDriver();
 await driver.conversate("Hello, what you can do?");
 ```
 
-
-
-
 ## How to use
+
 ### Setup
+
 ```bash
 # SERVER APPLICATION
 npm install @agentica/core @agentica/rpc @samchon/openapi tgrid typia
@@ -55,6 +55,9 @@ Note that, you have to install not only `@agentica/core` and `@agentica/rpc`, bu
 By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup` when developing server application. Also, if your client (frontend) application is not using the standard TypeScript compiler (not `tsc`), you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) too.
 
 ### Server Application
+
+<!-- eslint-skip -->
+
 ```typescript
 import { Agentica } from "@agentica/core";
 import {
@@ -84,6 +87,7 @@ When developing backend server, wrap `Agentica` to `AgenticaRpcService`.
 If you're developing WebSocket protocol backend server, create a new `Agentica` instance, and wrap it to the `AgenticaRpcService` class. And then open the websocket server like above code. The WebSocket server will call the client functions of the `IAgenticaRpcListener` remotely.
 
 ### Client Application
+
 ```typescript
 import { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
 import { Driver, WebSocketConnector } from "tgrid";
@@ -112,11 +116,10 @@ Otherwise you're developing WebSocket protocol client application, connect to th
 
 And then call the backend server's function `IAgenticaRpcService.conversate()` remotely through the `Driver<IAgenticaRpcService>` wrapping. The backend server will call your `IAgenticaRpcListener` functions remotely through the RPC paradigm.
 
-
-
-
 ## NestJS Application
+
 ### Bootstrap
+
 ```bash
 npx nestia start <directory>
 cd <directory>
@@ -126,6 +129,8 @@ npm install @agentica/core @agentica/rpc @samchon/openapi tgrid
 You can integrate `@agentica` with [NestJS Framework](https://nestjs.com) utilizing [Nestia](https://nestia.io).
 
 At first, create a boilerplate project of NestJS combined with Nestia by running `npx nesta start` command. And then install `@agentica/rpc` with its dependency packages.
+
+<!-- eslint-skip -->
 
 ```typescript
 import { WebSocketAdaptor } from "@nestia/core";
@@ -153,6 +158,9 @@ export class MyBackend {
 After setup, update `src/MyBackend.ts` file to call `WebSocketAdaptor.upgrade()` function to the NestJS application instance. The function `WebSocketAdaptor.upgrade()` will make the NestJS backend server to compatible with WebSocket protocol.
 
 ### API Controller
+
+<!-- eslint-skip -->
+
 ```typescript
 import { AgenticaRpcService, IAgenticaRpcListener } from "@agentica/rpc";
 import { WebSocketRoute } from "@nestia/core";
@@ -181,13 +189,14 @@ export class ChatController {
 }
 ```
 
-Make a new NestJS controller class like above. 
+Make a new NestJS controller class like above.
 
 When a client connects to the server with `ws://localhost:3001/chat` URL, Agentica made chatbot would be started in the WebSocket protocol.
 
 If you need path or query parameters, utilize `@WebSocketRoute.Path()` or `@WebSocketRoute.Query()` decorator functions.
 
 ### Software Development Kit
+
 ```bash
 npx nestia sdk
 ```
@@ -213,14 +222,13 @@ const { connector, driver } = await api.functional.chat.start(
     },
   } satisfies IAgenticaRpcListener,
 );
-await driver.conversate("Hello, what you can do?");s
+await driver.conversate("Hello, what you can do?");
 ```
 
-
-
-
 ## Principles
+
 ### Remote Procedure Call
+
 ```mermaid
 sequenceDiagram
 box Client Application

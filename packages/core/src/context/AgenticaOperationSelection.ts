@@ -1,7 +1,7 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { IAgenticaOperationSelectionJson } from "../json/IAgenticaOperationSelectionJson";
-import { AgenticaOperation } from "./AgenticaOperation";
+import type { IAgenticaOperationSelectionJson } from "../json/IAgenticaOperationSelectionJson";
+import type { AgenticaOperation } from "./AgenticaOperation";
 
 export class AgenticaOperationSelection<Model extends ILlmSchema.Model> {
   public readonly operation: AgenticaOperation<Model>;

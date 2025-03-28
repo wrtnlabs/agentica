@@ -1,13 +1,16 @@
-import {
-  HttpLlm,
+import type {
   IHttpLlmApplication,
   ILlmSchema,
-  OpenApi,
   OpenApiV3,
   OpenApiV3_1,
   SwaggerV2,
 } from "@samchon/openapi";
-import typia, { IValidation } from "typia";
+import type { IValidation } from "typia";
+import {
+  HttpLlm,
+  OpenApi,
+} from "@samchon/openapi";
+import typia from "typia";
 
 /**
  * Create an HTTP LLM application instance with type validation.
@@ -26,7 +29,7 @@ import typia, { IValidation } from "typia";
  * @returns Validation result of the HTTP LLM application composition
  * @author Samchon
  */
-export const validateHttpLlmApplication = <
+export function validateHttpLlmApplication<
   Model extends ILlmSchema.Model,
 >(props: {
   /**
@@ -47,14 +50,17 @@ export const validateHttpLlmApplication = <
    * Options for the LLM function calling schema composition.
    */
   options?: Partial<IHttpLlmApplication.IOptions<Model>>;
-}): IValidation<IHttpLlmApplication<Model>> => {
+}): IValidation<IHttpLlmApplication<Model>> {
   const inspect: IValidation<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
     | OpenApi.IDocument
   > = typia.validate(props.document);
-  if (inspect.success === false) return inspect;
+  if (inspect.success === false) {
+    return inspect;
+  }
+
   return {
     success: true,
     data: HttpLlm.application({
@@ -63,4 +69,4 @@ export const validateHttpLlmApplication = <
       options: props.options,
     }),
   };
-};
+}

@@ -1,6 +1,6 @@
-import { defineConfig } from 'bumpp';
+import { defineConfig } from "bumpp";
 
 export default defineConfig({
-  preid: 'dev',
+  preid: "dev",
   recursive: true,
-})
+});

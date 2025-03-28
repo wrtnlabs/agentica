@@ -1,7 +1,7 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaOperation } from "../context/AgenticaOperation";
-import { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import { AgenticaEventBase } from "./AgenticaEventBase";
 
@@ -10,8 +10,8 @@ export class AgenticaExecuteEvent<
 > extends AgenticaEventBase<"execute"> {
   public readonly id: string;
   public readonly operation: AgenticaOperation<Model>;
-  public readonly arguments: Record<string, any>;
-  public readonly value: any;
+  public readonly arguments: Record<string, unknown>;
+  public readonly value: unknown;
 
   public constructor(props: AgenticaExecuteEvent.IProps<Model>) {
     super("execute");
@@ -44,7 +44,7 @@ export namespace AgenticaExecuteEvent {
   export interface IProps<Model extends ILlmSchema.Model> {
     id: string;
     operation: AgenticaOperation<Model>;
-    arguments: Record<string, any>;
-    value: any;
+    arguments: Record<string, unknown>;
+    value: unknown;
   }
 }

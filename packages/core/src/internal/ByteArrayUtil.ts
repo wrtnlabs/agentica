@@ -1,5 +1,5 @@
 export namespace ByteArrayUtil {
-  export const toUtf8 = (byteArray: Uint8Array): string => {
+  export function toUtf8(byteArray: Uint8Array): string {
     return new TextDecoder().decode(byteArray);
-  };
+  }
 }

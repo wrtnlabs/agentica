@@ -1,33 +1,38 @@
 # order
+
 ## Summary
-  - Aggregation:
-    - Trial: 4
-    - Success: 4
-    - Failure: 0
-    - Average Time: 3,390.75 ms
-  - Token Usage
+
+- Aggregation:
+  - Trial: 4
+  - Success: 4
+  - Failure: 0
+  - Average Time: 3,390.75 ms
+- Token Usage
+  - Total: 115,180
+  - Prompt
+    - Total: 114,404
+    - Audio: 0
+    - Cached: 113,664
+  - Completion:
     - Total: 115,180
-    - Prompt
-      - Total: 114,404
-      - Audio: 0
-      - Cached: 113,664
-    - Completion:
-      - Total: 115,180
-      - Accepted Prediction: 0
-      - Audio: 0
-      - Reasoning: 0
-      - Rejected Prediction: 0
+    - Accepted Prediction: 0
+    - Audio: 0
+    - Reasoning: 0
+    - Rejected Prediction: 0
 
 ## Events
- No | Type | Time
----:|:-----|----:
-[1.](./1.success.md) | success | 3612 ms
-[2.](./2.success.md) | success | 3217 ms
-[3.](./3.success.md) | success | 3319 ms
-[4.](./4.success.md) | success | 3415 ms
+
+|                   No | Type    |    Time |
+| -------------------: | :------ | ------: |
+| [1.](./1.success.md) | success | 3612 ms |
+| [2.](./2.success.md) | success | 3217 ms |
+| [3.](./3.success.md) | success | 3319 ms |
+| [4.](./4.success.md) | success | 3415 ms |
 
 ## Scenario
+
 ### User Prompt
+
 I wanna see every sales in the shopping mall
 
 And then show me the detailed information about the Macbook.
@@ -38,12 +43,13 @@ And take the shopping cart to the order.
 
 At last, I'll publish it by cash payment, and my address is
 
-  - country: South Korea
-  - city/province: Seoul
-  - department: Wrtn Apartment
-  - Possession: 101-1411
+- country: South Korea
+- city/province: Seoul
+- department: Wrtn Apartment
+- Possession: 101-1411
 
 ### Expected
+
 ```json
 {
   "type": "array",

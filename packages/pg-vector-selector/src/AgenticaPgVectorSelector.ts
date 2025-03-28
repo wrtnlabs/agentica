@@ -1,22 +1,24 @@
-import {
+import type {
   AgenticaContext,
   AgenticaOperation,
-  AgenticaOperationSelection,
   AgenticaPrompt,
+} from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
+import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
+import {
+  AgenticaOperationSelection,
   AgenticaSelectEvent,
   AgenticaSelectPrompt,
 } from "@agentica/core";
 import { ChatGptCompletionMessageUtil } from "@agentica/core/src/chatgpt/ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "@agentica/core/src/chatgpt/ChatGptHistoryDecoder";
 import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
-import { ILlmSchema } from "@samchon/openapi";
-import { HttpError, functional } from "@wrtnlabs/connector-hive-api";
-import { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
 
-import { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
+import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
 import { Tools } from "./Tools";
 
-const useEmbeddedContext = <SchemaModel extends ILlmSchema.Model>() => {
+function useEmbeddedContext<SchemaModel extends ILlmSchema.Model>() {
   const set = new Map<string, IApplicationConnectorRetrieval.IFilter>();
   return [
     (ctx: AgenticaContext<SchemaModel>) =>
@@ -30,9 +32,9 @@ const useEmbeddedContext = <SchemaModel extends ILlmSchema.Model>() => {
     (ctx: AgenticaContext<SchemaModel>) =>
       set.get(JSON.stringify(ctx.operations.array)),
   ] as const;
-};
+}
 
-const getRetry = (count: number) => {
+function getRetry(count: number) {
   if (count < 1) {
     throw new Error("count should be greater than 0");
   }
@@ -43,39 +45,42 @@ const getRetry = (count: number) => {
     for (let i = 0; i < count; i++) {
       try {
         return await fn();
-      } catch (e: unknown) {
+      }
+      catch (e: unknown) {
         lastError = e as Error;
-        if (i === count - 1) throw e;
+        if (i === count - 1) {
+          throw e;
+        }
       }
     }
 
-    if (lastError) throw lastError;
+    if (lastError != null) {
+      throw lastError;
+    }
     throw new Error("unreachable code");
   };
-};
+}
 
-const groupByArray = <T>(array: T[], count: number): T[][] => {
+function groupByArray<T>(array: T[], count: number): T[][] {
   const grouped = [];
   for (let i = 0; i < array.length; i += count) {
     grouped.push(array.slice(i, i + count));
   }
   return grouped;
-};
+}
 
 const retry = getRetry(3);
 
 export namespace AgenticaPgVectorSelector {
-  export const boot = <SchemaModel extends ILlmSchema.Model>(
-    props: IAgenticaPgVectorSelectorBootProps,
-  ) => {
-    const [isEmbeddedContext, setEmbeddedContext, getFilterFromContext] =
-      useEmbeddedContext<SchemaModel>();
+  export function boot<SchemaModel extends ILlmSchema.Model>(props: IAgenticaPgVectorSelectorBootProps) {
+    const [isEmbeddedContext, setEmbeddedContext, getFilterFromContext]
+      = useEmbeddedContext<SchemaModel>();
     const connection = props.connectorHiveConnection;
     const embedOperation = async (
       controllerName: string,
       opList: AgenticaOperation<SchemaModel>[],
     ) => {
-      const application = await retry(() =>
+      const application = await retry(async () =>
         functional.applications.create(connection, {
           name: controllerName,
           description: undefined,
@@ -84,9 +89,11 @@ export namespace AgenticaPgVectorSelector {
         if (!(e instanceof HttpError)) {
           throw e;
         }
-        if (e.status !== 409) throw e;
+        if (e.status !== 409) {
+          throw e;
+        }
 
-        return await retry(() =>
+        return retry(async () =>
           functional.applications.by_names.getByName(
             connection,
             controllerName,
@@ -94,7 +101,7 @@ export namespace AgenticaPgVectorSelector {
         );
       });
 
-      const version = await retry(() =>
+      const version = await retry(async () =>
         functional.applications.by_ids.versions.create(
           connection,
           application.id,
@@ -106,8 +113,8 @@ export namespace AgenticaPgVectorSelector {
       await groupByArray(opList, 10).reduce(async (accPromise, cur) => {
         await accPromise;
         await Promise.all(
-          cur.map((v) =>
-            retry(() =>
+          cur.map(async v =>
+            retry(async () =>
               functional.application_versions.by_ids.connectors.create(
                 connection,
                 version.id,
@@ -179,20 +186,20 @@ export namespace AgenticaPgVectorSelector {
         ],
         tool_choice: "required",
 
-        tools: [Tools["extract_query"]],
+        tools: [Tools.extract_query],
       });
 
       const chunks = await StreamUtil.readAll(completionStream);
       const completion = ChatGptCompletionMessageUtil.merge(chunks);
 
       const resultList = await Promise.all(
-        completion.choices[0]?.message.tool_calls?.flatMap((v) => {
+        completion.choices[0]?.message.tool_calls?.flatMap(async (v) => {
           const arg = JSON.parse(v.function.arguments) as { query?: string };
           const query = arg.query;
           if (typeof query !== "string") {
             return [];
           }
-          return retry(() =>
+          return retry(async () =>
             functional.connector_retrievals.createRetrievalRequest(connection, {
               query,
               limit: 10,
@@ -200,9 +207,9 @@ export namespace AgenticaPgVectorSelector {
             }),
           );
         }) ?? [],
-      ).then((res) =>
-        res.flatMap((output) =>
-          output.map((v) => ({
+      ).then(res =>
+        res.flatMap(output =>
+          output.map(v => ({
             name: v.name,
             description: v.description,
           })),
@@ -215,8 +222,8 @@ export namespace AgenticaPgVectorSelector {
             {
               role: "developer",
               content: [
-                props.experimental?.select_prompt ??
-                  "You are an AI assistant that selects and executes the most appropriate function(s) based on the current context, running the functions required by the context in the correct order. First, analyze the user's input or situation and provide a brief reasoning for why you chose the function(s) (one or more). Then, execute the selected function(s). If multiple functions are chosen, the order of execution follows the function call sequence, and the result may vary depending on this order. Return the results directly after execution. If clarification is needed, ask the user a concise question.",
+                props.experimental?.select_prompt
+                ?? "You are an AI assistant that selects and executes the most appropriate function(s) based on the current context, running the functions required by the context in the correct order. First, analyze the user's input or situation and provide a brief reasoning for why you chose the function(s) (one or more). Then, execute the selected function(s). If multiple functions are chosen, the order of execution follows the function call sequence, and the result may vary depending on this order. Return the results directly after execution. If clarification is needed, ask the user a concise question.",
                 `<FUNCTION_LIST>${JSON.stringify(resultList)}</FUNCTION_LIST>`,
               ].join("\n"),
             },
@@ -229,52 +236,51 @@ export namespace AgenticaPgVectorSelector {
             },
           ],
           tool_choice: "required",
-          tools: [Tools["execute_function"]],
+          tools: [Tools.execute_function],
         })
-        .then((v) => StreamUtil.readAll(v))
+        .then(async v => StreamUtil.readAll(v))
         .then(ChatGptCompletionMessageUtil.merge);
 
       selectCompletion.choices
-        .filter((v) => !!v.message.tool_calls)
+        .filter(v => v.message.tool_calls != null)
         .forEach((v) => {
           v.message
-            .tool_calls!.filter((tc) => tc.function.name === "execute_function")
-            .forEach((tc) => {
-              const collection = new AgenticaSelectPrompt<SchemaModel>({
-                id: tc.id,
-                selections: [],
-              });
-              const arg = JSON.parse(tc.function.arguments) as {
-                function_name_list: {
-                  reason: string;
-                  function_name: string;
-                }[];
-              };
+            .tool_calls!.filter(tc => tc.function.name === "execute_function").forEach((tc) => {
+            const collection = new AgenticaSelectPrompt<SchemaModel>({
+              id: tc.id,
+              selections: [],
+            });
+            const arg = JSON.parse(tc.function.arguments) as {
+              function_name_list: {
+                reason: string;
+                function_name: string;
+              }[];
+            };
 
-              arg.function_name_list.forEach((fn) => {
-                const operation = ctx.operations.flat.get(fn.function_name);
-                if (operation === undefined) {
-                  return;
-                }
-                const selection: AgenticaOperationSelection<SchemaModel> =
-                  new AgenticaOperationSelection({
+            arg.function_name_list.forEach((fn) => {
+              const operation = ctx.operations.flat.get(fn.function_name);
+              if (operation === undefined) {
+                return;
+              }
+              const selection: AgenticaOperationSelection<SchemaModel>
+                  = new AgenticaOperationSelection({
                     reason: fn.reason,
                     operation,
                   });
-                ctx.stack.push(selection);
-                void ctx.dispatch(new AgenticaSelectEvent({ selection }));
-                collection.selections.push(selection);
-              });
-
-              if (collection.selections.length !== 0) {
-                prompts.push(collection);
-              }
+              ctx.stack.push(selection);
+              void ctx.dispatch(new AgenticaSelectEvent({ selection }));
+              collection.selections.push(selection);
             });
+
+            if (collection.selections.length !== 0) {
+              prompts.push(collection);
+            }
+          });
         });
 
       return prompts;
     };
 
     return selectorExecute;
-  };
+  }
 }

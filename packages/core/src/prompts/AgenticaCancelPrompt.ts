@@ -1,7 +1,7 @@
-import { ILlmSchema } from "@samchon/openapi";
+import type { ILlmSchema } from "@samchon/openapi";
 
-import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 export class AgenticaCancelPrompt<
@@ -20,7 +20,7 @@ export class AgenticaCancelPrompt<
     return {
       type: this.type,
       id: this.id,
-      selections: this.selections.map((s) => s.toJSON()),
+      selections: this.selections.map(s => s.toJSON()),
     };
   }
 }

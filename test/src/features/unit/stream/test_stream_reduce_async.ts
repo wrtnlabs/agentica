@@ -57,11 +57,11 @@ export async function test_stream_reduce_async(): Promise<void | false> {
   );
 
   if (
-    !transformResult ||
-    transformResult.length !== 3 ||
-    transformResult[0] !== "item1" ||
-    transformResult[1] !== "item2" ||
-    transformResult[2] !== "item3"
+    transformResult === null
+    || transformResult.length !== 3
+    || transformResult[0] !== "item1"
+    || transformResult[1] !== "item2"
+    || transformResult[2] !== "item3"
   ) {
     throw new Error(
       `Async stream transformation test failed: Expected ["item1", "item2", "item3"], got ${JSON.stringify(
@@ -105,8 +105,8 @@ export async function test_stream_reduce_async(): Promise<void | false> {
 }
 
 // Delay function (for simulating async operations)
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+async function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Helper function to create a stream with numbers from start to end asynchronously
@@ -147,7 +147,7 @@ async function createVariableDelayedNumberStream(
   items: Array<{ value: number; delay: number }>,
 ): Promise<ReadableStream<number>> {
   // Wait for all items to be ready based on their delays
-  await Promise.all(items.map((item) => delay(item.delay)));
+  await Promise.all(items.map(async item => delay(item.delay)));
 
   return new ReadableStream<number>({
     start(controller) {

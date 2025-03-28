@@ -1,13 +1,15 @@
+import type { IAgenticaBenchmarkExpected } from "@agentica/benchmark/src/structures/IAgenticaBenchmarkExpected";
+import type { AgenticaOperation } from "@agentica/core";
+import type { OpenApi } from "@samchon/openapi";
 import { AgenticaBenchmarkPredicator } from "@agentica/benchmark/src/internal/AgenticaBenchmarkPredicator";
-import { IAgenticaBenchmarkExpected } from "@agentica/benchmark/src/structures/IAgenticaBenchmarkExpected";
-import { Agentica, AgenticaOperation } from "@agentica/core";
+import { Agentica } from "@agentica/core";
 import { TestValidator } from "@nestia/e2e";
-import { HttpLlm, OpenApi } from "@samchon/openapi";
+import { HttpLlm } from "@samchon/openapi";
 
-export const test_benchmark_predicator = async (): Promise<void> => {
-  //----
+export async function test_benchmark_predicator(): Promise<void> {
+  // ----
   // PREPARATIONS
-  //----
+  // ----
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
     vendor: {
@@ -22,7 +24,7 @@ export const test_benchmark_predicator = async (): Promise<void> => {
           model: "chatgpt",
           document: await fetch(
             "https://shopping-be.wrtn.ai/editor/swagger.json",
-          ).then((res) => res.json()),
+          ).then(async res => res.json() as Promise<OpenApi.IDocument>),
         }),
         connection: {
           host: "https://shopping-be.wrtn.ai",
@@ -38,18 +40,20 @@ export const test_benchmark_predicator = async (): Promise<void> => {
     const found = agent
       .getOperations()
       .find(
-        (op) =>
-          op.protocol === "http" &&
-          op.function.method === method &&
-          op.function.path === path,
+        op =>
+          op.protocol === "http"
+          && op.function.method === method
+          && op.function.path === path,
       );
-    if (!found) throw new Error(`Operation not found: ${method} ${path}`);
+    if (found === undefined) {
+      throw new Error(`Operation not found: ${method} ${path}`);
+    }
     return found;
   };
 
-  //----
+  // ----
   // MONOTONIC SCENARIOS
-  //----
+  // ----
   TestValidator.equals("standalone")(true)(
     AgenticaBenchmarkPredicator.success({
       expected: {
@@ -109,15 +113,14 @@ export const test_benchmark_predicator = async (): Promise<void> => {
     }),
   );
 
-  //----
+  // ----
   // COMPLICATE SCENARIOS
-  //----
+  // ----
   TestValidator.equals("array in array")(true)(
     AgenticaBenchmarkPredicator.success({
       expected: {
         type: "array",
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         items: [
           {
             type: "array",
@@ -132,7 +135,11 @@ export const test_benchmark_predicator = async (): Promise<void> => {
               },
             ],
           } satisfies IAgenticaBenchmarkExpected.IArray<"chatgpt">,
-        ] as any,
+          /**
+           * It is incorrect type, but it is not a problem because it just test code
+           * Code that tests overlapping arrays, but is not allowed as a type.
+           */
+        ] as unknown as IAgenticaBenchmarkExpected.IAllOf<"chatgpt">[],
       },
       operations: [
         find("patch", "/shoppings/customers/sales"),
@@ -200,9 +207,9 @@ export const test_benchmark_predicator = async (): Promise<void> => {
     }),
   );
 
-  //----
+  // ----
   // COMPLEX PATTERNS
-  //----
+  // ----
   TestValidator.equals("complex nested patterns with anyOf, allOf, and array")(
     true,
   )(
@@ -300,4 +307,4 @@ export const test_benchmark_predicator = async (): Promise<void> => {
       strict: false,
     }),
   );
-};
+}

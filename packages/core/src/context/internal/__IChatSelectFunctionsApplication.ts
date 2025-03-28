@@ -1,4 +1,4 @@
-import { __IChatFunctionReference } from "./__IChatFunctionReference";
+import type { __IChatFunctionReference } from "./__IChatFunctionReference";
 
 export interface __IChatSelectFunctionsApplication {
   /**
@@ -20,5 +20,5 @@ export interface __IChatSelectFunctionsApplication {
    *
    * @param props Properties of the function
    */
-  selectFunctions(props: __IChatFunctionReference.IProps): Promise<void>;
+  selectFunctions: (props: __IChatFunctionReference.IProps) => Promise<void>;
 }

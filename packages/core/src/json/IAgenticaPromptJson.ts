@@ -1,5 +1,5 @@
-import { IAgenticaOperationJson } from "./IAgenticaOperationJson";
-import { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
+import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
+import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
 
 /**
  * Nestia A.I. chatbot prompt.
