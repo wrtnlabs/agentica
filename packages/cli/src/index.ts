@@ -2,7 +2,7 @@ import type { StarterTemplate } from "./commands/start";
 
 import process from "node:process";
 import * as p from "@clack/prompts";
-import { Command, Option } from "commander";
+import { Command } from "commander";
 import * as picocolors from "picocolors";
 import typia from "typia";
 import { start } from "./commands";
@@ -20,8 +20,7 @@ const VERSION = process.env.AGENTICA_VERSION ?? "0.0.0";
 const program = new Command();
 
 program
-  .version(VERSION)
-  .addOption(new Option("-v, --secretVersion").hideHelp());
+  .version(VERSION);
 
 // TODO: project option should be template
 program
