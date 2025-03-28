@@ -1,5 +1,5 @@
 import { tags } from "typia";
-import { v4 } from "uuid";
+import { randomUUID } from 'node:crypto';
 
 import { IBbsArticle } from "./IBbsArticle";
 
@@ -32,7 +32,7 @@ export class BbsArticleService {
     input: IBbsArticle.ICreate;
   }): IBbsArticle {
     const article: IBbsArticle = {
-      id: v4(),
+      id: randomUUID(),
       title: props.input.title,
       body: props.input.body,
       thumbnail: props.input.thumbnail,
