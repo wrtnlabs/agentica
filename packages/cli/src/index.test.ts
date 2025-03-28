@@ -34,4 +34,9 @@ describe("cli", () => {
       }).toThrow("1.2.3");
     });
   });
+
+  describe("start", () => {
+    it.todo("test the start command with no project option");
+    it.todo("should show an error when the project option is invalid");
+  });
 });
