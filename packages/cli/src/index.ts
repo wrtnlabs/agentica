@@ -19,10 +19,12 @@ const VERSION = process.env.AGENTICA_VERSION ?? "0.0.0";
 
 const program = new Command();
 
-// TODO: project option should be template
 program
   .version(VERSION)
-  .addOption(new Option("-v, --secretVersion").hideHelp())
+  .addOption(new Option("-v, --secretVersion").hideHelp());
+
+// TODO: project option should be template
+program
   .command("start")
   .description("Start a new project")
   .option(
