@@ -53,14 +53,13 @@
     "typia": ">=8.0.0 <9.0.0"
   },
   "dependencies": {
-    "@samchon/openapi": "^3.2.0",
-    "typia": "^8.0.4",
     "uuid": "^11.0.4"
   },
   "devDependencies": {
     "@nestia/e2e": "^0.8.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@samchon/openapi": "^3.2.0",
     "@types/node": "^22.13.4",
     "@types/uuid": "^10.0.0",
     "openai": "^4.80.0",
@@ -68,6 +67,7 @@
     "rollup": "^4.34.8",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
+    "typia": "^8.0.4",
     "typedoc": "^0.27.7",
     "typescript": "~5.8.2"
   }
