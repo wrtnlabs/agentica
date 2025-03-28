@@ -1,1 +1,0 @@
-# agentica.template.standalone
