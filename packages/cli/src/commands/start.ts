@@ -267,12 +267,14 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
   const connectorsCode = generateConnectorsArrayCode(context.services);
   const indexFilePath = join(projectAbsolutePath, "src/index.ts");
   let indexFileContent = await readFile(indexFilePath, "utf-8");
-  indexFileContent = indexFileContent
-    .replace(/import \{ BbsArticleService \}.*;\n/g, "")
-    .replace(
-      /controllers:\s*\[[\s\S]*?\],\n/,
-      "controllers: [/// INSERT CONTROLLER HERE],\n",
-    );
+  if (context.services.length !== 0) {
+    indexFileContent = indexFileContent
+      .replace(/import \{ BbsArticleService \}.*;\n/g, "")
+      .replace(
+        /controllers:\s*\[[\s\S]*?\],\n/,
+        "controllers: [/// INSERT CONTROLLER HERE],\n",
+      );
+  }
   const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
     content: indexFileContent,
     importCode,
@@ -318,12 +320,14 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     "src/controllers/chat/ChatController.ts",
   );
   let indexFileContent = await readFile(indexFilePath, "utf-8");
-  indexFileContent = indexFileContent
-    .replace(/import \{ BbsArticleService \}.*;\n/g, "")
-    .replace(
-      /controllers:\s*\[[\s\S]*?\],\n/,
-      "controllers: [/// INSERT CONTROLLER HERE],\n",
-    );
+  if (context.services.length !== 0) {
+    indexFileContent = indexFileContent
+      .replace(/import \{ BbsArticleService \}.*;\n/g, "")
+      .replace(
+        /controllers:\s*\[[\s\S]*?\],\n/,
+        "controllers: [/// INSERT CONTROLLER HERE],\n",
+      );
+  }
   const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
     content: indexFileContent,
     importCode,
