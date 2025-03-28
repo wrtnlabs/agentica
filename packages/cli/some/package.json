@@ -1,0 +1,24 @@
+{
+  "name": "agentica-template-standalone",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "prepare": "ts-patch install",
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "ts-patch": "^3.3.0",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@agentica/core": "^0.12.12",
+    "@wrtnlabs/connector-calendly": "^0.1.483",
+    "@wrtnlabs/connector-daum-blog": "^0.1.483",
+    "dotenv": "^16.4.7",
+    "openai": "^4.86.0",
+    "typia": "^8.0.3"
+  }
+}
