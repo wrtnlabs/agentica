@@ -317,7 +317,13 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     projectAbsolutePath,
     "src/controllers/chat/ChatController.ts",
   );
-  const indexFileContent = await readFile(indexFilePath, "utf-8");
+  let indexFileContent = await readFile(indexFilePath, "utf-8");
+  indexFileContent = indexFileContent
+    .replace(/import \{ BbsArticleService \}.*;\n/g, "")
+    .replace(
+      /controllers:\s*\[[\s\S]*?\],\n/,
+      "controllers: [/// INSERT CONTROLLER HERE],\n",
+    );
   const updatedIndexFileContent = insertCodeIntoAgenticaStarter({
     content: indexFileContent,
     importCode,
