@@ -3,7 +3,7 @@ import { defineBuildConfig } from "unbuild";
 import pkgJson from "./package.json";
 
 export default defineBuildConfig({
-  outDir: "bin",
+  outDir: "dist",
   entries: ["src/index.ts"],
   declaration: false,
   clean: true,
@@ -18,9 +18,6 @@ export default defineBuildConfig({
   },
   rollup: {
     inlineDependencies: true,
-    output: {
-      banner: "#!/usr/bin/env node",
-    },
     esbuild: {
       minify: true,
     },

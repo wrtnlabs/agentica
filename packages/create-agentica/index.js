@@ -1,3 +1,4 @@
 #!/usr/bin/env node
+import { run } from 'agentica';
 
-import('agentica')
+await run();

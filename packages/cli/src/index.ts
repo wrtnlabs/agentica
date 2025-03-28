@@ -52,6 +52,11 @@ program
     await start({ template: options.project });
   });
 
-program.parse(process.argv);
+/**
+ * Run the program
+ */
+export function run() {
+  program.parse(process.argv);
+}
 
 export { program };

@@ -45,7 +45,7 @@
     "downlevelIteration": true, /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
     "newLine": "LF",
     // "outFile": "./",                       /* Concatenate and emit output to single file. */
-    "outDir": "./bin", /* Redirect output structure to the directory. */
+    "outDir": "./dist", /* Redirect output structure to the directory. */
     // "declarationMap": true,                /* Generates a sourcemap for each corresponding '.d.ts' file. */
     "sourceMap": true, /* Generates corresponding '.map' file. */
     // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
