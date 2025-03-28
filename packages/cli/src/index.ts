@@ -45,8 +45,9 @@ program
       return;
     }
 
+    p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
+
     await start({ template: options.project });
   });
 
-p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
 program.parse(process.argv);

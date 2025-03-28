@@ -1,6 +1,6 @@
 {
   "name": "@agentica/webite",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Agentica Website",
   "scripts": {
     "dev": "next",
@@ -41,6 +41,7 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.3",
     "react-use": "^17.6.0",
+    "rehype-raw": "^7.0.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "tstl": "^3.0.0"

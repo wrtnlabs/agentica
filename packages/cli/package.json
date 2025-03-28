@@ -1,7 +1,7 @@
 {
   "name": "agentica",
   "type": "module",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -68,7 +68,7 @@
     "ts-patch": "^3.3.0",
     "type-fest": "^4.37.0",
     "typescript": "~5.8.2",
-    "typia": "^8.0.0",
+    "typia": "^8.0.4",
     "unbuild": "^3.5.0",
     "vitest": "^3.0.9"
   }
