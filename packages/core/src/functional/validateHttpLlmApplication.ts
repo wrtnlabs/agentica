@@ -44,7 +44,8 @@ export function validateHttpLlmApplication<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
-    | OpenApi.IDocument;
+    | OpenApi.IDocument
+    | unknown;
 
   /**
    * Options for the LLM function calling schema composition.
@@ -56,7 +57,12 @@ export function validateHttpLlmApplication<
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
     | OpenApi.IDocument
-  > = typia.validate(props.document);
+  > = typia.validate<
+    | SwaggerV2.IDocument
+    | OpenApiV3.IDocument
+    | OpenApiV3_1.IDocument
+    | OpenApi.IDocument
+  >(props.document);
   if (inspect.success === false) {
     return inspect;
   }
@@ -65,7 +71,7 @@ export function validateHttpLlmApplication<
     success: true,
     data: HttpLlm.application({
       model: props.model,
-      document: OpenApi.convert(props.document),
+      document: OpenApi.convert(inspect.data),
       options: props.options,
     }),
   };

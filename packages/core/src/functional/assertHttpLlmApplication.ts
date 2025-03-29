@@ -43,7 +43,8 @@ export function assertHttpLlmApplication<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
-    | OpenApi.IDocument;
+    | OpenApi.IDocument
+    | unknown;
 
   /**
    * Options for the LLM function calling schema composition.
@@ -52,7 +53,12 @@ export function assertHttpLlmApplication<
 }): IHttpLlmApplication<Model> {
   return HttpLlm.application({
     model: props.model,
-    document: OpenApi.convert(typia.assert(props.document)),
+    document: OpenApi.convert(typia.assert<
+      | SwaggerV2.IDocument
+      | OpenApiV3.IDocument
+      | OpenApiV3_1.IDocument
+      | OpenApi.IDocument
+    >(props.document)),
     options: props.options,
   });
 }
