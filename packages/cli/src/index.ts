@@ -11,7 +11,16 @@ interface CliOptions {
   project?: StarterTemplate;
 }
 
+/**
+ * The version of the Agentica CLI
+ * in production, it will be replaced by unbuild
+ */
+const VERSION = process.env.AGENTICA_VERSION ?? "0.0.0";
+
 const program = new Command();
+
+program
+  .version(VERSION);
 
 // TODO: project option should be template
 program
@@ -42,4 +51,11 @@ program
     await start({ template: options.project });
   });
 
-program.parse(process.argv);
+/**
+ * Run the program
+ */
+export function run() {
+  program.parse(process.argv);
+}
+
+export { program };
