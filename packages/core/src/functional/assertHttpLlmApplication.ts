@@ -24,7 +24,10 @@ import typia from "typia";
  * will throw an error with detailed type error tracing information.
  *
  * @param props Properties to create the HTTP LLM application instance
- * @returns  HTTP LLM application instance
+ * @param props.model Target LLM model
+ * @param props.document Swagger/OpenAPI document
+ * @param props.options Options for the LLM function calling schema composition
+ * @returns HTTP LLM application instance
  * @throws {@link TypeGuardError} when the given document is invalid
  * @author Samchon
  */
