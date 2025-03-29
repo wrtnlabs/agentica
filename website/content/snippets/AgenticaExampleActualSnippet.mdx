@@ -1,6 +1,5 @@
 ```typescript showLineNumbers
-import { Agentica } from "@agentica/core";
-import { OpenApi, HttpLlm } from "@samchon/openapi";
+import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import typia from "typia";
 
 const main = async (): Promise<void> => {
@@ -14,7 +13,7 @@ const main = async (): Promise<void> => {
       {
         protocol: "http",
         name: "shopping",
-        application: HttpLlm.application({
+        application: assertHttpLlmApplication({
           model: "chatgpt",
           document: await fetch(
             "https://shopping-be.wrtn.ai/editor/swagger.json",
