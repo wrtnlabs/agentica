@@ -68,7 +68,7 @@
     "ts-patch": "^3.3.0",
     "type-fest": "^4.37.0",
     "typescript": "~5.8.2",
-    "typia": "^8.0.4",
+    "typia": "^8.1.0",
     "unbuild": "^3.5.0",
     "vitest": "^3.0.9"
   }
