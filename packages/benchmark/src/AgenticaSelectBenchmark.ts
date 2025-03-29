@@ -20,7 +20,7 @@ import {
   AgenticaTextPrompt,
   AgenticaTokenUsage,
 } from "@agentica/core";
-import { ChatGptSelectFunctionAgent } from "@agentica/core/src/chatgpt/ChatGptSelectFunctionAgent";
+import { ChatGptSelectFunctionAgent } from "@agentica/core/lib/chatgpt/ChatGptSelectFunctionAgent";
 import { Semaphore } from "tstl";
 import { AgenticaBenchmarkPredicator } from "./internal/AgenticaBenchmarkPredicator";
 import { AgenticaSelectBenchmarkReporter } from "./internal/AgenticaSelectBenchmarkReporter";
