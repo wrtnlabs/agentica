@@ -19,9 +19,8 @@ With these strategies, you can build Agentic AI chatbot only with Swagger docume
 Look at the below demonstration, and feel how `@agentica/core` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
 
 ```typescript filename="src/main.ts" showLineNumbers {17-24, 35-36, 42-43, 49-50}
-import { Agentica } from "@agentica/core";
+import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
-import { OpenApi, HttpLlm } from "@samchon/openapi";
 import typia from "typia";
 
 const main = async (): Promise<void> => {
@@ -35,13 +34,11 @@ const main = async (): Promise<void> => {
       {
         protocol: "http",
         name: "shopping",
-        application: HttpLlm.application({
+        application: assertHttpLlmApplication({
           model: "chatgpt",
-          document: OpenApi.convert(
-            await fetch(
-              "https://shopping-be.wrtn.ai/editor/swagger.json",
-            ).then(r => r.json()),
-          ),
+          document: await fetch(
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
+          ).then((r) => r.json()),
         }),
         connection: {
           host: "https://shopping-be.wrtn.ai",
@@ -247,7 +244,6 @@ For reference, `IAgenticaController.name` must be unique, because it is used to 
 ```typescript filename="src/main.ts" showLineNumbers {13-51}
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
-import { OpenApi, HttpLlm } from "@samchon/openapi";
 import typia from "typia";
 
 const main = async (): Promise<void> => {

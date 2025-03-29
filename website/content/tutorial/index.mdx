@@ -120,16 +120,17 @@ export class MyChatController {
         {
           protocol: "http",
           name: "bbs",
-          application: HttpLlm.application({
+          application: assertHttpLlmApplication({
             model: "chatgpt",
-            document: OpenApi.convert(
-              await fetch(
-                `http://localhost:${MyConfiguration.API_PORT()}/editor/swagger.json`
-              ).then((r) => r.json())
-            ),
+            document: await fetch(
+              `http://localhost:${MyConfiguration.API_PORT()}/editor/swagger.json`
+            ).then((r) => r.json()),
           }),
           connection: {
             host: `http://localhost:${MyConfiguration.API_PORT()}`,
+            headers: {
+              Authorization: "Bearer *****",
+            },
           },
         },
       ],
