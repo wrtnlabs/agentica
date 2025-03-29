@@ -53,7 +53,7 @@
     "@agentica/core": "workspace:^",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
-    "@samchon/openapi": "^3",
+    "@samchon/openapi": "^3.2.2",
     "@types/node": "^22.10.5",
     "rimraf": "^6.0.1",
     "rollup": "^4.29.1",

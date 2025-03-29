@@ -41,14 +41,14 @@
     "@agentica/core": "workspace:^",
     "@mui/icons-material": "^6.4.0",
     "@mui/material": "^6.4.0",
-    "@samchon/openapi": "^3.0.0",
+    "@samchon/openapi": "^3.2.2",
     "html-to-image": "^1.11.13",
     "openai": "^4.80.0",
     "react-markdown": "^9.0.3",
     "rehype-raw": "^7.0.0",
     "rehype-stringify": "^10.0.1",
     "remark-mermaid-plugin": "^1.0.2",
-    "typia": "^8.0.4",
+    "typia": "^8.1.0",
     "uuid": "^11.0.5"
   },
   "devDependencies": {
