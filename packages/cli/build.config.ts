@@ -17,7 +17,18 @@ export default defineBuildConfig({
     "process.env.AGENTICA_VERSION": JSON.stringify(pkgJson.version), // replace version from package.json on build
   },
   rollup: {
-    inlineDependencies: true,
+    inlineDependencies: [
+      "typia",
+
+      "commander",
+
+      "picocolors",
+
+      // @clack/prompts related
+      "sisteransi",
+      "@clack/prompts",
+      "@clack/core",
+    ],
     esbuild: {
       minify: true,
     },
