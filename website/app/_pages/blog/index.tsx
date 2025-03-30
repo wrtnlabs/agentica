@@ -8,6 +8,7 @@ import { formatDate } from "@/app/_lib/funcs/blogs";
 
 function extractFirstImage(html: string) {
   const match = html.match(/<img[^>]+src=["'](http[^"']+)["']/);
+  // eslint-disable-next-line ts/strict-boolean-expressions
   return match ? match[1] : null;
 }
 
@@ -51,7 +52,7 @@ export default async function Blog() {
               <p></p>
               <p className="text-base text-zinc-400">{formatDate(date)}</p>
             </div>
-            {src && (
+            {src != null && (
               <div className="relative overflow-hidden rounded-md">
                 <Image
                   src={src}
