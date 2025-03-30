@@ -66,5 +66,21 @@
     "overrides": {
       "@types/react": "19.0.0"
     }
+  },
+  "changelogithub": {
+    "types": {
+      "feat": {
+        "title": "🚀 Features"
+      },
+      "fix": {
+        "title": "🐞 Bug Fixes"
+      },
+      "docs": {
+        "title": "📝 Documentation"
+      },
+      "test": {
+        "title": "🧪 Tests"
+      }
+    }
   }
 }
