@@ -47,10 +47,12 @@
     "tstl": "^3.0.0"
   },
   "devDependencies": {
+    "@eslint-react/eslint-plugin": "^1.38.4",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "22.13.9",
     "@types/react": "^19.0.0",
+    "@wrtnlabs/eslint-config": "^0.4.1",
     "eslint": "^9.23.0",
     "eslint-config-next": "15.2.1",
     "next-sitemap": "^4.2.3",
