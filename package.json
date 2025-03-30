@@ -75,11 +75,26 @@
       "fix": {
         "title": "🐞 Bug Fixes"
       },
+      "perf": {
+        "title": "🏎 Performance"
+      },
       "docs": {
         "title": "📝 Documentation"
       },
       "test": {
-        "title": "🧪 Tests"
+        "title": "✅ Tests"
+      },
+      "ci": {
+        "title": "🤖 CI"
+      },
+      "style": {
+        "title": "🎨 Styles"
+      },
+      "build": {
+        "title": "📦 Build"
+      },
+      "refactor": {
+        "title": "🔨 Code Refactoring"
       }
     }
   }
