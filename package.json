@@ -57,7 +57,7 @@
     "@eslint/js": "^9.17.0",
     "@wrtnlabs/eslint-config": "^0.3.1",
     "bumpp": "^10.1.0",
-    "eslint": "^9.17.0",
+    "eslint": "^9.23.0",
     "rimraf": "^6.0.1",
     "typedoc": "^0.27.7",
     "typedoc-github-theme": "^0.2.1"
