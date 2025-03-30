@@ -9,11 +9,11 @@ export const CHAT_BUBBLE_DELAY = 500;
 
 export const CHAT_EXAMPLE_INITIAL_MESSAGE = "What can you do?";
 
-export type ChatMessageType = {
+export interface ChatMessageType {
   author: "user" | "agent";
   type?: "assistant" | "func_selector" | "func_describer";
   message: string;
-};
+}
 
 export const CHAT_EXAMPLE_MESSAGE_LIST: ChatMessageType[] = [
   {

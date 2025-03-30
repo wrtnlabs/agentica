@@ -5,7 +5,7 @@ import { FuncCallCode } from "../_components/landing/FuncCallCode";
 import { Section } from "../_components/landing/Section";
 import { WelcomeSection } from "../_components/landing/WelcomeSection";
 import Footer from "../_components/layout/Footer";
-//import Header from "../_components/layout/Header";
+// import Header from "../_components/layout/Header";
 import { CORE_VALUES, FUNC_CALLS } from "../_constants/landing";
 
 export default function Landing() {
@@ -24,7 +24,7 @@ export default function Landing() {
         <div className="flex flex-col gap-8 rounded-4xl border border-zinc-700 p-2 lg:flex-row">
           <FuncCallCode />
           <div className="flex flex-col gap-4 rounded-3xl border border-zinc-700 p-2 md:flex-row lg:w-[394px] lg:flex-col">
-            {FUNC_CALLS.map((value) => (
+            {FUNC_CALLS.map(value => (
               <FuncCallCard key={value.title} {...value} />
             ))}
           </div>
@@ -36,7 +36,7 @@ export default function Landing() {
         description="Simplicity at scale—AI for every developer."
       >
         <div className="flex flex-col gap-8 rounded-[44px] border border-zinc-700 p-2 md:flex-row">
-          {CORE_VALUES.map((value) => (
+          {CORE_VALUES.map(value => (
             <CoreValueCard key={value.title} {...value} />
           ))}
         </div>

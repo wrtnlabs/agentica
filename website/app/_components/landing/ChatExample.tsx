@@ -1,10 +1,10 @@
 "use client";
 
-import { CHAT_EXAMPLE_MESSAGE_LIST } from "@/app/_constants/landing";
-import { useIntersectionObserver } from "@/app/_hooks/useIntersectionObserver";
 import { ArrowDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { CHAT_EXAMPLE_MESSAGE_LIST } from "@/app/_constants/landing";
+import { useIntersectionObserver } from "@/app/_hooks/useIntersectionObserver";
 import { ChatBubble } from "./ChatBubble";
 
 export function ChatExample() {
@@ -23,13 +23,13 @@ export function ChatExample() {
 
   useEffect(() => {
     if (visibleMessage < CHAT_EXAMPLE_MESSAGE_LIST.length) {
-      const delay =
-        CHAT_EXAMPLE_MESSAGE_LIST[visibleMessage].message.split(/\n/).length *
-          50 +
-        1000;
+      const delay
+        = CHAT_EXAMPLE_MESSAGE_LIST[visibleMessage].message.split(/\n/).length
+          * 50
+          + 1000;
 
       const timeout = setTimeout(() => {
-        setVisibleMessage((prev) => prev + 1);
+        setVisibleMessage(prev => prev + 1);
       }, delay);
 
       return () => clearTimeout(timeout);

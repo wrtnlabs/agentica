@@ -1,6 +1,6 @@
-export const formatDate = (dateString: string | null) => {
-  if (!dateString) return "";
-  
+export function formatDate(dateString: string | null) {
+  if (!dateString) { return ""; }
+
   const date = new Date(dateString);
   const months = [
     "Jan",
@@ -20,4 +20,4 @@ export const formatDate = (dateString: string | null) => {
   const day = date.getDate();
   const year = date.getFullYear();
   return `${month} ${day}, ${year}`;
-};
+}

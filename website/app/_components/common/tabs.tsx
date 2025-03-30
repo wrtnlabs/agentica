@@ -1,10 +1,11 @@
 "use client";
 
-import { useAttributeObserver } from "@/app/_hooks/useAttributeObserver";
-import { cn } from "@/app/_lib/utils/cn";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { motion } from "framer-motion";
 import * as React from "react";
+
+import { cn } from "@/app/_lib/utils/cn";
+import { useAttributeObserver } from "@/app/_hooks/useAttributeObserver";
 
 function Tabs({
   className,
@@ -40,8 +41,8 @@ function TabsTrigger({
   children,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
-  const [ref, attribute] =
-    useAttributeObserver<HTMLButtonElement>("data-state");
+  const [ref, attribute]
+    = useAttributeObserver<HTMLButtonElement>("data-state");
   const isActive = attribute === "active";
 
   return (
@@ -85,4 +86,4 @@ function TabsContent({
   );
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+export { Tabs, TabsContent, TabsList, TabsTrigger };

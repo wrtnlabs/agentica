@@ -15,19 +15,23 @@ export default function Header() {
     <>
       {/* Desktop */}
       <header className="sticky top-0 z-50 hidden w-full justify-center bg-linear-to-t to-[#030303]/50 pt-5 md:flex">
-        <Tabs defaultValue={"agentica"}>
+        <Tabs defaultValue="agentica">
           <TabsList>
             <Link href="/">
               <TabsTrigger value="agentica">Agentica</TabsTrigger>
             </Link>
             <Link href="https://wrtnlabs.io/" target="_blank">
               <TabsTrigger value="agent-os" disabled>
-                Agent OS <ArrowUpRight />
+                Agent OS
+                {" "}
+                <ArrowUpRight />
               </TabsTrigger>
             </Link>
             <Link href="https://wrtnlabs.io/blog-overview" target="_blank">
               <TabsTrigger value="blog" disabled>
-                Blog <ArrowUpRight />
+                Blog
+                {" "}
+                <ArrowUpRight />
               </TabsTrigger>
             </Link>
           </TabsList>

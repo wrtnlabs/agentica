@@ -15,7 +15,7 @@ export function useAttributeObserver<Element extends HTMLElement>(
       });
     });
 
-    if (ref.current) {
+    if (ref.current != null) {
       observer.observe(ref.current, {
         attributes: true,
         attributeFilter: [attributeKey],

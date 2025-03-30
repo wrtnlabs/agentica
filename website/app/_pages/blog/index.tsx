@@ -1,8 +1,10 @@
-import { formatDate } from "@/app/_lib/funcs/blogs";
-import { BlogType } from "@/app/_lib/types/blogs";
-// import { BlogCategory, BlogType } from "@/app/_lib/types/blogs";
 import Image from "next/image";
 import Link from "next/link";
+
+import type { BlogType } from "@/app/_lib/types/blogs";
+
+import { formatDate } from "@/app/_lib/funcs/blogs";
+// import { BlogCategory, BlogType } from "@/app/_lib/types/blogs";
 
 function extractFirstImage(html: string) {
   const match = html.match(/<img[^>]+src=["'](http[^"']+)["']/);

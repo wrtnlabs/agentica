@@ -1,12 +1,11 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import { cn } from "@/app/_lib/utils";
 import Link from "next/link";
-
 import { useHover } from "react-use";
-import { Hoverable } from "./hover";
 
+import { cn } from "@/app/_lib/utils";
+import { Hoverable } from "./hover";
 import { ArrowRightIcon } from "../icons/ArrowRight";
 
 interface PreviewCardProps {
@@ -19,7 +18,7 @@ export function PreviewCard({ title, image, href }: PreviewCardProps) {
   const [previewCardContent, isHovered] = useHover(
     <div>
       <Hoverable>
-        {(isInnerHovered) => (
+        {isInnerHovered => (
           <div className="flex w-full cursor-pointer flex-col gap-3 p-5 pr-10 transition-colors duration-300 hover:bg-zinc-900 md:p-5 md:pr-0 md:hover:bg-transparent">
             <div className="flex items-center justify-between">
               <div className="flex flex-1 flex-col gap-1">

@@ -1,8 +1,9 @@
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+
 import { Button } from "@/app/_components/common/button";
 import { GithubIcon } from "@/app/_components/icons/Github";
-import Link from "next/link";
 import { ChatExample } from "./ChatExample";
-import { ArrowUpRight } from "lucide-react";
 
 export function WelcomeSection() {
   return (
