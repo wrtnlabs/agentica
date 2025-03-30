@@ -6,7 +6,8 @@
     "dev": "next",
     "build": "node build/typedoc && node build/playground && next build && node build/sitemap",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "next lint --fix"
   },
   "repository": {
     "type": "git",
