@@ -1,26 +1,28 @@
+import typia from "typia";
+import { v4 } from "uuid";
+
 import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
 import type { __IChatSelectFunctionsApplication } from "../context/internal/__IChatSelectFunctionsApplication";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import typia from "typia";
-import { v4 } from "uuid";
-import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
-import { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
+import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
-import { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
-import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
+import { createSelectPrompt, createTextPrompt } from "../factory/prompts";
+import { createOperationSelection } from "../factory/operations";
+import { createSelectEvent, createTextEvent } from "../factory/events";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatSelectFunctionsApplication,
@@ -33,7 +35,7 @@ interface IFailure {
   validation: IValidation.IFailure;
 }
 
-export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
@@ -78,7 +80,7 @@ export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaConte
   }
 
   // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaSelectPrompt<Model> = new AgenticaSelectPrompt({
+  const collection: AgenticaSelectPrompt<Model> = createSelectPrompt({
     id: v4(),
     selections: [],
   });
@@ -224,7 +226,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         }
 
         const collection: AgenticaSelectPrompt<Model>
-              = new AgenticaSelectPrompt({
+              = createSelectPrompt({
                 id: tc.id,
                 selections: [],
               });
@@ -237,7 +239,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           }
 
           collection.selections.push(
-            new AgenticaOperationSelection({
+            createOperationSelection({
               operation,
               reason: reference.reason,
             }),
@@ -255,14 +257,14 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       choice.message.role === "assistant"
       && choice.message.content != null
     ) {
-      const text: AgenticaTextPrompt = new AgenticaTextPrompt({
+      const text: AgenticaTextPrompt = createTextPrompt({
         role: "assistant",
         text: choice.message.content,
       });
       prompts.push(text);
 
       await ctx.dispatch(
-        new AgenticaTextEvent({
+        createTextEvent({
           role: "assistant",
           stream: StreamUtil.to(text.text),
           join: async () => Promise.resolve(text.text),
@@ -284,13 +286,13 @@ async function selectFunction<Model extends ILlmSchema.Model>(ctx: AgenticaConte
   }
 
   const selection: AgenticaOperationSelection<Model>
-      = new AgenticaOperationSelection({
+      = createOperationSelection({
         operation,
         reason: reference.reason,
       });
   ctx.stack.push(selection);
   void ctx.dispatch(
-    new AgenticaSelectEvent({
+    createSelectEvent({
       selection,
     }),
   );

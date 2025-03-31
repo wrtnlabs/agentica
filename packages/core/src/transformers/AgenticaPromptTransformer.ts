@@ -1,16 +1,17 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { AgenticaCancelPrompt } from "../prompts/AgenticaCancelPrompt";
-import { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
-import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
-import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaCancelPrompt } from "../prompts/AgenticaCancelPrompt";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 
-export function transform<Model extends ILlmSchema.Model>(props: {
+import { createCancelPrompt, createDescribePrompt, createExecutePrompt, createSelectPrompt, createTextPrompt } from "../factory/prompts";
+import { createOperationSelection } from "../factory/operations";
+
+function transform<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson;
 }): AgenticaPrompt<Model> {
@@ -46,25 +47,24 @@ export function transform<Model extends ILlmSchema.Model>(props: {
       prompt: props.prompt,
     });
   }
-
   throw new Error("Invalid prompt type.");
 }
 
-export function transformText(props: {
+function transformText(props: {
   prompt: IAgenticaPromptJson.IText;
 }): AgenticaTextPrompt {
-  return new AgenticaTextPrompt(props.prompt);
+  return createTextPrompt(props.prompt);
 }
 
-export function transformSelect<Model extends ILlmSchema.Model>(props: {
+function transformSelect<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.ISelect;
 }): AgenticaSelectPrompt<Model> {
-  return new AgenticaSelectPrompt({
+  return createSelectPrompt({
     id: props.prompt.id,
     selections: props.prompt.selections.map(
       select =>
-        new AgenticaOperationSelection({
+        createOperationSelection({
           operation: findOperation({
             operations: props.operations,
             input: select.operation,
@@ -75,15 +75,15 @@ export function transformSelect<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-export function transformCancel<Model extends ILlmSchema.Model>(props: {
+function transformCancel<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.ICancel;
 }): AgenticaCancelPrompt<Model> {
-  return new AgenticaCancelPrompt({
+  return createCancelPrompt({
     id: props.prompt.id,
     selections: props.prompt.selections.map(
       select =>
-        new AgenticaOperationSelection({
+        createOperationSelection({
           operation: findOperation({
             operations: props.operations,
             input: select.operation,
@@ -94,11 +94,11 @@ export function transformCancel<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-export function transformExecute<Model extends ILlmSchema.Model>(props: {
+function transformExecute<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.IExecute;
 }): AgenticaExecutePrompt<Model> {
-  return new AgenticaExecutePrompt({
+  return createExecutePrompt({
     id: props.prompt.id,
     operation: findOperation({
       operations: props.operations,
@@ -109,15 +109,15 @@ export function transformExecute<Model extends ILlmSchema.Model>(props: {
      * @TODO fix it
      * The property and value have a type mismatch, but it works.
      */
-    value: props.prompt.value as unknown as Record<string, unknown>,
+    value: props.prompt.value as Record<string, unknown>,
   });
 }
 
-export function transformDescribe<Model extends ILlmSchema.Model>(props: {
+function transformDescribe<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.IDescribe;
 }): AgenticaDescribePrompt<Model> {
-  return new AgenticaDescribePrompt({
+  return createDescribePrompt({
     text: props.prompt.text,
     executes: props.prompt.executes.map(next =>
       transformExecute({
