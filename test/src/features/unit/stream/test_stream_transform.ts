@@ -1,4 +1,4 @@
-import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
+import { utils } from "@agentica/core";
 
 /**
  * Helper function to convert ReadableStream to array
@@ -37,7 +37,7 @@ export async function test_stream_transform(): Promise<void> {
   const numbersInput = [1, 2, 3, 4, 5];
   const numberStream = createTestStream(numbersInput);
 
-  const doubledStream = StreamUtil.transform(
+  const doubledStream = utils.StreamUtil.transform(
     numberStream,
     (num: number) => num * 2,
   );
@@ -69,7 +69,7 @@ export async function test_stream_transform(): Promise<void> {
 
   const objectStream = createTestStream(objectsInput);
 
-  const transformedObjectStream = StreamUtil.transform(objectStream, obj => ({
+  const transformedObjectStream = utils.StreamUtil.transform(objectStream, obj => ({
     id: obj.name.toUpperCase(),
     doubledValue: obj.value * 2,
   }));
@@ -100,7 +100,7 @@ export async function test_stream_transform(): Promise<void> {
 
   // Test case 3: Transform empty stream
   const emptyStream = createTestStream<number>([]);
-  const transformedEmptyStream = StreamUtil.transform(
+  const transformedEmptyStream = utils.StreamUtil.transform(
     emptyStream,
     n => n * 2,
   );
@@ -115,7 +115,7 @@ export async function test_stream_transform(): Promise<void> {
 
   // Test case 4: Type transformation (number -> string)
   const numbersForStringStream = createTestStream([1, 2, 3, 4, 5]);
-  const stringStream = StreamUtil.transform(
+  const stringStream = utils.StreamUtil.transform(
     numbersForStringStream,
     num => `Number: ${num}`,
   );

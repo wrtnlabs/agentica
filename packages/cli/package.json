@@ -1,7 +1,7 @@
 {
   "name": "agentica",
   "type": "module",
-  "version": "0.14.3",
+  "version": "0.15.4",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "openapi"
   ],
   "exports": {
-    ".": "./bin/index.mjs"
+    ".": "./dist/index.mjs"
   },
-  "main": "bin/index.mjs",
+  "main": "./dist/index.mjs",
   "bin": "bin/index.mjs",
   "files": [
     "LICENSE",

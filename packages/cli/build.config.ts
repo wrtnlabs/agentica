@@ -31,7 +31,8 @@ export default defineBuildConfig({
       "@clack/core",
     ],
     esbuild: {
-      minify: !isCI, // minify only in development
+      minify: !isCI, // minify only in CI and publish
+      target: "es2022", // support for Node.js 18
     },
   },
   sourcemap: !isCI, // sourcemap only in development

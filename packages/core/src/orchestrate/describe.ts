@@ -4,16 +4,15 @@ import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 
-import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
-import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
-import { MPSC } from "../internal/MPSC";
-import { StreamUtil } from "../internal/StreamUtil";
-import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
-import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
+import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
+import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
+import { MPSC } from "../utils/MPSC";
+import { StreamUtil } from "../utils/StreamUtil";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { createDescribeEvent } from "../factory/events";
-import { createDescribePrompt } from "../factory/prompts";
+import { createDescribePrompt, decodePrompt } from "../factory/prompts";
 
-async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
+export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
   if (histories.length === 0) {
     return [];
   }
@@ -26,7 +25,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
         content: AgenticaDefaultPrompt.write(ctx.config),
       } satisfies OpenAI.ChatCompletionSystemMessageParam,
       // FUNCTION CALLING HISTORIES
-      ...histories.map(ChatGptHistoryDecoder.decode).flat(),
+      ...histories.map(decodePrompt).flat(),
       // SYSTEM PROMPT
       {
         role: "system",
@@ -123,5 +122,5 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
 }
 
 export const ChatGptDescribeFunctionAgent = {
-  execute,
+  execute: describe,
 };
