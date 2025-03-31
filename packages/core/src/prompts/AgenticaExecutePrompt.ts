@@ -1,53 +1,61 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
-import { AgenticaPromptBase } from "./AgenticaPromptBase";
+import type { AgenticaPromptBase } from "./AgenticaPromptBase";
 
-export class AgenticaExecutePrompt<
-  Model extends ILlmSchema.Model,
-  Protocol extends "http" | "class" = any,
-> extends AgenticaPromptBase<"execute", IAgenticaPromptJson.IExecute> {
-  public readonly id: string;
-  public readonly operation: Protocol extends "http"
-    ? AgenticaOperation.Http<Model>
-    : Protocol extends "class"
-      ? AgenticaOperation.Class<Model>
-      : AgenticaOperation<Model>;
-
-  public readonly arguments: Record<string, unknown>;
-  public readonly value: Protocol extends "http" ? IHttpResponse : unknown;
-
-  public constructor(props: AgenticaExecutePrompt.IProps<Model, Protocol>) {
-    super("execute");
-    this.id = props.id;
-    this.operation = props.operation;
-    this.arguments = props.arguments;
-    this.value = props.value;
-  }
-
-  public toJSON(): IAgenticaPromptJson.IExecute {
-    return {
-      type: this.type,
-      id: this.id,
-      operation: this.operation.toJSON(),
-      arguments: this.arguments,
-      value: this.value,
-    };
-  }
-}
+/**
+ * Execute prompt.
+ *
+ * @author Samchon
+ */
+export type AgenticaExecutePrompt<Model extends ILlmSchema.Model> =
+  | AgenticaExecutePrompt.Class<Model>
+  | AgenticaExecutePrompt.Http<Model>;
 export namespace AgenticaExecutePrompt {
-  export interface IProps<
-    Model extends ILlmSchema.Model,
-    Protocol extends "http" | "class" = any,
-  > {
+  /**
+   * Class protocol case.
+   */
+  export interface Class<Model extends ILlmSchema.Model>
+    extends Base<"class", AgenticaOperation.Class<Model>, unknown> {}
+
+  /**
+   * HTTP protocol case.
+   */
+  export interface Http<Model extends ILlmSchema.Model>
+    extends Base<"http", AgenticaOperation.Http<Model>, IHttpResponse> {}
+
+  interface Base<
+    Protocol extends "http" | "class",
+    Operation extends AgenticaOperation<any>,
+    Value,
+  > extends AgenticaPromptBase<"execute", IAgenticaPromptJson.IExecute> {
+    /**
+     * ID of the LLM tool call result.
+     */
     id: string;
-    operation: Protocol extends "http"
-      ? AgenticaOperation.Http<Model>
-      : Protocol extends "class"
-        ? AgenticaOperation.Class<Model>
-        : AgenticaOperation<Model>;
-    arguments: Record<string, any>;
-    value: Protocol extends "http" ? IHttpResponse : any;
+
+    /**
+     * Protocol of the operation.
+     */
+    protocol: Protocol;
+
+    /**
+     * Target operation that has been called.
+     */
+    operation: Operation;
+
+    /**
+     * Arguments of the function calling.
+     */
+    arguments: Record<string, unknown>;
+
+    /**
+     * Return value.
+     *
+     * If the protocol is "class", the return value of the class function.
+     *
+     * Otherwise "http", the return value is an HTTP response.
+     */
+    value: Value;
   }
 }

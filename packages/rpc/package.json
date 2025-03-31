@@ -1,6 +1,6 @@
 {
   "name": "@agentica/rpc",
-  "version": "0.13.5",
+  "version": "0.14.1",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -47,8 +47,8 @@
   },
   "dependencies": {
     "@agentica/core": "workspace:^",
-    "@samchon/openapi": "^3.2.2",
-    "typia": "^8.1.0"
+    "@samchon/openapi": "^3.2.3",
+    "typia": "^8.1.1"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",

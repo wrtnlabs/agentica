@@ -1,3 +1,5 @@
+import { json } from "typia";
+
 import type {
   ChatCompletion,
   ChatCompletionChunk,
@@ -5,12 +7,11 @@ import type {
   ChatCompletionMessageToolCall,
   CompletionUsage,
 } from "openai/resources";
-import { json } from "typia";
 
 import { ByteArrayUtil } from "../internal/ByteArrayUtil";
 import { ChatGptUsageAggregator } from "./ChatGptUsageAggregator";
 
-export function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
+function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
   const str
       = source instanceof Uint8Array ? ByteArrayUtil.toUtf8(source) : source;
   return json.assertParse<
@@ -18,7 +19,7 @@ export function transformCompletionChunk(source: string | Uint8Array): ChatCompl
   >(str);
 }
 
-export function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCompletion {
+function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCompletion {
   const choices = origin.choices;
   chunk.choices.forEach((choice) => {
     const accChoice = choices[choice.index];
@@ -75,7 +76,7 @@ export function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): 
   };
 }
 
-export function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
+function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
   const firstChunk = chunks[0];
   if (firstChunk === undefined) {
     throw new Error("No chunks received");
@@ -93,7 +94,7 @@ export function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
   } as ChatCompletion);
 }
 
-export function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice): ChatCompletion.Choice {
+function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice): ChatCompletion.Choice {
   if (acc.finish_reason == null && cur.finish_reason != null) {
     acc.finish_reason = cur.finish_reason;
   }
@@ -148,7 +149,7 @@ export function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk
   return acc;
 }
 
-export function mergeToolCalls(acc: ChatCompletionMessageToolCall, cur: ChatCompletionChunk.Choice.Delta.ToolCall): ChatCompletionMessageToolCall {
+function mergeToolCalls(acc: ChatCompletionMessageToolCall, cur: ChatCompletionChunk.Choice.Delta.ToolCall): ChatCompletionMessageToolCall {
   if (cur.function != null) {
     acc.function.arguments += cur.function.arguments ?? "";
     acc.function.name += cur.function.name ?? "";

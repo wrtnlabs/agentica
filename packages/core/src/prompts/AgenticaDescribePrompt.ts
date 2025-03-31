@@ -1,10 +1,9 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import type { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
-import { AgenticaPromptBase } from "./AgenticaPromptBase";
+import type { AgenticaPromptBase } from "./AgenticaPromptBase";
 
-export class AgenticaDescribePrompt<
+export interface AgenticaDescribePrompt<
   Model extends ILlmSchema.Model,
 > extends AgenticaPromptBase<"describe", IAgenticaPromptJson.IDescribe> {
   /**
@@ -12,30 +11,10 @@ export class AgenticaDescribePrompt<
    *
    * This prompt describes the return value of them.
    */
-  public readonly executes: AgenticaExecutePrompt<Model>[];
+  executes: AgenticaExecutePrompt<Model>[];
 
   /**
    * Description text.
    */
-  public readonly text: string;
-
-  public constructor(props: AgenticaDescribePrompt.IProps<Model>) {
-    super("describe");
-    this.executes = props.executes;
-    this.text = props.text;
-  }
-
-  public toJSON(): IAgenticaPromptJson.IDescribe {
-    return {
-      type: this.type,
-      executes: this.executes.map(e => e.toJSON()),
-      text: this.text,
-    };
-  }
-}
-export namespace AgenticaDescribePrompt {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    executes: AgenticaExecutePrompt<Model>[];
-    text: string;
-  }
+  text: string;
 }

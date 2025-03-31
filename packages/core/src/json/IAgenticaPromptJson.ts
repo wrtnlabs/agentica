@@ -82,7 +82,7 @@ export namespace IAgenticaPromptJson {
     /**
      * Return value.
      */
-    value: any;
+    value: unknown;
   }
 
   /**

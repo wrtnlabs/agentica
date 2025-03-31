@@ -1,36 +1,33 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
-import { AgenticaEventBase } from "./AgenticaEventBase";
+import type { AgenticaEventBase } from "./AgenticaEventBase";
 
-export class AgenticaCallEvent<
-  Model extends ILlmSchema.Model,
-> extends AgenticaEventBase<"call"> {
-  public readonly id: string;
-  public readonly operation: AgenticaOperation<Model>;
-  public arguments: Record<string, any>;
+/**
+ * Event of a function calling.
+ *
+ * @author Samchon
+ */
+export interface AgenticaCallEvent<Model extends ILlmSchema.Model>
+  extends AgenticaEventBase<"call"> {
+  /**
+   * ID of the tool calling.
+   */
+  id: string;
 
-  public constructor(props: AgenticaCallEvent.IProps<Model>) {
-    super("call");
-    this.id = props.id;
-    this.operation = props.operation;
-    this.arguments = props.arguments;
-  }
+  /**
+   * Target operation to call.
+   */
+  operation: AgenticaOperation<Model>;
 
-  public toJSON(): IAgenticaEventJson.ICall {
-    return {
-      type: "call",
-      id: this.id,
-      operation: this.operation.toJSON(),
-      arguments: this.arguments,
-    };
-  }
-}
-export namespace AgenticaCallEvent {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    id: string;
-    operation: AgenticaOperation<Model>;
-    arguments: Record<string, any>;
-  }
+  /**
+   * Arguments of the function calling.
+   *
+   * If you modify this {@link arguments} property, it actually modifies
+   * the backend server's request. Therefore, be careful when you're
+   * trying to modify this property.
+   */
+  arguments: Record<string, any>;
+
+  toJSON: () => IAgenticaEventJson.ICall;
 }

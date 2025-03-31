@@ -1,6 +1,6 @@
-import type { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
-
 import typia from "typia";
+
+import type { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
 
 export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
   /**
