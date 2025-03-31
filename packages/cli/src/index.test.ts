@@ -1,3 +1,5 @@
+import picocolors from "picocolors";
+
 afterEach(() => {
   // reset the modules to avoid import cache
   vi.resetModules();
@@ -95,7 +97,7 @@ describe("start subcommand", () => {
 
     /** check start message is called with proper arguments */
     expect(promptIntroMock).toHaveBeenCalledOnce();
-    expect(promptIntroMock.mock.calls[0][0]).toMatchInlineSnapshot(`"🚀 Agentica Setup Wizard"`);
+    expect(promptIntroMock.mock.calls[0][0]).toEqual(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
 
     // check the start command is called with proper arguments
     expect(startMock).toHaveBeenCalledOnce();
@@ -115,8 +117,7 @@ describe("start subcommand", () => {
 
     // check the error message
     expect(promptLogErrorMock).toHaveBeenCalledOnce();
-    const args = promptLogErrorMock.mock.calls[0][0] as unknown as string;
-    expect(args.trim()).toEqual("❌ The value of --project is required");
+    expect(promptLogErrorMock.mock.calls[0][0]).toEqual(`\n❌ The value of ${picocolors.redBright("--project")} is required`);
   });
 
   it("test the start command with invalid project option", async () => {
@@ -132,7 +133,6 @@ describe("start subcommand", () => {
 
     // check the error message
     expect(promptLogErrorMock).toHaveBeenCalledOnce();
-    const args = promptLogErrorMock.mock.calls[0][0] as unknown as string;
-    expect(args.trim()).toEqual("❌ The value of --project is invalid");
+    expect(promptLogErrorMock.mock.calls[0][0]).toEqual(`\n❌ The value of ${picocolors.redBright("--project")} is invalid`);
   });
 });
