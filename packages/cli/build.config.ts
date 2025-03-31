@@ -17,7 +17,7 @@ export default defineBuildConfig({
     "process.env.AGENTICA_VERSION": JSON.stringify(pkgJson.version), // replace version from package.json on build
   },
   rollup: {
-    inlineDependencies: true,
+    inlineDependencies: false,
     esbuild: {
       minify: true,
     },
