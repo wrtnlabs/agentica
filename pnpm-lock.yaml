@@ -209,6 +209,9 @@ importers:
         specifier: ^1
         version: 1.2.5
     devDependencies:
+      '@bluwy/giget-core':
+        specifier: ^0.1.2
+        version: 0.1.2
       '@clack/prompts':
         specifier: ^0.10.0
         version: 0.10.0
@@ -687,6 +690,10 @@ packages:
   '@babel/types@7.26.10':
     resolution: {integrity: sha512-emqcG3vHrpxUKTrxcblR36dcrcoRDvKmnL/dCL6ZsHaShW80qxCAcNhzQZrpeM765VzEos+xOi4s+r4IXzTwdQ==}
     engines: {node: '>=6.9.0'}
+
+  '@bluwy/giget-core@0.1.2':
+    resolution: {integrity: sha512-v9f+ueUOKkZCDKiCm0yxKtYgYNLD9zlKarNux0NSXOvNm94QEYL3RlMpGKgD2hq44pbF2qWqEmHnCvmk56kPJw==}
+    engines: {node: '>=18'}
 
   '@braintree/sanitize-url@6.0.4':
     resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
@@ -7624,6 +7631,10 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
+
+  '@bluwy/giget-core@0.1.2':
+    dependencies:
+      tar: 6.2.1
 
   '@braintree/sanitize-url@6.0.4': {}
 
