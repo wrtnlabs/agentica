@@ -1,23 +1,26 @@
+import typia from "typia";
+import { v4 } from "uuid";
+
 import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-
 import type { __IChatCancelFunctionsApplication } from "../context/internal/__IChatCancelFunctionsApplication";
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
-import typia from "typia";
-import { v4 } from "uuid";
-import { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
+import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
+import { AgenticaPromptFactory } from "../factories/AgenticaPromptFactory";
+import { AgenticaEventFactory } from "../factories/AgenticaEventFactory";
+import { AgenticaOperationFactory } from "../factories/AgenticaOperationFactory";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatCancelFunctionsApplication,
@@ -30,7 +33,7 @@ interface IFailure {
   validation: IValidation.IFailure;
 }
 
-export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaCancelPrompt<Model>[]> {
+async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaCancelPrompt<Model>[]> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
@@ -75,7 +78,7 @@ export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaConte
   }
 
   // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaCancelPrompt<Model> = new AgenticaCancelPrompt({
+  const collection: AgenticaCancelPrompt<Model> = AgenticaPromptFactory.createCancelPrompt({
     id: v4(),
     selections: [],
   });
@@ -91,7 +94,7 @@ export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaConte
   return [collection];
 }
 
-export async function cancelFunction<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, reference: __IChatFunctionReference): Promise<AgenticaOperationSelection<Model> | null> {
+async function cancelFunction<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, reference: __IChatFunctionReference): Promise<AgenticaOperationSelection<Model> | null> {
   const index: number = ctx.stack.findIndex(
     item => item.operation.name === reference.name,
   );
@@ -102,8 +105,8 @@ export async function cancelFunction<Model extends ILlmSchema.Model>(ctx: Agenti
   const item: AgenticaOperationSelection<Model> = ctx.stack[index]!;
   ctx.stack.splice(index, 1);
   await ctx.dispatch(
-    new AgenticaCancelEvent({
-      selection: new AgenticaOperationSelection({
+    AgenticaEventFactory.createCancelEvent({
+      selection: AgenticaOperationFactory.createOperationSelection({
         operation: item.operation,
         reason: reference.reason,
       }),
@@ -243,11 +246,10 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           continue;
         }
 
-        const collection: AgenticaCancelPrompt<Model>
-              = new AgenticaCancelPrompt({
-                id: tc.id,
-                selections: [],
-              });
+        const collection: AgenticaCancelPrompt<Model> = AgenticaPromptFactory.createCancelPrompt({
+          id: tc.id,
+          selections: [],
+        });
 
         for (const reference of input.functions) {
           const operation = await cancelFunction(ctx, reference);

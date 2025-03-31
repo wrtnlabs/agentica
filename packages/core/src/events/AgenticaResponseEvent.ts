@@ -1,48 +1,31 @@
 import type OpenAI from "openai";
 
+import type { AgenticaEventBase } from "./AgenticaEventBase";
 import type { AgenticaEventSource } from "./AgenticaEventSource";
-import { AgenticaEventBase } from "./AgenticaEventBase";
 
-export class AgenticaResponseEvent extends AgenticaEventBase<"response"> {
-  public readonly source: AgenticaEventSource;
-  public readonly body: OpenAI.ChatCompletionCreateParamsStreaming;
-  public readonly stream: ReadableStream<OpenAI.ChatCompletionChunk>;
-  public readonly options?: OpenAI.RequestOptions | undefined;
-  public readonly join: () => Promise<OpenAI.ChatCompletion>;
+export interface AgenticaResponseEvent extends AgenticaEventBase<"response"> {
+  /**
+   * The source agent of the response.
+   */
+  source: AgenticaEventSource;
 
-  public constructor(props: AgenticaResponseEvent.IProps) {
-    super("response");
-    this.source = props.source;
-    this.body = props.body;
-    this.stream = props.stream;
-    this.options = props.options;
-    this.join = props.join;
-  }
-}
-export namespace AgenticaResponseEvent {
-  export interface IProps {
-    /**
-     * The source agent of the response.
-     */
-    source: AgenticaEventSource;
+  /**
+   * Request body.
+   */
+  body: OpenAI.ChatCompletionCreateParamsStreaming;
 
-    /**
-     * Request body.
-     */
-    body: OpenAI.ChatCompletionCreateParamsStreaming;
+  /**
+   * The text content stream.
+   */
+  stream: ReadableStream<OpenAI.ChatCompletionChunk>;
 
-    /**
-     * Options for the request.
-     */
-    options?: OpenAI.RequestOptions | undefined;
-    /**
-     * The text content stream.
-     */
-    stream: ReadableStream<OpenAI.ChatCompletionChunk>;
+  /**
+   * Options for the request.
+   */
+  options?: OpenAI.RequestOptions | undefined;
 
-    /**
-     * Get the description text.
-     */
-    join: () => Promise<OpenAI.ChatCompletion>;
-  }
+  /**
+   * Wait the completion.
+   */
+  join: () => Promise<OpenAI.ChatCompletion>;
 }

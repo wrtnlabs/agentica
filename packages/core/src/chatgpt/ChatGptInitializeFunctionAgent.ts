@@ -1,25 +1,26 @@
+import typia from "typia";
+
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { AgenticaContext } from "../context/AgenticaContext";
-
 import type { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import typia from "typia";
-import { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { MPSC } from "../internal/MPSC";
 import { StreamUtil } from "../internal/StreamUtil";
-import { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
+import { AgenticaPromptFactory } from "../factories/AgenticaPromptFactory";
+import { AgenticaEventFactory } from "../factories/AgenticaEventFactory";
 
 const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
   __IChatInitialApplication,
   "chatgpt"
 >().functions[0]!;
 
-export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -106,7 +107,7 @@ export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaConte
         mpsc.produce(choice.delta.content);
 
         void ctx.dispatch(
-          new AgenticaTextEvent({
+          AgenticaEventFactory.createTextEvent({
             role: "assistant",
             stream: mpsc.consumer,
             done: () => mpsc.done(),
@@ -143,7 +144,7 @@ export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaConte
       && choice.message.content != null
     ) {
       prompts.push(
-        new AgenticaTextPrompt({
+        AgenticaPromptFactory.createTextPrompt({
           role: "assistant",
           text: choice.message.content,
         }),

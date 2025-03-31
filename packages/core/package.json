@@ -53,8 +53,8 @@
     "typia": ">=8.1.0 <9.0.0"
   },
   "dependencies": {
-    "@samchon/openapi": "^3.2.2",
-    "typia": "^8.1.0",
+    "@samchon/openapi": "^3.2.3",
+    "typia": "^8.1.1",
     "uuid": "^11.0.4"
   },
   "devDependencies": {

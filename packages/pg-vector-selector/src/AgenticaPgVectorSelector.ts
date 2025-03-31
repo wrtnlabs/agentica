@@ -1,21 +1,22 @@
-import type {
-  AgenticaContext,
-  AgenticaOperation,
-  AgenticaPrompt,
-} from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
-import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
-import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
-import {
-  AgenticaOperationSelection,
-  AgenticaSelectEvent,
-  AgenticaSelectPrompt,
-} from "@agentica/core";
 import { ChatGptCompletionMessageUtil } from "@agentica/core/src/chatgpt/ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "@agentica/core/src/chatgpt/ChatGptHistoryDecoder";
 import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
-
 import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
+import { AgenticaOperationFactory } from "@agentica/core/src/factories/AgenticaOperationFactory";
+import { AgenticaEventFactory } from "@agentica/core/src/factories/AgenticaEventFactory";
+
+import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
+import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
+import type { ILlmSchema } from "@samchon/openapi";
+import type {
+  AgenticaContext,
+  AgenticaOperation,
+  AgenticaOperationSelection,
+
+  AgenticaPrompt,
+  AgenticaSelectPrompt,
+} from "@agentica/core";
+
 import { Tools } from "./Tools";
 
 function useEmbeddedContext<SchemaModel extends ILlmSchema.Model>() {
@@ -246,10 +247,16 @@ export namespace AgenticaPgVectorSelector {
         .forEach((v) => {
           v.message
             .tool_calls!.filter(tc => tc.function.name === "execute_function").forEach((tc) => {
-            const collection = new AgenticaSelectPrompt<SchemaModel>({
+            const collection: AgenticaSelectPrompt<SchemaModel> = {
+              type: "select",
               id: tc.id,
               selections: [],
-            });
+              toJSON: () => ({
+                type: "select",
+                id: tc.id,
+                selections: collection.selections.map(s => s.toJSON()),
+              }),
+            };
             const arg = JSON.parse(tc.function.arguments) as {
               function_name_list: {
                 reason: string;
@@ -262,13 +269,14 @@ export namespace AgenticaPgVectorSelector {
               if (operation === undefined) {
                 return;
               }
+              // @todo core has to export event/operation factories
               const selection: AgenticaOperationSelection<SchemaModel>
-                  = new AgenticaOperationSelection({
+                  = AgenticaOperationFactory.createOperationSelection({
                     reason: fn.reason,
                     operation,
                   });
               ctx.stack.push(selection);
-              void ctx.dispatch(new AgenticaSelectEvent({ selection }));
+              void ctx.dispatch(AgenticaEventFactory.createSelectEvent({ selection }));
               collection.selections.push(selection);
             });
 

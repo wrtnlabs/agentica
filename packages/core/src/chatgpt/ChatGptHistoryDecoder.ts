@@ -1,9 +1,8 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
-
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 
-export function decode<Model extends ILlmSchema.Model>(history: AgenticaPrompt<Model>): OpenAI.ChatCompletionMessageParam[] {
+function decode<Model extends ILlmSchema.Model>(history: AgenticaPrompt<Model>): OpenAI.ChatCompletionMessageParam[] {
   // NO NEED TO DECODE DESCRIBE
   if (history.type === "describe") {
     return [];

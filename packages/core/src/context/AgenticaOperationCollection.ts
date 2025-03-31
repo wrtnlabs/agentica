@@ -1,5 +1,4 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "./AgenticaOperation";
 
 /**

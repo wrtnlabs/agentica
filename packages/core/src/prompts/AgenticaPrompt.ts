@@ -1,5 +1,4 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaDescribePrompt } from "./AgenticaDescribePrompt";
 import type { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
@@ -12,3 +11,13 @@ export type AgenticaPrompt<Model extends ILlmSchema.Model> =
   | AgenticaExecutePrompt<Model>
   | AgenticaSelectPrompt<Model>
   | AgenticaTextPrompt;
+export namespace AgenticaPrompt {
+  export type Type = AgenticaPrompt<any>["type"];
+  export interface Mapper<Model extends ILlmSchema.Model> {
+    cancel: AgenticaCancelPrompt<Model>;
+    describe: AgenticaDescribePrompt<Model>;
+    execute: AgenticaExecutePrompt<Model>;
+    select: AgenticaSelectPrompt<Model>;
+    text: AgenticaTextPrompt;
+  }
+}

@@ -1,18 +1,19 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
-import { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import { AgenticaCallEvent } from "../events/AgenticaCallEvent";
-import { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
-import { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
-import { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
-import { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent";
-import { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
-import { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
-import { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
+import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
+import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
+import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent";
+import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
+import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
+import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+
 import { StreamUtil } from "../internal/StreamUtil";
+import { AgenticaEventFactory } from "./AgenticaEventFactory";
+import { AgenticaOperationFactory } from "./AgenticaOperationFactory";
 
 function findOperation<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
@@ -32,7 +33,7 @@ function findOperation<Model extends ILlmSchema.Model>(props: {
   return found;
 }
 
-export function transform<Model extends ILlmSchema.Model>(props: {
+function transform<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson;
 }): AgenticaEvent<Model> {
@@ -82,11 +83,11 @@ export function transform<Model extends ILlmSchema.Model>(props: {
   else { throw new Error("Unknown event type"); }
 }
 
-export function transformCall<Model extends ILlmSchema.Model>(props: {
+function transformCall<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ICall;
 }): AgenticaCallEvent<Model> {
-  return new AgenticaCallEvent({
+  return AgenticaEventFactory.createCallEvent({
     id: props.event.id,
     operation: findOperation({
       operations: props.operations,
@@ -100,8 +101,8 @@ export function transformCancel<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ICancel;
 }): AgenticaCancelEvent<Model> {
-  return new AgenticaCancelEvent({
-    selection: new AgenticaOperationSelection({
+  return AgenticaEventFactory.createCancelEvent({
+    selection: AgenticaOperationFactory.createOperationSelection({
       operation: findOperation({
         operations: props.operations,
         input: props.event.selection.operation,
@@ -111,11 +112,11 @@ export function transformCancel<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-export function transformDescribe<Model extends ILlmSchema.Model>(props: {
+function transformDescribe<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.IDescribe;
 }): AgenticaDescribeEvent<Model> {
-  return new AgenticaDescribeEvent({
+  return AgenticaEventFactory.createDescribeEvent({
     executes: props.event.executes.map(next =>
       transformExecute({
         operations: props.operations,
@@ -129,40 +130,37 @@ export function transformDescribe<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-export function transformExecute<Model extends ILlmSchema.Model>(props: {
+function transformExecute<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.IExecute;
 }): AgenticaExecuteEvent<Model> {
-  return new AgenticaExecuteEvent({
+  return AgenticaEventFactory.createExecuteEvent({
     id: props.event.id,
     operation: findOperation({
       operations: props.operations,
       input: props.event.operation,
     }),
-    /**
-     * @TODO remove `as`
-     */
-    arguments: props.event.arguments as Record<string, any>,
+    arguments: props.event.arguments,
     value: props.event.value,
   });
 }
 
-export function transformInitialize(): AgenticaInitializeEvent {
-  return new AgenticaInitializeEvent();
+function transformInitialize(): AgenticaInitializeEvent {
+  return AgenticaEventFactory.createInitializeEvent();
 }
 
-export function transformRequest(props: {
+function transformRequest(props: {
   event: IAgenticaEventJson.IRequest;
 }): AgenticaRequestEvent {
-  return new AgenticaRequestEvent(props.event);
+  return AgenticaEventFactory.createRequestEvent(props.event);
 }
 
-export function transformSelect<Model extends ILlmSchema.Model>(props: {
+function transformSelect<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ISelect;
 }): AgenticaSelectEvent<Model> {
-  return new AgenticaSelectEvent({
-    selection: new AgenticaOperationSelection({
+  return AgenticaEventFactory.createSelectEvent({
+    selection: AgenticaOperationFactory.createOperationSelection({
       operation: findOperation({
         operations: props.operations,
         input: props.event.selection.operation,
@@ -172,10 +170,10 @@ export function transformSelect<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-export function transformText(props: {
+function transformText(props: {
   event: IAgenticaEventJson.IText;
 }): AgenticaTextEvent {
-  return new AgenticaTextEvent({
+  return AgenticaEventFactory.createTextEvent({
     role: props.event.role,
     stream: StreamUtil.to(props.event.text),
     done: () => true,

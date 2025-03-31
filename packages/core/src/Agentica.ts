@@ -1,5 +1,4 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
@@ -10,18 +9,19 @@ import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaProps } from "./structures/IAgenticaProps";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
+import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
+import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
+
 import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
 import { ChatGptCompletionMessageUtil } from "./chatgpt/ChatGptCompletionMessageUtil";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { AgenticaInitializeEvent } from "./events/AgenticaInitializeEvent";
-import { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
-import { AgenticaTextEvent } from "./events/AgenticaTextEvent";
 import { __map_take } from "./internal/__map_take";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
 import { StreamUtil } from "./internal/StreamUtil";
-import { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
-import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
+import { AgenticaPromptTransformer } from "./factories/AgenticaPromptTransformer";
+import { AgenticaEventFactory } from "./factories/AgenticaEventFactory";
+import { AgenticaPromptFactory } from "./factories/AgenticaPromptFactory";
 
 /**
  * Nestia A.I. chatbot agent.
@@ -126,12 +126,12 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @returns List of newly created chat prompts
    */
   public async conversate(content: string): Promise<AgenticaPrompt<Model>[]> {
-    const prompt: AgenticaTextPrompt<"user"> = new AgenticaTextPrompt({
+    const prompt: AgenticaTextPrompt<"user"> = AgenticaPromptFactory.createTextPrompt<"user">({
       role: "user",
       text: content,
     });
     await this.dispatch(
-      new AgenticaTextEvent({
+      AgenticaEventFactory.createTextEvent({
         role: "user",
         stream: StreamUtil.to(content),
         done: () => true,
@@ -232,7 +232,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       dispatch: async event => this.dispatch(event),
       request: async (source, body) => {
         // request information
-        const event: AgenticaRequestEvent = new AgenticaRequestEvent({
+        const event: AgenticaRequestEvent = AgenticaEventFactory.createRequestEvent({
           source,
           body: {
             ...body,
@@ -294,7 +294,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       },
       initialize: async () => {
         this.ready_ = true;
-        await dispatch(new AgenticaInitializeEvent());
+        await dispatch(AgenticaEventFactory.createInitializeEvent());
       },
     };
   }

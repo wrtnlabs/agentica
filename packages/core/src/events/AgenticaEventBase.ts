@@ -1,7 +1,6 @@
-export abstract class AgenticaEventBase<Type extends string> {
-  public readonly type: Type;
-
-  public constructor(type: Type) {
-    this.type = type;
-  }
+export interface AgenticaEventBase<Type extends string> {
+  /**
+   * Discriminator type.
+   */
+  type: Type;
 }
