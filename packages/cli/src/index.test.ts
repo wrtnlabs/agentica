@@ -75,8 +75,12 @@ describe("cli", () => {
       program.exitOverride();
 
       program.parse(["node", "agentica", "start"]);
+
+      // check the options is empty
       const opts = program.opts();
       expect(opts).toEqual({});
+
+      // check start message is called with proper arguments
       expect(startMock).toHaveBeenCalledOnce();
       expect(startMock.mock.calls[0][0]).toEqual({ template: undefined });
     });
@@ -94,6 +98,7 @@ describe("cli", () => {
       expect(promptIntroMock).toHaveBeenCalledOnce();
       expect(promptIntroMock.mock.calls[0][0]).toMatchInlineSnapshot(`"🚀 Agentica Setup Wizard"`);
 
+      // check the start command is called with proper arguments
       expect(startMock).toHaveBeenCalledOnce();
       expect(startMock.mock.calls[0][0]).toEqual({ template: "nodejs" });
     });
@@ -106,8 +111,10 @@ describe("cli", () => {
 
       program.parse(["node", "agentica", "start", "--project"]);
 
+      // check start message is not called because of the error
       expect(startMock).not.toHaveBeenCalled();
 
+      // check the error message
       expect(promptLogErrorMock).toHaveBeenCalledOnce();
       const args = promptLogErrorMock.mock.calls[0][0] as unknown as string;
       expect(args.trim()).toEqual("❌ The value of --project is required");
@@ -121,8 +128,10 @@ describe("cli", () => {
 
       program.parse(["node", "agentica", "start", "--project", "invalid"]);
 
+      // check start message is not called because of the error
       expect(startMock).not.toHaveBeenCalled();
 
+      // check the error message
       expect(promptLogErrorMock).toHaveBeenCalledOnce();
       const args = promptLogErrorMock.mock.calls[0][0] as unknown as string;
       expect(args.trim()).toEqual("❌ The value of --project is invalid");
