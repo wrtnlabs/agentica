@@ -107,11 +107,10 @@ describe("cli", () => {
       program.parse(["node", "agentica", "start", "--project"]);
 
       expect(startMock).not.toHaveBeenCalled();
+
       expect(promptLogErrorMock).toHaveBeenCalledOnce();
-      expect(promptLogErrorMock.mock.calls[0][0]).toMatchInlineSnapshot(`
-        "
-        ❌ The value of --project is required"
-      `);
+      const args = promptLogErrorMock.mock.calls[0][0] as unknown as string;
+      expect(args.trim()).toEqual("❌ The value of --project is required");
     });
 
     it("test the start command with invalid project option", async () => {
@@ -123,11 +122,10 @@ describe("cli", () => {
       program.parse(["node", "agentica", "start", "--project", "invalid"]);
 
       expect(startMock).not.toHaveBeenCalled();
+
       expect(promptLogErrorMock).toHaveBeenCalledOnce();
-      expect(promptLogErrorMock.mock.calls[0][0]).toMatchInlineSnapshot(`
-        "
-        ❌ The value of --project is invalid"
-      `);
+      const args = promptLogErrorMock.mock.calls[0][0] as unknown as string;
+      expect(args.trim()).toEqual("❌ The value of --project is invalid");
     });
   });
 });
