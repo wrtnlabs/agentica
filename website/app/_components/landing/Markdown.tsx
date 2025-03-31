@@ -13,7 +13,7 @@ export function Markdown({ children }: MarkdownProps) {
 
     return (
       <ul
-        className={`whitespace-normal list-inside list-disc text-sm`}
+        className="whitespace-normal list-inside list-disc text-sm"
         style={{ paddingLeft: `${pl}rem` }}
       >
         <li className="marker:absolute marker:-left-[4px] marker:mr-[4px]">
@@ -23,7 +23,7 @@ export function Markdown({ children }: MarkdownProps) {
     );
   }
 
-  if (children === "") return <br />;
+  if (children === "") { return <br />; }
 
   return (
     <ReactMarkdown

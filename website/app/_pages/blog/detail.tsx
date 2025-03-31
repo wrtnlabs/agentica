@@ -1,12 +1,14 @@
 "use client";
 
-import { Markdown } from "@/app/_components/blog/Markdown";
-import { formatDate } from "@/app/_lib/funcs/blogs";
-import { BlogType } from "@/app/_lib/types/blogs";
 import { ArrowUpIcon, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
+import type { BlogType } from "@/app/_lib/types/blogs";
+
+import { formatDate } from "@/app/_lib/funcs/blogs";
+import { Markdown } from "@/app/_components/blog/Markdown";
 
 export default function BlogDetail() {
   const searchParams = useSearchParams();
@@ -17,27 +19,29 @@ export default function BlogDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) router.push("/blog");
+    if (!id) { router.push("/blog"); }
 
     async function fetchData() {
       try {
         const response = await fetch(
-          `https://wrtnlabs.io/wp-json/wp/v2/blog/${id}`
+          `https://wrtnlabs.io/wp-json/wp/v2/blog/${id}`,
         );
         const data = (await response.json()) as BlogType;
         setBlog(data);
-      } catch {
+      }
+      catch {
         router.push("/blog");
-      } finally {
+      }
+      finally {
         setLoading(false);
       }
     }
 
     fetchData();
   }, [id, router]);
-  if (!id) return router.push("/blog");
-  if (loading) return null;
-  if (!blog) return router.push("/blog");
+  if (!id) { return router.push("/blog"); }
+  if (loading) { return null; }
+  if (!blog) { return router.push("/blog"); }
 
   return (
     <div className="relative mx-auto flex flex-col gap-4 max-w-2xl py-5">

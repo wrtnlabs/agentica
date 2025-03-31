@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
 import { useHover } from "react-use";
+
+import type React from "react";
 
 interface HoverableProps {
   children: (isHover: boolean) => React.ReactElement;

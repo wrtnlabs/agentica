@@ -1,5 +1,6 @@
+import type { ClassNameValue } from "tailwind-merge";
+
 import { cn } from "@/app/_lib/utils";
-import { ClassNameValue } from "tailwind-merge";
 
 interface SectionProps {
   title: string;
@@ -17,7 +18,7 @@ export function Section({
     <section
       className={cn(
         "flex min-h-screen max-w-[1440px] flex-col gap-8 px-3 py-16 md:gap-12 md:px-20 md:py-30 mx-auto",
-        className
+        className,
       )}
     >
       <div className="flex w-full flex-col items-center gap-5">

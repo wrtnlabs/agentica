@@ -1,9 +1,10 @@
+import type { SVGAttributes } from "react";
+
 import {
   Card,
   CardDescription,
   CardTitle,
 } from "@/app/_components/common/card";
-import { SVGAttributes } from "react";
 
 interface FuncCallCardProps {
   icon: React.ComponentType<SVGAttributes<SVGSVGElement>>;

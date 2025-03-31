@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@/app/_lib/utils/cn";
 import { cva } from "class-variance-authority";
 import Image from "next/image";
 
+import { cn } from "@/app/_lib/utils/cn";
 import { Badge } from "./badge";
 import { Hoverable } from "./hover";
 
@@ -15,6 +15,24 @@ interface CardProps {
   isNew?: boolean;
 }
 
+const cardShowcaseBoxVariants = cva(
+  cn(
+    "relative rounded-[32px] transition-all duration-300 p-2 md:p-4 shadow-sm flex flex-col gap-4",
+  ),
+  {
+    variants: {
+      status: {
+        active:
+          "bg-[#030303] hover:bg-zinc-900 active:bg-zinc-800 cursor-pointer",
+        inactive: "bg-transparent cursor-not-allowed",
+      },
+    },
+    defaultVariants: {
+      status: "active",
+    },
+  },
+);
+
 export function CardShowcase({
   title,
   description,
@@ -25,7 +43,7 @@ export function CardShowcase({
   const isActive = status === "active";
   return (
     <Hoverable>
-      {(hover) => (
+      {hover => (
         <div className={cn(cardShowcaseBoxVariants({ status }))}>
           <div
             className={cn(
@@ -62,7 +80,7 @@ export function CardShowcase({
             </h3>
             {isNew && (
               <Badge
-                variant={"secondary"}
+                variant="secondary"
                 className="bg-zinc-800 text-zinc-400"
               >
                 New
@@ -82,21 +100,3 @@ export function CardShowcase({
     </Hoverable>
   );
 }
-
-const cardShowcaseBoxVariants = cva(
-  cn(
-    "relative rounded-[32px] transition-all duration-300 p-2 md:p-4 shadow-sm flex flex-col gap-4",
-  ),
-  {
-    variants: {
-      status: {
-        active:
-          "bg-[#030303] hover:bg-zinc-900 active:bg-zinc-800 cursor-pointer",
-        inactive: "bg-transparent cursor-not-allowed",
-      },
-    },
-    defaultVariants: {
-      status: "active",
-    },
-  },
-);

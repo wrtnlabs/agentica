@@ -1,9 +1,11 @@
-import { ChatMessageType } from "@/app/_constants/landing";
 import { cva } from "class-variance-authority";
 import { motion } from "framer-motion";
 import { SquareArrowDownRight, SquareCheckBig, UserRound } from "lucide-react";
 import Image from "next/image";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+import type { ReactNode } from "react";
+import type { ChatMessageType } from "@/app/_constants/landing";
 
 import { Markdown } from "./Markdown";
 
@@ -43,7 +45,7 @@ export function ChatBubble({ author, message, type }: ChatMessageType) {
 
     sentences.forEach((sentence, index) => {
       const timeoutId = setTimeout(() => {
-        setViewSentences((prev) => [...prev, sentence]);
+        setViewSentences(prev => [...prev, sentence]);
       }, 50 * index);
       timeouts.push(timeoutId);
     });
@@ -66,7 +68,7 @@ export function ChatBubble({ author, message, type }: ChatMessageType) {
         </motion.div>
       )}
       <div className={chatBubbleVariants({ author })}>
-        {type && (
+        {type != null && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

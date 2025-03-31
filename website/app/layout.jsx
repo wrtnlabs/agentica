@@ -19,7 +19,11 @@ const navbar = (
 );
 const footer = (
   <Footer className="flex-col items-center md:items-start">
-    MIT {new Date().getFullYear()} © Wrtn Technologies.
+    MIT
+    {" "}
+    {new Date().getFullYear()}
+    {" "}
+    © Wrtn Technologies.
   </Footer>
 );
 
@@ -50,7 +54,7 @@ export default async function RootLayout(props) {
           sizes="180x180"
           href="/agentica/favicon/apple-touch-icon.png"
         />
-        {[16, 32].map((size) => (
+        {[16, 32].map(size => (
           <link
             key={size}
             rel="icon"
@@ -81,15 +85,18 @@ export default async function RootLayout(props) {
           name="twitter:description"
           content="Agentic AI Framework specialized in LLM Function Calling enhanced by TypeScript Compiler"
         />
-        <Script type="text/javascript" dangerouslySetInnerHTML={{
-          __html: `
+        <Script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `
 (function(c,l,a,r,i,t,y){
     c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
     t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
     y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 })(window, document, "clarity", "script", "qt7e6ysbbd");
-`
-        }} />
+`,
+          }}
+        />
         {/* <Script
           async
           src="https://widget.gurubase.io/widget.latest.min.js"
