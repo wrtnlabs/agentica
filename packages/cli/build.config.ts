@@ -1,4 +1,5 @@
 import UnpluginTypia from "@ryoppippi/unplugin-typia/rollup";
+import { isCI } from "std-env";
 import { defineBuildConfig } from "unbuild";
 import pkgJson from "./package.json";
 
@@ -19,8 +20,8 @@ export default defineBuildConfig({
   rollup: {
     inlineDependencies: true,
     esbuild: {
-      minify: true,
+      minify: !isCI, // minify only in development
     },
   },
-  sourcemap: true,
+  sourcemap: !isCI, // sourcemap only in development
 });
