@@ -35,7 +35,7 @@ program
       p.log.error(
         `\n❌ The value of ${picocolors.redBright("--project")} is required`,
       );
-      return;
+      process.exit(1);
     }
 
     /** check valid project type */
@@ -43,7 +43,7 @@ program
       p.log.error(
         `\n❌ The value of ${picocolors.redBright("--project")} is invalid`,
       );
-      return;
+      process.exit(1);
     }
 
     p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
