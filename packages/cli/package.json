@@ -33,6 +33,7 @@
     "LICENSE",
     "README.md",
     "bin",
+    "src",
     "dist",
     "package.json"
   ],
