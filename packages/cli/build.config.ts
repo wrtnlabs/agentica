@@ -35,5 +35,5 @@ export default defineBuildConfig({
       target: "es2022", // support for Node.js 18
     },
   },
-  sourcemap: !isCI, // sourcemap only in development
+  sourcemap: !isCI, // sourcemap only in CI and publish
 });
