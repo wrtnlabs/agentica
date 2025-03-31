@@ -44,7 +44,7 @@
     "build": "unbuild",
     "dev": "unbuild --watch",
     "typecheck": "tsc --noEmit",
-    "prepack": "pnpm run build",
+    "prepack": "pnpm run build && npx clean-pkg-json",
     "lint": "eslint .",
     "format": "eslint --fix .",
     "test": "vitest"
