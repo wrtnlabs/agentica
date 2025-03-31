@@ -20,9 +20,9 @@ import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { AgenticaOperationFactory } from "../factories/AgenticaOperationFactory";
-import { AgenticaEventFactory } from "../factories/AgenticaEventFactory";
-import { AgenticaPromptFactory } from "../factories/AgenticaPromptFactory";
+import { createSelectPrompt, createTextPrompt } from "../factory/prompts";
+import { createOperationSelection } from "../factory/operations";
+import { createSelectEvent, createTextEvent } from "../factory/events";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatSelectFunctionsApplication,
@@ -80,7 +80,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
   }
 
   // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaSelectPrompt<Model> = AgenticaPromptFactory.createSelectPrompt({
+  const collection: AgenticaSelectPrompt<Model> = createSelectPrompt({
     id: v4(),
     selections: [],
   });
@@ -226,7 +226,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         }
 
         const collection: AgenticaSelectPrompt<Model>
-              = AgenticaPromptFactory.createSelectPrompt({
+              = createSelectPrompt({
                 id: tc.id,
                 selections: [],
               });
@@ -239,7 +239,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           }
 
           collection.selections.push(
-            AgenticaOperationFactory.createOperationSelection({
+            createOperationSelection({
               operation,
               reason: reference.reason,
             }),
@@ -257,14 +257,14 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       choice.message.role === "assistant"
       && choice.message.content != null
     ) {
-      const text: AgenticaTextPrompt = AgenticaPromptFactory.createTextPrompt({
+      const text: AgenticaTextPrompt = createTextPrompt({
         role: "assistant",
         text: choice.message.content,
       });
       prompts.push(text);
 
       await ctx.dispatch(
-        AgenticaEventFactory.createTextEvent({
+        createTextEvent({
           role: "assistant",
           stream: StreamUtil.to(text.text),
           join: async () => Promise.resolve(text.text),
@@ -286,13 +286,13 @@ async function selectFunction<Model extends ILlmSchema.Model>(ctx: AgenticaConte
   }
 
   const selection: AgenticaOperationSelection<Model>
-      = AgenticaOperationFactory.createOperationSelection({
+      = createOperationSelection({
         operation,
         reason: reference.reason,
       });
   ctx.stack.push(selection);
   void ctx.dispatch(
-    AgenticaEventFactory.createSelectEvent({
+    createSelectEvent({
       selection,
     }),
   );

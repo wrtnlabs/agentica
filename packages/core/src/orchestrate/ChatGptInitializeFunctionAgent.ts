@@ -12,8 +12,8 @@ import { MPSC } from "../internal/MPSC";
 import { StreamUtil } from "../internal/StreamUtil";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { AgenticaPromptFactory } from "../factories/AgenticaPromptFactory";
-import { AgenticaEventFactory } from "../factories/AgenticaEventFactory";
+import { createTextEvent } from "../factory/events";
+import { createTextPrompt } from "../factory/prompts";
 
 const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
   __IChatInitialApplication,
@@ -107,7 +107,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
         mpsc.produce(choice.delta.content);
 
         void ctx.dispatch(
-          AgenticaEventFactory.createTextEvent({
+          createTextEvent({
             role: "assistant",
             stream: mpsc.consumer,
             done: () => mpsc.done(),
@@ -144,7 +144,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
       && choice.message.content != null
     ) {
       prompts.push(
-        AgenticaPromptFactory.createTextPrompt({
+        createTextPrompt({
           role: "assistant",
           text: choice.message.content,
         }),

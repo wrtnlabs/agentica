@@ -12,16 +12,16 @@ import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 
-import { ChatGptAgent } from "./chatgpt/ChatGptAgent";
-import { ChatGptCompletionMessageUtil } from "./chatgpt/ChatGptCompletionMessageUtil";
+import { ChatGptAgent } from "./orchestrate/ChatGptAgent";
+import { ChatGptCompletionMessageUtil } from "./orchestrate/ChatGptCompletionMessageUtil";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
 import { __map_take } from "./internal/__map_take";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
 import { StreamUtil } from "./internal/StreamUtil";
-import { AgenticaPromptTransformer } from "./factories/AgenticaPromptTransformer";
-import { AgenticaEventFactory } from "./factories/AgenticaEventFactory";
-import { AgenticaPromptFactory } from "./factories/AgenticaPromptFactory";
+import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
+import { createTextPrompt } from "./factory/prompts";
+import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
 
 /**
  * Nestia A.I. chatbot agent.
@@ -126,12 +126,12 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @returns List of newly created chat prompts
    */
   public async conversate(content: string): Promise<AgenticaPrompt<Model>[]> {
-    const prompt: AgenticaTextPrompt<"user"> = AgenticaPromptFactory.createTextPrompt<"user">({
+    const prompt: AgenticaTextPrompt<"user"> = createTextPrompt<"user">({
       role: "user",
       text: content,
     });
     await this.dispatch(
-      AgenticaEventFactory.createTextEvent({
+      createTextEvent({
         role: "user",
         stream: StreamUtil.to(content),
         done: () => true,
@@ -232,7 +232,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       dispatch: async event => this.dispatch(event),
       request: async (source, body) => {
         // request information
-        const event: AgenticaRequestEvent = AgenticaEventFactory.createRequestEvent({
+        const event: AgenticaRequestEvent = createRequestEvent({
           source,
           body: {
             ...body,
@@ -294,7 +294,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       },
       initialize: async () => {
         this.ready_ = true;
-        await dispatch(AgenticaEventFactory.createInitializeEvent());
+        await dispatch(createInitializeEvent());
       },
     };
   }

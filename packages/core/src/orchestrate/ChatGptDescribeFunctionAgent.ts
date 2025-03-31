@@ -10,8 +10,8 @@ import { MPSC } from "../internal/MPSC";
 import { StreamUtil } from "../internal/StreamUtil";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { AgenticaEventFactory } from "../factories/AgenticaEventFactory";
-import { AgenticaPromptFactory } from "../factories/AgenticaPromptFactory";
+import { createDescribeEvent } from "../factory/events";
+import { createDescribePrompt } from "../factory/prompts";
 
 async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
   if (histories.length === 0) {
@@ -79,7 +79,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
         mpsc.produce(choice.delta.content);
 
         void ctx.dispatch(
-          AgenticaEventFactory.createDescribeEvent({
+          createDescribeEvent({
             executes: histories,
             stream: mpsc.consumer,
             done: () => mpsc.done(),
@@ -114,7 +114,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
     .filter(str => str !== null)
     .map(
       content =>
-        AgenticaPromptFactory.createDescribePrompt({
+        createDescribePrompt({
           executes: histories,
           text: content,
         }),

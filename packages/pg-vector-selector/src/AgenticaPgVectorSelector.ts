@@ -1,21 +1,15 @@
-import { ChatGptCompletionMessageUtil } from "@agentica/core/src/chatgpt/ChatGptCompletionMessageUtil";
-import { ChatGptHistoryDecoder } from "@agentica/core/src/chatgpt/ChatGptHistoryDecoder";
 import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
 import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
-import { AgenticaOperationFactory } from "@agentica/core/src/factories/AgenticaOperationFactory";
-import { AgenticaEventFactory } from "@agentica/core/src/factories/AgenticaEventFactory";
+import {
 
+  factory,
+  orchestrate,
+} from "@agentica/core";
+
+import type { AgenticaContext, AgenticaOperation, AgenticaOperationSelection, AgenticaPrompt, AgenticaSelectPrompt } from "@agentica/core";
 import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
 import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
 import type { ILlmSchema } from "@samchon/openapi";
-import type {
-  AgenticaContext,
-  AgenticaOperation,
-  AgenticaOperationSelection,
-
-  AgenticaPrompt,
-  AgenticaSelectPrompt,
-} from "@agentica/core";
 
 import { Tools } from "./Tools";
 
@@ -178,7 +172,7 @@ export namespace AgenticaPgVectorSelector {
             ].join("\n"),
           },
           ...ctx.histories
-            .map(ChatGptHistoryDecoder.decode<SchemaModel>)
+            .map(orchestrate.ChatGptHistoryDecoder.decode<SchemaModel>)
             .flat(),
           {
             role: "user",
@@ -191,7 +185,7 @@ export namespace AgenticaPgVectorSelector {
       });
 
       const chunks = await StreamUtil.readAll(completionStream);
-      const completion = ChatGptCompletionMessageUtil.merge(chunks);
+      const completion = orchestrate.ChatGptCompletionMessageUtil.merge(chunks);
 
       const resultList = await Promise.all(
         completion.choices[0]?.message.tool_calls?.flatMap(async (v) => {
@@ -229,7 +223,7 @@ export namespace AgenticaPgVectorSelector {
               ].join("\n"),
             },
             ...ctx.histories
-              .map(ChatGptHistoryDecoder.decode<SchemaModel>)
+              .map(orchestrate.ChatGptHistoryDecoder.decode<SchemaModel>)
               .flat(),
             {
               role: "user",
@@ -240,7 +234,7 @@ export namespace AgenticaPgVectorSelector {
           tools: [Tools.execute_function],
         })
         .then(async v => StreamUtil.readAll(v))
-        .then(ChatGptCompletionMessageUtil.merge);
+        .then(orchestrate.ChatGptCompletionMessageUtil.merge);
 
       selectCompletion.choices
         .filter(v => v.message.tool_calls != null)
@@ -271,12 +265,12 @@ export namespace AgenticaPgVectorSelector {
               }
               // @todo core has to export event/operation factories
               const selection: AgenticaOperationSelection<SchemaModel>
-                  = AgenticaOperationFactory.createOperationSelection({
+                  = factory.createOperationSelection({
                     reason: fn.reason,
                     operation,
                   });
               ctx.stack.push(selection);
-              void ctx.dispatch(AgenticaEventFactory.createSelectEvent({ selection }));
+              void ctx.dispatch(factory.createSelectEvent({ selection }));
               collection.selections.push(selection);
             });
 

@@ -18,9 +18,9 @@ import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { AgenticaPromptFactory } from "../factories/AgenticaPromptFactory";
-import { AgenticaEventFactory } from "../factories/AgenticaEventFactory";
-import { AgenticaOperationFactory } from "../factories/AgenticaOperationFactory";
+import { createCancelPrompt } from "../factory/prompts";
+import { createCancelEvent } from "../factory/events";
+import { createOperationSelection } from "../factory/operations";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatCancelFunctionsApplication,
@@ -78,7 +78,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
   }
 
   // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaCancelPrompt<Model> = AgenticaPromptFactory.createCancelPrompt({
+  const collection: AgenticaCancelPrompt<Model> = createCancelPrompt({
     id: v4(),
     selections: [],
   });
@@ -105,8 +105,8 @@ async function cancelFunction<Model extends ILlmSchema.Model>(ctx: AgenticaConte
   const item: AgenticaOperationSelection<Model> = ctx.stack[index]!;
   ctx.stack.splice(index, 1);
   await ctx.dispatch(
-    AgenticaEventFactory.createCancelEvent({
-      selection: AgenticaOperationFactory.createOperationSelection({
+    createCancelEvent({
+      selection: createOperationSelection({
         operation: item.operation,
         reason: reference.reason,
       }),
@@ -246,7 +246,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           continue;
         }
 
-        const collection: AgenticaCancelPrompt<Model> = AgenticaPromptFactory.createCancelPrompt({
+        const collection: AgenticaCancelPrompt<Model> = createCancelPrompt({
           id: tc.id,
           selections: [],
         });

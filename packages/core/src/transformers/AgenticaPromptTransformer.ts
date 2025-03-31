@@ -8,8 +8,8 @@ import type { AgenticaCancelPrompt } from "../prompts/AgenticaCancelPrompt";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 
-import { AgenticaPromptFactory } from "./AgenticaPromptFactory";
-import { AgenticaOperationFactory } from "./AgenticaOperationFactory";
+import { createCancelPrompt, createDescribePrompt, createExecutePrompt, createSelectPrompt, createTextPrompt } from "../factory/prompts";
+import { createOperationSelection } from "../factory/operations";
 
 function transform<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
@@ -53,18 +53,18 @@ function transform<Model extends ILlmSchema.Model>(props: {
 function transformText(props: {
   prompt: IAgenticaPromptJson.IText;
 }): AgenticaTextPrompt {
-  return AgenticaPromptFactory.createTextPrompt(props.prompt);
+  return createTextPrompt(props.prompt);
 }
 
 function transformSelect<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.ISelect;
 }): AgenticaSelectPrompt<Model> {
-  return AgenticaPromptFactory.createSelectPrompt({
+  return createSelectPrompt({
     id: props.prompt.id,
     selections: props.prompt.selections.map(
       select =>
-        AgenticaOperationFactory.createOperationSelection({
+        createOperationSelection({
           operation: findOperation({
             operations: props.operations,
             input: select.operation,
@@ -79,11 +79,11 @@ function transformCancel<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.ICancel;
 }): AgenticaCancelPrompt<Model> {
-  return AgenticaPromptFactory.createCancelPrompt({
+  return createCancelPrompt({
     id: props.prompt.id,
     selections: props.prompt.selections.map(
       select =>
-        AgenticaOperationFactory.createOperationSelection({
+        createOperationSelection({
           operation: findOperation({
             operations: props.operations,
             input: select.operation,
@@ -98,7 +98,7 @@ function transformExecute<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.IExecute;
 }): AgenticaExecutePrompt<Model> {
-  return AgenticaPromptFactory.createExecutePrompt({
+  return createExecutePrompt({
     id: props.prompt.id,
     operation: findOperation({
       operations: props.operations,
@@ -117,7 +117,7 @@ function transformDescribe<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   prompt: IAgenticaPromptJson.IDescribe;
 }): AgenticaDescribePrompt<Model> {
-  return AgenticaPromptFactory.createDescribePrompt({
+  return createDescribePrompt({
     text: props.prompt.text,
     executes: props.prompt.executes.map(next =>
       transformExecute({

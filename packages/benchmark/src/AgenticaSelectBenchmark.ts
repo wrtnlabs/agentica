@@ -4,12 +4,8 @@
  *
  * @author Wrtn Technologies
  */
-import {
-  AgenticaTokenUsage,
-} from "@agentica/core";
-import { ChatGptSelectFunctionAgent } from "@agentica/core/lib/chatgpt/ChatGptSelectFunctionAgent";
+import { AgenticaTokenUsage, factory, orchestrate } from "@agentica/core";
 import { Semaphore } from "tstl";
-import { AgenticaPromptFactory } from "@agentica/core/src/factories/AgenticaPromptFactory";
 
 import type {
   Agentica,
@@ -158,10 +154,10 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
       const prompts: AgenticaPrompt<Model>[]
-        = await ChatGptSelectFunctionAgent.execute({
+        = await orchestrate.ChatGptSelectFunctionAgent.execute({
           ...this.agent_.getContext({
             // @todo core has to export `AgenticaPromptFactory`
-            prompt: AgenticaPromptFactory.createTextPrompt({
+            prompt: factory.createTextPrompt({
               role: "user",
               text: scenario.text,
             }),

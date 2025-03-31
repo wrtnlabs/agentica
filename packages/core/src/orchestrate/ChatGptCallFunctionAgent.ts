@@ -26,9 +26,9 @@ import { StreamUtil } from "../internal/StreamUtil";
 import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { AgenticaEventFactory } from "../factories/AgenticaEventFactory";
-import { AgenticaOperationFactory } from "../factories/AgenticaOperationFactory";
-import { AgenticaPromptFactory } from "../factories/AgenticaPromptFactory";
+import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
+import { createOperationSelection } from "../factory/operations";
+import { createCancelPrompt, createExecutePrompt, createTextPrompt } from "../factory/prompts";
 
 async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
   // ----
@@ -109,7 +109,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
           async (): Promise<
             [AgenticaExecutePrompt<Model>, AgenticaCancelPrompt<Model>]
           > => {
-            const call: AgenticaCallEvent<Model> = AgenticaEventFactory.createCallEvent({
+            const call: AgenticaCallEvent<Model> = createCallEvent({
               id: tc.id,
               operation,
               // @TODO add type assertion!
@@ -129,7 +129,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
               0,
             );
             void ctx.dispatch(
-              AgenticaEventFactory.createExecuteEvent({
+              createExecuteEvent({
                 id: call.id,
                 operation: call.operation,
                 arguments: execute.arguments,
@@ -142,8 +142,8 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
               reason: "completed",
             });
             void ctx.dispatch(
-              AgenticaEventFactory.createCancelEvent({
-                selection: AgenticaOperationFactory.createOperationSelection({
+              createCancelEvent({
+                selection: createOperationSelection({
                   operation: call.operation,
                   reason: "complete",
                 }),
@@ -151,10 +151,10 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
             );
             return [
               execute,
-              AgenticaPromptFactory.createCancelPrompt({
+              createCancelPrompt({
                 id: call.id,
                 selections: [
-                  AgenticaOperationFactory.createOperationSelection({
+                  createOperationSelection({
                     operation: call.operation,
                     reason: "complete",
                   }),
@@ -171,12 +171,12 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
       && choice.message.content.length > 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextPrompt = AgenticaPromptFactory.createTextPrompt({
+        const value: AgenticaTextPrompt = createTextPrompt({
           role: "assistant",
           text: choice.message.content!,
         });
         void ctx.dispatch(
-          AgenticaEventFactory.createTextEvent({
+          createTextEvent({
             role: "assistant",
             get: () => value.text,
             done: () => true,
@@ -202,7 +202,7 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
     );
     if (check.success === false) {
       void ctx.dispatch(
-        AgenticaEventFactory.createValidateEvent({
+        createValidateEvent({
           id: call.id,
           operation: call.operation,
           result: check,
@@ -235,7 +235,7 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
         (success === false
           ? await correct(ctx, call, retry, response.body)
           : null)
-        ?? AgenticaPromptFactory.createExecutePrompt({
+        ?? createExecutePrompt({
           operation: call.operation,
           id: call.id,
           arguments: call.arguments,
@@ -245,7 +245,7 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
     }
     catch (error) {
       // DISPATCH ERROR
-      return AgenticaPromptFactory.createExecutePrompt({
+      return createExecutePrompt({
         operation: call.operation,
         id: call.id,
         arguments: call.arguments,
@@ -274,7 +274,7 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
     );
     if (check.success === false) {
       void ctx.dispatch(
-        AgenticaEventFactory.createValidateEvent({
+        createValidateEvent({
           id: call.id,
           operation: call.operation,
           result: check,
@@ -284,7 +284,7 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
         (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
           ? await correct(ctx, call, retry, check.errors)
           : null)
-        ?? AgenticaPromptFactory.createExecutePrompt({
+        ?? createExecutePrompt({
           id: call.id,
           operation: call.operation,
           arguments: call.arguments,
@@ -299,7 +299,7 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
     // EXECUTE FUNCTION
     try {
       const value = await executeClassOperation(call.operation, call.arguments);
-      return AgenticaPromptFactory.createExecutePrompt({
+      return createExecutePrompt({
         id: call.id,
         operation: call.operation,
         arguments: call.arguments,
@@ -307,7 +307,7 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
       });
     }
     catch (error) {
-      return AgenticaPromptFactory.createExecutePrompt({
+      return createExecutePrompt({
         id: call.id,
         operation: call.operation,
         arguments: call.arguments,
@@ -453,7 +453,7 @@ async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
   }
   return propagate(
     ctx,
-    AgenticaEventFactory.createCallEvent({
+    createCallEvent({
       id: toolCall.id,
       operation: call.operation,
       arguments: JSON.parse(toolCall.function.arguments) as Record<string, unknown>,

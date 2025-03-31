@@ -12,8 +12,8 @@ import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 
 import { StreamUtil } from "../internal/StreamUtil";
-import { AgenticaEventFactory } from "./AgenticaEventFactory";
-import { AgenticaOperationFactory } from "./AgenticaOperationFactory";
+import { createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createTextEvent } from "../factory/events";
+import { createOperationSelection } from "../factory/operations";
 
 function findOperation<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
@@ -87,7 +87,7 @@ function transformCall<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ICall;
 }): AgenticaCallEvent<Model> {
-  return AgenticaEventFactory.createCallEvent({
+  return createCallEvent({
     id: props.event.id,
     operation: findOperation({
       operations: props.operations,
@@ -101,8 +101,8 @@ export function transformCancel<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ICancel;
 }): AgenticaCancelEvent<Model> {
-  return AgenticaEventFactory.createCancelEvent({
-    selection: AgenticaOperationFactory.createOperationSelection({
+  return createCancelEvent({
+    selection: createOperationSelection({
       operation: findOperation({
         operations: props.operations,
         input: props.event.selection.operation,
@@ -116,7 +116,7 @@ function transformDescribe<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.IDescribe;
 }): AgenticaDescribeEvent<Model> {
-  return AgenticaEventFactory.createDescribeEvent({
+  return createDescribeEvent({
     executes: props.event.executes.map(next =>
       transformExecute({
         operations: props.operations,
@@ -134,7 +134,7 @@ function transformExecute<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.IExecute;
 }): AgenticaExecuteEvent<Model> {
-  return AgenticaEventFactory.createExecuteEvent({
+  return createExecuteEvent({
     id: props.event.id,
     operation: findOperation({
       operations: props.operations,
@@ -146,21 +146,21 @@ function transformExecute<Model extends ILlmSchema.Model>(props: {
 }
 
 function transformInitialize(): AgenticaInitializeEvent {
-  return AgenticaEventFactory.createInitializeEvent();
+  return createInitializeEvent();
 }
 
 function transformRequest(props: {
   event: IAgenticaEventJson.IRequest;
 }): AgenticaRequestEvent {
-  return AgenticaEventFactory.createRequestEvent(props.event);
+  return createRequestEvent(props.event);
 }
 
 function transformSelect<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ISelect;
 }): AgenticaSelectEvent<Model> {
-  return AgenticaEventFactory.createSelectEvent({
-    selection: AgenticaOperationFactory.createOperationSelection({
+  return createSelectEvent({
+    selection: createOperationSelection({
       operation: findOperation({
         operations: props.operations,
         input: props.event.selection.operation,
@@ -173,7 +173,7 @@ function transformSelect<Model extends ILlmSchema.Model>(props: {
 function transformText(props: {
   event: IAgenticaEventJson.IText;
 }): AgenticaTextEvent {
-  return AgenticaEventFactory.createTextEvent({
+  return createTextEvent({
     role: props.event.role,
     stream: StreamUtil.to(props.event.text),
     done: () => true,
