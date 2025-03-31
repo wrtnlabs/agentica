@@ -1,12 +1,3 @@
-import {
-  Agentica,
-  AgenticaDescribeEvent,
-  AgenticaOperationSelection,
-  AgenticaPrompt,
-  AgenticaSelectEvent,
-  AgenticaTextEvent,
-  AgenticaTokenUsage,
-} from "@agentica/core";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SendIcon from "@mui/icons-material/Send";
@@ -17,26 +8,42 @@ import {
   Drawer,
   IconButton,
   Input,
-  Theme,
   Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ILlmSchema } from "@samchon/openapi";
 import { toPng } from "html-to-image";
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import type { AgenticaValidateEvent } from "@agentica/core/src/events/AgenticaValidateEvent";
+import type {
+  Theme,
+} from "@mui/material";
+import type { ILlmSchema } from "@samchon/openapi";
+import type { ReactElement } from "react";
+import type {
+  Agentica,
+  AgenticaDescribeEvent,
+  AgenticaOperationSelection,
+  AgenticaPrompt,
+  AgenticaSelectEvent,
+  AgenticaTextEvent,
+  AgenticaTokenUsage,
+} from "@agentica/core";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
 
-export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
+const SIDE_WIDTH = 450;
+
+export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   agent,
   title,
-}: AgenticaChatMovie.IProps<Model>) => {
-  //----
+}: AgenticaChatMovie.IProps<Model>) {
+  // ----
   // VARIABLES
-  //----
+  // ----
   // REFERENCES
   const upperDivRef = useRef<HTMLDivElement>(null);
   const middleDivRef = useRef<HTMLDivElement>(null);
@@ -51,7 +58,7 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     agent.getPromptHistories().slice(),
   );
   const [tokenUsage, setTokenUsage] = useState<AgenticaTokenUsage>(
-    JSON.parse(JSON.stringify(agent.getTokenUsage())),
+    JSON.parse(JSON.stringify(agent.getTokenUsage())) as AgenticaTokenUsage,
   );
   const [height, setHeight] = useState(122);
   const [enabled, setEnabled] = useState(true);
@@ -60,9 +67,9 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
   >([]);
   const [openSide, setOpenSide] = useState(false);
 
-  //----
+  // ----
   // EVENT INTERACTIONS
-  //----
+  // ----
   // EVENT LISTENERS
   const handleText = async (event: AgenticaTextEvent) => {
     await event.join(); // @todo Jaxtyn: streaming
@@ -81,40 +88,52 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     selections.push(evevnt.selection);
     setSelections(selections);
   };
+  const handleValidate = (event: AgenticaValidateEvent<Model>) => {
+    console.error(event);
+  };
 
   // INITIALIZATION
   useEffect(() => {
-    if (inputRef.current !== null) inputRef.current.select();
+    if (inputRef.current !== null) {
+      inputRef.current.select();
+    }
     agent.on("text", handleText);
     agent.on("describe", handleDescribe);
     agent.on("select", handleSelect);
+    agent.on("validate", handleValidate);
     setTokenUsage(agent.getTokenUsage());
     return () => {
       agent.off("text", handleText);
       agent.off("describe", handleDescribe);
       agent.off("select", handleSelect);
+      agent.off("validate", handleValidate);
     };
   }, []);
 
   // EVENT HANDLERS
   const handleKeyUp = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && event.shiftKey === false) {
-      if (enabled === false) event.preventDefault();
-      else await conversate();
+      if (enabled === false) {
+        event.preventDefault();
+      }
+      else {
+        await conversate();
+      }
     }
   };
 
   const handleResize = () => {
     setTimeout(() => {
       if (
-        upperDivRef.current === null ||
-        middleDivRef.current === null ||
-        bottomDivRef.current === null
-      )
-        return;
-      const newHeight: number =
-        upperDivRef.current.clientHeight + bottomDivRef.current.clientHeight;
-      if (newHeight !== height) setHeight(newHeight);
+        upperDivRef.current === null
+        || middleDivRef.current === null
+        || bottomDivRef.current === null
+      ) { return; }
+      const newHeight: number
+        = upperDivRef.current.clientHeight + bottomDivRef.current.clientHeight;
+      if (newHeight !== height) {
+        setHeight(newHeight);
+      }
     });
   };
 
@@ -124,11 +143,13 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     handleResize();
     try {
       await agent.conversate(text);
-    } catch (error) {
+    }
+    catch (error) {
       if (error instanceof Error) {
         alert(error.message);
         setError(error);
-      } else setError(new Error("Unknown error"));
+      }
+      else { setError(new Error("Unknown error")); }
       return;
     }
 
@@ -140,27 +161,31 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
 
     const selections: AgenticaOperationSelection<Model>[] = agent
       .getPromptHistories()
-      .filter((h) => h.type === "select")
-      .map((h) => h.selections)
+      .filter(h => h.type === "select")
+      .map(h => h.selections)
       .flat();
     for (const cancel of agent
       .getPromptHistories()
-      .filter((h) => h.type === "cancel")
-      .map((h) => h.selections)
+      .filter(h => h.type === "cancel")
+      .map(h => h.selections)
       .flat()) {
       const index: number = selections.findIndex(
-        (s) =>
-          s.operation.protocol === cancel.operation.protocol &&
-          s.operation.controller.name === cancel.operation.controller.name &&
-          s.operation.function.name === cancel.operation.function.name,
+        s =>
+          s.operation.protocol === cancel.operation.protocol
+          && s.operation.controller.name === cancel.operation.controller.name
+          && s.operation.function.name === cancel.operation.function.name,
       );
-      if (index !== -1) selections.splice(index, 1);
+      if (index !== -1) {
+        selections.splice(index, 1);
+      }
     }
     setSelections(selections);
   };
 
   const capture = async () => {
-    if (bodyContainerRef.current === null) return;
+    if (bodyContainerRef.current === null) {
+      return;
+    }
 
     const dataUrl = await toPng(bodyContainerRef.current, {});
     const link = document.createElement("a");
@@ -170,9 +195,9 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
     link.remove();
   };
 
-  //----
+  // ----
   // RENDERERS
-  //----
+  // ----
   const theme: Theme = useTheme();
   const isMobile: boolean = useMediaQuery(theme.breakpoints.down("lg"));
   const bodyMovie = (): ReactElement => (
@@ -196,8 +221,8 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
         ref={bodyContainerRef}
       >
         {histories
-          .map((prompt) => <AgenticaChatMessageMovie prompt={prompt} />)
-          .filter((elem) => elem !== null)}
+          .map(prompt => <AgenticaChatMessageMovie prompt={prompt} />)
+          .filter(elem => elem !== null)}
       </Container>
     </div>
   );
@@ -232,24 +257,26 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {title ?? "Agentica Chatbot"}
           </Typography>
-          {isMobile ? (
-            <>
-              <IconButton onClick={capture}>
-                <AddAPhotoIcon />
-              </IconButton>
-              <IconButton onClick={() => setOpenSide(true)}>
-                <ReceiptLongIcon />
-              </IconButton>
-            </>
-          ) : (
-            <Button
-              color="inherit"
-              startIcon={<AddAPhotoIcon />}
-              onClick={capture}
-            >
-              Screenshot Capture
-            </Button>
-          )}
+          {isMobile
+            ? (
+                <>
+                  <IconButton onClick={capture}>
+                    <AddAPhotoIcon />
+                  </IconButton>
+                  <IconButton onClick={() => setOpenSide(true)}>
+                    <ReceiptLongIcon />
+                  </IconButton>
+                </>
+              )
+            : (
+                <Button
+                  color="inherit"
+                  startIcon={<AddAPhotoIcon />}
+                  onClick={capture}
+                >
+                  Screenshot Capture
+                </Button>
+              )}
         </Toolbar>
       </AppBar>
       <div
@@ -261,23 +288,25 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
           flexDirection: "row",
         }}
       >
-        {isMobile ? (
-          <>
-            {bodyMovie()}
-            <Drawer
-              anchor="right"
-              open={openSide}
-              onClose={() => setOpenSide(false)}
-            >
-              {sideMovie()}
-            </Drawer>
-          </>
-        ) : (
-          <>
-            {bodyMovie()}
-            {sideMovie()}
-          </>
-        )}
+        {isMobile
+          ? (
+              <>
+                {bodyMovie()}
+                <Drawer
+                  anchor="right"
+                  open={openSide}
+                  onClose={() => setOpenSide(false)}
+                >
+                  {sideMovie()}
+                </Drawer>
+              </>
+            )
+          : (
+              <>
+                {bodyMovie()}
+                {sideMovie()}
+              </>
+            )}
       </div>
       <AppBar
         ref={bottomDivRef}
@@ -311,12 +340,10 @@ export const AgenticaChatMovie = <Model extends ILlmSchema.Model>({
       </AppBar>
     </div>
   );
-};
+}
 export namespace AgenticaChatMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
     agent: Agentica<Model>;
     title?: string;
   }
 }
-
-const SIDE_WIDTH = 450;

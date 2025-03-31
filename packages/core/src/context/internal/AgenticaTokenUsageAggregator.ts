@@ -1,5 +1,4 @@
 import type { CompletionUsage } from "openai/resources";
-
 import type { IAgenticaTokenUsageJson } from "../../json/IAgenticaTokenUsageJson";
 import type { AgenticaTokenUsage } from "../AgenticaTokenUsage";
 

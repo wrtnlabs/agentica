@@ -1,5 +1,4 @@
 import type OpenAI from "openai";
-
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
@@ -22,7 +21,8 @@ export type IAgenticaEventJson =
   | IAgenticaEventJson.IInitialize
   | IAgenticaEventJson.IRequest
   | IAgenticaEventJson.ISelect
-  | IAgenticaEventJson.IText;
+  | IAgenticaEventJson.IText
+  | IAgenticaEventJson.IValidate;
 export namespace IAgenticaEventJson {
   export type Type = IAgenticaEventJson["type"];
   export interface Mapper {
@@ -79,6 +79,8 @@ export namespace IAgenticaEventJson {
     arguments: Record<string, any>;
   }
 
+  export interface IValidate extends IBase<"validate"> {}
+
   /**
    * Event of function calling execution.
    */
@@ -96,7 +98,7 @@ export namespace IAgenticaEventJson {
     /**
      * Arguments of the function calling.
      */
-    arguments: object;
+    arguments: Record<string, unknown>;
 
     /**
      * Return value.

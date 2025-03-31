@@ -1,5 +1,6 @@
 import path from "node:path";
 import process from "node:process";
+
 import dotenv from "dotenv";
 import dotenvExpand from "dotenv-expand";
 import { Singleton } from "tstl";

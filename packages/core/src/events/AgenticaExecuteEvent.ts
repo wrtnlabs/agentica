@@ -1,50 +1,42 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
+import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
-import { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import { AgenticaEventBase } from "./AgenticaEventBase";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { AgenticaEventBase } from "./AgenticaEventBase";
 
-export class AgenticaExecuteEvent<
-  Model extends ILlmSchema.Model,
-> extends AgenticaEventBase<"execute"> {
-  public readonly id: string;
-  public readonly operation: AgenticaOperation<Model>;
-  public readonly arguments: Record<string, unknown>;
-  public readonly value: unknown;
-
-  public constructor(props: AgenticaExecuteEvent.IProps<Model>) {
-    super("execute");
-    this.id = props.id;
-    this.operation = props.operation;
-    this.arguments = props.arguments;
-    this.value = props.value;
-  }
-
-  public toJSON(): IAgenticaEventJson.IExecute {
-    return {
-      type: "execute",
-      id: this.id,
-      operation: this.operation.toJSON(),
-      arguments: this.arguments,
-      value: this.value,
-    };
-  }
-
-  public toPrompt(): AgenticaExecutePrompt<Model> {
-    return new AgenticaExecutePrompt({
-      id: this.id,
-      operation: this.operation,
-      arguments: this.arguments,
-      value: this.value,
-    });
-  }
-}
+export type AgenticaExecuteEvent<Model extends ILlmSchema.Model> =
+  | AgenticaExecuteEvent.Class<Model>
+  | AgenticaExecuteEvent.Protocol<Model>;
 export namespace AgenticaExecuteEvent {
-  export interface IProps<Model extends ILlmSchema.Model> {
+  export interface Class<Model extends ILlmSchema.Model>
+    extends Base<
+      "class",
+      AgenticaOperation.Class<Model>,
+      AgenticaExecutePrompt.Class<Model>,
+      unknown
+    > {}
+
+  export interface Protocol<Model extends ILlmSchema.Model>
+    extends Base<
+      "http",
+      AgenticaOperation.Http<Model>,
+      AgenticaExecutePrompt.Http<Model>,
+      IHttpResponse
+    > {}
+
+  interface Base<
+    Protocol extends "http" | "class",
+    Operation extends AgenticaOperation<any>,
+    Prompt extends AgenticaExecutePrompt<any>,
+    Value,
+  > extends AgenticaEventBase<"execute"> {
+    protocol: Protocol;
     id: string;
-    operation: AgenticaOperation<Model>;
+    operation: Operation;
     arguments: Record<string, unknown>;
-    value: unknown;
+    value: Value;
+
+    toJSON: () => IAgenticaEventJson.IExecute;
+    toPrompt: () => Prompt;
   }
 }

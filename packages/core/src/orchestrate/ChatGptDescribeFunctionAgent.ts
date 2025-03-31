@@ -1,18 +1,19 @@
 import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
-
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
+import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
+
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { MPSC } from "../internal/MPSC";
 import { StreamUtil } from "../internal/StreamUtil";
-import { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
+import { createDescribeEvent } from "../factory/events";
+import { createDescribePrompt } from "../factory/prompts";
 
-export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
+async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
   if (histories.length === 0) {
     return [];
   }
@@ -78,7 +79,7 @@ export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaConte
         mpsc.produce(choice.delta.content);
 
         void ctx.dispatch(
-          new AgenticaDescribeEvent({
+          createDescribeEvent({
             executes: histories,
             stream: mpsc.consumer,
             done: () => mpsc.done(),
@@ -113,7 +114,7 @@ export async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaConte
     .filter(str => str !== null)
     .map(
       content =>
-        new AgenticaDescribePrompt({
+        createDescribePrompt({
           executes: histories,
           text: content,
         }),
