@@ -49,9 +49,6 @@
     "format": "eslint --fix .",
     "test": "vitest"
   },
-  "dependencies": {
-    "giget": "^1"
-  },
   "optionalDependencies": {
     "prettier": ">=2.4.0"
   },
