@@ -16,6 +16,7 @@ export * from "./events/AgenticaRequestEvent";
 export * from "./events/AgenticaResponseEvent";
 export * from "./events/AgenticaSelectEvent";
 export * from "./events/AgenticaTextEvent";
+export * from "./events/AgenticaValidateEvent";
 
 export * as factory from "./factory";
 

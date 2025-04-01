@@ -16,21 +16,12 @@ import {
 import { toPng } from "html-to-image";
 import React, { useEffect, useRef, useState } from "react";
 
-import type { AgenticaValidateEvent } from "@agentica/core/src/events/AgenticaValidateEvent";
+import type { Agentica, AgenticaDescribeEvent, AgenticaOperationSelection, AgenticaPrompt, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
 import type {
   Theme,
 } from "@mui/material";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { ReactElement } from "react";
-import type {
-  Agentica,
-  AgenticaDescribeEvent,
-  AgenticaOperationSelection,
-  AgenticaPrompt,
-  AgenticaSelectEvent,
-  AgenticaTextEvent,
-  AgenticaTokenUsage,
-} from "@agentica/core";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
