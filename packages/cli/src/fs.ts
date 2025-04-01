@@ -6,7 +6,7 @@
 import { existsSync } from "node:fs";
 import { appendFile, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { downloadTemplate } from "giget";
+import { downloadTemplate } from "@bluwy/giget-core";
 
 interface DownloadTemplateAndPlaceInProjectProps {
   /** template name to specify the repository */
@@ -20,7 +20,8 @@ interface DownloadTemplateAndPlaceInProjectProps {
  */
 export async function downloadTemplateAndPlaceInProject({ template, project }: DownloadTemplateAndPlaceInProjectProps): Promise<void> {
   // COPY PROJECTS
-  await downloadTemplate(`github:wrtnlabs/agentica.template.${template}`, {
+  await downloadTemplate(`wrtnlabs/agentica.template.${template}`, {
+    provider: "github",
     dir: project,
   });
 

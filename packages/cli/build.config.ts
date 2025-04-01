@@ -29,6 +29,18 @@ export default defineBuildConfig({
       "sisteransi",
       "@clack/prompts",
       "@clack/core",
+
+      // giget
+      "@bluwy/giget-core",
+
+      // tar (dependency of giget)
+      "tar",
+      "fs-minipass",
+      "yallist",
+      "minizlib",
+      "minipass",
+      "mkdirp",
+      "chownr",
     ],
     esbuild: {
       minify: !isCI, // minify only in CI and publish
