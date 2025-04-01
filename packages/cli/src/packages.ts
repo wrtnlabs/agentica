@@ -29,7 +29,7 @@ export const basePackageJson = {
 
 interface InstallProps {
   packageManager: PackageManager;
-  pkg: string;
+  pkg?: string;
 }
 
 /**
@@ -40,11 +40,11 @@ export function installCommand({ packageManager, pkg }: InstallProps) {
     case "npm":
       return `npm install ${pkg}`;
     case "yarn":
-      return `yarn add ${pkg}`;
+      return pkg != null ? `yarn add ${pkg}` : "yarn";
     case "pnpm":
-      return `pnpm add ${pkg}`;
+      return `pnpm install ${pkg}`;
     case "bun":
-      return `bun add ${pkg}`;
+      return `bun install ${pkg}`;
     default:
       /** exhaustive check */
       packageManager satisfies never;

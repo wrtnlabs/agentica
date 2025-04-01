@@ -13,16 +13,22 @@ describe("installCommand", () => {
     expect(result).toBe("yarn add openai");
   });
 
+  it("yarn without package", () => {
+    const packageManager = "yarn";
+    const result = installCommand({ packageManager });
+    expect(result).toBe("yarn");
+  });
+
   it("pnpm", () => {
     const packageManager = "pnpm";
     const result = installCommand({ packageManager, pkg: "openai" });
-    expect(result).toBe("pnpm add openai");
+    expect(result).toBe("pnpm install openai");
   });
 
   it("bun", () => {
     const packageManager = "bun";
     const result = installCommand({ packageManager, pkg: "openai" });
-    expect(result).toBe("bun add openai");
+    expect(result).toBe("bun install openai");
   });
 
   it("unsupported", () => {
