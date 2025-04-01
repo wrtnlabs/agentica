@@ -67,11 +67,11 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
 
   s.start("📦 Package installation in progress...");
 
-  await execAsync(prepareCommand, {
+  await execAsync(command, {
     cwd: projectAbsolutePath,
   });
 
-  await execAsync(command, {
+  await execAsync(prepareCommand, {
     cwd: projectAbsolutePath,
   });
 
