@@ -50,7 +50,7 @@ function sum(x: CompletionUsage, y: CompletionUsage): CompletionUsage {
   };
 }
 
-export const ChatGptUsageAggregator = {
+export const ChatGptTokenUsageAggregator = {
   sum,
   sumCompletionTokenDetail,
   sumPromptTokenDetail,

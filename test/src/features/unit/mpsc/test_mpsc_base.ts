@@ -1,8 +1,8 @@
-import { MPSC } from "@agentica/core/src/internal/MPSC";
+import { utils } from "@agentica/core";
 
 export async function test_mpsc_base(): Promise<void | false> {
   // Test case 1: Basic MPSC functionality with create
-  const mpsc = new MPSC<number>();
+  const mpsc = new utils.MPSC<number>();
   const reader = mpsc.consumer.getReader();
   // Produce values
   mpsc.produce(10);
@@ -43,7 +43,7 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Test case 3: waitClose functionality
-  const mpsc2 = new MPSC<string>();
+  const mpsc2 = new utils.MPSC<string>();
   const reader2 = mpsc2.consumer.getReader();
   // Produce values first
   mpsc2.produce("test");
@@ -70,7 +70,7 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Test case 4: Multiple producers scenario
-  const multiMpsc = new MPSC<string>();
+  const multiMpsc = new utils.MPSC<string>();
   const multiReader = multiMpsc.consumer.getReader();
   // Simulate multiple producers
   for (let i = 1; i <= 5; i++) {
@@ -105,7 +105,7 @@ export async function test_mpsc_base(): Promise<void | false> {
     );
   }
   // Test case 5: Reading before producing
-  const delayMpsc = new MPSC<number>();
+  const delayMpsc = new utils.MPSC<number>();
   const delayReader = delayMpsc.consumer.getReader();
   // Start reading before producing
   const readPromise = delayReader.read();
@@ -121,7 +121,7 @@ export async function test_mpsc_base(): Promise<void | false> {
   }
   delayMpsc.close();
   // Test case 6: Producer-first, then consumer
-  const laterMpsc = new MPSC<string>();
+  const laterMpsc = new utils.MPSC<string>();
   // Produce values first
   laterMpsc.produce("first");
   laterMpsc.produce("second");

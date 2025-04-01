@@ -4,14 +4,15 @@ import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import type { IAgenticaExecutor } from "../structures/IAgenticaExecutor";
 
-import { ChatGptCallFunctionAgent } from "./ChatGptCallFunctionAgent";
-import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
-import { ChatGptDescribeFunctionAgent } from "./ChatGptDescribeFunctionAgent";
-import { ChatGptInitializeFunctionAgent } from "./ChatGptInitializeFunctionAgent";
-import { ChatGptSelectFunctionAgent } from "./ChatGptSelectFunctionAgent";
+import { describe } from "./describe";
+import { cancel } from "./cancel";
+import { call } from "./call";
+import { cancelFunction } from "./internal/cancelFunction";
+import { initialize } from "./initialize";
+import { select } from "./select";
 
-export const ChatGptAgent = {
-  execute: <Model extends ILlmSchema.Model>(executor: Partial<IAgenticaExecutor<Model>> | null) => async (ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> => {
+export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgenticaExecutor<Model>> | null) {
+  return async (ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> => {
     const histories: AgenticaPrompt<Model>[] = [];
 
     // FUNCTIONS ARE NOT LISTED YET
@@ -22,7 +23,7 @@ export const ChatGptAgent = {
       else {
         histories.push(
           ...(await (
-            executor?.initialize ?? ChatGptInitializeFunctionAgent.execute
+            executor?.initialize ?? initialize
           )(ctx)),
         );
         if (ctx.ready() === false) {
@@ -34,7 +35,7 @@ export const ChatGptAgent = {
     // CANCEL CANDIDATE FUNCTIONS
     if (ctx.stack.length !== 0) {
       histories.push(
-        ...(await (executor?.cancel ?? ChatGptCancelFunctionAgent.execute)(
+        ...(await (executor?.cancel ?? cancel)(
           ctx,
         )),
       );
@@ -42,7 +43,7 @@ export const ChatGptAgent = {
 
     // SELECT CANDIDATE FUNCTIONS
     histories.push(
-      ...(await (executor?.select ?? ChatGptSelectFunctionAgent.execute)(
+      ...(await (executor?.select ?? select)(
         ctx,
       )),
     );
@@ -54,7 +55,7 @@ export const ChatGptAgent = {
     while (true) {
       // EXECUTE FUNCTIONS
       const prompts: AgenticaPrompt<Model>[] = await (
-        executor?.call ?? ChatGptCallFunctionAgent.execute
+        executor?.call ?? call
       )(ctx);
       histories.push(...prompts);
 
@@ -63,14 +64,14 @@ export const ChatGptAgent = {
         prompt => prompt.type === "execute",
       );
       for (const e of executes) {
-        await ChatGptCancelFunctionAgent.cancelFunction(ctx, {
+        await cancelFunction(ctx, {
           reason: "completed",
           name: e.operation.name,
         });
       }
       histories.push(
         ...(await (
-          executor?.describe ?? ChatGptDescribeFunctionAgent.execute
+          executor?.describe ?? describe
         )(ctx, executes)),
       );
       if (executes.length === 0 || ctx.stack.length === 0) {
@@ -78,5 +79,5 @@ export const ChatGptAgent = {
       }
     }
     return histories;
-  },
-};
+  };
+}

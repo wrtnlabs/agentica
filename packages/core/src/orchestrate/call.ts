@@ -19,18 +19,17 @@ import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 
-import { AgenticaConstant } from "../internal/AgenticaConstant";
-import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
-import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
-import { StreamUtil } from "../internal/StreamUtil";
-import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
-import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
-import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
+import { AgenticaConstant } from "../constants/AgenticaConstant";
+import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
+import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
+import { StreamUtil } from "../utils/StreamUtil";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
-import { createCancelPrompt, createExecutePrompt, createTextPrompt } from "../factory/prompts";
+import { createCancelPrompt, createExecutePrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
+import { cancelFunction } from "./internal/cancelFunction";
 
-async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -42,7 +41,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
           content: AgenticaDefaultPrompt.write(ctx.config),
         } satisfies OpenAI.ChatCompletionSystemMessageParam,
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(ChatGptHistoryDecoder.decode).flat(),
+        ...ctx.histories.map(decodePrompt).flat(),
         // USER INPUT
         {
           role: "user",
@@ -137,7 +136,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
               }),
             );
 
-            await ChatGptCancelFunctionAgent.cancelFunction(ctx, {
+            await cancelFunction(ctx, {
               name: call.operation.name,
               reason: "completed",
             });
@@ -369,7 +368,7 @@ async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
           content: AgenticaDefaultPrompt.write(ctx.config),
         } satisfies OpenAI.ChatCompletionSystemMessageParam,
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(ChatGptHistoryDecoder.decode).flat(),
+        ...ctx.histories.map(decodePrompt).flat(),
         // USER INPUT
         {
           role: "user",
@@ -496,7 +495,3 @@ function isObject($defs: Record<string, IChatGptSchema>, schema: IChatGptSchema)
       && schema.anyOf.every(schema => isObject($defs, schema)))
   );
 }
-
-export const ChatGptCallFunctionAgent = {
-  execute,
-};

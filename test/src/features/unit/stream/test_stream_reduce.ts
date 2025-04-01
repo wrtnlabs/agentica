@@ -1,9 +1,9 @@
-import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
+import { utils } from "@agentica/core";
 
 export async function test_stream_reduce(): Promise<void | false> {
   // Test case 1: String concatenation
   const stringStream = createNumberStream(1, 3);
-  const stringResult = await StreamUtil.reduce<number, string>(
+  const stringResult = await utils.StreamUtil.reduce<number, string>(
     stringStream,
     (acc, cur) => acc + cur.toString(),
     "",
@@ -17,7 +17,7 @@ export async function test_stream_reduce(): Promise<void | false> {
 
   // Test case 2: Number sum
   const sumStream = createNumberStream(1, 5);
-  const sumResult = await StreamUtil.reduce<number, number>(
+  const sumResult = await utils.StreamUtil.reduce<number, number>(
     sumStream,
     (acc, cur) => acc + cur,
     0,
@@ -29,7 +29,7 @@ export async function test_stream_reduce(): Promise<void | false> {
 
   // Test case 3: Without initial value
   const noInitialStream = createNumberStream(1, 4);
-  const noInitialResult = await StreamUtil.reduce<number>(
+  const noInitialResult = await utils.StreamUtil.reduce<number>(
     noInitialStream,
     (acc, cur) => acc + cur,
   );
@@ -42,7 +42,7 @@ export async function test_stream_reduce(): Promise<void | false> {
 
   // Test case 4: Empty stream
   const emptyStream = createEmptyStream<number>();
-  const emptyResult = await StreamUtil.reduce<number, string>(
+  const emptyResult = await utils.StreamUtil.reduce<number, string>(
     emptyStream,
     (acc, cur) => acc + cur.toString(),
     "initial value",
@@ -56,7 +56,7 @@ export async function test_stream_reduce(): Promise<void | false> {
 
   // Test case 5: Empty stream without initial value
   const emptyNoInitialStream = createEmptyStream<number>();
-  const emptyNoInitialResult = await StreamUtil.reduce<number>(
+  const emptyNoInitialResult = await utils.StreamUtil.reduce<number>(
     emptyNoInitialStream,
     (acc, cur) => acc + cur,
   );

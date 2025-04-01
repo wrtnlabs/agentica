@@ -1,10 +1,10 @@
 import type { ILlmSchema } from "@samchon/openapi";
+import type { AgenticaOperation } from "../AgenticaOperation";
+import type { AgenticaOperationCollection } from "../AgenticaOperationCollection";
+import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
+import type { IAgenticaController } from "../../structures/IAgenticaController";
 
-import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaOperationCollection } from "../context/AgenticaOperationCollection";
-import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
-import type { IAgenticaController } from "../structures/IAgenticaController";
-import { __map_take } from "./__map_take";
+import { __map_take } from "../../utils/__map_take";
 
 export function compose<Model extends ILlmSchema.Model>(props: {
   controllers: IAgenticaController<Model>[];
