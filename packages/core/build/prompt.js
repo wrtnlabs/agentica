@@ -21,7 +21,7 @@ async function main() {
       .trim();
   }
   await fs.promises.writeFile(
-    path.join(__dirname, "../src/internal/AgenticaSystemPrompt.ts"),
+    path.join(__dirname, "../src/constants/AgenticaSystemPrompt.ts"),
     [
       `/* eslint-disable no-template-curly-in-string */`,
       `export const AgenticaSystemPrompt = {`,
