@@ -1,6 +1,8 @@
+import process from "node:process";
+
 import type { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
 import type { Driver } from "tgrid";
-import process from "node:process";
+
 import { WebSocketConnector } from "tgrid";
 
 async function main() {

@@ -1,19 +1,20 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaEvent } from "../events/AgenticaEvent";
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
+import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent";
 import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { StreamUtil } from "../internal/StreamUtil";
 import { createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createTextEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
+import { StreamUtil } from "../internal/StreamUtil";
 
 function findOperation<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;

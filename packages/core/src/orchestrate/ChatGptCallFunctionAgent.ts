@@ -1,8 +1,3 @@
-import {
-  ChatGptTypeChecker,
-  HttpLlm,
-} from "@samchon/openapi";
-
 import type {
   IChatGptSchema,
   IHttpMigrateRoute,
@@ -11,24 +6,31 @@ import type {
 } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
+
+import {
+  ChatGptTypeChecker,
+  HttpLlm,
+} from "@samchon/openapi";
+
+import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 
+import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
+import { createOperationSelection } from "../factory/operations";
+import { createCancelPrompt, createExecutePrompt, createTextPrompt } from "../factory/prompts";
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
+
 import { ChatGptCancelFunctionAgent } from "./ChatGptCancelFunctionAgent";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
-import { createOperationSelection } from "../factory/operations";
-import { createCancelPrompt, createExecutePrompt, createTextPrompt } from "../factory/prompts";
 
 async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
   // ----

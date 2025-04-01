@@ -1,12 +1,3 @@
-/**
- * @module
- * This file contains the implementation of the AgenticaSelectBenchmark class.
- *
- * @author Wrtn Technologies
- */
-import { AgenticaTokenUsage, factory, orchestrate } from "@agentica/core";
-import { Semaphore } from "tstl";
-
 import type {
   Agentica,
   AgenticaContext,
@@ -17,6 +8,16 @@ import type {
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
+
+/**
+ * @module
+ * This file contains the implementation of the AgenticaSelectBenchmark class.
+ *
+ * @author Wrtn Technologies
+ */
+import { AgenticaTokenUsage, factory, orchestrate } from "@agentica/core";
+import { Semaphore } from "tstl";
+
 import type { IAgenticaSelectBenchmarkEvent } from "./structures/IAgenticaSelectBenchmarkEvent";
 import type { IAgenticaSelectBenchmarkResult } from "./structures/IAgenticaSelectBenchmarkResult";
 import type { IAgenticaSelectBenchmarkScenario } from "./structures/IAgenticaSelectBenchmarkScenario";

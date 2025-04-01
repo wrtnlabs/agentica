@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import process from "node:process";
+
 import type { AgenticaPrompt } from "@agentica/core";
 import type {
   IHttpConnection,
@@ -7,8 +10,7 @@ import type {
   SwaggerV2,
 } from "@samchon/openapi";
 import type { RequestOptions } from "openai/core";
-import fs from "node:fs";
-import process from "node:process";
+
 import { Agentica } from "@agentica/core";
 import {
   HttpLlm,
@@ -18,6 +20,7 @@ import ShoppingApi from "@samchon/shopping-api";
 import chalk from "chalk";
 import OpenAI from "openai";
 import typia from "typia";
+
 import { TestGlobal } from "./TestGlobal";
 import { ConsoleScanner } from "./utils/ConsoleScanner";
 

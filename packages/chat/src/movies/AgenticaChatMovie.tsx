@@ -1,3 +1,19 @@
+import type {
+  Agentica,
+  AgenticaDescribeEvent,
+  AgenticaOperationSelection,
+  AgenticaPrompt,
+  AgenticaSelectEvent,
+  AgenticaTextEvent,
+  AgenticaTokenUsage,
+} from "@agentica/core";
+import type { AgenticaValidateEvent } from "@agentica/core/src/events/AgenticaValidateEvent";
+import type {
+  Theme,
+} from "@mui/material";
+import type { ILlmSchema } from "@samchon/openapi";
+import type { ReactElement } from "react";
+
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SendIcon from "@mui/icons-material/Send";
@@ -15,22 +31,6 @@ import {
 } from "@mui/material";
 import { toPng } from "html-to-image";
 import React, { useEffect, useRef, useState } from "react";
-
-import type { AgenticaValidateEvent } from "@agentica/core/src/events/AgenticaValidateEvent";
-import type {
-  Theme,
-} from "@mui/material";
-import type { ILlmSchema } from "@samchon/openapi";
-import type { ReactElement } from "react";
-import type {
-  Agentica,
-  AgenticaDescribeEvent,
-  AgenticaOperationSelection,
-  AgenticaPrompt,
-  AgenticaSelectEvent,
-  AgenticaTextEvent,
-  AgenticaTokenUsage,
-} from "@agentica/core";
 
 import { AgenticaChatMessageMovie } from "./messages/AgenticaChatMessageMovie";
 import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";

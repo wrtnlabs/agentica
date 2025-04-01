@@ -1,28 +1,30 @@
-import typia from "typia";
-import { v4 } from "uuid";
-
 import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
+
+import typia from "typia";
+import { v4 } from "uuid";
+
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
 import type { __IChatSelectFunctionsApplication } from "../context/internal/__IChatSelectFunctionsApplication";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
-import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 
+import { createSelectEvent, createTextEvent } from "../factory/events";
+import { createOperationSelection } from "../factory/operations";
+import { createSelectPrompt, createTextPrompt } from "../factory/prompts";
 import { AgenticaConstant } from "../internal/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { StreamUtil } from "../internal/StreamUtil";
+
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { createSelectPrompt, createTextPrompt } from "../factory/prompts";
-import { createOperationSelection } from "../factory/operations";
-import { createSelectEvent, createTextEvent } from "../factory/events";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatSelectFunctionsApplication,

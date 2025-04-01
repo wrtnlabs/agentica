@@ -1,27 +1,28 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
+import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { AgenticaPrompt } from "./prompts/AgenticaPrompt";
+import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
 import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaProps } from "./structures/IAgenticaProps";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
-import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
-import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 
-import { ChatGptAgent } from "./orchestrate/ChatGptAgent";
-import { ChatGptCompletionMessageUtil } from "./orchestrate/ChatGptCompletionMessageUtil";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
+import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
+import { createTextPrompt } from "./factory/prompts";
 import { __map_take } from "./internal/__map_take";
 import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
 import { StreamUtil } from "./internal/StreamUtil";
+import { ChatGptAgent } from "./orchestrate/ChatGptAgent";
+import { ChatGptCompletionMessageUtil } from "./orchestrate/ChatGptCompletionMessageUtil";
 import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
-import { createTextPrompt } from "./factory/prompts";
-import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
 
 /**
  * Nestia A.I. chatbot agent.

@@ -1,7 +1,8 @@
-import { tags } from "typia";
+import type { tags } from "typia";
+
 import { v4 } from "uuid";
 
-import { IBbsArticle } from "./IBbsArticle";
+import type { IBbsArticle } from "./IBbsArticle";
 
 export class BbsArticleService {
   private readonly articles: IBbsArticle[] = [];
@@ -63,14 +64,12 @@ export class BbsArticleService {
     input: IBbsArticle.IUpdate;
   }): void {
     const article: IBbsArticle | undefined = this.articles.find(
-      (a) => a.id === props.id,
+      a => a.id === props.id,
     );
-    if (article === undefined)
-      throw new Error("Unable to find the matched article.");
-    if (props.input.title !== undefined) article.title = props.input.title;
-    if (props.input.body !== undefined) article.body = props.input.body;
-    if (props.input.thumbnail !== undefined)
-      article.thumbnail = props.input.thumbnail;
+    if (article === undefined) { throw new Error("Unable to find the matched article."); }
+    if (props.input.title !== undefined) { article.title = props.input.title; }
+    if (props.input.body !== undefined) { article.body = props.input.body; }
+    if (props.input.thumbnail !== undefined) { article.thumbnail = props.input.thumbnail; }
     article.updated_at = new Date().toISOString();
   }
 
@@ -87,8 +86,8 @@ export class BbsArticleService {
      */
     id: string & tags.Format<"uuid">;
   }): void {
-    const index: number = this.articles.findIndex((a) => a.id === props.id);
-    if (index === -1) throw new Error("Unable to find the matched article.");
+    const index: number = this.articles.findIndex(a => a.id === props.id);
+    if (index === -1) { throw new Error("Unable to find the matched article."); }
     this.articles.splice(index, 1);
   }
 }

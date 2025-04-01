@@ -1,5 +1,6 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
+
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 
 function decode<Model extends ILlmSchema.Model>(history: AgenticaPrompt<Model>): OpenAI.ChatCompletionMessageParam[] {

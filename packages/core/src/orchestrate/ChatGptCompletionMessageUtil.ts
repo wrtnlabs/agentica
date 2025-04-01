@@ -1,5 +1,3 @@
-import { json } from "typia";
-
 import type {
   ChatCompletion,
   ChatCompletionChunk,
@@ -8,7 +6,10 @@ import type {
   CompletionUsage,
 } from "openai/resources";
 
+import { json } from "typia";
+
 import { ByteArrayUtil } from "../internal/ByteArrayUtil";
+
 import { ChatGptUsageAggregator } from "./ChatGptUsageAggregator";
 
 function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {

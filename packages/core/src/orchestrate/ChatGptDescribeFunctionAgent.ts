@@ -1,17 +1,19 @@
 import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { AgenticaContext } from "../context/AgenticaContext";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 
+import type { AgenticaContext } from "../context/AgenticaContext";
+import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+
+import { createDescribeEvent } from "../factory/events";
+import { createDescribePrompt } from "../factory/prompts";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { MPSC } from "../internal/MPSC";
 import { StreamUtil } from "../internal/StreamUtil";
+
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { createDescribeEvent } from "../factory/events";
-import { createDescribePrompt } from "../factory/prompts";
 
 async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
   if (histories.length === 0) {

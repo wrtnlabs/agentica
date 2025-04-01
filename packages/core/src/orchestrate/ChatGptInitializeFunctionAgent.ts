@@ -1,19 +1,21 @@
-import typia from "typia";
-
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
+
+import typia from "typia";
+
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 
+import { createTextEvent } from "../factory/events";
+import { createTextPrompt } from "../factory/prompts";
 import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
 import { MPSC } from "../internal/MPSC";
 import { StreamUtil } from "../internal/StreamUtil";
+
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
-import { createTextEvent } from "../factory/events";
-import { createTextPrompt } from "../factory/prompts";
 
 const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
   __IChatInitialApplication,

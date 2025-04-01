@@ -1,4 +1,5 @@
 # Agentica Chat Application
+
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
 [![npm version](https://img.shields.io/npm/v/@agentica/chat.svg)](https://www.npmjs.com/package/@agentica/chat)
 [![Downloads](https://img.shields.io/npm/dm/@agentica/chat.svg)](https://www.npmjs.com/package/@agentica/chat)
@@ -15,7 +16,7 @@ import typia from "typia";
 
 const agent = new Agentica({ ... });
 ReactDOM.render(
-  <AgenticaChatApplication agent={agent} />, 
+  <AgenticaChatApplication agent={agent} />,
   document.body,
 );
 ```

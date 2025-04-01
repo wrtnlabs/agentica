@@ -1,4 +1,8 @@
-import { Agentica, IAgenticaVendor } from "@agentica/core";
+import type { IAgenticaVendor } from "@agentica/core";
+import type { IHttpLlmApplication } from "@samchon/openapi";
+import type { ReactElement } from "react";
+
+import { Agentica } from "@agentica/core";
 import {
   Button,
   FormControl,
@@ -9,19 +13,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { IHttpLlmApplication } from "@samchon/openapi";
 import OpenAI from "openai";
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import JsonInput from "react-json-editor-ajrm";
 // @ts-ignore
 import locale from "react-json-editor-ajrm/locale/en.js";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
+
 import { AgenticaChatUploaderMovie } from "./AgenticaChatUploaderMovie";
 
-export const AgenticaChatUploaderApplication = (
-  props: AgenticaChatUploaderApplication.IProps,
-) => {
+export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderApplication.IProps) {
   // PARAMETERS
   const [host, setHost] = useState("http://localhost:37001");
   const [headers, setHeaders] = useState<Record<string, string>>({
@@ -31,8 +33,8 @@ export const AgenticaChatUploaderApplication = (
   const [apiKey, setApiKey] = useState("");
 
   // RESULT
-  const [application, setApplication] =
-    useState<IHttpLlmApplication<"chatgpt"> | null>(null);
+  const [application, setApplication]
+    = useState<IHttpLlmApplication<"chatgpt"> | null>(null);
   const [progress, setProgress] = useState(false);
 
   // HANDLERS
@@ -41,15 +43,15 @@ export const AgenticaChatUploaderApplication = (
     error: string | null,
   ) => {
     setApplication(application);
-    if (error !== null) handleError(error);
+    if (error !== null) { handleError(error); }
   };
   const handleError = (error: string) => {
-    if (props.onError) props.onError(error);
-    else alert(error);
+    if (props.onError) { props.onError(error); }
+    else { alert(error); }
   };
 
   const open = async () => {
-    if (application === null) return;
+    if (application === null) { return; }
     setProgress(true);
     try {
       const vendor: IAgenticaVendor = {
@@ -75,7 +77,8 @@ export const AgenticaChatUploaderApplication = (
         ],
       });
       props.onSuccess(<AgenticaChatApplication agent={agent} />);
-    } catch (error) {
+    }
+    catch (error) {
       handleError(error instanceof Error ? error.message : "unknown error");
       setProgress(false);
     }
@@ -89,7 +92,7 @@ export const AgenticaChatUploaderApplication = (
         <Typography variant="h6">HTTP Connection</Typography>
         <br />
         <TextField
-          onChange={(e) => setHost(e.target.value)}
+          onChange={e => setHost(e.target.value)}
           defaultValue={host}
           label="Host URL"
           variant="outlined"
@@ -110,7 +113,7 @@ export const AgenticaChatUploaderApplication = (
         <Typography variant="h6">LLM Arguments</Typography>
         <br />
         <FormLabel> LLM Provider </FormLabel>
-        <RadioGroup defaultValue={"chatgpt"} style={{ paddingLeft: 15 }}>
+        <RadioGroup defaultValue="chatgpt" style={{ paddingLeft: 15 }}>
           <FormControlLabel
             value="chatgpt"
             control={<Radio />}
@@ -132,7 +135,7 @@ export const AgenticaChatUploaderApplication = (
         </RadioGroup>
         <br />
         <TextField
-          onChange={(e) => setApiKey(e.target.value)}
+          onChange={e => setApiKey(e.target.value)}
           defaultValue={apiKey}
           label="OpenAI API Key"
           variant="outlined"
@@ -146,22 +149,22 @@ export const AgenticaChatUploaderApplication = (
         component="a"
         fullWidth
         variant="contained"
-        color={"info"}
+        color="info"
         size="large"
         disabled={
-          progress === true ||
-          document === null ||
-          application === null ||
-          host.length === 0 ||
-          apiKey.length === 0
+          progress === true
+          || document === null
+          || application === null
+          || host.length === 0
+          || apiKey.length === 0
         }
-        onClick={() => open()}
+        onClick={async () => open()}
       >
         {progress ? "Generating..." : "Generate AI Chatbot"}
       </Button>
     </div>
   );
-};
+}
 export namespace AgenticaChatUploaderApplication {
   export interface IProps {
     style?: React.CSSProperties;

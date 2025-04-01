@@ -1,4 +1,5 @@
-import { AgenticaTokenUsage } from "@agentica/core";
+import type { AgenticaTokenUsage } from "@agentica/core";
+
 import {
   Table,
   TableBody,
@@ -9,9 +10,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-export const AgenticaChatTokenUsageSideMovie = (
-  props: AgenticaChatTokenUsageSideMovie.IProps,
-) => {
+export function AgenticaChatTokenUsageSideMovie(props: AgenticaChatTokenUsageSideMovie.IProps) {
   const price: IPrice = compute(props.usage);
   return (
     <React.Fragment>
@@ -31,27 +30,36 @@ export const AgenticaChatTokenUsageSideMovie = (
             <TableCell>
               {props.usage.aggregate.total.toLocaleString()}
             </TableCell>
-            <TableCell>${price.total.toLocaleString()}</TableCell>
+            <TableCell>
+              $
+              {price.total.toLocaleString()}
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Input</TableCell>
             <TableCell>
               {props.usage.aggregate.input.total.toLocaleString()}
             </TableCell>
-            <TableCell>${price.prompt.toLocaleString()}</TableCell>
+            <TableCell>
+              $
+              {price.prompt.toLocaleString()}
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Output</TableCell>
             <TableCell>
               {props.usage.aggregate.output.total.toLocaleString()}
             </TableCell>
-            <TableCell>${price.completion.toLocaleString()}</TableCell>
+            <TableCell>
+              $
+              {price.completion.toLocaleString()}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>
     </React.Fragment>
   );
-};
+}
 export namespace AgenticaChatTokenUsageSideMovie {
   export interface IProps {
     usage: AgenticaTokenUsage;
@@ -64,15 +72,15 @@ interface IPrice {
   completion: number;
 }
 
-const compute = (usage: AgenticaTokenUsage): IPrice => {
-  const prompt: number =
-    (usage.aggregate.input.total - usage.aggregate.input.cached) *
-      (2.5 / 1_000_000) +
-    usage.aggregate.input.cached * (1.25 / 1_000_000);
+function compute(usage: AgenticaTokenUsage): IPrice {
+  const prompt: number
+    = (usage.aggregate.input.total - usage.aggregate.input.cached)
+      * (2.5 / 1_000_000)
+      + usage.aggregate.input.cached * (1.25 / 1_000_000);
   const completion: number = usage.aggregate.output.total * (10.0 / 1_000_000);
   return {
     total: prompt + completion,
     prompt,
     completion,
   };
-};
+}
