@@ -4,6 +4,7 @@ import type { PackageJson } from "type-fest";
 import type { Service } from "../connectors";
 import { existsSync } from "node:fs";
 import { readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { PACKAGE_MANAGERS } from "../packages";
 import {
@@ -13,15 +14,29 @@ import {
   setupStandAloneProject,
 } from "./start";
 
-beforeAll(async () => {
-  await rm(resolve(import.meta.dirname, ".tmp"), { recursive: true, force: true });
-});
+function generateRandomAlphanumericString(length: number): string {
+  const alphabet
+    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
 
-describe("start command integration test", { timeout: 60_000 }, () => {
-  describe.each(PACKAGE_MANAGERS)("packageManager: %s", (packageManager) => {
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * alphabet.length);
+    result += alphabet[randomIndex];
+  }
+
+  return result;
+}
+
+describe("start command integration test", () => {
+  describe.each(PACKAGE_MANAGERS)("packageManager: %s", { timeout: 1_000_000, concurrent: true }, (packageManager) => {
+    const tmpParentDirectory = resolve(tmpdir(), generateRandomAlphanumericString(8));
+    afterAll(async () => {
+      await rm(tmpParentDirectory, { recursive: true, force: true });
+    }, 60_000);
+
     describe("setupStandAloneProject", () => {
       it("should create a new directory and set project .env file", async () => {
-        const destinationDirectory = resolve(import.meta.dirname, ".tmp/standalone");
+        const destinationDirectory = resolve(tmpParentDirectory, ".tmp/standalone");
 
         await setupStandAloneProject({
           projectAbsolutePath: destinationDirectory,
@@ -47,7 +62,7 @@ describe("start command integration test", { timeout: 60_000 }, () => {
       });
 
       it("should create a new directory and set project with services", async () => {
-        const destinationDirectory = resolve(import.meta.dirname, ".tmp/standalone-with-google-map");
+        const destinationDirectory = resolve(tmpParentDirectory, ".tmp/standalone-with-google-map");
 
         await setupStandAloneProject({
           projectAbsolutePath: destinationDirectory,
@@ -80,7 +95,7 @@ describe("start command integration test", { timeout: 60_000 }, () => {
 
     describe("setupNodeJSProject", () => {
       it("should create a new directory and set project .env file", async () => {
-        const destinationDirectory = resolve(import.meta.dirname, ".tmp/nodejs");
+        const destinationDirectory = resolve(tmpParentDirectory, ".tmp/nodejs");
 
         await setupNodeJSProject({
           projectAbsolutePath: destinationDirectory,
@@ -107,7 +122,7 @@ describe("start command integration test", { timeout: 60_000 }, () => {
       });
 
       it("should create a new directory and set project with services", async () => {
-        const destinationDirectory = resolve(import.meta.dirname, ".tmp/nodejs-with-google-map");
+        const destinationDirectory = resolve(tmpParentDirectory, ".tmp/nodejs-with-google-map");
 
         await setupNodeJSProject({
           projectAbsolutePath: destinationDirectory,
@@ -140,7 +155,7 @@ describe("start command integration test", { timeout: 60_000 }, () => {
 
     describe("setupNestJSProject", () => {
       it("should create a new directory and set project .env file", async () => {
-        const destinationDirectory = resolve(import.meta.dirname, ".tmp/nestjs");
+        const destinationDirectory = resolve(tmpParentDirectory, ".tmp/nestjs");
 
         await setupNestJSProject({
           projectAbsolutePath: destinationDirectory,
@@ -167,7 +182,7 @@ describe("start command integration test", { timeout: 60_000 }, () => {
       });
 
       it("should create a new directory and set project with services", async () => {
-        const destinationDirectory = resolve(import.meta.dirname, ".tmp/nestjs-with-google-map");
+        const destinationDirectory = resolve(tmpParentDirectory, ".tmp/nestjs-with-google-map");
 
         await setupNestJSProject({
           projectAbsolutePath: destinationDirectory,
@@ -200,7 +215,7 @@ describe("start command integration test", { timeout: 60_000 }, () => {
 
     describe("setupReactProject", () => {
       it("should create a new directory and set project .env file", async () => {
-        const destinationDirectory = resolve(import.meta.dirname, ".tmp/react");
+        const destinationDirectory = resolve(tmpParentDirectory, ".tmp/react");
 
         await setupReactProject({
           projectAbsolutePath: destinationDirectory,
