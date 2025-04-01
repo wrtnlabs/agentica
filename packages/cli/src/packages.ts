@@ -6,12 +6,15 @@
 import type { PackageJson } from "type-fest";
 import process from "node:process";
 
+export const PACKAGE_MANAGERS = [
+  "npm",
+  "yarn",
+  "pnpm",
+  "bun",
+] as const;
+
 /** supported package managers */
-export type PackageManager =
-  | "npm"
-  | "yarn"
-  | "pnpm"
-  | "bun";
+export type PackageManager = typeof PACKAGE_MANAGERS[number];
 
 export const basePackageJson = {
   version: "0.0.1",
