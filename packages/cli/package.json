@@ -41,10 +41,10 @@
   },
   "scripts": {
     "prepare": "ts-patch install",
-    "build": "unbuild",
+    "build": "unbuild && publint",
     "dev": "unbuild --watch",
     "typecheck": "tsc --noEmit",
-    "prepack": "pnpm run build",
+    "prepack": "pnpm run build && npx clean-pkg-json",
     "lint": "eslint .",
     "format": "eslint --fix .",
     "test": "vitest"
@@ -65,6 +65,8 @@
     "memfs": "^4.17.0",
     "msw": "^2.7.3",
     "picocolors": "^1.1.1",
+    "publint": "^0.3.9",
+    "std-env": "^3.8.1",
     "ts-node": "^10.9.2",
     "ts-patch": "^3.3.0",
     "type-fest": "^4.37.0",

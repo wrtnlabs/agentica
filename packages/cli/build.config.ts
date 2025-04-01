@@ -1,4 +1,5 @@
 import UnpluginTypia from "@ryoppippi/unplugin-typia/rollup";
+import { isCI } from "std-env";
 import { defineBuildConfig } from "unbuild";
 import pkgJson from "./package.json";
 
@@ -17,9 +18,22 @@ export default defineBuildConfig({
     "process.env.AGENTICA_VERSION": JSON.stringify(pkgJson.version), // replace version from package.json on build
   },
   rollup: {
-    inlineDependencies: true,
+    inlineDependencies: [
+      "typia",
+
+      "commander",
+
+      "picocolors",
+
+      // @clack/prompts related
+      "sisteransi",
+      "@clack/prompts",
+      "@clack/core",
+    ],
     esbuild: {
-      minify: true,
+      minify: !isCI, // minify only in CI and publish
+      target: "es2022", // support for Node.js 18
     },
   },
+  sourcemap: !isCI, // sourcemap only in CI and publish
 });
