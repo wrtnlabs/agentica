@@ -1,13 +1,14 @@
-import type { Agentica } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
-import type { tags } from "typia";
-
 /**
  * @module
  * This file contains the implementation of the AgenticaCallBenchmark class.
  *
  * @author Wrtn Technologies
  */
+
+import type { Agentica } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+import type { tags } from "typia";
+
 import { AgenticaTokenUsage } from "@agentica/core";
 import { Semaphore } from "tstl";
 
