@@ -38,13 +38,13 @@ interface InstallProps {
 export function installCommand({ packageManager, pkg }: InstallProps) {
   switch (packageManager) {
     case "npm":
-      return `npm install ${pkg}`;
+      return `npm install ${pkg ?? ""}`;
     case "yarn":
       return pkg != null ? `yarn add ${pkg}` : "yarn";
     case "pnpm":
-      return `pnpm install ${pkg}`;
+      return `pnpm install ${pkg ?? ""}`;
     case "bun":
-      return `bun install ${pkg}`;
+      return `bun install ${pkg ?? ""}`;
     default:
       /** exhaustive check */
       packageManager satisfies never;
