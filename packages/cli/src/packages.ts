@@ -61,11 +61,11 @@ export function runCommand({ packageManager, command }: { packageManager: Packag
     case "npm":
       return `npm run ${command}`;
     case "yarn":
-      return `yarn ${command}`;
+      return `yarn run ${command}`;
     case "pnpm":
-      return `pnpm ${command}`;
+      return `pnpm run ${command}`;
     case "bun":
-      return `bun ${command}`;
+      return `bun run ${command}`;
     default:
       /** exhaustive check */
       packageManager satisfies never;
