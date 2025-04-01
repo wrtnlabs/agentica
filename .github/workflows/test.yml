@@ -11,6 +11,8 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, '22.x']
+        start-command-package-manager: ['pnpm', 'npm', 'bun'] # TODO: yarn
+
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -23,6 +25,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Test packages
         run: pnpm run test:packages
+        env:
+          START_COMMAND_TEST_PACKAGE_MANAGERS: ${{ matrix.start-command-package-manager }}
 
   e2e-test:
     runs-on: ubuntu-latest

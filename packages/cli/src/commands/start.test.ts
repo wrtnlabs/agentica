@@ -2,10 +2,12 @@
 
 import type { PackageJson } from "type-fest";
 import type { Service } from "../connectors";
+import type { PackageManager } from "../packages";
 import { existsSync } from "node:fs";
 import { readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
+import process from "node:process";
 import { PACKAGE_MANAGERS } from "../packages";
 import * as Utils from "../utils";
 import {
@@ -34,10 +36,14 @@ afterEach(() => {
   execAsyncMock.mockClear();
 });
 
-const PACKAGE_MANAGERS_WITHOUT_YARN = PACKAGE_MANAGERS.filter(packageManager => packageManager !== "yarn");
+const TEST_PACKAGE_MANAGERS = (process.env.START_COMMAND_TEST_PACKAGE_MANAGERS?.split(",") ?? PACKAGE_MANAGERS) as PackageManager[];
+if (TEST_PACKAGE_MANAGERS.length === 0 || !PACKAGE_MANAGERS.includes(TEST_PACKAGE_MANAGERS.at(0) as PackageManager)) {
+  throw new Error("Invalid package manager");
+}
+
 describe("start command integration test", () => {
   it.todo("we support yarn but it doesn't work on CI, so we need to fix it");
-  describe.each(PACKAGE_MANAGERS_WITHOUT_YARN)("packageManager: %s", { timeout: 1_000_000 }, (packageManager) => {
+  describe.each(TEST_PACKAGE_MANAGERS)("packageManager: %s", { timeout: 1_000_000 }, (packageManager) => {
     const tmpParentDirectory = resolve(tmpdir(), generateRandomAlphanumericString(8));
     afterAll(async () => {
       await rm(tmpParentDirectory, { recursive: true, force: true });
