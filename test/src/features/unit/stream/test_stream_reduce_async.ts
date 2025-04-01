@@ -1,4 +1,4 @@
-import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
+import { StreamUtil } from "@agentica/core/src/utils/StreamUtil";
 
 export async function test_stream_reduce_async(): Promise<void | false> {
   // Test case 1: String concatenation with async generated stream

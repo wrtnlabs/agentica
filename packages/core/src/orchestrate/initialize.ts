@@ -6,21 +6,20 @@ import type { AgenticaContext } from "../context/AgenticaContext";
 import type { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 
-import { AgenticaDefaultPrompt } from "../internal/AgenticaDefaultPrompt";
-import { AgenticaSystemPrompt } from "../internal/AgenticaSystemPrompt";
-import { MPSC } from "../internal/MPSC";
-import { StreamUtil } from "../internal/StreamUtil";
-import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
-import { ChatGptHistoryDecoder } from "./ChatGptHistoryDecoder";
+import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
+import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
+import { MPSC } from "../utils/MPSC";
+import { StreamUtil } from "../utils/StreamUtil";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { createTextEvent } from "../factory/events";
-import { createTextPrompt } from "../factory/prompts";
+import { createTextPrompt, decodePrompt } from "../factory/prompts";
 
 const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
   __IChatInitialApplication,
   "chatgpt"
 >().functions[0]!;
 
-async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -32,7 +31,7 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
           content: AgenticaDefaultPrompt.write(ctx.config),
         } satisfies OpenAI.ChatCompletionSystemMessageParam,
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(ChatGptHistoryDecoder.decode).flat(),
+        ...ctx.histories.map(decodePrompt).flat(),
         // USER INPUT
         {
           role: "user",
@@ -164,7 +163,3 @@ async function execute<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
 
   return prompts;
 }
-
-export const ChatGptInitializeFunctionAgent = {
-  execute,
-};

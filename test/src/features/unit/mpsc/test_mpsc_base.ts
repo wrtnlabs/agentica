@@ -1,4 +1,4 @@
-import { MPSC } from "@agentica/core/src/internal/MPSC";
+import { MPSC } from "@agentica/core/src/utils/MPSC";
 
 export async function test_mpsc_base(): Promise<void | false> {
   // Test case 1: Basic MPSC functionality with create

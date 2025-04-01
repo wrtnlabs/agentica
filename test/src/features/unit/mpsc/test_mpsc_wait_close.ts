@@ -1,4 +1,4 @@
-import { MPSC } from "@agentica/core/src/internal/MPSC";
+import { MPSC } from "@agentica/core/src/utils/MPSC";
 
 export async function test_mpsc_wait_close(): Promise<void | false> {
   // Test 1: Basic waitClose functionality

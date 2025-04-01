@@ -1,4 +1,4 @@
-import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
+import { StreamUtil } from "@agentica/core/src/utils/StreamUtil";
 
 /**
  * Helper function to convert ReadableStream to array

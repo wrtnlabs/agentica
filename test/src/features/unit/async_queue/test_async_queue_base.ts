@@ -1,5 +1,5 @@
-import { AsyncQueue } from "@agentica/core/src/internal/AsyncQueue";
-import { MPSC } from "@agentica/core/src/internal/MPSC";
+import { AsyncQueue } from "@agentica/core/src/utils/AsyncQueue";
+import { MPSC } from "@agentica/core/src/utils/MPSC";
 
 export async function test_async_queue_base(): Promise<void | false> {
   // Test case 1: Basic AsyncQueue functionality

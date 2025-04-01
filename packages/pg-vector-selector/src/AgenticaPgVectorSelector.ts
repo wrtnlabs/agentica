@@ -1,10 +1,6 @@
-import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
+import { StreamUtil } from "@agentica/core/src/utils/StreamUtil";
 import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
-import {
-
-  factory,
-  orchestrate,
-} from "@agentica/core";
+import { factory, utils } from "@agentica/core";
 
 import type { AgenticaContext, AgenticaOperation, AgenticaOperationSelection, AgenticaPrompt, AgenticaSelectPrompt } from "@agentica/core";
 import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
@@ -172,7 +168,7 @@ export namespace AgenticaPgVectorSelector {
             ].join("\n"),
           },
           ...ctx.histories
-            .map(orchestrate.ChatGptHistoryDecoder.decode<SchemaModel>)
+            .map(factory.decodePrompt<SchemaModel>)
             .flat(),
           {
             role: "user",
@@ -185,7 +181,7 @@ export namespace AgenticaPgVectorSelector {
       });
 
       const chunks = await StreamUtil.readAll(completionStream);
-      const completion = orchestrate.ChatGptCompletionMessageUtil.merge(chunks);
+      const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
 
       const resultList = await Promise.all(
         completion.choices[0]?.message.tool_calls?.flatMap(async (v) => {
@@ -223,7 +219,7 @@ export namespace AgenticaPgVectorSelector {
               ].join("\n"),
             },
             ...ctx.histories
-              .map(orchestrate.ChatGptHistoryDecoder.decode<SchemaModel>)
+              .map(factory.decodePrompt<SchemaModel>)
               .flat(),
             {
               role: "user",
@@ -234,7 +230,7 @@ export namespace AgenticaPgVectorSelector {
           tools: [Tools.execute_function],
         })
         .then(async v => StreamUtil.readAll(v))
-        .then(orchestrate.ChatGptCompletionMessageUtil.merge);
+        .then(utils.ChatGptCompletionMessageUtil.merge);
 
       selectCompletion.choices
         .filter(v => v.message.tool_calls != null)

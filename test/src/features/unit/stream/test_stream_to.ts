@@ -1,4 +1,4 @@
-import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
+import { StreamUtil } from "@agentica/core/src/utils/StreamUtil";
 
 export async function test_stream_to(): Promise<void | false> {
   const stream = StreamUtil.to("Hello, world!");

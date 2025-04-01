@@ -16,6 +16,7 @@ export * from "./events/AgenticaRequestEvent";
 export * from "./events/AgenticaResponseEvent";
 export * from "./events/AgenticaSelectEvent";
 export * from "./events/AgenticaTextEvent";
+
 export * as factory from "./factory";
 
 export * from "./functional/assertHttpLlmApplication";
@@ -26,7 +27,9 @@ export * from "./json/IAgenticaOperationSelectionJson";
 export * from "./json/IAgenticaPromptJson";
 
 export * from "./json/IAgenticaTokenUsageJson";
+
 export * as orchestrate from "./orchestrate";
+
 export * from "./prompts/AgenticaCancelPrompt";
 export * from "./prompts/AgenticaDescribePrompt";
 export * from "./prompts/AgenticaExecutePrompt";
@@ -41,3 +44,8 @@ export * from "./structures/IAgenticaProps";
 export * from "./structures/IAgenticaSystemPrompt";
 
 export * from "./structures/IAgenticaVendor";
+
+/**
+ * @internal
+ */
+export * as utils from "./utils";

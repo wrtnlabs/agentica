@@ -1,4 +1,5 @@
-import type { ILlmSchema } from "@samchon/openapi";
+import type OpenAI from "openai";
+import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
@@ -7,10 +8,95 @@ import type { AgenticaOperationSelection } from "../context/AgenticaOperationSel
 import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
 import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+
+export function decodePrompt<Model extends ILlmSchema.Model>(history: AgenticaPrompt<Model>): OpenAI.ChatCompletionMessageParam[] {
+  // NO NEED TO DECODE DESCRIBE
+  if (history.type === "describe") {
+    return [];
+  }
+  else if (history.type === "text") {
+    return [
+      {
+        role: history.role,
+        content: history.text,
+      },
+    ];
+  }
+  else if (history.type === "select" || history.type === "cancel") {
+    return [
+      {
+        role: "assistant",
+        tool_calls: [
+          {
+            type: "function",
+            id: history.id,
+            function: {
+              name: `${history.type}Functions`,
+              arguments: JSON.stringify({
+                functions: history.selections.map(s => ({
+                  name: s.operation.function.name,
+                  reason: s.reason,
+                })),
+              }),
+            },
+          },
+        ],
+      },
+      {
+        role: "tool",
+        tool_call_id: history.id,
+        content: "",
+      },
+    ];
+  }
+
+  return [
+    {
+      role: "assistant",
+      tool_calls: [
+        {
+          type: "function",
+          id: history.id,
+          function: {
+            name: history.operation.name,
+            arguments: JSON.stringify(history.arguments),
+          },
+        },
+      ],
+    },
+    {
+      role: "tool",
+      tool_call_id: history.id,
+      content: JSON.stringify({
+        function: {
+          protocol: history.operation.protocol,
+          description: history.operation.function.description,
+          parameters: history.operation.function.parameters,
+          output: history.operation.function.output,
+          ...(history.operation.protocol === "http"
+            ? {
+                method: history.operation.function.method,
+                path: history.operation.function.path,
+              }
+            : {}),
+        },
+        ...(history.operation.protocol === "http"
+          ? {
+              status: (history.value as IHttpResponse).status,
+              data: (history.value as IHttpResponse).body,
+            }
+          : {
+              value: history.value,
+            }),
+      }),
+    },
+  ];
+}
 
 /* -----------------------------------------------------------
-    TEXT PROMPTS
-  ----------------------------------------------------------- */
+  TEXT PROMPTS
+----------------------------------------------------------- */
 export function createTextPrompt<Role extends "assistant" | "user" = "assistant" | "user">(props: {
   role: Role;
   text: string;
@@ -43,8 +129,8 @@ export function createDescribePrompt<Model extends ILlmSchema.Model>(props: {
 }
 
 /* -----------------------------------------------------------
-    FUNCTION CALLING PROMPTS
-  ----------------------------------------------------------- */
+  FUNCTION CALLING PROMPTS
+----------------------------------------------------------- */
 export function createSelectPrompt<Model extends ILlmSchema.Model>(props: {
   id: string;
   selections: AgenticaOperationSelection<Model>[];
