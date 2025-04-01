@@ -37,8 +37,8 @@ afterEach(() => {
 });
 
 const TEST_PACKAGE_MANAGERS = (process.env.START_COMMAND_TEST_PACKAGE_MANAGERS?.split(",") ?? PACKAGE_MANAGERS) as PackageManager[];
-if (TEST_PACKAGE_MANAGERS.length === 0 || !PACKAGE_MANAGERS.includes(TEST_PACKAGE_MANAGERS.at(0) as PackageManager)) {
-  throw new Error("Invalid package manager");
+if (TEST_PACKAGE_MANAGERS.length === 0 || !TEST_PACKAGE_MANAGERS.every(pm => PACKAGE_MANAGERS.includes(pm))) {
+  throw new Error("Invalid package manager(s) found");
 }
 
 describe("start command integration test", () => {
