@@ -51,6 +51,27 @@ export function installCommand({ packageManager, pkg }: InstallProps) {
 }
 
 /**
+ * get run command depending on package manager
+ */
+export function runCommand({ packageManager, command }: { packageManager: PackageManager; command: string }) {
+  switch (packageManager) {
+    case "npm":
+      return `npm run ${command}`;
+    case "yarn":
+      return `yarn ${command}`;
+    case "pnpm":
+      return `pnpm ${command}`;
+    case "bun":
+      return `bun ${command}`;
+    default:
+      /** exhaustive check */
+      packageManager satisfies never;
+
+      throw new Error(`Unsupported package manager: ${packageManager as unknown as string}`);
+  }
+}
+
+/**
  * detect package manager from environment
  */
 export function detectPackageManager(): PackageManager {
