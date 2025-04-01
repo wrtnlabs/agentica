@@ -94,7 +94,7 @@ async function runPrepareCommand({ packageManager, projectAbsolutePath }: Pick<I
  */
 async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "template">): Promise<Context> {
   /** store context for the start command */
-  const context: Partial<Context> = { template: defaultTemplate };
+  const context: Partial<Context> = { template: defaultTemplate, services: [] };
 
   // Ask for project directory
   {
@@ -194,9 +194,6 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       process.exit(0);
     }
     context.services = services;
-  }
-  else if (context.template === "react") {
-    context.services = [];
   }
 
   // Ask for openAI key
