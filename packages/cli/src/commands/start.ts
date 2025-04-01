@@ -15,7 +15,7 @@ import * as picocolors from "picocolors";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
-import { detectPackageManager, installCommand } from "../packages";
+import { detectPackageManager, installCommand, runCommand } from "../packages";
 import { execAsync, formatWithPrettier } from "../utils";
 
 /** supported starter templates */
@@ -24,7 +24,8 @@ export type StarterTemplate =
   | "nestjs"
   | "react"
   | "standalone"
-  | "nestjs+react";
+  | "nestjs+react"
+  | "nodejs+react";
 
 /**
  * Start command options
@@ -43,6 +44,7 @@ interface Context {
   services: Service[];
   openAIKey: string | null;
   port?: number;
+
 }
 
 interface SetupProjectOptions {
@@ -73,12 +75,26 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
   s.stop("✅ Package installation completed");
 }
 
+async function runPrepareCommand({ packageManager, projectAbsolutePath }: Pick<InstallDependenciesOptions, "packageManager" | "projectAbsolutePath">): Promise<void> {
+  const prepareCommand = runCommand({ packageManager, command: "prepare" });
+
+  const s = p.spinner();
+
+  s.start("📦 Package installation in progress...");
+
+  await execAsync(prepareCommand, {
+    cwd: projectAbsolutePath,
+  });
+
+  s.stop("✅ Package installation completed");
+}
+
 /**
  * Ask questions to the user
  */
 async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "template">): Promise<Context> {
   /** store context for the start command */
-  const context: Partial<Context> = { template: defaultTemplate };
+  const context: Partial<Context> = { template: defaultTemplate, services: [] };
 
   // Ask for project directory
   {
@@ -134,6 +150,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
         { value: "nestjs", label: `NestJS ${picocolors.blueBright("Agent Server")}` },
         { value: "react", label: `React ${picocolors.blueBright("Application")}` },
         { value: "nestjs+react", label: `NestJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
+        { value: "nodejs+react", label: `NodeJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
       ] as const satisfies { value: StarterTemplate; label: string }[],
     });
 
@@ -252,6 +269,12 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     projectAbsolutePath,
     services: context.services,
   });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+  });
 }
 
 export async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
@@ -302,6 +325,12 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
+  });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
   });
 }
 
@@ -355,6 +384,12 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
+  });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
   });
 }
 
@@ -422,6 +457,18 @@ export async function start({ template }: StartOptions) {
         context,
       });
       break;
+
+    case "nodejs+react":
+      await setupNodeJSProject({
+        projectAbsolutePath: join(projectAbsolutePath, "server"),
+        context,
+      });
+      await setupReactProject({
+        projectAbsolutePath: join(projectAbsolutePath, "client"),
+        context,
+      });
+      break;
+
     default:
       context.template satisfies never;
       throw new Error(`❌ Template ${context.template as unknown as string} not supported`);

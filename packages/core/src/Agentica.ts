@@ -12,16 +12,16 @@ import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 
-import { ChatGptAgent } from "./orchestrate/ChatGptAgent";
-import { ChatGptCompletionMessageUtil } from "./orchestrate/ChatGptCompletionMessageUtil";
+import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { __map_take } from "./internal/__map_take";
-import { AgenticaOperationComposer } from "./internal/AgenticaOperationComposer";
-import { StreamUtil } from "./internal/StreamUtil";
+import { __map_take } from "./utils/__map_take";
+import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
+import { StreamUtil } from "./utils/StreamUtil";
 import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
 import { createTextPrompt } from "./factory/prompts";
 import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
+import { execute } from "./orchestrate/execute";
 
 /**
  * Nestia A.I. chatbot agent.
@@ -97,7 +97,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     this.executor_
       = typeof props.config?.executor === "function"
         ? props.config.executor
-        : ChatGptAgent.execute(props.config?.executor ?? null);
+        : execute(props.config?.executor ?? null);
   }
 
   /**

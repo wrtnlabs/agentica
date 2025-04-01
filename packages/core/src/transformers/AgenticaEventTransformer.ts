@@ -11,7 +11,7 @@ import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 
-import { StreamUtil } from "../internal/StreamUtil";
+import { StreamUtil } from "../utils/StreamUtil";
 import { createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createTextEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
 

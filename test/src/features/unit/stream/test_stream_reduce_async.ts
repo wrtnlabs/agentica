@@ -1,9 +1,9 @@
-import { StreamUtil } from "@agentica/core/src/internal/StreamUtil";
+import { utils } from "@agentica/core";
 
 export async function test_stream_reduce_async(): Promise<void | false> {
   // Test case 1: String concatenation with async generated stream
   const stringStream = await createDelayedNumberStream(1, 3, 10);
-  const stringResult = await StreamUtil.reduce<number, string>(
+  const stringResult = await utils.StreamUtil.reduce<number, string>(
     stringStream,
     (acc, cur) => acc + cur.toString(),
     "",
@@ -17,7 +17,7 @@ export async function test_stream_reduce_async(): Promise<void | false> {
 
   // Test case 2: Number sum with async generated stream
   const sumStream = await createDelayedNumberStream(1, 5, 20);
-  const sumResult = await StreamUtil.reduce<number, number>(
+  const sumResult = await utils.StreamUtil.reduce<number, number>(
     sumStream,
     (acc, cur) => acc + cur,
     0,
@@ -31,7 +31,7 @@ export async function test_stream_reduce_async(): Promise<void | false> {
 
   // Test case 3: Using async stream without initial value
   const noInitialStream = await createDelayedNumberStream(1, 4, 15);
-  const noInitialResult = await StreamUtil.reduce<number>(
+  const noInitialResult = await utils.StreamUtil.reduce<number>(
     noInitialStream,
     (acc, cur) => acc + cur,
   );
@@ -44,7 +44,7 @@ export async function test_stream_reduce_async(): Promise<void | false> {
 
   // Test case 4: Async stream transformation and aggregation into array
   const transformStream = await createDelayedNumberStream(1, 3, 10);
-  const transformResult = await StreamUtil.reduce<number, string[]>(
+  const transformResult = await utils.StreamUtil.reduce<number, string[]>(
     transformStream,
     (acc: string[] | number, cur: number): string[] => {
       if (typeof acc === "number") {
@@ -72,7 +72,7 @@ export async function test_stream_reduce_async(): Promise<void | false> {
 
   // Test case 5: Async generated empty stream
   const emptyStream = await createEmptyDelayedStream<number>(30);
-  const emptyResult = await StreamUtil.reduce<number, string>(
+  const emptyResult = await utils.StreamUtil.reduce<number, string>(
     emptyStream,
     (acc, cur) => acc + cur.toString(),
     "initial",
@@ -91,7 +91,7 @@ export async function test_stream_reduce_async(): Promise<void | false> {
     { value: 3, delay: 10 },
   ]);
 
-  const delayResult = await StreamUtil.reduce<number, number>(
+  const delayResult = await utils.StreamUtil.reduce<number, number>(
     delayStream,
     (acc, cur) => acc + cur,
     0,

@@ -1,9 +1,8 @@
-import { AsyncQueue } from "@agentica/core/src/internal/AsyncQueue";
-import { MPSC } from "@agentica/core/src/internal/MPSC";
+import { utils } from "@agentica/core";
 
 export async function test_async_queue_base(): Promise<void | false> {
   // Test case 1: Basic AsyncQueue functionality
-  const basicQueue = new AsyncQueue<number>();
+  const basicQueue = new utils.AsyncQueue<number>();
   basicQueue.enqueue(1);
   basicQueue.enqueue(2);
   basicQueue.enqueue(3);
@@ -31,7 +30,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 2: Dequeue from empty queue then enqueue
-  const emptyQueue = new AsyncQueue<string>();
+  const emptyQueue = new utils.AsyncQueue<string>();
 
   // Start dequeue operation that will wait for an item
   const pendingDequeue = emptyQueue.dequeue();
@@ -66,7 +65,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 3: Close queue
-  const closeQueue = new AsyncQueue<number>();
+  const closeQueue = new utils.AsyncQueue<number>();
   closeQueue.enqueue(42);
   closeQueue.close();
 
@@ -86,7 +85,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 4: Wait for close
-  const waitCloseQueue = new AsyncQueue<string>();
+  const waitCloseQueue = new utils.AsyncQueue<string>();
 
   // Start waiting for close
   const closePromise = waitCloseQueue.waitClosed();
@@ -99,7 +98,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   await closePromise; // Should resolve when queue is closed
 
   // Test case 5: Test create function - basic functionality
-  const mpsc = new MPSC<number>();
+  const mpsc = new utils.MPSC<number>();
   const reader = mpsc.consumer.getReader();
 
   // Produce values
@@ -140,7 +139,7 @@ export async function test_async_queue_base(): Promise<void | false> {
   }
 
   // Test case 7: Multiple producers
-  const multiMpsc = new MPSC<string>();
+  const multiMpsc = new utils.MPSC<string>();
   const multiReader = multiMpsc.consumer.getReader();
 
   // Simulate multiple producers

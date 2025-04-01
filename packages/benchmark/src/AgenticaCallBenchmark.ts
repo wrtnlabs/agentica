@@ -4,15 +4,16 @@
  *
  * @author Wrtn Technologies
  */
+import { AgenticaTokenUsage } from "@agentica/core";
+import { Semaphore } from "tstl";
+
 import type { Agentica } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
 import type { IAgenticaCallBenchmarkEvent } from "./structures/IAgenticaCallBenchmarkEvent";
 import type { IAgenticaCallBenchmarkResult } from "./structures/IAgenticaCallBenchmarkResult";
-
 import type { IAgenticaCallBenchmarkScenario } from "./structures/IAgenticaCallBenchmarkScenario";
-import { AgenticaTokenUsage } from "@agentica/core";
-import { Semaphore } from "tstl";
+
 import { AgenticaBenchmarkPredicator } from "./internal/AgenticaBenchmarkPredicator";
 import { AgenticaCallBenchmarkReporter } from "./internal/AgenticaCallBenchmarkReporter";
 

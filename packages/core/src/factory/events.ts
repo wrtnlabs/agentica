@@ -21,8 +21,8 @@ import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import { createExecutePrompt, createSelectPrompt } from "./prompts";
 
 /* -----------------------------------------------------------
-    FUNCTION SELECTS
-  ----------------------------------------------------------- */
+  FUNCTION SELECTS
+----------------------------------------------------------- */
 export function createInitializeEvent(): AgenticaInitializeEvent {
   const event: IAgenticaEventJson.IInitialize = {
     type: "initialize",
@@ -64,8 +64,8 @@ export function createCancelEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 /* -----------------------------------------------------------
-    FUNCTION CALLS
-  ----------------------------------------------------------- */
+  FUNCTION CALLS
+----------------------------------------------------------- */
 export function createCallEvent<Model extends ILlmSchema.Model>(props: {
   id: string;
   operation: AgenticaOperation<Model>;
@@ -131,8 +131,8 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 /* -----------------------------------------------------------
-    TEXT STEAMING
-  ----------------------------------------------------------- */
+  TEXT STEAMING
+----------------------------------------------------------- */
 export function createTextEvent<Role extends "user" | "assistant">(props: {
   role: Role;
   stream: ReadableStream<string>;

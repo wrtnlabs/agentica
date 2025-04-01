@@ -154,7 +154,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
       const prompts: AgenticaPrompt<Model>[]
-        = await orchestrate.ChatGptSelectFunctionAgent.execute({
+        = await orchestrate.select({
           ...this.agent_.getContext({
             // @todo core has to export `AgenticaPromptFactory`
             prompt: factory.createTextPrompt({

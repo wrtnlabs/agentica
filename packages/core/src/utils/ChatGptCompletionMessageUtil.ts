@@ -8,8 +8,8 @@ import type {
   CompletionUsage,
 } from "openai/resources";
 
-import { ByteArrayUtil } from "../internal/ByteArrayUtil";
-import { ChatGptUsageAggregator } from "./ChatGptUsageAggregator";
+import { ByteArrayUtil } from "./ByteArrayUtil";
+import { ChatGptTokenUsageAggregator } from "./ChatGptTokenUsageAggregator";
 
 function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
   const str
@@ -66,7 +66,7 @@ function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCom
       return chunk.usage;
     }
 
-    return ChatGptUsageAggregator.sum(origin.usage, chunk.usage);
+    return ChatGptTokenUsageAggregator.sum(origin.usage, chunk.usage);
   })();
 
   return {
