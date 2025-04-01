@@ -43,7 +43,7 @@ export default defineBuildConfig({
       "chownr",
     ],
     esbuild: {
-      minify: !isCI, // minify only in CI and publish
+      minify: isCI, // minify only in CI and publish
       target: "es2022", // support for Node.js 18
     },
   },
