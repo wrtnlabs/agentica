@@ -7,6 +7,12 @@ describe("installCommand", () => {
     expect(result).toBe("npm install openai");
   });
 
+  it("npm without package", () => {
+    const packageManager = "npm";
+    const result = installCommand({ packageManager });
+    expect(result).toBe("npm install ");
+  });
+
   it("yarn", () => {
     const packageManager = "yarn";
     const result = installCommand({ packageManager, pkg: "openai" });
@@ -25,10 +31,22 @@ describe("installCommand", () => {
     expect(result).toBe("pnpm install openai");
   });
 
+  it("pnpm without package", () => {
+    const packageManager = "pnpm";
+    const result = installCommand({ packageManager });
+    expect(result).toBe("pnpm install ");
+  });
+
   it("bun", () => {
     const packageManager = "bun";
     const result = installCommand({ packageManager, pkg: "openai" });
     expect(result).toBe("bun install openai");
+  });
+
+  it("bun without package", () => {
+    const packageManager = "bun";
+    const result = installCommand({ packageManager });
+    expect(result).toBe("bun install ");
   });
 
   it("unsupported", () => {
