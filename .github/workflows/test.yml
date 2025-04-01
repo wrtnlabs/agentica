@@ -39,3 +39,12 @@ jobs:
         run: pnpm run test:e2e
         env:
           CHATGPT_API_KEY: ${{ secrets.CHATGPT_API_KEY }}
+
+  action-timeline:
+    needs:
+      - packages-test
+      - e2e-test
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Kesin11/actions-timeline@427ee2cf860166e404d0d69b4f2b24012bb7af4f # v2.2.3
