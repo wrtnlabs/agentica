@@ -15,7 +15,7 @@ import * as picocolors from "picocolors";
 import typia from "typia";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
-import { detectPackageManager, installCommand } from "../packages";
+import { detectPackageManager, installCommand, runCommand } from "../packages";
 import { execAsync, formatWithPrettier } from "../utils";
 
 /** supported starter templates */
@@ -59,12 +59,17 @@ interface InstallDependenciesOptions {
 /** dependencies for the project */
 async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
   // in case service is empty we add dummy package. we use typescript for sure, so we use it.
-  const pkg = ([...services.map(service => serviceToConnector(service)), "typescript"]).join(" ");
+  const pkg = ([...services.map(service => serviceToConnector(service))]).join(" ");
   const command = installCommand({ packageManager, pkg });
+  const prepareCommand = runCommand({ packageManager, command: "prepare" });
 
   const s = p.spinner();
 
   s.start("📦 Package installation in progress...");
+
+  await execAsync(prepareCommand, {
+    cwd: projectAbsolutePath,
+  });
 
   await execAsync(command, {
     cwd: projectAbsolutePath,
