@@ -1,8 +1,8 @@
-import { MPSC } from "@agentica/core/src/utils/MPSC";
+import { utils } from "@agentica/core";
 
 export async function test_mpsc_wait_close(): Promise<void | false> {
   // Test 1: Basic waitClose functionality
-  const mpsc = new MPSC<string>();
+  const mpsc = new utils.MPSC<string>();
   const reader = mpsc.consumer.getReader();
 
   mpsc.produce("message");
@@ -31,7 +31,7 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   }
 
   // Test 2: Call waitClose on already closed queue
-  const mpsc2 = new MPSC<number>();
+  const mpsc2 = new utils.MPSC<number>();
 
   mpsc2.close(); // Close first
   const alreadyClosedPromise = mpsc2.waitClosed();
@@ -39,7 +39,7 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   await alreadyClosedPromise;
 
   // Test 3: Multiple waitClose calls
-  const mpsc3 = new MPSC<number>();
+  const mpsc3 = new utils.MPSC<number>();
 
   // Create multiple waitClose promises
   const waitPromises = [mpsc3.waitClosed(), mpsc3.waitClosed(), mpsc3.waitClosed()];
@@ -49,7 +49,7 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   await Promise.all(waitPromises);
 
   // Test 4: Verify waitClose doesn't block other operations
-  const mpsc4 = new MPSC<string>();
+  const mpsc4 = new utils.MPSC<string>();
   const reader4 = mpsc4.consumer.getReader();
 
   // Call waitClose
@@ -91,7 +91,7 @@ export async function test_mpsc_wait_close(): Promise<void | false> {
   }
 
   // Test 5: waitClose resolution after async close
-  const mpsc5 = new MPSC<number>();
+  const mpsc5 = new utils.MPSC<number>();
   const reader5 = mpsc5.consumer.getReader();
 
   mpsc5.produce(100);

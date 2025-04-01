@@ -1,4 +1,3 @@
-import { StreamUtil } from "@agentica/core/src/utils/StreamUtil";
 import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
 import { factory, utils } from "@agentica/core";
 
@@ -180,7 +179,7 @@ export namespace AgenticaPgVectorSelector {
         tools: [Tools.extract_query],
       });
 
-      const chunks = await StreamUtil.readAll(completionStream);
+      const chunks = await utils.StreamUtil.readAll(completionStream);
       const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
 
       const resultList = await Promise.all(
@@ -229,7 +228,7 @@ export namespace AgenticaPgVectorSelector {
           tool_choice: "required",
           tools: [Tools.execute_function],
         })
-        .then(async v => StreamUtil.readAll(v))
+        .then(async v => utils.StreamUtil.readAll(v))
         .then(utils.ChatGptCompletionMessageUtil.merge);
 
       selectCompletion.choices
