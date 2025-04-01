@@ -6,7 +6,7 @@ title: Agentica > Tutorial > Swagger Agents
 
 - [playground](https://stackblitz.com/~/github.com/wrtnlabs/agentica-tutorial-swagger?file=README.md) You can see the demo code on the playground.
 
-This tutorial guides you through setting up a **fully functional Swagger Agent** using **Agentica**. With the following code block, you can create an agent that interacts with a Swagger-defined API—such as the Pet Store API—powered by **OpenAI's GPT model**. By providing a Swagger (OpenAPI) document, the agent automatically integrates all the API functions defined therein, and the `connection` property specifies the actual host for API requests.
+This tutorial guides you through setting up a **fully functional Swagger Agent** using **Agentica**. With the following code block, you can create an agent that interacts with a Swagger-defined API—such as the Shopping Mall API—powered by **OpenAI's GPT model**. By providing a Swagger (OpenAPI) document, the agent automatically integrates all the API functions defined therein, and the `connection` property specifies the actual host for API requests.
 
 ## The Complete Swagger Agent
 
@@ -36,18 +36,18 @@ export const SwaggerAgent = async () =>
     },
     controllers: [
       {
-        name: "PetStore", // Name of the connector (can be any descriptive name)
+        name: "Shopping Mall", // Name of the connector (can be any descriptive name)
         protocol: "http", // Indicates an HTTP-based connector
         application: assertHttpLlmApplication({
           // Convert the Swagger JSON document to an OpenAPI model for Agentica.
           document: await fetch(
-            "https://petstore.swagger.io/v2/swagger.json",
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
           ).then((r) => r.json()),
           model: "chatgpt",
         }),
         connection: {
           // This is the actual API host where the API requests will be sent.
-          host: "https://petstore.swagger.io/v2",
+          host: "https://shopping-be.wrtn.ai",
           headers: {
             Authorization: "Bearer *****",
           },
@@ -59,13 +59,13 @@ export const SwaggerAgent = async () =>
 
 ## Swagger API Setup
 
-Before running your agent, ensure you have a valid OpenAPI (Swagger) document. In this example, the agent fetches a Swagger JSON from a remote URL and converts it using `OpenApi.convert`. The `connection` property specifies the host where API requests should be directed, in this case, `https://petstore.swagger.io/v2`.
+Before running your agent, ensure you have a valid OpenAPI (Swagger) document. In this example, the agent fetches a Swagger JSON from a remote URL and converts it using `OpenApi.convert`. The `connection` property specifies the host where API requests should be directed, in this case, `https://shopping-be.wrtn.ai`.
 
 ## What This Does
 
 With this configuration, the Swagger Agent can:
 
-- **Interact with a Swagger API:** By supplying the Swagger document, all the API functions defined in the document (for example, the Pet Store API functions) are automatically integrated.
+- **Interact with a Swagger API:** By supplying the Swagger document, all the API functions defined in the document (for example, the Shopping Mall API functions) are automatically integrated.
 - **Leverage GPT for API Interactions:** Use OpenAI's GPT model to interpret natural language queries and map them to corresponding API calls.
 - **Maintain Type Safety:** Benefit from Agentica's strong typing to ensure that your API interactions are predictable and secure.
 - **Streamline API Testing and Integration:** Quickly test and interact with your API using natural language, with the Swagger document serving as the source of truth for available endpoints and methods.
@@ -89,9 +89,9 @@ With this configuration, the Swagger Agent can:
 
 Imagine asking the agent:
 
-> "Find all available pets in the store."
+> "Find all available products in the shopping mall."
 
-The agent processes your query by matching it to the corresponding API endpoint defined in the Swagger document, sends the request to `https://petstore.swagger.io/v2`, and then relays the API response back in a human-readable format.
+The agent processes your query by matching it to the corresponding API endpoint defined in the Swagger document, sends the request to `https://shopping-be.wrtn.ai`, and then relays the API response back in a human-readable format.
 
 ## Security Note
 
