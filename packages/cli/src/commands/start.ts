@@ -195,6 +195,9 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     }
     context.services = services;
   }
+  else if (context.template === "react") {
+    context.services = [];
+  }
 
   // Ask for openAI key
   {
