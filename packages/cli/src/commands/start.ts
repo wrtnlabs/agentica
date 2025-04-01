@@ -24,7 +24,8 @@ export type StarterTemplate =
   | "nestjs"
   | "react"
   | "standalone"
-  | "nestjs+react";
+  | "nestjs+react"
+  | "nodejs+react";
 
 /**
  * Start command options
@@ -43,6 +44,7 @@ interface Context {
   services: Service[];
   openAIKey: string | null;
   port?: number;
+
 }
 
 interface SetupProjectOptions {
@@ -139,6 +141,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
         { value: "nestjs", label: `NestJS ${picocolors.blueBright("Agent Server")}` },
         { value: "react", label: `React ${picocolors.blueBright("Application")}` },
         { value: "nestjs+react", label: `NestJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
+        { value: "nodejs+react", label: `NodeJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
       ] as const satisfies { value: StarterTemplate; label: string }[],
     });
 
@@ -427,6 +430,18 @@ export async function start({ template }: StartOptions) {
         context,
       });
       break;
+
+    case "nodejs+react":
+      await setupNodeJSProject({
+        projectAbsolutePath: join(projectAbsolutePath, "server"),
+        context,
+      });
+      await setupReactProject({
+        projectAbsolutePath: join(projectAbsolutePath, "client"),
+        context,
+      });
+      break;
+
     default:
       context.template satisfies never;
       throw new Error(`❌ Template ${context.template as unknown as string} not supported`);

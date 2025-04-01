@@ -24,8 +24,8 @@ export async function downloadTemplateAndPlaceInProject({ template, project }: D
     dir: project,
   });
 
-  // remove dependabot.yml if exists
-  await rm(join(project, ".github/dependabot.yml"), { force: true });
+  // remove .github if exists
+  await rm(join(project, ".github"), { force: true, recursive: true });
 }
 
 /**
