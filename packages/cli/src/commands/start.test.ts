@@ -7,6 +7,7 @@ import { readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { PACKAGE_MANAGERS } from "../packages";
+import * as Utils from "../utils";
 import {
   setupNestJSProject,
   setupNodeJSProject,
@@ -27,10 +28,16 @@ function generateRandomAlphanumericString(length: number): string {
   return result;
 }
 
+const execAsyncMock = vi.spyOn(Utils, "execAsync");
+
+afterEach(() => {
+  execAsyncMock.mockClear();
+});
+
 const PACKAGE_MANAGERS_WITHOUT_YARN = PACKAGE_MANAGERS.filter(packageManager => packageManager !== "yarn");
 describe("start command integration test", () => {
   it.todo("we support yarn but it doesn't work on CI, so we need to fix it");
-  describe.each(PACKAGE_MANAGERS_WITHOUT_YARN)("packageManager: %s", { timeout: 1_000_000, concurrent: true }, (packageManager) => {
+  describe.each(PACKAGE_MANAGERS_WITHOUT_YARN)("packageManager: %s", { timeout: 1_000_000 }, (packageManager) => {
     const tmpParentDirectory = resolve(tmpdir(), generateRandomAlphanumericString(8));
     afterAll(async () => {
       await rm(tmpParentDirectory, { recursive: true, force: true });
@@ -48,6 +55,14 @@ describe("start command integration test", () => {
             services: [],
           },
         });
+
+        // check if install command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(1, `${packageManager} install `, { cwd: destinationDirectory });
+
+        // check prepare command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(2, `${packageManager} run prepare`, { cwd: destinationDirectory });
+
+        // check if the directory exists
 
         // check if the directory exists
         expect(existsSync(destinationDirectory)).toBe(true);
@@ -74,6 +89,12 @@ describe("start command integration test", () => {
             services: ["google-map" as Service],
           },
         });
+
+        // check if install command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(1, `${packageManager} install @wrtnlabs/connector-google-map`, { cwd: destinationDirectory });
+
+        // check prepare command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(2, `${packageManager} run prepare`, { cwd: destinationDirectory });
 
         // check if the directory exists
         expect(existsSync(destinationDirectory)).toBe(true);
@@ -109,6 +130,12 @@ describe("start command integration test", () => {
           },
         });
 
+        // check if install command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(1, `${packageManager} install `, { cwd: destinationDirectory });
+
+        // check prepare command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(2, `${packageManager} run prepare`, { cwd: destinationDirectory });
+
         // check if the directory exists
         expect(existsSync(destinationDirectory)).toBe(true);
         expect(existsSync(resolve(destinationDirectory, "package.json"))).toBe(true);
@@ -134,6 +161,12 @@ describe("start command integration test", () => {
             services: ["google-map" as Service],
           },
         });
+
+        // check if install command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(1, `${packageManager} install @wrtnlabs/connector-google-map`, { cwd: destinationDirectory });
+
+        // check prepare command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(2, `${packageManager} run prepare`, { cwd: destinationDirectory });
 
         // check if the directory exists
         expect(existsSync(destinationDirectory)).toBe(true);
@@ -169,6 +202,12 @@ describe("start command integration test", () => {
           },
         });
 
+        // check if install command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(1, `${packageManager} install `, { cwd: destinationDirectory });
+
+        // check prepare command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(2, `${packageManager} run prepare`, { cwd: destinationDirectory });
+
         // check if the directory exists
         expect(existsSync(destinationDirectory)).toBe(true);
         expect(existsSync(resolve(destinationDirectory, "package.json"))).toBe(true);
@@ -194,6 +233,12 @@ describe("start command integration test", () => {
             services: ["google-map" as Service],
           },
         });
+
+        // check if install command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(1, `${packageManager} install @wrtnlabs/connector-google-map`, { cwd: destinationDirectory });
+
+        // check prepare command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(2, `${packageManager} run prepare`, { cwd: destinationDirectory });
 
         // check if the directory exists
         expect(existsSync(destinationDirectory)).toBe(true);
@@ -228,6 +273,11 @@ describe("start command integration test", () => {
             services: [],
           },
         });
+
+        // check if install command is called
+        expect(execAsyncMock).toHaveBeenNthCalledWith(1, `${packageManager} install `, { cwd: destinationDirectory });
+
+        // react project doesn't have prepare script
 
         // check if the directory exists
         expect(existsSync(destinationDirectory)).toBe(true);
