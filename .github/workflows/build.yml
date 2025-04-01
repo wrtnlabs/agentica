@@ -1,4 +1,4 @@
-name: build and publish dry run
+name: build test for each os
 on:
   push:
   pull_request:
