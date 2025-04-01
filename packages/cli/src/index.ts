@@ -47,8 +47,12 @@ program
     }
 
     p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
-
-    await start({ template: options.project });
+    try {
+      await start({ template: options.project });
+    }
+    catch (e) {
+      console.error(e);
+    }
   });
 
 /**

@@ -63,8 +63,8 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
   // in case service is empty we add dummy package. we use typescript for sure, so we use it.
   const pkg = ([...services.map(service => serviceToConnector(service))]).join(" ");
   const command = installCommand({ packageManager, pkg });
-  const prepareCommand = runCommand({ packageManager, command: "prepare" });
 
+  const existInstallCommand = runCommand({ packageManager, command: "" });
   const s = p.spinner();
 
   s.start("📦 Package installation in progress...");
@@ -73,7 +73,7 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
     cwd: projectAbsolutePath,
   });
 
-  await execAsync(prepareCommand, {
+  await execAsync(existInstallCommand, {
     cwd: projectAbsolutePath,
   });
 
