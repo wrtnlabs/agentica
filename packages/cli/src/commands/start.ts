@@ -61,7 +61,7 @@ interface InstallDependenciesOptions {
 /** dependencies for the project */
 async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
   // in case service is empty we add dummy package. we use typescript for sure, so we use it.
-  const pkg = ([...services.map(service => serviceToConnector(service))]).join(" ");
+  const pkg = ([...services.map(service => serviceToConnector(service)), "typescript"]).join(" ");
   const command = installCommand({ packageManager, pkg });
 
   const s = p.spinner();
