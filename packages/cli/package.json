@@ -37,7 +37,7 @@
     "package.json"
   ],
   "engines": {
-    "node": ">=20.12.0"
+    "node": ">=18.18.0"
   },
   "scripts": {
     "prepare": "ts-patch install",
