@@ -5,19 +5,20 @@ const FOOTER_CONTENTS = [
   {
     title: "Company",
     links: [
-      { label: "About us", href: "https://wrtnlabs.io/" },
-      { label: "Blog", href: "https://wrtnlabs.io/" },
+      { label: "About us", href: "https://wrtnlabs.io/about/" },
+      { label: "Blog", href: "https://wrtnlabs.io/blog/" },
+      // MEMO: Toast 팝업
       { label: "Agent OS", href: "https://wrtnlabs.io/" },
-      { label: "Youtube", href: "https://wrtnlabs.io/" }
+      { label: "Youtube", href: "https://www.youtube.com/@wrtnlabs" }
     ],
   },
   {
     title: "Developers",
     links: [
-      { label: "Agentica", href: "https://github.com/wrtnlabs" },
-      { label: "Autoview", href: "https://github.com/wrtnlabs" },
+      { label: "Agentica", href: "https://wrtnlabs.io/agentica/" },
+      { label: "Autoview", href: "https://wrtnlabs.io/autoview/" },
       { label: "Github", href: "https://github.com/wrtnlabs" },
-      { label: "Docs", href: "/docs" },
+      { label: "Docs", href: "https://wrtnlabs.io/agentica/docs/" },
     ],
   },
 ];
