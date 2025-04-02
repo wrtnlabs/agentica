@@ -1,7 +1,7 @@
 {
   "name": "agentica",
   "type": "module",
-  "version": "0.15.3",
+  "version": "0.15.5",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "openapi"
   ],
   "exports": {
-    ".": "./bin/index.mjs"
+    ".": "./dist/index.mjs"
   },
-  "main": "bin/index.mjs",
+  "main": "./dist/index.mjs",
   "bin": "bin/index.mjs",
   "files": [
     "LICENSE",
@@ -41,27 +41,27 @@
   },
   "scripts": {
     "prepare": "ts-patch install",
-    "build": "unbuild",
+    "build": "unbuild && publint",
     "dev": "unbuild --watch",
     "typecheck": "tsc --noEmit",
-    "prepack": "pnpm run build",
+    "prepack": "pnpm run build && npx clean-pkg-json",
     "lint": "eslint .",
     "format": "eslint --fix .",
     "test": "vitest"
-  },
-  "dependencies": {
-    "giget": "^1"
   },
   "optionalDependencies": {
     "prettier": ">=2.4.0"
   },
   "devDependencies": {
+    "@bluwy/giget-core": "^0.1.2",
     "@clack/prompts": "^0.10.0",
     "@types/node": "^20.14.8",
     "commander": "^10.0.0",
     "memfs": "^4.17.0",
     "msw": "^2.7.3",
     "picocolors": "^1.1.1",
+    "publint": "^0.3.9",
+    "std-env": "^3.8.1",
     "ts-node": "^10.9.2",
     "ts-patch": "catalog:",
     "type-fest": "^4.37.0",
