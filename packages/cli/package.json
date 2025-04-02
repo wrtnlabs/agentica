@@ -55,6 +55,7 @@
   "devDependencies": {
     "@bluwy/giget-core": "^0.1.2",
     "@clack/prompts": "^0.10.0",
+    "@ryoppippi/unplugin-typia": "catalog:",
     "@types/node": "^20.14.8",
     "commander": "^10.0.0",
     "memfs": "^4.17.0",
