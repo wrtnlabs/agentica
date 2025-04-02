@@ -11,7 +11,7 @@ export function StyledLink({
 
   return (
     <Comp
-      className="relative w-fit text-sm text-zinc-200 before:invisible before:absolute before:bottom-0 before:left-0 before:h-px before:w-full before:origin-left before:scale-x-0 before:bg-zinc-200 before:transition-transform before:duration-250 before:ease-linear before:content-[''] hover:before:visible hover:before:scale-x-100 md:text-[21px]"
+      className="relative w-fit text-lg! text-zinc-500 before:invisible before:absolute before:bottom-0 before:left-0 before:h-px before:w-full before:origin-left before:scale-x-0 before:bg-zinc-500 before:transition-transform before:duration-250 before:ease-linear before:content-[''] hover:before:visible hover:before:scale-x-100 md:text-[21px]"
       {...props}
     />
   );
