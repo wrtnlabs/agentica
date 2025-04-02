@@ -1,4 +1,5 @@
 # Agentica Chat Application
+
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
 [![npm version](https://img.shields.io/npm/v/@agentica/chat.svg)](https://www.npmjs.com/package/@agentica/chat)
 [![Downloads](https://img.shields.io/npm/dm/@agentica/chat.svg)](https://www.npmjs.com/package/@agentica/chat)
@@ -8,6 +9,8 @@ A frontend application of Agentica chatbot for rapid demonstration.
 
 This is not for final production, but just for demonstration. So please do not use this package globally. You have to utilize this package only for the internal demonstration.
 
+<!-- eslint-skip -->
+
 ```tsx
 import { Agentica } from "@agentica/core";
 import { AgenticaChatApplication } from "@agentica/chat";
@@ -15,7 +18,7 @@ import typia from "typia";
 
 const agent = new Agentica({ ... });
 ReactDOM.render(
-  <AgenticaChatApplication agent={agent} />, 
+  <AgenticaChatApplication agent={agent} />,
   document.body,
 );
 ```

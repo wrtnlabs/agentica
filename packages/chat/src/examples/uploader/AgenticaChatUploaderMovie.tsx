@@ -1,55 +1,57 @@
 import { validateHttpLlmApplication } from "@agentica/core";
-import { OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
-import { IHttpLlmApplication } from "@samchon/openapi";
 import { load } from "js-yaml";
 import React from "react";
-// @ts-ignore
+// eslint-disable-next-line ts/ban-ts-comment
+// @ts-expect-error
 import FileUpload from "react-mui-fileuploader";
-// @ts-ignore
-import { ExtendedFileProps } from "react-mui-fileuploader/dist/types/index.types";
-import { IValidation } from "typia";
 
-export const AgenticaChatUploaderMovie = (
-  props: AgenticaChatUploaderMovie.IProps,
-) => {
+import type { IHttpLlmApplication } from "@samchon/openapi";
+import type { IValidation } from "typia";
+
+interface ExtendedFileProps {
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  name: string;
+}
+export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProps) {
   const [elements, setElements] = React.useState<ExtendedFileProps[]>([]);
   const onChange = async (array: ExtendedFileProps[]) => {
-    if (array.length === 0) {
+    const lastFile: ExtendedFileProps | undefined = array.at(-1);
+    if (lastFile === undefined) {
       props.onChange(null, null);
       return;
     }
 
-    const file: ExtendedFileProps = array[array.length - 1]!;
-    const buffer: ArrayBuffer = await file.arrayBuffer();
+    const buffer: ArrayBuffer = await lastFile.arrayBuffer();
     const content: string = new TextDecoder().decode(buffer);
-    const extension: "json" | "yaml" = file.name.split(".").pop()! as
+    const extension: "json" | "yaml" = lastFile.name.split(".").pop()! as
       | "json"
       | "yaml";
 
     try {
-      const document:
-        | SwaggerV2.IDocument
-        | OpenApiV3.IDocument
-        | OpenApiV3_1.IDocument =
-        extension === "json" ? JSON.parse(content) : load(content);
-      const application: IValidation<IHttpLlmApplication<"chatgpt">> =
-        validateHttpLlmApplication({
+      const document: unknown = extension === "json" ? JSON.parse(content) : load(content);
+      const application: IValidation<IHttpLlmApplication<"chatgpt">>
+        = validateHttpLlmApplication({
           model: "chatgpt",
           document,
           options: {
             reference: true,
           },
         });
-      if (application.success === true) props.onChange(application.data, null);
-      else props.onChange(null, JSON.stringify(application.errors, null, 2));
-    } catch {
+      if (application.success === true) {
+        props.onChange(application.data, null);
+      }
+      else { props.onChange(null, JSON.stringify(application.errors, null, 2)); }
+    }
+    catch {
       props.onChange(
         null,
         extension === "json" ? "Invalid JSON file" : "Invalid YAML file",
       );
       return;
     }
-    if (array.length > 1) setElements([file]);
+    if (array.length > 1) {
+      setElements([lastFile]);
+    }
   };
   return (
     <FileUpload
@@ -66,7 +68,7 @@ export const AgenticaChatUploaderMovie = (
       buttonRemoveLabel="Clear"
     />
   );
-};
+}
 export namespace AgenticaChatUploaderMovie {
   export interface IProps {
     onChange: (

@@ -9,15 +9,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { IHttpConnection } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import OpenAI from "openai";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 
+import type { IHttpConnection } from "@samchon/openapi";
+
 import { ShoppingChatApplication } from "./ShoppingChatApplication";
 
-const Application = () => {
+function Application() {
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState("gpt-4o-mini");
 
@@ -73,106 +74,108 @@ const Application = () => {
         overflow: next !== null ? undefined : "auto",
       }}
     >
-      {next !== null ? (
-        <ShoppingChatApplication {...next} />
-      ) : (
-        <FormControl
-          style={{
-            width: "calc(100% - 60px)",
-            padding: 15,
-            margin: 15,
-          }}
-        >
-          <Typography variant="h4">Shopping AI Chatbot</Typography>
-          <br />
-          <Divider />
-          <br />
-          Demonstration of Agentica with Shopping Backend API.
-          <br />
-          <br />
-          <Link
-            href="https://github.com/samchon/shopping-backend"
-            target="_blank"
-          >
-            https://github.com/samchon/shopping-backend
-          </Link>
-          <br />
-          <br />
-          <Typography variant="h6"> OpenAI Configuration </Typography>
-          <TextField
-            onChange={(e) => setApiKey(e.target.value)}
-            defaultValue={apiKey}
-            label="OpenAI API Key"
-            variant="outlined"
-            placeholder="Your OpenAI API Key"
-            error={apiKey.length === 0}
-          />
-          <br />
-          <RadioGroup
-            defaultValue={model}
-            onChange={(_e, value) => setModel(value)}
-            style={{ paddingLeft: 15 }}
-          >
-            <FormControlLabel
-              control={<Radio />}
-              label="GPT-4o Mini"
-              value="gpt-4o-mini"
-            />
-            <FormControlLabel
-              control={<Radio />}
-              label="GPT-4o"
-              value="gpt-4o"
-            />
-          </RadioGroup>
-          <br />
-          <Typography variant="h6"> Membership Information </Typography>
-          <br />
-          <TextField
-            onChange={(e) => setLocale(e.target.value)}
-            defaultValue={locale}
-            label="Locale"
-            variant="outlined"
-            error={locale.length === 0}
-          />
-          <br />
-          <TextField
-            onChange={(e) => setName(e.target.value)}
-            defaultValue={name}
-            label="Name"
-            variant="outlined"
-            error={name.length === 0}
-          />
-          <br />
-          <TextField
-            onChange={(e) => setMobile(e.target.value)}
-            defaultValue={mobile}
-            label="Mobile"
-            variant="outlined"
-            error={mobile.length === 0}
-          />
-          <br />
-          <br />
-          <Button
-            component="a"
-            fullWidth
-            variant="contained"
-            color={"info"}
-            size="large"
-            disabled={
-              progress ||
-              apiKey.length === 0 ||
-              locale.length === 0 ||
-              name.length === 0 ||
-              mobile.length === 0
-            }
-            onClick={() => startChatApplication()}
-          >
-            {progress ? "Starting..." : "Start AI Chatbot"}
-          </Button>
-        </FormControl>
-      )}
+      {next !== null
+        ? (
+            <ShoppingChatApplication {...next} />
+          )
+        : (
+            <FormControl
+              style={{
+                width: "calc(100% - 60px)",
+                padding: 15,
+                margin: 15,
+              }}
+            >
+              <Typography variant="h4">Shopping AI Chatbot</Typography>
+              <br />
+              <Divider />
+              <br />
+              Demonstration of Agentica with Shopping Backend API.
+              <br />
+              <br />
+              <Link
+                href="https://github.com/samchon/shopping-backend"
+                target="_blank"
+              >
+                https://github.com/samchon/shopping-backend
+              </Link>
+              <br />
+              <br />
+              <Typography variant="h6"> OpenAI Configuration </Typography>
+              <TextField
+                onChange={e => setApiKey(e.target.value)}
+                defaultValue={apiKey}
+                label="OpenAI API Key"
+                variant="outlined"
+                placeholder="Your OpenAI API Key"
+                error={apiKey.length === 0}
+              />
+              <br />
+              <RadioGroup
+                defaultValue={model}
+                onChange={(_e, value) => setModel(value)}
+                style={{ paddingLeft: 15 }}
+              >
+                <FormControlLabel
+                  control={<Radio />}
+                  label="GPT-4o Mini"
+                  value="gpt-4o-mini"
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="GPT-4o"
+                  value="gpt-4o"
+                />
+              </RadioGroup>
+              <br />
+              <Typography variant="h6"> Membership Information </Typography>
+              <br />
+              <TextField
+                onChange={e => setLocale(e.target.value)}
+                defaultValue={locale}
+                label="Locale"
+                variant="outlined"
+                error={locale.length === 0}
+              />
+              <br />
+              <TextField
+                onChange={e => setName(e.target.value)}
+                defaultValue={name}
+                label="Name"
+                variant="outlined"
+                error={name.length === 0}
+              />
+              <br />
+              <TextField
+                onChange={e => setMobile(e.target.value)}
+                defaultValue={mobile}
+                label="Mobile"
+                variant="outlined"
+                error={mobile.length === 0}
+              />
+              <br />
+              <br />
+              <Button
+                component="a"
+                fullWidth
+                variant="contained"
+                color="info"
+                size="large"
+                disabled={
+                  progress
+                  || apiKey.length === 0
+                  || locale.length === 0
+                  || name.length === 0
+                  || mobile.length === 0
+                }
+                onClick={void startChatApplication}
+              >
+                {progress ? "Starting..." : "Start AI Chatbot"}
+              </Button>
+            </FormControl>
+          )}
     </div>
   );
-};
+}
 
 createRoot(window.document.getElementById("root")!).render(<Application />);
