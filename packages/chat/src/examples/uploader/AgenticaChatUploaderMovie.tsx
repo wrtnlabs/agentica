@@ -2,16 +2,21 @@ import { validateHttpLlmApplication } from "@agentica/core";
 import { load } from "js-yaml";
 import React from "react";
 // eslint-disable-next-line ts/ban-ts-comment
-// @ts-expect-error
+// @ts-ignore
 import FileUpload from "react-mui-fileuploader";
 
 import type { IHttpLlmApplication } from "@samchon/openapi";
 import type { IValidation } from "typia";
 
-interface ExtendedFileProps {
+interface ExtendedFileProps extends Blob {
   arrayBuffer: () => Promise<ArrayBuffer>;
   name: string;
+  size: number;
+  path: string;
+  type: string;
+  extension: string | undefined;
 }
+
 export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProps) {
   const [elements, setElements] = React.useState<ExtendedFileProps[]>([]);
   const onChange = async (array: ExtendedFileProps[]) => {
