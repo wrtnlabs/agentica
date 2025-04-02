@@ -60,10 +60,9 @@ interface InstallDependenciesOptions {
 
 /** dependencies for the project */
 async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
-  // in case service is empty we add dummy package. we use typescript for sure, so we use it.
-  const pkg = ([...services.map(service => serviceToConnector(service))]).join(" ");
+  /* if no services are selected, undefined is passed to the package manager */
+  const pkg = services.length > 0 ? ([...services.map(service => serviceToConnector(service))]).join(" ") : undefined;
   const command = installCommand({ packageManager, pkg });
-  const prepareCommand = runCommand({ packageManager, command: "prepare" });
 
   const s = p.spinner();
 
@@ -72,6 +71,16 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
   await execAsync(command, {
     cwd: projectAbsolutePath,
   });
+
+  s.stop("✅ Package installation completed");
+}
+
+async function runPrepareCommand({ packageManager, projectAbsolutePath }: Pick<InstallDependenciesOptions, "packageManager" | "projectAbsolutePath">): Promise<void> {
+  const prepareCommand = runCommand({ packageManager, command: "prepare" });
+
+  const s = p.spinner();
+
+  s.start("📦 Package installation in progress...");
 
   await execAsync(prepareCommand, {
     cwd: projectAbsolutePath,
@@ -85,7 +94,7 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
  */
 async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "template">): Promise<Context> {
   /** store context for the start command */
-  const context: Partial<Context> = { template: defaultTemplate };
+  const context: Partial<Context> = { template: defaultTemplate, services: [] };
 
   // Ask for project directory
   {
@@ -260,6 +269,12 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     projectAbsolutePath,
     services: context.services,
   });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+  });
 }
 
 export async function setupNodeJSProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
@@ -310,6 +325,12 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
+  });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
   });
 }
 
@@ -363,6 +384,12 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
+  });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
   });
 }
 
