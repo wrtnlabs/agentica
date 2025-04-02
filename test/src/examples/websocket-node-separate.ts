@@ -1,8 +1,10 @@
+import process from "node:process";
+
 import type {
   IAgenticaRpcListener,
   IAgenticaRpcService,
 } from "@agentica/rpc";
-import process from "node:process";
+
 import { Agentica } from "@agentica/core";
 import {
   AgenticaRpcService,

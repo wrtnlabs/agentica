@@ -1,5 +1,7 @@
 import type OpenAI from "openai";
+
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
+
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
 import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";

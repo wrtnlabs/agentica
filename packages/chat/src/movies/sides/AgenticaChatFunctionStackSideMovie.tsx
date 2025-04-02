@@ -1,3 +1,6 @@
+import type { AgenticaOperationSelection } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -6,9 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-
-import type { ILlmSchema } from "@samchon/openapi";
-import type { AgenticaOperationSelection } from "@agentica/core";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 

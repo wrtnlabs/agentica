@@ -1,6 +1,8 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+
 import type { AgenticaPromptBase } from "./AgenticaPromptBase";
 
 /**

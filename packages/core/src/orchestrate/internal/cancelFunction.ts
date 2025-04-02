@@ -1,6 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type { AgenticaOperationSelection } from "../../context/AgenticaOperationSelection";
+
 import type { AgenticaContext } from "../../context/AgenticaContext";
+import type { AgenticaOperationSelection } from "../../context/AgenticaOperationSelection";
 import type { __IChatFunctionReference } from "../../context/internal/__IChatFunctionReference";
 
 import { createCancelEvent } from "../../factory/events";

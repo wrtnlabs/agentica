@@ -1,8 +1,10 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 
-import { AgenticaSystemPrompt } from "./AgenticaSystemPrompt";
 import { Singleton } from "../utils/Singleton";
+
+import { AgenticaSystemPrompt } from "./AgenticaSystemPrompt";
 
 /**
  * @TODO maybe this code will rewrite

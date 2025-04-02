@@ -8,9 +8,10 @@
 import type { Agentica, AgenticaOperation, AgenticaPrompt } from "@agentica/core";
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
 import typia from "typia";
+
+import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
 export const AgenticaBenchmarkPredicator = {
   isNext,
