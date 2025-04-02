@@ -102,17 +102,6 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   }, []);
 
   // EVENT HANDLERS
-  const handleKeyUp = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && event.shiftKey === false) {
-      if (enabled === false) {
-        event.preventDefault();
-      }
-      else {
-        await conversate();
-      }
-    }
-  };
-
   const handleResize = () => {
     setTimeout(() => {
       if (
@@ -171,6 +160,17 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
       }
     }
     setSelections(selections);
+  };
+
+  const handleKeyUp = async (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && event.shiftKey === false) {
+      if (enabled === false) {
+        event.preventDefault();
+      }
+      else {
+        await conversate();
+      }
+    }
   };
 
   const capture = async () => {
@@ -251,7 +251,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
           {isMobile
             ? (
                 <>
-                  <IconButton onClick={capture}>
+                  <IconButton onClick={void capture}>
                     <AddAPhotoIcon />
                   </IconButton>
                   <IconButton onClick={() => setOpenSide(true)}>
@@ -263,7 +263,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
                 <Button
                   color="inherit"
                   startIcon={<AddAPhotoIcon />}
-                  onClick={capture}
+                  onClick={void capture}
                 >
                   Screenshot Capture
                 </Button>
@@ -312,7 +312,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
             placeholder="Conversate with AI Chatbot"
             value={text}
             multiline={true}
-            onKeyUp={handleKeyUp}
+            onKeyUp={e => void handleKeyUp(e)}
             onChange={(e) => {
               setText(e.target.value);
               handleResize();
@@ -323,7 +323,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
             style={{ marginLeft: 10 }}
             startIcon={<SendIcon />}
             disabled={!enabled}
-            onClick={conversate}
+            onClick={void conversate}
           >
             Send
           </Button>

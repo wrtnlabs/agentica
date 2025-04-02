@@ -27,75 +27,77 @@ function Application() {
         height: "100%",
       }}
     >
-      {start === true ? (
-        <BbsChatApplication apiKey={apiKey} model={model} locale={locale} />
-      ) : (
-        <FormControl
-          style={{
-            width: "calc(100% - 60px)",
-            padding: 15,
-            margin: 15,
-          }}
-        >
-          <Typography variant="h6">BBS AI Chatbot</Typography>
-          <br />
-          <Divider />
-          <br />
-          Demonstration of Agentica with TypeScript Controller
-          Class.
-          <br />
-          <br />
-          <Typography variant="h6"> OpenAI Configuration </Typography>
-          <TextField
-            onChange={(e) => setApiKey(e.target.value)}
-            defaultValue={apiKey}
-            label="OpenAI API Key"
-            variant="outlined"
-            placeholder="Your OpenAI API Key"
-            error={apiKey.length === 0}
-          />
-          <br />
-          <RadioGroup
-            defaultValue={model}
-            onChange={(_e, value) => setModel(value as "gpt-4o-mini")}
-            style={{ paddingLeft: 15 }}
-          >
-            <FormControlLabel
-              control={<Radio />}
-              label="GPT-4o Mini"
-              value="gpt-4o-mini"
-            />
-            <FormControlLabel
-              control={<Radio />}
-              label="GPT-4o"
-              value="gpt-4o"
-            />
-          </RadioGroup>
-          <br />
-          <Typography variant="h6"> Membership Information </Typography>
-          <br />
-          <TextField
-            onChange={(e) => setLocale(e.target.value)}
-            defaultValue={locale}
-            label="Locale"
-            variant="outlined"
-            error={locale.length === 0}
-          />
-          <br />
-          <br />
-          <Button
-            component="a"
-            fullWidth
-            variant="contained"
-            color={"info"}
-            size="large"
-            disabled={apiKey.length === 0 || locale.length === 0}
-            onClick={() => setStart(true)}
-          >
-            Start AI Chatbot
-          </Button>
-        </FormControl>
-      )}
+      {start === true
+        ? (
+            <BbsChatApplication apiKey={apiKey} model={model} locale={locale} />
+          )
+        : (
+            <FormControl
+              style={{
+                width: "calc(100% - 60px)",
+                padding: 15,
+                margin: 15,
+              }}
+            >
+              <Typography variant="h6">BBS AI Chatbot</Typography>
+              <br />
+              <Divider />
+              <br />
+              Demonstration of Agentica with TypeScript Controller
+              Class.
+              <br />
+              <br />
+              <Typography variant="h6"> OpenAI Configuration </Typography>
+              <TextField
+                onChange={e => setApiKey(e.target.value)}
+                defaultValue={apiKey}
+                label="OpenAI API Key"
+                variant="outlined"
+                placeholder="Your OpenAI API Key"
+                error={apiKey.length === 0}
+              />
+              <br />
+              <RadioGroup
+                defaultValue={model}
+                onChange={(_e, value) => setModel(value as "gpt-4o-mini")}
+                style={{ paddingLeft: 15 }}
+              >
+                <FormControlLabel
+                  control={<Radio />}
+                  label="GPT-4o Mini"
+                  value="gpt-4o-mini"
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label="GPT-4o"
+                  value="gpt-4o"
+                />
+              </RadioGroup>
+              <br />
+              <Typography variant="h6"> Membership Information </Typography>
+              <br />
+              <TextField
+                onChange={e => setLocale(e.target.value)}
+                defaultValue={locale}
+                label="Locale"
+                variant="outlined"
+                error={locale.length === 0}
+              />
+              <br />
+              <br />
+              <Button
+                component="a"
+                fullWidth
+                variant="contained"
+                color="info"
+                size="large"
+                disabled={apiKey.length === 0 || locale.length === 0}
+                onClick={() => setStart(true)}
+              >
+                Start AI Chatbot
+              </Button>
+            </FormControl>
+          )}
     </div>
   );
 }
