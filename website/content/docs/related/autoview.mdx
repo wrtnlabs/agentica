@@ -31,7 +31,7 @@ You can replace the provided schemas with your own to generate customized TypeSc
 
 ### 2.2. TypeScript Type
 ```typescript
-import { AutoViewAgent } from "@autoview/core";
+import { AutoViewAgent } from "@autoview/agent";
 import fs from "fs";
 import OpenAI from "openai";
 import typia, { tags } from "typia";
@@ -72,7 +72,7 @@ Create an `AutoViewAgent` instance with [`typia.llm.parameters<Schema, Model>()`
 After code generation, save it to your desired location for future use. This is how `@autoview` uses AI to generate TypeScript frontend code from a TypeScript type.
 
 ```typescript
-import { AutoViewAgent } from "@autoview/core";
+import { AutoViewAgent } from "@autoview/agent";
 import fs from "fs";
 import OpenAI from "openai";
 import typia, { tags } from "typia";
@@ -119,7 +119,7 @@ When generating a schema with the [`typia.llm.schema<Schema, Model, Config>()`](
 
 ### 2.3. Swagger/OpenAPI
 ```typescript
-import { AutoViewAgent } from "@autoview/core";
+import { AutoViewAgent } from "@autoview/agent";
 import { OpenApi } from "@samchon/openapi";
 import fs from "fs";
 import OpenAI from "openai";
