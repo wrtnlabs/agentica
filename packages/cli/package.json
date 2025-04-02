@@ -55,7 +55,7 @@
   "devDependencies": {
     "@bluwy/giget-core": "^0.1.2",
     "@clack/prompts": "^0.10.0",
-    "@ryoppippi/unplugin-typia": "catalog:",
+    "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^20.14.8",
     "commander": "^10.0.0",
     "memfs": "^4.17.0",
@@ -64,10 +64,10 @@
     "publint": "^0.3.9",
     "std-env": "^3.8.1",
     "ts-node": "^10.9.2",
-    "ts-patch": "catalog:",
+    "ts-patch": "catalog:typia",
     "type-fest": "^4.37.0",
-    "typescript": "catalog:",
-    "typia": "catalog:",
+    "typescript": "catalog:unrelated",
+    "typia": "catalog:typia",
     "unbuild": "^3.5.0",
     "vitest": "^3.0.9"
   }

@@ -19,19 +19,19 @@
     "@agentica/pg-vector-selector": "workspace:^",
     "@agentica/rpc": "workspace:^",
     "@nestia/e2e": "^0.8.2",
-    "@samchon/openapi": "catalog:",
+    "@samchon/openapi": "catalog:unrelated",
     "@samchon/shopping-api": "^0.16.0",
     "chalk": "4.1.2",
     "dotenv": "^16.4.7",
     "dotenv-expand": "^12.0.1",
-    "openai": "catalog:",
+    "openai": "catalog:unrelated",
     "tgrid": "^1.1.0",
     "tstl": "^3.0.0",
-    "typia": "catalog:"
+    "typia": "catalog:typia"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
-    "ts-patch": "catalog:",
-    "typescript": "catalog:"
+    "ts-patch": "catalog:typia",
+    "typescript": "catalog:unrelated"
   }
 }

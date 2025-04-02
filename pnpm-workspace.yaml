@@ -2,13 +2,17 @@ packages:
   - packages/*
   - test
   - website
-catalog:
-  "@ryoppippi/unplugin-typia": ^2.1.3
-  "@samchon/openapi": ^3.2.3
-  openai: ^4.80.0
-  ts-patch: ^3.3.0
-  typescript: ~5.8.2
-  typia: ^8.1.1
+
+catalogs:
+  typia:
+    "@ryoppippi/unplugin-typia": ^2.1.3
+    ts-patch: ^3.3.0
+    typia: ^8.1.1
+
+  unrelated:
+    "@samchon/openapi": ^3.2.3
+    openai: ^4.80.0
+    typescript: ~5.8.2
 
 onlyBuiltDependencies:
   - core-js
