@@ -1,20 +1,22 @@
 import { Agentica } from "@agentica/core";
 import {
   HttpLlm,
-  IHttpConnection,
-  IHttpLlmApplication,
   OpenApi,
 } from "@samchon/openapi";
-import OpenAI from "openai";
 import { useEffect, useState } from "react";
+import typia from "typia";
+
+import type {
+  IHttpConnection,
+  IHttpLlmApplication,
+} from "@samchon/openapi";
+import type OpenAI from "openai";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
 
-export const ShoppingChatApplication = (
-  props: ShoppingChatApplication.IProps,
-) => {
-  const [application, setApplication] =
-    useState<IHttpLlmApplication<"chatgpt"> | null>(null);
+export function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
+  const [application, setApplication]
+    = useState<IHttpLlmApplication<"chatgpt"> | null>(null);
   useEffect(() => {
     (async () => {
       setApplication(
@@ -23,13 +25,15 @@ export const ShoppingChatApplication = (
           document: OpenApi.convert(
             await fetch(
               "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/customer.swagger.json",
-            ).then((r) => r.json()),
+            )
+              .then(async r => r.json() as unknown)
+              .then(v => typia.assert<Parameters<typeof OpenApi.convert>[0]>(v)),
           ),
         }),
       );
     })().catch(console.error);
   }, []);
-  if (application === null)
+  if (application === null) {
     return (
       <div>
         <h2>Loading Swagger document</h2>
@@ -38,6 +42,7 @@ export const ShoppingChatApplication = (
         <p>Loading Swagger document...</p>
       </div>
     );
+  }
 
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
@@ -60,7 +65,7 @@ export const ShoppingChatApplication = (
   return (
     <AgenticaChatApplication agent={agent} title="Agentica Shopping Chatbot" />
   );
-};
+}
 export namespace ShoppingChatApplication {
   export interface IProps {
     api: OpenAI;

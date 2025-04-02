@@ -1,10 +1,39 @@
 {
-  "type": "module",
   "name": "@agentica/chat",
+  "type": "module",
   "version": "0.15.5",
+  "description": "Frontend Application of Agentica",
+  "author": "Wrtn Technologies",
+  "license": "MIT",
+  "homepage": "https://wrtnlabs.io/agentica",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wrtnlabs/agentica"
+  },
+  "bugs": {
+    "url": "https://github.com/wrtnlabs/agentica/issues"
+  },
+  "keywords": [
+    "openapi",
+    "swagger",
+    "generator",
+    "typescript",
+    "editor",
+    "sdk",
+    "nestjs",
+    "nestia"
+  ],
   "main": "./lib/index.mjs",
   "typings": "./lib/index.d.ts",
-  "description": "Frontend Application of Agentica",
+  "files": [
+    "!src/examples",
+    "LICENSE",
+    "README.md",
+    "dist",
+    "lib",
+    "package.json",
+    "src"
+  ],
   "scripts": {
     "build": "npm run build:static && npm run build:lib",
     "build:static": "rimraf dist && tsc -b && vite build",
@@ -17,26 +46,6 @@
     "deploy": "node build/deploy.mjs",
     "prepack": "pnpm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wrtnlabs/agentica"
-  },
-  "keywords": [
-    "openapi",
-    "swagger",
-    "generator",
-    "typescript",
-    "editor",
-    "sdk",
-    "nestjs",
-    "nestia"
-  ],
-  "author": "Wrtn Technologies",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/wrtnlabs/agentica/issues"
-  },
-  "homepage": "https://wrtnlabs.io/agentica",
   "dependencies": {
     "@agentica/core": "workspace:^",
     "@mui/icons-material": "^6.4.0",
@@ -81,14 +90,5 @@
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.10.0",
     "vite": "^5.4.9"
-  },
-  "files": [
-    "README.md",
-    "LICENSE",
-    "package.json",
-    "dist",
-    "lib",
-    "src",
-    "!src/examples"
-  ]
+  }
 }
