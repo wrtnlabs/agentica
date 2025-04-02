@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@ryoppippi/unplugin-typia':
+      specifier: ^2.1.3
+      version: 2.1.3
     '@samchon/openapi':
       specifier: ^3.2.3
       version: 3.2.3
@@ -226,6 +229,9 @@ importers:
       '@clack/prompts':
         specifier: ^0.10.0
         version: 0.10.0
+      '@ryoppippi/unplugin-typia':
+        specifier: 'catalog:'
+        version: 2.1.3(rollup@4.36.0)(typescript@5.8.2)(typia@8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2))(vite@5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0))
       '@types/node':
         specifier: ^20.14.8
         version: 20.17.25
@@ -9013,6 +9019,25 @@ snapshots:
   '@rtsao/scc@1.1.0': {}
 
   '@rushstack/eslint-patch@1.11.0': {}
+
+  '@ryoppippi/unplugin-typia@2.1.3(rollup@4.36.0)(typescript@5.8.2)(typia@8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2))(vite@5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0))':
+    dependencies:
+      '@rollup/pluginutils': 5.1.4(rollup@4.36.0)
+      consola: 3.4.2
+      defu: 6.1.4
+      diff-match-patch-es: 1.0.1
+      find-cache-dir: 5.0.0
+      magic-string: 0.30.17
+      pathe: 2.0.3
+      pkg-types: 2.1.0
+      type-fest: 4.37.0
+      typescript: 5.8.2
+      typia: 8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2)
+      unplugin: 2.2.2
+    optionalDependencies:
+      vite: 5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0)
+    transitivePeerDependencies:
+      - rollup
 
   '@ryoppippi/unplugin-typia@2.1.3(rollup@4.36.0)(typescript@5.8.2)(typia@8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2))(vite@5.4.14(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))':
     dependencies:
