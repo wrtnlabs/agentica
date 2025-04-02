@@ -1,4 +1,3 @@
-import { AgenticaDescribePrompt } from "@agentica/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Button,
@@ -8,17 +7,19 @@ import {
   Chip,
   Collapse,
 } from "@mui/material";
-import { ILlmSchema } from "@samchon/openapi";
 import { useState } from "react";
+
+import type { ILlmSchema } from "@samchon/openapi";
+import type { AgenticaDescribePrompt } from "@agentica/core";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 import { AgenticaChatExecuteMessageMovie } from "./AgenticaChatExecuteMessageMovie";
 
-export const AgenticaChatDescribeMessageMovie = <
+export function AgenticaChatDescribeMessageMovie<
   Model extends ILlmSchema.Model,
 >({
   prompt,
-}: AgenticaChatDescribeMessageMovie.IProps<Model>) => {
+}: AgenticaChatDescribeMessageMovie.IProps<Model>) {
   const [expanded, setExpanded] = useState(false);
   return (
     <Card
@@ -35,13 +36,13 @@ export const AgenticaChatDescribeMessageMovie = <
       </CardContent>
       <CardActions style={{ textAlign: "right" }}>
         <Button
-          startIcon={
+          startIcon={(
             <ExpandMoreIcon
               style={{
                 transform: `rotate(${expanded ? 180 : 0}deg)`,
               }}
             />
-          }
+          )}
           onClick={() => setExpanded(!expanded)}
         >
           {expanded ? "Hide Function Calls" : "Show Function Calls"}
@@ -49,14 +50,14 @@ export const AgenticaChatDescribeMessageMovie = <
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {prompt.executes.map((execute) => (
+          {prompt.executes.map(execute => (
             <AgenticaChatExecuteMessageMovie execute={execute} />
           ))}
         </CardContent>
       </Collapse>
     </Card>
   );
-};
+}
 export namespace AgenticaChatDescribeMessageMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
     prompt: AgenticaDescribePrompt<Model>;

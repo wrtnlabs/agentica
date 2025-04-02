@@ -5,7 +5,7 @@ import typia from "typia";
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
 import { BbsArticleService } from "./BbsArticleService";
 
-export const BbsChatApplication = (props: BbsChatApplication.IProps) => {
+export function BbsChatApplication(props: BbsChatApplication.IProps) {
   const service: BbsArticleService = new BbsArticleService();
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
@@ -36,7 +36,7 @@ export const BbsChatApplication = (props: BbsChatApplication.IProps) => {
     },
   });
   return <AgenticaChatApplication agent={agent} />;
-};
+}
 export namespace BbsChatApplication {
   export interface IProps {
     apiKey: string;
