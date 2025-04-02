@@ -23,6 +23,8 @@
   },
   "homepage": "https://wrtnlabs.io/agentica",
   "dependencies": {
+    "@agentica/core": "workspace:*",
+    "@agentica/standalone": "workspace:*",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@radix-ui/react-navigation-menu": "^1.2.5",
     "@radix-ui/react-slot": "^1.1.2",
@@ -36,6 +38,7 @@
     "next": "^15.2.1",
     "nextra": "^4.2.16",
     "nextra-theme-docs": "^4.2.16",
+    "openai": "^4.89.0",
     "prism-react-renderer": "^2.4.1",
     "react": "19.0.0",
     "react-dom": "^19.0.0",
@@ -48,12 +51,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@ryoppippi/unplugin-typia": "^2.1.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "22.13.9",
     "@types/react": "^19.0.0",
     "eslint": "^9.23.0",
     "eslint-config-next": "15.2.1",
     "next-sitemap": "^4.2.3",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "typia": "7.6.4"
   }
 }

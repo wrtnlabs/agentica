@@ -22,12 +22,15 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "transform": "typia/lib/transform"
       }
     ],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
   },
   "include": [
     "**/*.ts",

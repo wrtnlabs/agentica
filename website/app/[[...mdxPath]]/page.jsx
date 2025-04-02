@@ -19,7 +19,7 @@ export default async function Page(props) {
   const result = await importPage(params.mdxPath);
   const { default: MDXContent, toc, metadata } = result;
 
-  if (params.mdxPath == null) {
+  if (params.mdxPath == null || params.mdxPath.at(0) === "playground") {
     return <MDXContent {...props} params={params} />;
   }
 

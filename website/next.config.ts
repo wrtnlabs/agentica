@@ -1,11 +1,13 @@
 import nextra from "nextra";
+import unTypiaNext from "@ryoppippi/unplugin-typia/next";
+import { NextConfig } from "next";
 
-const withNextra = nextra({
-  // ... Other Nextra config options
-});
+const configWrapper = [
+  nextra({}),
+  unTypiaNext,
+] satisfies Array<(config: NextConfig) => NextConfig>;
 
-// You can include other Next.js configuration options here, in addition to Nextra settings:
-export default withNextra({
+const nextConfig = configWrapper.reduce<NextConfig>((acc, wrapper) => wrapper(acc), {
   // ... Other Next.js config options
   basePath: "/agentica",
   output: "export",
@@ -14,3 +16,5 @@ export default withNextra({
     unoptimized: true,
   },
 });
+
+export default nextConfig;
