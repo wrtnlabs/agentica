@@ -1,5 +1,3 @@
-import { vi } from "vitest";
-
 import { getRetry, groupByArray } from "./utils";
 
 describe("getRetry", () => {
