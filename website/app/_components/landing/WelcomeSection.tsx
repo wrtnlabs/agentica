@@ -11,7 +11,7 @@ export function WelcomeSection() {
     <div className="relative flex w-full h-full items-center justify-center gap-0 px-5 md:px-20 py-8 md:gap-6 max-w-[1440px] mx-auto md:justify-between" >
       <div className="flex flex-col gap-3 z-10 items-center max-w-[800px] w-full flex-1">
         <div className="relative w-[180px] h-[180px] md:w-[240px] md:h-[240px] rounded-full overflow-hidden">
-          <Image src="/agentica/AgenticaFN.png" alt="logo" fill />
+          <Image src="/agentica/images/agentica.png" alt="logo" fill />
         </div>
         <div className="flex flex-col gap-9 z-10 items-center">
           <div className="flex flex-col gap-4 items-center">

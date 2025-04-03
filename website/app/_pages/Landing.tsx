@@ -71,7 +71,7 @@ export default function Landing() {
         <PreviewCard
           href="https://wrtnlabs.io/autoview/"
           title="Autoview"
-          image="https://picsum.photos/200/300"
+          image="/agentica/images/preview-autoview.png"
         />
       </section>
 
