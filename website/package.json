@@ -51,7 +51,6 @@
     "@tailwindcss/postcss": "^4",
     "@types/node": "22.13.9",
     "@types/react": "^19.0.0",
-    "eslint": "^9.23.0",
     "eslint-config-next": "15.2.1",
     "next-sitemap": "^4.2.3",
     "tailwindcss": "^4"
