@@ -9,7 +9,7 @@ catalogs:
     ts-patch: ^3.3.0
     typia: ^8.1.1
 
-  unrelated:
+  libs:
     "@samchon/openapi": ^3.2.3
     openai: ^4.80.0
     typescript: ~5.8.2

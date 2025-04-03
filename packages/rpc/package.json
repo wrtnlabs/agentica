@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@agentica/core": "workspace:^",
-    "@samchon/openapi": "catalog:unrelated",
+    "@samchon/openapi": "catalog:libs",
     "typia": "catalog:typia"
   },
   "devDependencies": {
@@ -59,6 +59,6 @@
     "rollup": "^4.34.8",
     "ts-patch": "catalog:typia",
     "typedoc": "^0.27.7",
-    "typescript": "catalog:unrelated"
+    "typescript": "catalog:libs"
   }
 }

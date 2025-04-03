@@ -15,7 +15,7 @@ catalogs:
     typia:
       specifier: ^8.1.1
       version: 8.1.1
-  unrelated:
+  libs:
     '@samchon/openapi':
       specifier: ^3.2.3
       version: 3.2.3
@@ -64,10 +64,10 @@ importers:
         specifier: workspace:^
         version: link:../core
       '@samchon/openapi':
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 3.2.3
       openai:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 4.89.0(zod@3.24.2)
       tstl:
         specifier: ^3.0.0
@@ -98,7 +98,7 @@ importers:
         specifier: ^0.27.7
         version: 0.27.9(typescript@5.8.2)
       typescript:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 5.8.2
 
   packages/chat:
@@ -113,13 +113,13 @@ importers:
         specifier: ^6.4.0
         version: 6.4.8(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@samchon/openapi':
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 3.2.3
       html-to-image:
         specifier: ^1.11.13
         version: 1.11.13
       openai:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 4.89.0(zod@3.24.2)
       react-markdown:
         specifier: ^9.0.3
@@ -213,7 +213,7 @@ importers:
         specifier: catalog:typia
         version: 3.3.0
       typescript:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 5.8.2
       typescript-eslint:
         specifier: ^8.10.0
@@ -264,7 +264,7 @@ importers:
         specifier: ^4.37.0
         version: 4.37.0
       typescript:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 5.8.2
       typia:
         specifier: catalog:typia
@@ -283,7 +283,7 @@ importers:
   packages/core:
     dependencies:
       '@samchon/openapi':
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 3.2.3
       typia:
         specifier: catalog:typia
@@ -308,7 +308,7 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       openai:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 4.89.0(zod@3.24.2)
       rimraf:
         specifier: ^6.0.1
@@ -326,7 +326,7 @@ importers:
         specifier: ^0.27.7
         version: 0.27.9(typescript@5.8.2)
       typescript:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 5.8.2
 
   packages/create-agentica:
@@ -351,7 +351,7 @@ importers:
         specifier: ^12.1.1
         version: 12.1.2(rollup@4.36.0)(tslib@2.8.1)(typescript@5.8.2)
       '@samchon/openapi':
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 3.2.3
       '@types/node':
         specifier: ^22.10.5
@@ -363,7 +363,7 @@ importers:
         specifier: ^4.29.1
         version: 4.36.0
       typescript:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 5.8.2
 
   packages/rpc:
@@ -372,7 +372,7 @@ importers:
         specifier: workspace:^
         version: link:../core
       '@samchon/openapi':
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 3.2.3
       typia:
         specifier: catalog:typia
@@ -403,7 +403,7 @@ importers:
         specifier: ^0.27.7
         version: 0.27.9(typescript@5.8.2)
       typescript:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 5.8.2
 
   test:
@@ -424,7 +424,7 @@ importers:
         specifier: ^0.8.2
         version: 0.8.3
       '@samchon/openapi':
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 3.2.3
       '@samchon/shopping-api':
         specifier: ^0.16.0
@@ -439,7 +439,7 @@ importers:
         specifier: ^12.0.1
         version: 12.0.1
       openai:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 4.89.0(zod@3.24.2)
       tgrid:
         specifier: ^1.1.0
@@ -458,7 +458,7 @@ importers:
         specifier: catalog:typia
         version: 3.3.0
       typescript:
-        specifier: catalog:unrelated
+        specifier: catalog:libs
         version: 5.8.2
 
   website:
