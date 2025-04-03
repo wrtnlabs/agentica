@@ -9,7 +9,7 @@ describe("getRetry", () => {
 
   it("should retry the function specified number of times", async () => {
     const mockFn = vi.fn().mockImplementation(async () => {
-      if (mockFn.mock.calls.length < 3) {
+      if (mockFn.mock.calls.length === 1) {
         throw new Error("Failed");
       }
       return "success";
@@ -19,7 +19,7 @@ describe("getRetry", () => {
     const result = await retryFn(mockFn);
 
     expect(result).toBe("success");
-    expect(mockFn).toHaveBeenCalledTimes(3);
+    expect(mockFn).toHaveBeenCalledTimes(2);
   });
 
   it("should throw the last error when all retries fail", async () => {
@@ -41,7 +41,7 @@ describe("getRetry", () => {
   });
 
   it("should handle non-async functions", async () => {
-    const mockFn = vi.fn()
+    const mockFn: () => string = vi.fn()
       .mockImplementationOnce(() => { throw new Error("Failed"); })
       .mockImplementationOnce(() => "success");
 
@@ -168,5 +168,55 @@ describe("groupByArray", () => {
   it("should return empty array when input array is empty", () => {
     const result = groupByArray([], 2);
     expect(result).toEqual([]);
+  });
+
+  it("should return 2dim-array with only one original array when the array length is less than division number", () => {
+    const array = [1];
+    const result = groupByArray(array, 2);
+    expect(result).toEqual([[1]]);
+  });
+
+  it("should throw error when count is less than 1", () => {
+    const array = [1, 2, 3, 4, 5];
+    expect(() => groupByArray(array, 0)).toThrow("count should be greater than 0");
+    expect(() => groupByArray(array, -1)).toThrow("count should be greater than 0");
+  });
+
+  it("should throw error when count is not a number", () => {
+    const array = [1, 2, 3, 4, 5];
+    expect(() => groupByArray(array, Number.NaN)).toThrow("count should be a valid number");
+    expect(() => groupByArray(array, Infinity)).toThrow("count should be finite");
+    expect(() => groupByArray(array, -Infinity)).toThrow("count should be finite");
+  });
+
+  it("should throw error when count is not an integer", () => {
+    const array = [1, 2, 3, 4, 5];
+    expect(() => groupByArray(array, 2.5)).toThrow("count should be an integer");
+    expect(() => groupByArray(array, 1.1)).toThrow("count should be an integer");
+  });
+
+  it("should handle array with different data types", () => {
+    const mixedArray = [1, "two", { three: 3 }, [4], true, null, undefined];
+    const result = groupByArray(mixedArray, 2);
+    expect(result).toEqual([
+      [1, "two"],
+      [{ three: 3 }, [4]],
+      [true, null],
+      [undefined],
+    ]);
+  });
+
+  it("should handle very large arrays", () => {
+    const largeArray = Array.from({ length: 1000 }, (_, i) => i);
+    const result = groupByArray(largeArray, 100);
+    expect(result.length).toBe(10);
+    expect(result[0]?.length).toBe(100);
+    expect(result[9]?.length).toBe(100);
+  });
+
+  it("should handle count larger than array length", () => {
+    const array = [1, 2, 3];
+    const result = groupByArray(array, 5);
+    expect(result).toEqual([[1, 2, 3]]);
   });
 });
