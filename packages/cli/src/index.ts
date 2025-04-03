@@ -1,10 +1,12 @@
-import type { StarterTemplate } from "./commands/start";
-
 import process from "node:process";
+
 import * as p from "@clack/prompts";
 import { Command } from "commander";
 import * as picocolors from "picocolors";
 import typia from "typia";
+
+import type { StarterTemplate } from "./commands/start";
+
 import { start } from "./commands";
 
 interface CliOptions {
