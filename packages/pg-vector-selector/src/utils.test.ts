@@ -1,3 +1,5 @@
+import { vi } from "vitest";
+
 import { getRetry, groupByArray } from "./utils";
 
 describe("getRetry", () => {
@@ -6,67 +8,60 @@ describe("getRetry", () => {
   });
 
   it("should retry the function specified number of times", async () => {
-    let attempts = 0;
-    const fn = async () => {
-      attempts++;
-      if (attempts < 3) {
+    const mockFn = vi.fn().mockImplementation(async () => {
+      if (mockFn.mock.calls.length < 3) {
         throw new Error("Failed");
       }
       return "success";
-    };
+    });
 
     const retryFn = getRetry(3);
-    const result = await retryFn(fn);
+    const result = await retryFn(mockFn);
+
     expect(result).toBe("success");
-    expect(attempts).toBe(3);
+    expect(mockFn).toHaveBeenCalledTimes(3);
   });
 
   it("should throw the last error when all retries fail", async () => {
     const error = new Error("Failed");
-    const fn = async () => {
-      throw error;
-    };
+    const mockFn = vi.fn().mockRejectedValue(error);
 
     const retryFn = getRetry(3);
-    await expect(retryFn(fn)).rejects.toThrow(error);
+    await expect(retryFn(mockFn)).rejects.toThrow(error);
+    expect(mockFn).toHaveBeenCalledTimes(3);
   });
 
   it("should handle noop functions", async () => {
+    const mockFn = vi.fn().mockResolvedValue(undefined);
     const retryFn = getRetry(3);
-    const result = await retryFn(async () => {});
+
+    const result = await retryFn(mockFn);
     expect(result).toBeUndefined();
+    expect(mockFn).toHaveBeenCalledTimes(1);
   });
 
   it("should handle non-async functions", async () => {
-    let attempts = 0;
-    const fn = () => {
-      attempts++;
-      if (attempts < 2) {
-        throw new Error("Failed");
-      }
-      return "success";
-    };
+    const mockFn = vi.fn()
+      .mockImplementationOnce(() => { throw new Error("Failed"); })
+      .mockImplementationOnce(() => "success");
 
     const retryFn = getRetry(3);
-    const result = await retryFn(async () => fn());
+    const result = await retryFn(async () => mockFn());
+
     expect(result).toBe("success");
-    expect(attempts).toBe(2);
+    expect(mockFn).toHaveBeenCalledTimes(2);
   });
 
   it("should stop retrying after successful attempt", async () => {
-    let attempts = 0;
-    const fn = async () => {
-      attempts++;
-      if (attempts === 2) {
-        return "success";
-      }
-      throw new Error("Failed");
-    };
+    const mockFn = vi.fn()
+      .mockRejectedValueOnce(new Error("Failed"))
+      .mockResolvedValueOnce("success");
 
     const retryFn = getRetry(5);
-    const result = await retryFn(fn);
+    const result = await retryFn(mockFn);
+
     expect(result).toBe("success");
-    expect(attempts).toBe(2);
+    expect(mockFn).toHaveBeenCalledTimes(2);
   });
 
   it("should handle different types of errors", async () => {
