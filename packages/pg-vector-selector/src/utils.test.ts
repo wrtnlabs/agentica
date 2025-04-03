@@ -2,6 +2,7 @@ import { getRetry, groupByArray } from "./utils";
 
 describe("getRetry", () => {
   it("should throw error when count is less than 1", () => {
+    // @ts-expect-error getRetry should throw error when count is not more than 0
     expect(() => getRetry(0)).toThrow("count should be greater than 0");
   });
 
@@ -159,6 +160,7 @@ describe("groupByArray", () => {
 
   it("should throw error when count is less than 1", () => {
     const array = [1, 2, 3, 4, 5];
+    // @ts-expect-error groupByArray should throw error when count is not more than 0
     expect(() => groupByArray(array, 0)).toThrow("count should be greater than 0");
   });
 

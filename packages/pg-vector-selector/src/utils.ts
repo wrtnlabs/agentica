@@ -1,4 +1,8 @@
-import type { NonNegativeInteger } from "type-fest";
+import type { GreaterThan, Integer } from "type-fest";
+
+/** type function to check if a number is greater than 0 */
+type GreaterThanZeroInteger<T extends number> = GreaterThan<Integer<T>, 0> extends true ? T : never;
+
 /**
  * This function is used to get a retry function.
  *
@@ -12,7 +16,7 @@ import type { NonNegativeInteger } from "type-fest";
  * @throws {TypeError} If the count is not a number, or if the count is not a finite number, or if the count is not an integer, or if the count is less than 1.
  * @throws {Error} If the function fails to return a value after the specified number of retries.
  */
-export function getRetry<TCount extends number>(count: NonNegativeInteger<TCount>) {
+export function getRetry<TCount extends number>(count: GreaterThanZeroInteger<TCount>) {
   if (count < 1) {
     throw new Error("count should be greater than 0");
   }
@@ -48,7 +52,7 @@ export function getRetry<TCount extends number>(count: NonNegativeInteger<TCount
  * @param count - The number of elements in each group.
  * @returns A 2-dimensional array.
  */
-export function groupByArray<T, TCount extends number>(array: T[], count: NonNegativeInteger<TCount>): T[][] {
+export function groupByArray<T, TCount extends number>(array: T[], count: GreaterThanZeroInteger<TCount>): T[][] {
   if (count < 1) {
     throw new Error("count should be greater than 0");
   }
