@@ -40,7 +40,7 @@ interface IMember {
   id: string & tags.Format<"uuid">;
   name: string;
   age: number & tags.Minimum<0> & tags.Maximum<100>;
-  thumbnail: string & tags.Format<"uri"> & tags.ContentMiaType;
+  thumbnail: string & tags.Format<"uri"> & tags.ContentMediaType;
 }
 
 const agent: AutoViewAgent = new AutoViewAgent({
@@ -81,7 +81,7 @@ interface IMember {
   id: string & tags.Format<"uuid">;
   name: string;
   age: number & tags.Minimum<0> & tags.Maximum<100>;
-  thumbnail: string & tags.Format<"uri"> & tags.ContentMiaType;
+  thumbnail: string & tags.Format<"uri"> & tags.ContentMediaType;
 }
 
 // LLM SCHEMA GENERATION
