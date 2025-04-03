@@ -5,7 +5,7 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
 import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";
 
 /**
- * Nestia A.I. chatbot event.
+ * Agentica A.I. chatbot event.
  *
  * `IAgenticaEventJson` is an union type of all possible events that can
  * be emitted by the A.I. chatbot of the {@link Agentica} class. You

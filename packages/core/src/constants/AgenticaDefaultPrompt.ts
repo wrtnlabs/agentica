@@ -1,5 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
+import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
 
 import { AgenticaSystemPrompt } from "./AgenticaSystemPrompt";
 import { Singleton } from "../utils/Singleton";
@@ -37,7 +38,7 @@ const getTimezone = new Singleton(
   () => Intl.DateTimeFormat().resolvedOptions().timeZone,
 );
 
-export function write<Model extends ILlmSchema.Model>(config?: IAgenticaConfig<Model>): string {
+export function write<Model extends ILlmSchema.Model>(config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model>): string {
   if (config?.systemPrompt?.common !== undefined) {
     return config?.systemPrompt?.common(config);
   }

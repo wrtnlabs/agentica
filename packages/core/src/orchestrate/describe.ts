@@ -1,8 +1,9 @@
 import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
+import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
+import type { AgenticaContext } from "../context/AgenticaContext";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
@@ -12,7 +13,10 @@ import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageU
 import { createDescribeEvent } from "../factory/events";
 import { createDescribePrompt, decodePrompt } from "../factory/prompts";
 
-export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
+export async function describe<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  histories: AgenticaExecutePrompt<Model>[],
+): Promise<AgenticaDescribePrompt<Model>[]> {
   if (histories.length === 0) {
     return [];
   }

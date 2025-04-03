@@ -1,6 +1,7 @@
 import {
   ChatGptTypeChecker,
   HttpLlm,
+  LlmTypeCheckerV3_1,
 } from "@samchon/openapi";
 
 import type {
@@ -11,13 +12,14 @@ import type {
 } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
-import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
+import type { AgenticaContext } from "../context/AgenticaContext";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
@@ -29,7 +31,10 @@ import { createOperationSelection } from "../factory/operations";
 import { createCancelPrompt, createExecutePrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
 import { cancelFunction } from "./internal/cancelFunction";
 
-export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+export async function call<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  operations: AgenticaOperation<Model>[],
+): Promise<AgenticaPrompt<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -51,20 +56,22 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
         {
           role: "system",
           content:
-            ctx.config?.systemPrompt?.execute?.(ctx.histories)
+            (ctx.type === "context"
+              ? ctx.config?.systemPrompt?.execute?.(ctx.histories)
+              : ctx.config?.systemPrompt?.execute?.(ctx.histories))
             ?? AgenticaSystemPrompt.EXECUTE,
         },
     ],
     // STACKED FUNCTIONS
-    tools: ctx.stack.map(
+    tools: operations.map(
       s =>
         ({
           type: "function",
           function: {
-            name: s.operation.name,
-            description: s.operation.function.description,
-            parameters: (s.operation.function.separated !== undefined
-              ? (s.operation.function.separated.llm
+            name: s.name,
+            description: s.function.description,
+            parameters: (s.function.separated !== undefined
+              ? (s.function.separated.llm
                 ?? ({
                   type: "object",
                   properties: {},
@@ -72,7 +79,7 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
                   additionalProperties: false,
                   $defs: {},
                 } satisfies IChatGptSchema.IParameters))
-              : s.operation.function.parameters) as Record<string, any>,
+              : s.function.parameters) as Record<string, any>,
           },
         }) as OpenAI.ChatCompletionTool,
     ),
@@ -136,18 +143,20 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
               }),
             );
 
-            await cancelFunction(ctx, {
-              name: call.operation.name,
-              reason: "completed",
-            });
-            void ctx.dispatch(
-              createCancelEvent({
-                selection: createOperationSelection({
-                  operation: call.operation,
-                  reason: "complete",
+            if (ctx.type === "context") {
+              await cancelFunction(ctx, {
+                name: call.operation.name,
+                reason: "completed",
+              });
+              void ctx.dispatch(
+                createCancelEvent({
+                  selection: createOperationSelection({
+                    operation: call.operation,
+                    reason: "complete",
+                  }),
                 }),
-              }),
-            );
+              );
+            }
             return [
               execute,
               createCancelPrompt({
@@ -190,7 +199,11 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
   return (await Promise.all(closures.map(async fn => fn()))).flat();
 }
 
-async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, call: AgenticaCallEvent<Model>, retry: number): Promise<AgenticaExecutePrompt<Model>> {
+async function propagate<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  call: AgenticaCallEvent<Model>,
+  retry: number,
+): Promise<AgenticaExecutePrompt<Model>> {
   if (call.operation.protocol === "http") {
     // ----
     // HTTP PROTOCOL
@@ -356,7 +369,12 @@ async function executeClassOperation<Model extends ILlmSchema.Model>(operation: 
   return ((execute as Record<string, unknown>)[operation.function.name] as (...args: unknown[]) => Promise<unknown>)(operationArguments);
 }
 
-async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, call: AgenticaCallEvent<Model>, retry: number, error: unknown): Promise<AgenticaExecutePrompt<Model> | null> {
+async function correct<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  call: AgenticaCallEvent<Model>,
+  retry: number,
+  error: unknown,
+): Promise<AgenticaExecutePrompt<Model> | null> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -378,8 +396,11 @@ async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
         {
           role: "system",
           content:
-            ctx.config?.systemPrompt?.execute?.(ctx.histories)
-            ?? AgenticaSystemPrompt.EXECUTE,
+            (
+              ctx.type === "context"
+                ? ctx.config?.systemPrompt?.execute?.(ctx.histories)
+                : ctx.config?.systemPrompt?.execute?.(ctx.histories))
+              ?? AgenticaSystemPrompt.EXECUTE,
         },
         {
           role: "assistant",
@@ -493,5 +514,7 @@ function isObject($defs: Record<string, IChatGptSchema>, schema: IChatGptSchema)
       && isObject($defs, $defs[schema.$ref.split("/").at(-1)!]!))
     || (ChatGptTypeChecker.isAnyOf(schema)
       && schema.anyOf.every(schema => isObject($defs, schema)))
+    || (LlmTypeCheckerV3_1.isOneOf(schema)
+      && schema.oneOf.every(schema => isObject($defs, schema)))
   );
 }

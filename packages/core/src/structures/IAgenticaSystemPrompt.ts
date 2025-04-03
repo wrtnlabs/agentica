@@ -1,5 +1,4 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import type { IAgenticaConfig } from "./IAgenticaConfig";

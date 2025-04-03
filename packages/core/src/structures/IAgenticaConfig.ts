@@ -1,12 +1,11 @@
 import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import type { IAgenticaExecutor } from "./IAgenticaExecutor";
 import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
 
 /**
- * Configuration for Nestia Agent.
+ * Configuration for Agentica Agent.
  *
  * `IAgenticaConfig` is an interface that defines the configuration
  * properties of the {@link Agentica}. With this configuration, you

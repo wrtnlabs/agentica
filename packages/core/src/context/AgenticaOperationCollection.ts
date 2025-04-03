@@ -2,7 +2,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 import type { AgenticaOperation } from "./AgenticaOperation";
 
 /**
- * Collection of operations used in the Nestia Agent.
+ * Collection of operations used in the Agentica Agent.
  *
  * `IAgenticaOperationCollection` is an interface type representing
  * a collection of operations for several purposes used in the

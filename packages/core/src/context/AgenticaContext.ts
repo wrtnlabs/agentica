@@ -9,7 +9,7 @@ import type { AgenticaOperationCollection } from "./AgenticaOperationCollection"
 import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
 
 /**
- * Context of the Nestia A.I. agent.
+ * Context of the Agentica A.I. agent.
  *
  * `IAgenticaContext` is a structure defining the context of the
  * internal agents composing the {@link Agentica}, like function
@@ -40,6 +40,8 @@ import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
  * @author Samchon
  */
 export interface AgenticaContext<Model extends ILlmSchema.Model> {
+  type: "context";
+
   // ----
   // APPLICATION
   // ----

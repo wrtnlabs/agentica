@@ -24,7 +24,7 @@ import { createInitializeEvent, createRequestEvent, createTextEvent } from "./fa
 import { execute } from "./orchestrate/execute";
 
 /**
- * Nestia A.I. chatbot agent.
+ * Agentica A.I. chatbot agent.
  *
  * `Agentica` is a facade class for the super A.I. chatbot agent
  * which performs the {@link conversate user's conversation function}

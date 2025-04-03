@@ -17,6 +17,7 @@ export * from "./events/AgenticaResponseEvent";
 export * from "./events/AgenticaSelectEvent";
 export * from "./events/AgenticaTextEvent";
 export * from "./events/AgenticaValidateEvent";
+export * from "./events/MicroAgenticaEvent";
 
 export * as factory from "./factory";
 
@@ -26,7 +27,6 @@ export * from "./json/IAgenticaEventJson";
 export * from "./json/IAgenticaOperationJson";
 export * from "./json/IAgenticaOperationSelectionJson";
 export * from "./json/IAgenticaPromptJson";
-
 export * from "./json/IAgenticaTokenUsageJson";
 
 export * as orchestrate from "./orchestrate";
@@ -36,8 +36,9 @@ export * from "./prompts/AgenticaDescribePrompt";
 export * from "./prompts/AgenticaExecutePrompt";
 export * from "./prompts/AgenticaPrompt";
 export * from "./prompts/AgenticaSelectPrompt";
-
 export * from "./prompts/AgenticaTextPrompt";
+
+export * from "./prompts/MicroAgenticaPrompt";
 export * from "./structures/IAgenticaConfig";
 export * from "./structures/IAgenticaController";
 export * from "./structures/IAgenticaExecutor";
