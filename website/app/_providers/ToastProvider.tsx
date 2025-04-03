@@ -5,8 +5,7 @@ export default function ToastProvider() {
   return (
     <ToastContainer 
       position="top-center"
-     // autoClose={3000} 
-      autoClose={false} 
+      autoClose={3000} 
       hideProgressBar={true}
       closeButton={false}
       closeOnClick={true}
