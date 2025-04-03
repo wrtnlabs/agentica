@@ -12,7 +12,6 @@ A library that significantly accelerates AI function selection through vector em
 ```typescript
 import { Agentica } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
-
 import typia from "typia";
 
 // Initialize with connector-hive server

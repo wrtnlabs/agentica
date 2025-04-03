@@ -1,27 +1,28 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
+import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { AgenticaPrompt } from "./prompts/AgenticaPrompt";
+import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
 import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaProps } from "./structures/IAgenticaProps";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
-import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
-import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 
-import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
-import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { __map_take } from "./utils/__map_take";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
-import { StreamUtil } from "./utils/StreamUtil";
-import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
-import { createTextPrompt } from "./factory/prompts";
+import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
 import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
+import { createTextPrompt } from "./factory/prompts";
 import { execute } from "./orchestrate/execute";
+import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
+import { __map_take } from "./utils/__map_take";
+import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
+import { StreamUtil } from "./utils/StreamUtil";
 
 /**
  * Nestia A.I. chatbot agent.
