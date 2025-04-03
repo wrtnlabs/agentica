@@ -17,4 +17,5 @@ jobs:
 
       - name: Lint
         # `pnpm lint` is not emit error exit code, so we need to check the output
-        run: pnpm lint | tee >(tail -n1 | grep -q 'Failed') && exit 1 || exit 0
+        # run: pnpm lint | tee >(tail -n1 | grep -q 'Failed') && exit 1 || exit 0
+        run: pnpm dlx npm-run-all2 -p lint:* --aggregate-output
