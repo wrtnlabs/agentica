@@ -67,7 +67,9 @@ export default function Landing() {
       </Section>
 
       {/* Preview */}
-      <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
+      <section className="flex justify-between w-full pb-[74px] md:justify-end md:pb-[120px]">
+        {/* TODO: Add preview card */}
+        <div></div>
         <PreviewCard
           href="https://wrtnlabs.io/autoview/"
           title="Autoview"

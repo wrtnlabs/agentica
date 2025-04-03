@@ -12,10 +12,10 @@ interface PreviewCardProps {
 
 export function PreviewCard({ title, image, href }: PreviewCardProps) {
   return (
-    <Link href={href}>
-      <div className="group rounded-s-xl relative z-10 w-full md:w-[420px] md:pr-20 md:h-[370px] overflow-hidden hover:bg-zinc-900 transition-all duration-300">
+    <Link href={href} className="w-full md:w-auto">
+      <div className="group md:rounded-s-xl relative z-10 w-full md:w-[420px] md:pr-20 md:h-[370px] overflow-hidden hover:bg-zinc-900 transition-all duration-300">
         <div className="flex w-full cursor-pointer flex-col gap-3 p-5 pr-10 transition-colors duration-300 md:p-5 md:pr-0 md:hover:bg-transparent">
-          <div className="flex items-center justify-between">
+          <div className="w-full flex items-center justify-between">
             <div className="flex flex-1 flex-col gap-1">
               <p className="text-lg font-[450] text-zinc-400">Next</p>
               <p className="text-2xl font-medium text-zinc-50">{title}</p>
