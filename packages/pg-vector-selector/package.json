@@ -38,7 +38,7 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc && rollup -c",
+    "build": "tsc -p ./tsconfig.build.json && rollup -c",
     "prepack": "pnpm run build",
     "lint": "eslint .",
     "format": "eslint --fix .",
