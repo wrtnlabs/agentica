@@ -170,7 +170,7 @@ describe("groupByArray", () => {
     expect(result).toEqual([]);
   });
 
-  it("should return 2dim-array with only one original array when the array length is less than division number", () => {
+  it("should handle count larger than array length", () => {
     const array = [1];
     const result = groupByArray(array, 2);
     expect(result).toEqual([[1]]);
@@ -212,11 +212,5 @@ describe("groupByArray", () => {
     expect(result.length).toBe(10);
     expect(result[0]?.length).toBe(100);
     expect(result[9]?.length).toBe(100);
-  });
-
-  it("should handle count larger than array length", () => {
-    const array = [1, 2, 3];
-    const result = groupByArray(array, 5);
-    expect(result).toEqual([[1, 2, 3]]);
   });
 });
