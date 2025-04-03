@@ -31,11 +31,7 @@ const chatBubbleVariants = cva("py-4 px-5 rounded-2xl flex flex-col gap-4", {
   },
 });
 
-interface ChatBubbleProps extends ChatMessageType {
-  callback: () => void;
-}
-
-export function ChatBubble({ author, message, type, callback }: ChatBubbleProps) {
+export function ChatBubble({ author, message, type }: ChatMessageType) {
   const isAgent = author === "agent";
   const sentences = message.split(/\n/);
   const [viewSentences, setViewSentences] = useState<string[]>([]);
@@ -46,7 +42,6 @@ export function ChatBubble({ author, message, type, callback }: ChatBubbleProps)
     sentences.forEach((sentence, index) => {
       const timeoutId = setTimeout(() => {
         setViewSentences((prev) => [...prev, sentence]);
-        callback()
       }, 50 * index);
       timeouts.push(timeoutId);
     });
@@ -88,9 +83,6 @@ export function ChatBubble({ author, message, type, callback }: ChatBubbleProps)
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              style={{
-                transition: "opacity 0.4s ease-in-out",
-              }}
             >
               <Markdown>{sentence}</Markdown>
             </motion.div>
