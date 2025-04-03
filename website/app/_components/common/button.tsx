@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-primary text-primary-foreground hover:bg-primary/90",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-[#27272A] text-secondary-foreground hover:bg-secondary/80",
       },
       disabled: {
         true: "opacity-50 cursor-not-allowed",
