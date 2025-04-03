@@ -31,12 +31,14 @@ const chatBubbleVariants = cva("py-4 px-5 rounded-2xl flex flex-col gap-4", {
   },
 });
 
-export function ChatBubble({ author, message, type }: ChatMessageType) {
-  const [viewSentences, setViewSentences] = useState<string[]>([]);
+interface ChatBubbleProps extends ChatMessageType {
+  callback: () => void;
+}
 
+export function ChatBubble({ author, message, type, callback }: ChatBubbleProps) {
   const isAgent = author === "agent";
-
   const sentences = message.split(/\n/);
+  const [viewSentences, setViewSentences] = useState<string[]>([]);
 
   useEffect(() => {
     const timeouts: NodeJS.Timeout[] = [];
@@ -44,6 +46,7 @@ export function ChatBubble({ author, message, type }: ChatMessageType) {
     sentences.forEach((sentence, index) => {
       const timeoutId = setTimeout(() => {
         setViewSentences((prev) => [...prev, sentence]);
+        callback()
       }, 50 * index);
       timeouts.push(timeoutId);
     });
