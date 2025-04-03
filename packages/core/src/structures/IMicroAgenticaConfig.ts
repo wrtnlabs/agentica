@@ -1,6 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type { IMicroAgenticaSystemPrompt } from "./IMicroAgenticaSystemPrompt";
+
 import type { IMicroAgenticaExecutor } from "./IMicroAgenticaExecutor";
+import type { IMicroAgenticaSystemPrompt } from "./IMicroAgenticaSystemPrompt";
 
 export interface IMicroAgenticaConfig<Model extends ILlmSchema.Model> {
   /**
@@ -19,7 +20,8 @@ export interface IMicroAgenticaConfig<Model extends ILlmSchema.Model> {
    * @default ChatGptAgent.execute
    */
   executor?:
-      | Partial<IMicroAgenticaExecutor<Model>>;
+    | undefined
+    | Partial<IMicroAgenticaExecutor<Model>>;
 
   /**
    * System prompt messages.

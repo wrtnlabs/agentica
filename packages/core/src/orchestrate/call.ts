@@ -1,9 +1,3 @@
-import {
-  ChatGptTypeChecker,
-  HttpLlm,
-  LlmTypeCheckerV3_1,
-} from "@samchon/openapi";
-
 import type {
   IChatGptSchema,
   IHttpMigrateRoute,
@@ -12,23 +6,31 @@ import type {
 } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
-import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+
+import {
+  ChatGptTypeChecker,
+  HttpLlm,
+  LlmTypeCheckerV3_1,
+} from "@samchon/openapi";
+
 import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
-import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaContext } from "../context/AgenticaContext";
+import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
+import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { StreamUtil } from "../utils/StreamUtil";
-import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
 import { createCancelPrompt, createExecutePrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
+import { StreamUtil } from "../utils/StreamUtil";
+
 import { cancelFunction } from "./internal/cancelFunction";
 
 export async function call<Model extends ILlmSchema.Model>(

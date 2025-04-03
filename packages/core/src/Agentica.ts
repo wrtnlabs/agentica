@@ -1,27 +1,28 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
+import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { AgenticaPrompt } from "./prompts/AgenticaPrompt";
+import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
 import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaProps } from "./structures/IAgenticaProps";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
-import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
-import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 
-import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
-import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { __map_take } from "./utils/__map_take";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
-import { StreamUtil } from "./utils/StreamUtil";
-import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
-import { createTextPrompt } from "./factory/prompts";
+import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
 import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
+import { createTextPrompt } from "./factory/prompts";
 import { execute } from "./orchestrate/execute";
+import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
+import { __map_take } from "./utils/__map_take";
+import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
+import { StreamUtil } from "./utils/StreamUtil";
 
 /**
  * Agentica A.I. chatbot agent.
@@ -56,7 +57,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
 
   // STACK
   private readonly stack_: AgenticaOperationSelection<Model>[];
-  private readonly prompt_histories_: AgenticaPrompt<Model>[];
+  private readonly histories_: AgenticaPrompt<Model>[];
   private readonly listeners_: Map<string, Set<(event: AgenticaEvent<Model>) => Promise<void> | void>>;
 
   // STATUS
@@ -84,7 +85,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     // STATUS
     this.stack_ = [];
     this.listeners_ = new Map();
-    this.prompt_histories_ = (props.histories ?? []).map(input =>
+    this.histories_ = (props.histories ?? []).map(input =>
       AgenticaPromptTransformer.transform({
         operations: this.operations_.group,
         prompt: input,
@@ -146,7 +147,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
         usage: this.token_usage_,
       }),
     );
-    this.prompt_histories_.push(prompt, ...newbie);
+    this.histories_.push(prompt, ...newbie);
     return [prompt, ...newbie];
   }
 
@@ -194,7 +195,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @returns List of chat prompts
    */
   public getPromptHistories(): AgenticaPrompt<Model>[] {
-    return this.prompt_histories_;
+    return this.histories_;
   }
 
   /**
@@ -219,11 +220,12 @@ export class Agentica<Model extends ILlmSchema.Model> {
     const dispatch = async (event: AgenticaEvent<Model>) => this.dispatch(event);
     return {
       // APPLICATION
+      type: "context",
       operations: this.operations_,
       config: this.props.config,
 
       // STATES
-      histories: this.prompt_histories_,
+      histories: this.histories_,
       stack: this.stack_,
       ready: () => this.ready_,
       prompt: props.prompt,
