@@ -1,8 +1,3 @@
-import {
-  ChatGptTypeChecker,
-  HttpLlm,
-} from "@samchon/openapi";
-
 import type {
   IChatGptSchema,
   IHttpMigrateRoute,
@@ -11,22 +6,29 @@ import type {
 } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
+
+import {
+  ChatGptTypeChecker,
+  HttpLlm,
+} from "@samchon/openapi";
+
+import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { StreamUtil } from "../utils/StreamUtil";
-import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
 import { createCancelPrompt, createExecutePrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
+import { StreamUtil } from "../utils/StreamUtil";
+
 import { cancelFunction } from "./internal/cancelFunction";
 
 export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {

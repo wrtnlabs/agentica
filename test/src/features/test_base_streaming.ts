@@ -3,6 +3,7 @@ import type {
   AgenticaRequestEvent,
   AgenticaResponseEvent,
 } from "@agentica/core";
+
 import {
   Agentica,
 } from "@agentica/core";

@@ -1,7 +1,9 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 
 export type AgenticaExecuteEvent<Model extends ILlmSchema.Model> =

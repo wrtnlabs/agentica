@@ -6,6 +6,7 @@
 import { existsSync } from "node:fs";
 import { appendFile, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
+
 import { downloadTemplate } from "@bluwy/giget-core";
 
 interface DownloadTemplateAndPlaceInProjectProps {

@@ -3,8 +3,9 @@
  * This file contains functions to work with packages.
  */
 
-import type { PackageJson } from "type-fest";
 import process from "node:process";
+
+import type { PackageJson } from "type-fest";
 
 export const PACKAGE_MANAGERS = [
   "npm",

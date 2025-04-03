@@ -1,14 +1,15 @@
-import type OpenAI from "openai";
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type OpenAI from "openai";
+
+import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
 import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
 
 export function decodePrompt<Model extends ILlmSchema.Model>(history: AgenticaPrompt<Model>): OpenAI.ChatCompletionMessageParam[] {
   // NO NEED TO DECODE DESCRIBE

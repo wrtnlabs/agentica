@@ -1,23 +1,25 @@
-import typia from "typia";
-import { v4 } from "uuid";
-
 import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
+
+import typia from "typia";
+import { v4 } from "uuid";
+
+import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { __IChatCancelFunctionsApplication } from "../context/internal/__IChatCancelFunctionsApplication";
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { StreamUtil } from "../utils/StreamUtil";
-import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { createCancelPrompt, decodePrompt } from "../factory/prompts";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
+import { StreamUtil } from "../utils/StreamUtil";
+
 import { cancelFunction } from "./internal/cancelFunction";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<

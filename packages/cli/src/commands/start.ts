@@ -3,16 +3,20 @@
  * Start command
  */
 
-import type { SimplifyDeep } from "type-fest";
-import type { Service, UnwrapTaggedService } from "../connectors";
-import type { PackageManager } from "../packages";
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
+
+import type { SimplifyDeep } from "type-fest";
+
 import * as p from "@clack/prompts";
 import * as picocolors from "picocolors";
 import typia from "typia";
+
+import type { Service, UnwrapTaggedService } from "../connectors";
+import type { PackageManager } from "../packages";
+
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand, runCommand } from "../packages";

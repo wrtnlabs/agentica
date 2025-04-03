@@ -1,4 +1,5 @@
 import type { AgenticaPrompt } from "@agentica/core";
+
 import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
 

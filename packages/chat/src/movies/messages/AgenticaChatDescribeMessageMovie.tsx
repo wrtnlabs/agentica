@@ -1,3 +1,6 @@
+import type { AgenticaDescribePrompt } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Button,
@@ -9,10 +12,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-import type { ILlmSchema } from "@samchon/openapi";
-import type { AgenticaDescribePrompt } from "@agentica/core";
-
 import { MarkdownViewer } from "../../components/MarkdownViewer";
+
 import { AgenticaChatExecuteMessageMovie } from "./AgenticaChatExecuteMessageMovie";
 
 export function AgenticaChatDescribeMessageMovie<

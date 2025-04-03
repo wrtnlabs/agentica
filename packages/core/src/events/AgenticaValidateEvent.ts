@@ -1,8 +1,10 @@
 import type { ILlmSchema } from "@samchon/openapi";
 import type { IValidation } from "typia";
-import type { AgenticaEventBase } from "./AgenticaEventBase";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
+
+import type { AgenticaEventBase } from "./AgenticaEventBase";
 
 /**
  * Event of a validation feedback.

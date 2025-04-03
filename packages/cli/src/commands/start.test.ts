@@ -1,12 +1,16 @@
 /** it is hard to mock fs because we have gigetDownload here, so we use tmp directory */
 
-import type { PackageJson } from "type-fest";
-import type { Service } from "../connectors";
 import { existsSync } from "node:fs";
 import { readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
+
+import type { PackageJson } from "type-fest";
+
+import type { Service } from "../connectors";
+
 import { PACKAGE_MANAGERS } from "../packages";
+
 import {
   setupNestJSProject,
   setupNodeJSProject,

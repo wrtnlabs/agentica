@@ -1,4 +1,5 @@
 import type { Service } from "./connectors";
+
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, getConnectorsList, insertCodeIntoAgenticaStarter, serviceToConnector } from "./connectors";
 
 describe("serviceToConnector", () => {

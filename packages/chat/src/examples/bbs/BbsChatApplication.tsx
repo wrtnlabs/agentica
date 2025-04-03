@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import typia from "typia";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
+
 import { BbsArticleService } from "./BbsArticleService";
 
 export function BbsChatApplication(props: BbsChatApplication.IProps) {

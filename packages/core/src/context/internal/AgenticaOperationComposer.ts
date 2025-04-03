@@ -1,8 +1,9 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type { AgenticaOperation } from "../AgenticaOperation";
-import type { AgenticaOperationCollection } from "../AgenticaOperationCollection";
+
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
+import type { AgenticaOperation } from "../AgenticaOperation";
+import type { AgenticaOperationCollection } from "../AgenticaOperationCollection";
 
 import { __map_take } from "../../utils/__map_take";
 
