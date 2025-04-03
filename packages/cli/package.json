@@ -69,6 +69,6 @@
     "typescript": "catalog:libs",
     "typia": "catalog:typia",
     "unbuild": "^3.5.0",
-    "vitest": "^3.0.9"
+    "vitest": "catalog:vite"
   }
 }
