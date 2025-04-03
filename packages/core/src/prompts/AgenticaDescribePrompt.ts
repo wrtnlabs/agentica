@@ -1,5 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+
 import type { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
 import type { AgenticaPromptBase } from "./AgenticaPromptBase";
 

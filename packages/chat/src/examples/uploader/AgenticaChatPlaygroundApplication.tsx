@@ -1,3 +1,7 @@
+import type { IAgenticaVendor } from "@agentica/core";
+import type { IHttpLlmApplication } from "@samchon/openapi";
+import type { ReactElement } from "react";
+
 import { Agentica } from "@agentica/core";
 import {
   Button,
@@ -13,11 +17,8 @@ import OpenAI from "openai";
 import React, { useState } from "react";
 import JsonInput from "react-json-editor-ajrm";
 
-import type { ReactElement } from "react";
-import type { IHttpLlmApplication } from "@samchon/openapi";
-import type { IAgenticaVendor } from "@agentica/core";
-
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
+
 import { AgenticaChatUploaderMovie } from "./AgenticaChatUploaderMovie";
 
 /**

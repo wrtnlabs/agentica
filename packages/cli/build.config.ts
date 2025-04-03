@@ -1,6 +1,7 @@
 import UnpluginTypia from "@ryoppippi/unplugin-typia/rollup";
 import { isCI } from "std-env";
 import { defineBuildConfig } from "unbuild";
+
 import pkgJson from "./package.json";
 
 export default defineBuildConfig({

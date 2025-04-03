@@ -1,5 +1,6 @@
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 
 export interface AgenticaTextEvent<

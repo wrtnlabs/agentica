@@ -3,6 +3,7 @@ import type {
   AgenticaPrompt,
   IAgenticaController,
 } from "@agentica/core";
+
 import {
   Agentica,
 } from "@agentica/core";

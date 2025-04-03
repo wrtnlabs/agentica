@@ -269,7 +269,6 @@ when use this adapter, you should run the [connector-hive](https://github.com/wr
 ```typescript
 import { Agentica } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
-
 import typia from "typia";
 
 // Initialize with connector-hive server

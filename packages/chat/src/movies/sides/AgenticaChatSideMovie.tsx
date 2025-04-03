@@ -1,5 +1,3 @@
-import { Typography } from "@mui/material";
-
 import type {
   AgenticaOperationSelection,
   AgenticaTokenUsage,
@@ -7,6 +5,8 @@ import type {
   IAgenticaVendor,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
+
+import { Typography } from "@mui/material";
 
 import { AgenticaChatFunctionStackSideMovie } from "./AgenticaChatFunctionStackSideMovie";
 import { AgenticaChatTokenUsageSideMovie } from "./AgenticaChatTokenUsageSideMovie";

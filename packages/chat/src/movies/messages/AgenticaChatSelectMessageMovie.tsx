@@ -1,3 +1,6 @@
+import type { AgenticaOperationSelection } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+
 import GradingIcon from "@mui/icons-material/Grading";
 import {
   Button,
@@ -8,9 +11,6 @@ import {
   Collapse,
 } from "@mui/material";
 import { useState } from "react";
-
-import type { ILlmSchema } from "@samchon/openapi";
-import type { AgenticaOperationSelection } from "@agentica/core";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 

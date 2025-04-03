@@ -1,6 +1,7 @@
+import type { tags } from "typia";
+
 import { v4 } from "uuid";
 
-import type { tags } from "typia";
 import type { IBbsArticle } from "./IBbsArticle";
 
 export class BbsArticleService {

@@ -1,3 +1,5 @@
+import type { IHttpConnection } from "@samchon/openapi";
+
 import {
   Button,
   Divider,
@@ -13,8 +15,6 @@ import ShoppingApi from "@samchon/shopping-api";
 import OpenAI from "openai";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-
-import type { IHttpConnection } from "@samchon/openapi";
 
 import { ShoppingChatApplication } from "./ShoppingChatApplication";
 
