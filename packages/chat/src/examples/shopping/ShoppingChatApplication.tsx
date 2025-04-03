@@ -1,3 +1,9 @@
+import type {
+  IHttpConnection,
+  IHttpLlmApplication,
+} from "@samchon/openapi";
+import type OpenAI from "openai";
+
 import { Agentica } from "@agentica/core";
 import {
   HttpLlm,
@@ -5,12 +11,6 @@ import {
 } from "@samchon/openapi";
 import { useEffect, useState } from "react";
 import typia from "typia";
-
-import type {
-  IHttpConnection,
-  IHttpLlmApplication,
-} from "@samchon/openapi";
-import type OpenAI from "openai";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
 

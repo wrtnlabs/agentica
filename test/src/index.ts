@@ -3,6 +3,7 @@ import process from "node:process";
 
 import { DynamicExecutor } from "@nestia/e2e";
 import chalk from "chalk";
+
 import { TestGlobal } from "./TestGlobal";
 
 async function main(): Promise<void> {

@@ -1,22 +1,23 @@
-import { v4 } from "uuid";
-
 import type { ILlmSchema, IValidation } from "@samchon/openapi";
 import type OpenAI from "openai";
+
+import { v4 } from "uuid";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
+import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent";
 import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "../events/AgenticaResponseEvent";
+import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
-import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
-import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 
 import { createExecutePrompt, createSelectPrompt } from "./prompts";
 

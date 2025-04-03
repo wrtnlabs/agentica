@@ -1,4 +1,5 @@
 import type { AgenticaEvent, IAgenticaController } from "@agentica/core";
+
 import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";

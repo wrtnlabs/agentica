@@ -1,3 +1,5 @@
+import type { AgenticaTokenUsage } from "@agentica/core";
+
 import {
   Table,
   TableBody,
@@ -7,8 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-
-import type { AgenticaTokenUsage } from "@agentica/core";
 
 export function AgenticaChatTokenUsageSideMovie(props: AgenticaChatTokenUsageSideMovie.IProps) {
   const price: IPrice = compute(props.usage);

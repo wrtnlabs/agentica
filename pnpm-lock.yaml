@@ -5,16 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
-  typia:
-    '@ryoppippi/unplugin-typia':
-      specifier: ^2.1.3
-      version: 2.1.3
-    ts-patch:
-      specifier: ^3.3.0
-      version: 3.3.0
-    typia:
-      specifier: ^8.1.1
-      version: 8.1.1
   libs:
     '@samchon/openapi':
       specifier: ^3.2.3
@@ -25,6 +15,16 @@ catalogs:
     typescript:
       specifier: ~5.8.2
       version: 5.8.2
+  typia:
+    '@ryoppippi/unplugin-typia':
+      specifier: ^2.1.3
+      version: 2.1.3
+    ts-patch:
+      specifier: ^3.3.0
+      version: 3.3.0
+    typia:
+      specifier: ^8.1.1
+      version: 8.1.1
 
 overrides:
   '@types/react': 19.0.0
@@ -37,8 +37,8 @@ importers:
         specifier: ^9.17.0
         version: 9.22.0
       '@wrtnlabs/eslint-config':
-        specifier: ^0.4.2
-        version: 0.4.2(@typescript-eslint/utils@8.27.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-hooks@5.2.0(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-refresh@0.4.19(eslint@9.23.0(jiti@2.4.2)))(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.2))(terser@5.39.0))
+        specifier: ^0.4.3
+        version: 0.4.3(@typescript-eslint/utils@8.27.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-hooks@5.2.0(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-refresh@0.4.19(eslint@9.23.0(jiti@2.4.2)))(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.2))(terser@5.39.0))
       bumpp:
         specifier: ^10.1.0
         version: 10.1.0
@@ -2960,8 +2960,8 @@ packages:
   '@wrtnlabs/connector-hive-api@1.4.5':
     resolution: {integrity: sha512-VWADFykVRDZggYMtF+4kbyh9pnUqQ3+drX/C211vBeIZkTVwF5VUvkqwuso+FdG7nxJLypHCsubVfh5yVD2V2A==}
 
-  '@wrtnlabs/eslint-config@0.4.2':
-    resolution: {integrity: sha512-/49dSdB0aUfIXWo7ZJ81KiHl1F9MT3VQVsNQfVdY0TCQ/1PU7DTOh//bDycFl8nxazcx5HBGfYUIffsO0XYv1Q==}
+  '@wrtnlabs/eslint-config@0.4.3':
+    resolution: {integrity: sha512-+bWMa/dglq5YBTE2ouoc+Lb27dpfwAQyzurJllUCKE3jzrADwkoRVRpu0kf5xOS37fM/SgkH0xa/MPqtJugEMw==}
     engines: {node: ^18.18.0 || >=20.0.0}
     peerDependencies:
       '@next/eslint-plugin-next': ^15.2.4
@@ -9727,7 +9727,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@wrtnlabs/eslint-config@0.4.2(@typescript-eslint/utils@8.27.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-hooks@5.2.0(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-refresh@0.4.19(eslint@9.23.0(jiti@2.4.2)))(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.2))(terser@5.39.0))':
+  '@wrtnlabs/eslint-config@0.4.3(@typescript-eslint/utils@8.27.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-hooks@5.2.0(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-refresh@0.4.19(eslint@9.23.0(jiti@2.4.2)))(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.2))(terser@5.39.0))':
     dependencies:
       '@antfu/eslint-config': 4.10.2(@typescript-eslint/utils@8.27.0(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-hooks@5.2.0(eslint@9.23.0(jiti@2.4.2)))(eslint-plugin-react-refresh@0.4.19(eslint@9.23.0(jiti@2.4.2)))(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.0.9(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.2))(terser@5.39.0))
       defu: 6.1.4

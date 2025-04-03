@@ -43,6 +43,7 @@ By the way, as `typia` is a transformer library analyzing TypeScript source code
 ```typescript
 import fs from "node:fs";
 import path from "node:path";
+
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
 import { Agentica, IAgenticaOperation } from "@agentica/core";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
@@ -188,6 +189,7 @@ If you have written enough and proper descriptions to the functions (or API oper
 ```typescript
 import fs from "node:fs";
 import path from "node:path";
+
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
 import { Agentica, IAgenticaOperation } from "@agentica/core";
 import { HttpLlm, IHttpConnection, OpenApi } from "@samchon/openapi";
