@@ -1,3 +1,4 @@
+import type { NonNegativeInteger } from "type-fest";
 /**
  * This function is used to get a retry function.
  *
@@ -11,16 +12,7 @@
  * @throws {TypeError} If the count is not a number, or if the count is not a finite number, or if the count is not an integer, or if the count is less than 1.
  * @throws {Error} If the function fails to return a value after the specified number of retries.
  */
-export function getRetry(count: number) {
-  if (!Number.isFinite(count)) {
-    if (Number.isNaN(count)) {
-      throw new TypeError("count should be greater than 0");
-    }
-    throw new Error("count should be finite");
-  }
-  if (!Number.isInteger(count)) {
-    throw new TypeError("count should be an integer");
-  }
+export function getRetry<TCount extends number>(count: NonNegativeInteger<TCount>) {
   if (count < 1) {
     throw new Error("count should be greater than 0");
   }
@@ -56,16 +48,7 @@ export function getRetry(count: number) {
  * @param count - The number of elements in each group.
  * @returns A 2-dimensional array.
  */
-export function groupByArray<T>(array: T[], count: number): T[][] {
-  if (!Number.isFinite(count)) {
-    if (Number.isNaN(count)) {
-      throw new TypeError("count should be a valid number");
-    }
-    throw new Error("count should be finite");
-  }
-  if (!Number.isInteger(count)) {
-    throw new TypeError("count should be an integer");
-  }
+export function groupByArray<T, TCount extends number>(array: T[], count: NonNegativeInteger<TCount>): T[][] {
   if (count < 1) {
     throw new Error("count should be greater than 0");
   }

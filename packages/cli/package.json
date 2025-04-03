@@ -65,7 +65,7 @@
     "std-env": "^3.8.1",
     "ts-node": "^10.9.2",
     "ts-patch": "catalog:typia",
-    "type-fest": "^4.37.0",
+    "type-fest": "catalog:libs",
     "typescript": "catalog:libs",
     "typia": "catalog:typia",
     "unbuild": "^3.5.0",

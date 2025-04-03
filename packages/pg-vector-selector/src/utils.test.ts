@@ -133,23 +133,6 @@ describe("getRetry", () => {
     const result = await retryFn(fn);
     expect(result).toBe(1e20);
   });
-
-  it("should throw error when count is NaN", () => {
-    expect(() => getRetry(Number.NaN)).toThrow("count should be greater than 0");
-    expect(() => getRetry(0 / 0)).toThrow("count should be greater than 0");
-    expect(() => getRetry(Number.parseInt("not a number"))).toThrow("count should be greater than 0");
-  });
-
-  it("should throw error when count is Infinite", () => {
-    expect(() => getRetry(Infinity)).toThrow("count should be finite");
-    expect(() => getRetry(-Infinity)).toThrow("count should be finite");
-    expect(() => getRetry(1 / 0)).toThrow("count should be finite");
-  });
-
-  it("should throw error when count is not an integer", () => {
-    expect(() => getRetry(1.5)).toThrow("count should be an integer");
-    expect(() => getRetry(2.7)).toThrow("count should be an integer");
-  });
 });
 
 describe("groupByArray", () => {
@@ -179,20 +162,6 @@ describe("groupByArray", () => {
   it("should throw error when count is less than 1", () => {
     const array = [1, 2, 3, 4, 5];
     expect(() => groupByArray(array, 0)).toThrow("count should be greater than 0");
-    expect(() => groupByArray(array, -1)).toThrow("count should be greater than 0");
-  });
-
-  it("should throw error when count is not a number", () => {
-    const array = [1, 2, 3, 4, 5];
-    expect(() => groupByArray(array, Number.NaN)).toThrow("count should be a valid number");
-    expect(() => groupByArray(array, Infinity)).toThrow("count should be finite");
-    expect(() => groupByArray(array, -Infinity)).toThrow("count should be finite");
-  });
-
-  it("should throw error when count is not an integer", () => {
-    const array = [1, 2, 3, 4, 5];
-    expect(() => groupByArray(array, 2.5)).toThrow("count should be an integer");
-    expect(() => groupByArray(array, 1.1)).toThrow("count should be an integer");
   });
 
   it("should handle array with different data types", () => {
