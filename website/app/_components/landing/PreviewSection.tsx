@@ -2,6 +2,7 @@
 import { toast } from "react-toastify/unstyled";
 import { PreviewCard } from "../common/preview-card";
 import { Toast } from "../common/toast";
+import Link from "next/link";
 
 
 export function PreviewSection() {
@@ -14,13 +15,14 @@ export function PreviewSection() {
           direction="left"
           onClick={() => toast.info(<Toast message="This service will be available soon." />)}
         />
-        <PreviewCard
-          href="https://wrtnlabs.io/autoview/"
-          subtitle="Next"
-          title="Autoview"
-          image="/agentica/images/preview-autoview.png"
-          direction="right"
-        />
+        <Link href="https://wrtnlabs.io/autoview/">
+          <PreviewCard
+            subtitle="Next"
+            title="Autoview"
+            image="/agentica/images/preview-autoview.png"
+            direction="right"
+          />
+        </Link>
       </section>
   );
 }
