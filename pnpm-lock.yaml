@@ -12,6 +12,9 @@ catalogs:
     openai:
       specifier: ^4.80.0
       version: 4.89.0
+    type-fest:
+      specifier: ^4.37.0
+      version: 4.37.0
     typescript:
       specifier: ~5.8.2
       version: 5.8.2
@@ -25,6 +28,10 @@ catalogs:
     typia:
       specifier: ^8.1.1
       version: 8.1.1
+  vite:
+    vitest:
+      specifier: ^3.0.9
+      version: 3.0.9
 
 overrides:
   '@types/react': 19.0.0
@@ -261,7 +268,7 @@ importers:
         specifier: catalog:typia
         version: 3.3.0
       type-fest:
-        specifier: ^4.37.0
+        specifier: catalog:libs
         version: 4.37.0
       typescript:
         specifier: catalog:libs
@@ -273,7 +280,7 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0(typescript@5.8.2)
       vitest:
-        specifier: ^3.0.9
+        specifier: catalog:vite
         version: 3.0.9(@types/debug@4.1.12)(@types/node@20.17.25)(lightningcss@1.29.2)(msw@2.7.3(@types/node@20.17.25)(typescript@5.8.2))(terser@5.39.0)
     optionalDependencies:
       prettier:
@@ -362,9 +369,15 @@ importers:
       rollup:
         specifier: ^4.29.1
         version: 4.36.0
+      type-fest:
+        specifier: catalog:libs
+        version: 4.37.0
       typescript:
         specifier: catalog:libs
         version: 5.8.2
+      vitest:
+        specifier: catalog:vite
+        version: 3.0.9(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.2))(terser@5.39.0)
 
   packages/rpc:
     dependencies:
@@ -9674,7 +9687,6 @@ snapshots:
     optionalDependencies:
       msw: 2.7.3(@types/node@22.13.9)(typescript@5.8.2)
       vite: 5.4.14(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0)
-    optional: true
 
   '@vitest/pretty-format@3.0.9':
     dependencies:
@@ -15122,7 +15134,6 @@ snapshots:
       - sugarss
       - supports-color
       - terser
-    optional: true
 
   vite@5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0):
     dependencies:
@@ -15217,7 +15228,6 @@ snapshots:
       - sugarss
       - supports-color
       - terser
-    optional: true
 
   vscode-jsonrpc@8.2.0: {}
 

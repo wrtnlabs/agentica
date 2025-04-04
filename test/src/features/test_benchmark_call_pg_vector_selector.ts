@@ -13,7 +13,7 @@ import OpenAI from "openai";
 
 import { TestGlobal } from "../TestGlobal";
 
-export async function test_benchmark_calls_pg_vector_selector(): Promise<
+export async function test_benchmark_call_pg_vector_selector(): Promise<
   void | false
 > {
   if (TestGlobal.chatgptApiKey.length === 0) {

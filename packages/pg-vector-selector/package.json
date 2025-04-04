@@ -38,10 +38,11 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc && rollup -c",
+    "build": "tsc -p ./tsconfig.build.json && rollup -c",
     "prepack": "pnpm run build",
     "lint": "eslint .",
-    "format": "eslint --fix ."
+    "format": "eslint --fix .",
+    "test": "vitest"
   },
   "peerDependencies": {
     "@agentica/core": "workspace:^"
@@ -57,6 +58,8 @@
     "@types/node": "^22.10.5",
     "rimraf": "^6.0.1",
     "rollup": "^4.29.1",
-    "typescript": "catalog:libs"
+    "type-fest": "catalog:libs",
+    "typescript": "catalog:libs",
+    "vitest": "catalog:vite"
   }
 }
