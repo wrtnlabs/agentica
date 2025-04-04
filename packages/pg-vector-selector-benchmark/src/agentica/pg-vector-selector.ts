@@ -29,7 +29,7 @@ export async function pgVectorSelectorAgentica(props: {
     {
       channel_code: "samchon",
       external_user: null,
-      href: "http://localhost:3000/@agentica/pg-vector-selector-benchmark/agentica/plain",
+      href: "http://localhost:3000/@agentica/pg-vector-selector-benchmark/agentica/pg-vector-selector",
       referrer: "http://localhost:3000/NodeJS",
     },
   );

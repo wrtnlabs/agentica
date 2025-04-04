@@ -24,7 +24,8 @@
     "@agentica/pg-vector-selector": "workspace:^",
     "@samchon/shopping-api": "^0.16.0",
     "dotenv": "^16.4.7",
-    "openai": "catalog:libs"
+    "openai": "catalog:libs",
+    "typia": "^8.1.1"
   },
   "devDependencies": {
     "@samchon/openapi": "catalog:libs",
