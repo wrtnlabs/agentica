@@ -1,7 +1,9 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type { IMicroAgenticaConfig } from "./IMicroAgenticaConfig";
-import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
+
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
+import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
+
+import type { IMicroAgenticaConfig } from "./IMicroAgenticaConfig";
 
 export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
   /**

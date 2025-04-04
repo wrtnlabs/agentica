@@ -1,7 +1,8 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type { AgenticaTextPrompt } from "./AgenticaTextPrompt";
-import type { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
+
 import type { AgenticaDescribePrompt } from "./AgenticaDescribePrompt";
+import type { AgenticaExecutePrompt } from "./AgenticaExecutePrompt";
+import type { AgenticaTextPrompt } from "./AgenticaTextPrompt";
 
 export type MicroAgenticaPrompt<Model extends ILlmSchema.Model> =
   | AgenticaDescribePrompt<Model>
