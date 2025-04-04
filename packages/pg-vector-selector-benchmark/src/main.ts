@@ -56,4 +56,12 @@ async function main() {
   }, Promise.resolve());
 }
 
-Promise.resolve().then(() => {console.time("executed")}).then(main).then(() => {console.timeEnd("executed")}).catch(e => console.error(e));
+Promise.resolve()
+  .then(() => {
+    console.time("executed");
+  })
+  .then(main)
+  .then(() => {
+    console.timeEnd("executed");
+  })
+  .catch(e => console.error(e));
