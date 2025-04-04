@@ -452,6 +452,9 @@ importers:
       openai:
         specifier: catalog:libs
         version: 4.89.0(zod@3.24.2)
+      typia:
+        specifier: ^8.1.1
+        version: 8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2)
     devDependencies:
       '@samchon/openapi':
         specifier: catalog:libs
