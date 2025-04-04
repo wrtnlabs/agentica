@@ -12,6 +12,9 @@ catalogs:
     openai:
       specifier: ^4.80.0
       version: 4.89.0
+    type-fest:
+      specifier: ^4.37.0
+      version: 4.37.0
     typescript:
       specifier: ~5.8.2
       version: 5.8.2
@@ -25,6 +28,10 @@ catalogs:
     typia:
       specifier: ^8.1.1
       version: 8.1.1
+  vite:
+    vitest:
+      specifier: ^3.0.9
+      version: 3.0.9
 
 overrides:
   '@types/react': 19.0.0
@@ -261,7 +268,7 @@ importers:
         specifier: catalog:typia
         version: 3.3.0
       type-fest:
-        specifier: ^4.37.0
+        specifier: catalog:libs
         version: 4.37.0
       typescript:
         specifier: catalog:libs
@@ -273,7 +280,7 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0(typescript@5.8.2)
       vitest:
-        specifier: ^3.0.9
+        specifier: catalog:vite
         version: 3.0.9(@types/debug@4.1.12)(@types/node@20.17.25)(lightningcss@1.29.2)(msw@2.7.3(@types/node@20.17.25)(typescript@5.8.2))(terser@5.39.0)
     optionalDependencies:
       prettier:
@@ -362,9 +369,15 @@ importers:
       rollup:
         specifier: ^4.29.1
         version: 4.36.0
+      type-fest:
+        specifier: catalog:libs
+        version: 4.37.0
       typescript:
         specifier: catalog:libs
         version: 5.8.2
+      vitest:
+        specifier: catalog:vite
+        version: 3.0.9(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.2))(terser@5.39.0)
 
   packages/pg-vector-selector-benchmark:
     dependencies:
@@ -560,6 +573,9 @@ importers:
       react-markdown:
         specifier: ^9.0.3
         version: 9.1.0(@types/react@19.0.0)(react@19.0.0)
+      react-toastify:
+        specifier: ^11.0.5
+        version: 11.0.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react-use:
         specifier: ^17.6.0
         version: 17.6.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -575,6 +591,9 @@ importers:
       tstl:
         specifier: ^3.0.0
         version: 3.0.0
+      use-stick-to-bottom:
+        specifier: ^1.1.0
+        version: 1.1.0(react@19.0.0)
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
@@ -6221,6 +6240,12 @@ packages:
       '@types/react':
         optional: true
 
+  react-toastify@11.0.5:
+    resolution: {integrity: sha512-EpqHBGvnSTtHYhCPLxML05NLY2ZX0JURbAdNYa6BUkk+amz4wbKBQvoKQAB0ardvSarUBuY4Q4s1sluAzZwkmA==}
+    peerDependencies:
+      react: ^18 || ^19
+      react-dom: ^18 || ^19
+
   react-transition-group@4.4.5:
     resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
     peerDependencies:
@@ -7142,6 +7167,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  use-stick-to-bottom@1.1.0:
+    resolution: {integrity: sha512-cmSs/RzVXoJRsI6V5nLeRxPab8mDcHmqWwvEACbyft1jAKLPvI6/PGp46Z6GvXxQ9SPzIGTEQXKexNQLAW8pcg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -9703,7 +9733,6 @@ snapshots:
     optionalDependencies:
       msw: 2.7.3(@types/node@22.13.9)(typescript@5.8.2)
       vite: 5.4.14(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0)
-    optional: true
 
   '@vitest/pretty-format@3.0.9':
     dependencies:
@@ -13824,6 +13853,12 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.0
 
+  react-toastify@11.0.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
+    dependencies:
+      clsx: 2.1.1
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+
   react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.26.10
@@ -15066,6 +15101,10 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.0
 
+  use-stick-to-bottom@1.1.0(react@19.0.0):
+    dependencies:
+      react: 19.0.0
+
   util-deprecate@1.0.2: {}
 
   uuid@11.1.0: {}
@@ -15141,7 +15180,6 @@ snapshots:
       - sugarss
       - supports-color
       - terser
-    optional: true
 
   vite@5.4.14(@types/node@20.17.25)(lightningcss@1.29.2)(terser@5.39.0):
     dependencies:
@@ -15236,7 +15274,6 @@ snapshots:
       - sugarss
       - supports-color
       - terser
-    optional: true
 
   vscode-jsonrpc@8.2.0: {}
 
