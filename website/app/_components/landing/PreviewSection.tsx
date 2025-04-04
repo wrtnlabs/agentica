@@ -15,7 +15,7 @@ export function PreviewSection() {
           direction="left"
           onClick={() => toast.info(<Toast message="This service will be available soon." />)}
         />
-        <Link href="https://wrtnlabs.io/autoview/">
+        <Link href="https://wrtnlabs.io/autoview">
           <PreviewCard
             subtitle="Next"
             title="Autoview"
