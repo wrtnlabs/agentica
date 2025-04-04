@@ -3,15 +3,16 @@ import { GithubIcon } from "@/app/_components/icons/Github";
 import Link from "next/link";
 import { ChatExample } from "./ChatExample";
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 
 export function WelcomeSection() {
   return (
-    <div className="relative flex h-[calc(100vh-64px)] items-center justify-center md:justify-between gap-0 bg-[radial-gradient(71.43%_49.13%_at_50%_50%,rgba(41,41,48,0.75)_0%,rgba(25,25,28,0.57)_53%,rgba(3,3,3,0)_100%)] px-5 md:px-20 py-8 md:gap-6 mx-auto max-w-[1440px]">
+    <div className="w-full h-[calc(100vh-64px)] bg-[radial-gradient(71.43%_49.13%_at_50%_50%,rgba(41,41,48,0.75)_0%,rgba(25,25,28,0.57)_53%,rgba(3,3,3,0)_100%)]">
+    <div className="relative flex w-full h-full items-center justify-center gap-0 px-5 md:px-20 py-8 md:gap-6 max-w-[1440px] mx-auto md:justify-between" >
       <div className="flex flex-col gap-3 z-10 items-center max-w-[800px] w-full flex-1">
-        <img
-          src="/agentica/AgenticaFN.png"
-          className="w-[180px] h-[180px] rounded-full md:w-[240px] md:h-[240px] lg:w-[300px] lg:h-[300px]"
-        />
+        <div className="relative w-[180px] h-[180px] md:w-[240px] md:h-[240px] rounded-full overflow-hidden">
+          <Image src="/agentica/images/agentica.png" alt="logo" fill />
+        </div>
         <div className="flex flex-col gap-9 z-10 items-center">
           <div className="flex flex-col gap-4 items-center">
             <h1 className="text-center text-[48px] font-semibold text-zinc-50 md:text-start md:text-[72px] lg:text-[80px]">
@@ -44,6 +45,7 @@ export function WelcomeSection() {
         </div>
       </div>
       <ChatExample />
+      </div>
     </div>
   );
 }

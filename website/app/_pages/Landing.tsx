@@ -7,6 +7,7 @@ import { WelcomeSection } from "../_components/landing/WelcomeSection";
 import Footer from "../_components/layout/Footer";
 //import Header from "../_components/layout/Header";
 import { CORE_VALUES, FUNC_CALLS } from "../_constants/landing";
+import { PreviewSection } from "../_components/landing/PreviewSection";
 
 export default function Landing() {
   return (
@@ -66,13 +67,7 @@ export default function Landing() {
       </Section>
 
       {/* Preview */}
-      {/* <section className="flex w-full pb-[74px] md:justify-end md:pb-[120px]">
-        <PreviewCard
-          href="/tutorial/coding/github"
-          title="Github Agent"
-          image="https://picsum.photos/200/300"
-        />
-      </section> */}
+      <PreviewSection />
 
       <div className="absolute w-full h-full left-0 top-0 flex justify-between px-24 -z-1">
         <hr className="border-[#272727] border-l-[1px] h-full w-px" />

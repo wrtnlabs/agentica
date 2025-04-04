@@ -1,36 +1,53 @@
-import { StyledLink } from "../common/link";
+"use client";
+
+import Link from "next/link";
 import { WrtnlabsLogo } from "../icons/WrtnlabsLogo";
+import { toast } from 'react-toastify/unstyled';
+import { Toast } from "../common/toast";
 
 const FOOTER_CONTENTS = [
   {
-    title: "Developers",
+    title: "Company",
     links: [
-      { label: "Github", href: "https://github.com/wrtnlabs" },
-      { label: "Docs", href: "/docs" },
+      { label: "About us", href: "https://wrtnlabs.io/about/" },
+      { label: "Blog", href: "https://wrtnlabs.io/blog/" },
+      // MEMO: Toast 팝업
+      { label: "Agent OS", href: "/", onClick: () => toast.info(<Toast message="This service will be available soon." />) },
+      { label: "Youtube", href: "https://www.youtube.com/@wrtnlabs" }
     ],
   },
   {
-    title: "Company",
-    links: [{ label: "Wrtn Labs", href: "https://wrtnlabs.io/" }],
+    title: "Developers",
+    links: [
+      { label: "Agentica", href: "https://wrtnlabs.io/agentica/" },
+      { label: "Autoview", href: "https://wrtnlabs.io/autoview/" },
+      { label: "Github", href: "https://github.com/wrtnlabs" },
+      { label: "Docs", href: "https://wrtnlabs.io/agentica/docs/" },
+    ],
   },
 ];
 
 export default function Footer() {
+  const linkClassName = "cursor-pointer relative w-fit text-lg! text-zinc-500 hover:text-zinc-100 before:invisible before:absolute before:bottom-0 before:left-0 before:h-px before:w-full before:origin-left before:scale-x-0 before:bg-zinc-100 before:transition-transform before:duration-250 before:ease-linear before:content-[''] hover:before:visible hover:before:scale-x-100 md:text-[21px]";
+
   return (
-    <footer className="z-10 flex h-64 justify-between bg-zinc-900 px-16 py-8">
-      <WrtnlabsLogo className="h-7 w-7 md:h-18 md:w-18" />
-      <div className="flex gap-16">
-        {FOOTER_CONTENTS.map(({ title, links }) => (
-          <nav key={title} className="flex flex-col gap-2 md:gap-3">
-            <p className="text-sm text-zinc-600 md:text-[21px]">{title}</p>
-            {links.map(({ label, href }) => (
-              <StyledLink key={label} href={href} target="_blank">
-                {label}
-              </StyledLink>
-            ))}
-          </nav>
-        ))}
+    <footer className="grid grid-cols-2 md:grid-cols-4 md:h-[484px] bg-zinc-900 px-4 md:px-16 py-32 md:pb-10 md:pt-24">
+      <div className="hidden md:flex flex-col h-full justify-between">
+        <WrtnlabsLogo className="h-7 w-32" />
+        <p className="text-zinc-600 text-sm">© 2025 Wrtn Labs</p>
       </div>
+      <div className="hidden md:block" />
+      {FOOTER_CONTENTS.map(({ title, links }) => (
+        <nav key={title} className="flex md:pl-6 flex-col gap-6 md:gap-3">
+          <p className="text-sm md:text-lg text-gray-50">{title}</p>
+          <div className="flex flex-col gap-6">
+            {links.map(({ label, href, onClick }) => {
+              if(onClick) return <p key={label} onClick={onClick} className={linkClassName}>{label}</p>
+              return <Link className={linkClassName} key={label} href={href} target="_blank">{label}</Link>
+            })}
+          </div>
+        </nav>
+      ))}
     </footer>
   );
 }
