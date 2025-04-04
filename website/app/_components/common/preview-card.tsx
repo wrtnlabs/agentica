@@ -5,7 +5,6 @@ import Image from "next/image";
 import { cva, VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { on } from "events";
 
 interface PreviewCardProps {
   subtitle: string;
