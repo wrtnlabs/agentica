@@ -8,6 +8,7 @@ import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
 import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
 
 import { Tools } from "./Tools";
+import { getRetry, groupByArray } from "./utils";
 
 function useEmbeddedContext<SchemaModel extends ILlmSchema.Model>() {
   const set = new Map<string, IApplicationConnectorRetrieval.IFilter>();
@@ -23,41 +24,6 @@ function useEmbeddedContext<SchemaModel extends ILlmSchema.Model>() {
     (ctx: AgenticaContext<SchemaModel>) =>
       set.get(JSON.stringify(ctx.operations.array)),
   ] as const;
-}
-
-function getRetry(count: number) {
-  if (count < 1) {
-    throw new Error("count should be greater than 0");
-  }
-
-  return async <T>(fn: () => Promise<T>) => {
-    let lastError: Error | null = null;
-
-    for (let i = 0; i < count; i++) {
-      try {
-        return await fn();
-      }
-      catch (e: unknown) {
-        lastError = e as Error;
-        if (i === count - 1) {
-          throw e;
-        }
-      }
-    }
-
-    if (lastError != null) {
-      throw lastError;
-    }
-    throw new Error("unreachable code");
-  };
-}
-
-function groupByArray<T>(array: T[], count: number): T[][] {
-  const grouped = [];
-  for (let i = 0; i < array.length; i += count) {
-    grouped.push(array.slice(i, i + count));
-  }
-  return grouped;
 }
 
 const retry = getRetry(3);
