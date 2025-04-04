@@ -1,10 +1,12 @@
-import type OpenAI from "openai";
 import type { ILlmSchema } from "@samchon/openapi";
-import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
-import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
-import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type OpenAI from "openai";
+
 import type { MicroAgenticaEvent } from "../events/MicroAgenticaEvent";
+import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
+import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
+
+import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
 
 export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
   type: "microContext";
