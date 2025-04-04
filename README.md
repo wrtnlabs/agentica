@@ -1,13 +1,34 @@
-# Agentica
+<p align="center" >
+    <img src="./docs/AgenticaFN.png" width="300" height="300" alt="Agentica Logo" />
+</p>
+<h1 align="center">Agentica</h1>
+<p align="center">
+<a href="https://www.npmjs.com/package/@agentica/core">
+  <img src="https://img.shields.io/npm/v/@agentica/core.svg" alt="npm version">
+</a>
+<a href="https://www.npmjs.com/package/@agentica/core">
+  <img src="https://img.shields.io/npm/dm/@agentica/core.svg" alt="Downloads">
+</a>
+</p>
+<p align="center">
+    <strong>Agentic AI Framework specialized in LLM Function Calling</strong>
+    <br>
+    <strong>enhanced by TypeScript compiler skills</strong>
+</p>
 
-![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57" alt="agentica-conceptual-diagram">
+</p>
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
-[![npm version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
-[![Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
-[![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
-[![Guide Documents](https://img.shields.io/badge/Guide-Documents-forestgreen)](https://wrtnlabs.io/agentica/docs/)
-[![Gurubase](https://img.shields.io/badge/Gurubase-Document%20Chatbot-006BFF)](https://gurubase.io/g/agentica)
+---
+
+<h3 align="center">
+
+[Homepage](https://wrtnlabs.io/agentica) // [Documentation](https://wrtnlabs.io/agentica/docs) // [Tutorials](https://youtube.com) // [Playgound](https://wrtnlabs.io/agentica/playground)
+
+</h3>
+
+---
 
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
@@ -22,14 +43,14 @@ import { Agentica } from "@agentica/core";
 import typia from "typia";
 
 const agent = new Agentica({
-  controllers: [
-    await fetch(
-      "https://shopping-be.wrtn.ai/editor/swagger.json",
-    ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
-    typia.llm.application<ShoppingPolicy>(),
-    typia.llm.application<ShoppingSearchRag>(),
-  ],
+    controllers: [
+        await fetch(
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then(r => r.json()),
+        typia.llm.application<ShoppingCounselor>(),
+        typia.llm.application<ShoppingPolicy>(),
+        typia.llm.application<ShoppingSearchRag>(),
+    ],
 });
 await agent.conversate("I wanna buy MacBook Pro");
 ```
@@ -55,34 +76,34 @@ Check out the document in the [website](https://wrtnlabs.io/agentica):
 - [🚀 Getting Started](https://wrtnlabs.io/agentica/docs)
 - [📦 Setup](https://wrtnlabs.io/agentica/docs/setup)
 - 🔍 Concepts
-  - [Function Calling](https://wrtnlabs.io/agentica/docs/concepts/function-calling)
-  - [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
-  - [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
+- [Function Calling](https://wrtnlabs.io/agentica/docs/concepts/function-calling)
+- [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
+- [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
 
 ### 📖 Features
 
 - **📚 Core Library**
-  - [Agentic AI](https://wrtnlabs.io/agentica/docs/core)
-  - [Facade Controller](https://wrtnlabs.io/agentica/docs/core/facade)
-  - [Configurations](https://wrtnlabs.io/agentica/docs/core/config)
-  - [Event Handling](https://wrtnlabs.io/agentica/docs/core/event)
-  - [Prompt Histories](https://wrtnlabs.io/agentica/docs/core/history)
+- [Agentic AI](https://wrtnlabs.io/agentica/docs/core)
+- [Facade Controller](https://wrtnlabs.io/agentica/docs/core/facade)
+- [Configurations](https://wrtnlabs.io/agentica/docs/core/config)
+- [Event Handling](https://wrtnlabs.io/agentica/docs/core/event)
+- [Prompt Histories](https://wrtnlabs.io/agentica/docs/core/history)
 - **📡 WebSocket Protocol**
-  - [Remote Procedure Call](https://wrtnlabs.io/agentica/docs/websocket)
-  - [NestJS Server](https://wrtnlabs.io/agentica/docs/websocket/nestjs)
-  - [NodeJS Server](https://wrtnlabs.io/agentica/docs/websocket/nodejs)
-  - [Client Application](https://wrtnlabs.io/agentica/docs/websocket/client)
+- [Remote Procedure Call](https://wrtnlabs.io/agentica/docs/websocket)
+- [NestJS Server](https://wrtnlabs.io/agentica/docs/websocket/nestjs)
+- [NodeJS Server](https://wrtnlabs.io/agentica/docs/websocket/nodejs)
+- [Client Application](https://wrtnlabs.io/agentica/docs/websocket/client)
 - **🌉 Plugin Modules**
-  - [Benchmark Program](https://wrtnlabs.io/agentica/docs/plugins/benchmark)
-  - [OpenAI Vector Store](https://wrtnlabs.io/agentica/docs/plugins/openai-vector-store)
-  - [PG Vector Selector](https://wrtnlabs.io/agentica/docs/plugins/pg-vector-selector)
+- [Benchmark Program](https://wrtnlabs.io/agentica/docs/plugins/benchmark)
+- [OpenAI Vector Store](https://wrtnlabs.io/agentica/docs/plugins/openai-vector-store)
+- [PG Vector Selector](https://wrtnlabs.io/agentica/docs/plugins/pg-vector-selector)
 
 ### 🔗 Appendix
 
 - [📅 Roadmap](https://wrtnlabs.io/agentica/docs/roadmap)
 - 📊 Related Projects
-  - [Agent OS](https://wrtnlabs.io/agentica/docs/related/os)
-  - [AutoView](https://wrtnlabs.io/agentica/docs/related/autoview)
+- [Agent OS](https://wrtnlabs.io/agentica/docs/related/os)
+- [AutoView](https://wrtnlabs.io/agentica/docs/related/autoview)
 - [⇲ API Documents](https://wrtnlabs.io/agentica/api)
 
 ## How to Contribute?
