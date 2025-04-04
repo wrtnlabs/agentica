@@ -4,5 +4,5 @@ export default wrtnlabs({
   rules: {
     "no-console": "off",
   },
-  ignores: ["eslint.config.mts"],
+  ignores: ["eslint.config.mts", "examples/**"],
 });
