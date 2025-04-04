@@ -4,10 +4,13 @@
 <h1 align="center">Agentica</h1>
 <p align="center">
 <a href="https://www.npmjs.com/package/@agentica/core">
-  <img src="https://img.shields.io/npm/v/@agentica/core.svg" alt="npm version">
+  <img src="https://img.shields.io/npm/v/@agentica/core?style=for-the-badge" alt="npm version">
 </a>
 <a href="https://www.npmjs.com/package/@agentica/core">
-  <img src="https://img.shields.io/npm/dm/@agentica/core.svg" alt="Downloads">
+  <img src="https://img.shields.io/npm/dm/@agentica/core?style=for-the-badge" alt="Downloads">
+</a>
+<a href="https://github.com/samchon/typia">
+    <img src="https://img.shields.io/badge/poweredby-Typia-blue?style=for-the-badge" alt="Badge">
 </a>
 </p>
 <p align="center">
