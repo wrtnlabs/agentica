@@ -4,13 +4,11 @@ import { ArrowRightIcon } from "../icons/ArrowRight";
 import Image from "next/image";
 import { cva, VariantProps } from "class-variance-authority";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
 
 interface PreviewCardProps {
   subtitle: string;
   title: string;
   image: string;
-  href?: string;
   onClick?: () => void;
   direction: "left" | "right";
 }
@@ -27,17 +25,11 @@ const cardVariants = cva(
   },
 );
 
-export function PreviewCard({ subtitle, title, image, href, direction, onClick }: PreviewCardProps & VariantProps<typeof cardVariants>) {
+export function PreviewCard({ subtitle, title, image, direction, onClick }: PreviewCardProps & VariantProps<typeof cardVariants>) {
   const isLeft = direction === "left";
-  const router = useRouter();
-
-  const handleClick = () => {
-    if(href) router.push(href)
-    if(onClick) onClick()
-  }
 
   return (
-      <div className={cardVariants({ direction })} onClick={handleClick}>
+      <div className={cardVariants({ direction })} onClick={onClick}>
         <div className="flex w-full cursor-pointer flex-col gap-3 p-5 pr-10 transition-colors duration-300 md:hover:bg-transparent">
           <div className={clsx("w-full flex items-center justify-between", isLeft && "flex-row-reverse")}>
             <div className="flex flex-col gap-1">
