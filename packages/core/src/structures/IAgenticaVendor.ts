@@ -1,7 +1,7 @@
 import type OpenAI from "openai";
 
 /**
- * LLM service vendor for Nestia Chat.
+ * LLM service vendor for Agentica Chat.
  *
  * `IAgenticaVendor` is a type represents an LLM
  * (Large Language Model) vendor of the {@link Agentica}.

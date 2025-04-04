@@ -1,7 +1,7 @@
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 
 /**
- * Nestia agent operation selection.
+ * Agentica agent operation selection.
  *
  * `IAgenticaOperationSelection` is a type represents an operation
  * which has been selected by the A.I. chatbot of {@link Agentica}

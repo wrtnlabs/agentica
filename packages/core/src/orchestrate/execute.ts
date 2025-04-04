@@ -57,7 +57,7 @@ export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgent
       // EXECUTE FUNCTIONS
       const prompts: AgenticaPrompt<Model>[] = await (
         executor?.call ?? call
-      )(ctx);
+      )(ctx, ctx.stack.map(s => s.operation));
       histories.push(...prompts);
 
       // EXPLAIN RETURN VALUES

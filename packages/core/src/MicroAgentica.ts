@@ -1,111 +1,57 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { AgenticaContext } from "./context/AgenticaContext";
-import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
-import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
-import type { AgenticaEvent } from "./events/AgenticaEvent";
+import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
-import type { AgenticaPrompt } from "./prompts/AgenticaPrompt";
+import type { MicroAgenticaEvent } from "./events/MicroAgenticaEvent";
+import type { AgenticaExecutePrompt } from "./prompts/AgenticaExecutePrompt";
 import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
-import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
+import type { MicroAgenticaPrompt } from "./prompts/MicroAgenticaPrompt";
 import type { IAgenticaController } from "./structures/IAgenticaController";
-import type { IAgenticaProps } from "./structures/IAgenticaProps";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
+import type { IMicroAgenticaConfig } from "./structures/IMicroAgenticaConfig";
+import type { IMicroAgenticaProps } from "./structures/IMicroAgenticaProps";
 
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
+import { createRequestEvent, createTextEvent } from "./factory/events";
 import { createTextPrompt } from "./factory/prompts";
-import { execute } from "./orchestrate/execute";
+import { call, describe } from "./orchestrate";
 import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "./utils/StreamUtil";
 
-/**
- * Agentica A.I. chatbot agent.
- *
- * `Agentica` is a facade class for the super A.I. chatbot agent
- * which performs the {@link conversate user's conversation function}
- * with LLM (Large Language Model) function calling and manages the
- * {@link getPromptHistories prompt histories}.
- *
- * To understand and compose the `Agentica` class exactly, reference
- * below types concentrating on the documentation comments please.
- * Especially, you have to be careful about the {@link IAgenticaProps}
- * type which is used in the {@link constructor} function.
- *
- * - Constructors
- *   - {@link IAgenticaProps}
- *   - {@link IAgenticaVendor}
- *   - {@link IAgenticaController}
- *   - {@link IAgenticaConfig}
- *   - {@link IAgenticaSystemPrompt}
- * - Accessors
- *   - {@link IAgenticaOperation}
- *   - {@link IAgenticaPromptJson}
- *   - {@link IAgenticaEventJson}
- *   - {@link IAgenticaTokenUsageJson}
- *
- * @author Samchon
- */
-export class Agentica<Model extends ILlmSchema.Model> {
-  // THE OPERATIONS
+export class MicroAgentica<Model extends ILlmSchema.Model> {
   private readonly operations_: AgenticaOperationCollection<Model>;
-
-  // STACK
-  private readonly stack_: AgenticaOperationSelection<Model>[];
-  private readonly histories_: AgenticaPrompt<Model>[];
-  private readonly listeners_: Map<string, Set<(event: AgenticaEvent<Model>) => Promise<void> | void>>;
-
-  // STATUS
+  private readonly histories_: MicroAgenticaPrompt<Model>[];
+  private readonly listeners_: Map<string, Set<(event: MicroAgenticaEvent<Model>) => Promise<void>>>;
   private readonly token_usage_: AgenticaTokenUsage;
-  private ready_: boolean;
-  private readonly executor_: (
-    ctx: AgenticaContext<Model>,
-  ) => Promise<AgenticaPrompt<Model>[]>;
 
   /* -----------------------------------------------------------
     CONSTRUCTOR
   ----------------------------------------------------------- */
-  /**
-   * Initializer constructor.
-   *
-   * @param props Properties to construct the agent
-   */
-  public constructor(private readonly props: IAgenticaProps<Model>) {
-    // OPERATIONS
+  public constructor(private readonly props: IMicroAgenticaProps<Model>) {
     this.operations_ = AgenticaOperationComposer.compose({
       controllers: props.controllers,
       config: props.config,
     });
-
-    // STATUS
-    this.stack_ = [];
-    this.listeners_ = new Map();
     this.histories_ = (props.histories ?? []).map(input =>
       AgenticaPromptTransformer.transform({
         operations: this.operations_.group,
         prompt: input,
       }),
-    );
-
-    // STATUS
+    ) as MicroAgenticaPrompt<Model>[];
+    this.listeners_ = new Map();
     this.token_usage_ = AgenticaTokenUsage.zero();
-    this.ready_ = false;
-    this.executor_
-      = typeof props.config?.executor === "function"
-        ? props.config.executor
-        : execute(props.config?.executor ?? null);
   }
 
   /**
    * @internal
    */
-  public clone(): Agentica<Model> {
-    return new Agentica({
+  public clone(): MicroAgentica<Model> {
+    return new MicroAgentica<Model>({
       ...this.props,
       histories: this.props.histories?.slice(),
     });
@@ -114,19 +60,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   /* -----------------------------------------------------------
     ACCESSORS
   ----------------------------------------------------------- */
-  /**
-   * Conversate with the A.I. chatbot.
-   *
-   * User talks to the A.I. chatbot with the content.
-   *
-   * When the user's conversation implies the A.I. chatbot to execute a
-   * function calling, the returned chat prompts will contain the
-   * function calling information like {@link IAgenticaPromptJson.IExecute}.
-   *
-   * @param content The content to talk
-   * @returns List of newly created chat prompts
-   */
-  public async conversate(content: string): Promise<AgenticaPrompt<Model>[]> {
+  public async conversate(content: string): Promise<MicroAgenticaPrompt<Model>[]> {
     const prompt: AgenticaTextPrompt<"user"> = createTextPrompt<"user">({
       role: "user",
       text: content,
@@ -141,96 +75,55 @@ export class Agentica<Model extends ILlmSchema.Model> {
       }),
     );
 
-    const newbie: AgenticaPrompt<Model>[] = await this.executor_(
-      this.getContext({
-        prompt,
-        usage: this.token_usage_,
-      }),
-    );
-    this.histories_.push(prompt, ...newbie);
-    return [prompt, ...newbie];
+    const ctx: MicroAgenticaContext<Model> = this.getContext({
+      prompt,
+      usage: this.token_usage_,
+    });
+    const histories: MicroAgenticaPrompt<Model>[] = await call(
+      ctx,
+      this.operations_.array,
+    ) as MicroAgenticaPrompt<Model>[];
+    const executes: AgenticaExecutePrompt<Model>[] = histories.filter(p => p.type === "execute");
+    if (executes.length) {
+      histories.push(...await describe(ctx, executes));
+    }
+
+    this.histories_.push(prompt, ...histories);
+    return histories;
   }
 
-  /**
-   * Get configuration.
-   */
-  public getConfig(): IAgenticaConfig<Model> | undefined {
+  public getConfig(): IMicroAgenticaConfig<Model> | undefined {
     return this.props.config;
   }
 
-  /**
-   * Get LLM vendor.
-   */
   public getVendor(): IAgenticaVendor {
     return this.props.vendor;
   }
 
-  /**
-   * Get controllers.
-   *
-   * Get list of controllers, which are the collection of functions that
-   * the "Super A.I. Chatbot" can execute.
-   */
   public getControllers(): ReadonlyArray<IAgenticaController<Model>> {
     return this.props.controllers;
   }
 
-  /**
-   * Get operations.
-   *
-   * Get list of operations, which has capsuled the pair of controller
-   * and function from the {@link getControllers controllers}.
-   *
-   * @returns List of operations
-   */
-  public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
-    return this.operations_.array;
-  }
-
-  /**
-   * Get the chatbot's prompt histories.
-   *
-   * Get list of chat prompts that the chatbot has been conversated.
-   *
-   * @returns List of chat prompts
-   */
-  public getPromptHistories(): AgenticaPrompt<Model>[] {
+  public getPromptHitorie(): MicroAgenticaPrompt<Model>[] {
     return this.histories_;
   }
 
-  /**
-   * Get token usage of the A.I. chatbot.
-   *
-   * Entire token usage of the A.I. chatbot during the conversating
-   * with the user by {@link conversate} method callings.
-   *
-   * @returns Cost of the A.I. chatbot
-   */
   public getTokenUsage(): AgenticaTokenUsage {
     return this.token_usage_;
   }
 
-  /**
-   * @internal
-   */
   public getContext(props: {
     prompt: AgenticaTextPrompt<"user">;
     usage: AgenticaTokenUsage;
-  }): AgenticaContext<Model> {
-    const dispatch = async (event: AgenticaEvent<Model>) => this.dispatch(event);
+  }): MicroAgenticaContext<Model> {
+    const dispatch = this.dispatch.bind(this);
     return {
-      // APPLICATION
       operations: this.operations_,
       config: this.props.config,
 
-      // STATES
       histories: this.histories_,
-      stack: this.stack_,
-      ready: () => this.ready_,
       prompt: props.prompt,
-
-      // HANDLERS
-      dispatch: async event => this.dispatch(event),
+      dispatch,
       request: async (source, body) => {
         // request information
         const event: AgenticaRequestEvent = createRequestEvent({
@@ -293,16 +186,12 @@ export class Agentica<Model extends ILlmSchema.Model> {
 
         return streamForReturn;
       },
-      initialize: async () => {
-        this.ready_ = true;
-        await dispatch(createInitializeEvent());
-      },
     };
   }
 
   /* -----------------------------------------------------------
-    EVENT HANDLERS
-  ----------------------------------------------------------- */
+      EVENT HANDLERS
+    ----------------------------------------------------------- */
   /**
    * Add an event listener.
    *
@@ -311,16 +200,16 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @param type Type of event
    * @param listener Callback function to be called whenever the event is emitted
    */
-  public on<Type extends AgenticaEvent.Type>(
+  public on<Type extends MicroAgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: AgenticaEvent.Mapper<Model>[Type],
+      event: MicroAgenticaEvent.Mapper<Model>[Type],
     ) => void | Promise<void>,
   ): this {
     /**
      * @TODO remove `as`
      */
-    __map_take(this.listeners_, type, () => new Set()).add(listener as (event: AgenticaEvent<Model>) => void | Promise<void>);
+    __map_take(this.listeners_, type, () => new Set()).add(listener as (event: MicroAgenticaEvent<Model>) => Promise<void>);
     return this;
   }
 
@@ -332,18 +221,18 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @param type Type of event
    * @param listener Callback function to erase
    */
-  public off<Type extends AgenticaEvent.Type>(
+  public off<Type extends MicroAgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: AgenticaEvent.Mapper<Model>[Type],
+      event: MicroAgenticaEvent.Mapper<Model>[Type],
     ) => void | Promise<void>,
   ): this {
     const set = this.listeners_.get(type);
     if (set !== undefined) {
-    /**
-     * @TODO remove `as`
-     */
-      set.delete(listener as (event: AgenticaEvent<Model>) => void | Promise<void>);
+      /**
+       * @TODO remove `as`
+       */
+      set.delete(listener as (event: MicroAgenticaEvent<Model>) => Promise<void>);
       if (set.size === 0) {
         this.listeners_.delete(type);
       }
@@ -351,7 +240,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     return this;
   }
 
-  private async dispatch<Event extends AgenticaEvent<Model>>(
+  private async dispatch<Event extends MicroAgenticaEvent<Model>>(
     event: Event,
   ): Promise<void> {
     const set = this.listeners_.get(event.type);

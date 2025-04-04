@@ -2,6 +2,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
+import type { IMicroAgenticaConfig } from "../../structures/IMicroAgenticaConfig";
 import type { AgenticaOperation } from "../AgenticaOperation";
 import type { AgenticaOperationCollection } from "../AgenticaOperationCollection";
 
@@ -9,7 +10,7 @@ import { __map_take } from "../../utils/__map_take";
 
 export function compose<Model extends ILlmSchema.Model>(props: {
   controllers: IAgenticaController<Model>[];
-  config?: IAgenticaConfig<Model> | undefined;
+  config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model> | undefined;
 }): AgenticaOperationCollection<Model> {
   const unique: boolean
       = props.controllers.length === 1
@@ -59,11 +60,13 @@ export function compose<Model extends ILlmSchema.Model>(props: {
           ),
     )
     .flat();
+
+  const capacity: number | undefined = (props.config as IAgenticaConfig<Model>)?.capacity;
   const divided: AgenticaOperation<Model>[][] | undefined
-      = props.config?.capacity !== undefined && array.length > props.config.capacity
+      = capacity !== undefined && array.length > capacity
         ? divide({
             array,
-            capacity: props.config.capacity,
+            capacity,
           })
         : undefined;
 

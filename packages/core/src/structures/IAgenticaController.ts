@@ -9,7 +9,7 @@ import type {
 } from "@samchon/openapi";
 
 /**
- * Controller of the Nestia Agent.
+ * Controller of the Agentica Agent.
  *
  * `IAgenticaController` is a type represents a controller of the
  * {@link Agentica}, which serves a set of functions to be called

@@ -7,7 +7,7 @@ import type { IAgenticaController } from "./IAgenticaController";
 import type { IAgenticaVendor } from "./IAgenticaVendor";
 
 /**
- * Properties of the Nestia Agent.
+ * Properties of the Agentica Agent.
  *
  * `IAgenticaProps` is an interface that defines the properties
  * of the {@link Agentica.constructor}. In the `IAgenticaProps`,
