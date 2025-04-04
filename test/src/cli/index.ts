@@ -21,8 +21,8 @@ import chalk from "chalk";
 import OpenAI from "openai";
 import typia from "typia";
 
-import { TestGlobal } from "./TestGlobal";
-import { ConsoleScanner } from "./utils/ConsoleScanner";
+import { TestGlobal } from "../TestGlobal";
+import { ConsoleScanner } from "../utils/ConsoleScanner";
 
 function trace(...args: unknown[]): void {
   console.log("----------------------------------------------");

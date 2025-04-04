@@ -42,8 +42,6 @@ import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
  * @author Samchon
  */
 export interface AgenticaContext<Model extends ILlmSchema.Model> {
-  type: "context";
-
   // ----
   // APPLICATION
   // ----

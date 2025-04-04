@@ -9,8 +9,6 @@ import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
 
 export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
-  type: "microContext";
-
   // ----
   // APPLICATION
   // ----

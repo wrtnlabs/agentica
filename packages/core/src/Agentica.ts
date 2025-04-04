@@ -220,7 +220,6 @@ export class Agentica<Model extends ILlmSchema.Model> {
     const dispatch = async (event: AgenticaEvent<Model>) => this.dispatch(event);
     return {
       // APPLICATION
-      type: "context",
       operations: this.operations_,
       config: this.props.config,
 

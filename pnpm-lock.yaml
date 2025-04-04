@@ -450,7 +450,13 @@ importers:
       typia:
         specifier: catalog:typia
         version: 8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2)
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
     devDependencies:
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.13.9)(typescript@5.8.2)

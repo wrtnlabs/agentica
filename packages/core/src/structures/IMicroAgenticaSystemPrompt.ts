@@ -31,7 +31,7 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns execute system prompt
    * https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/execute.md
    */
-  execute?: (histories: MicroAgenticaPrompt<Model>[]) => string;
+  execute?: null | ((histories: MicroAgenticaPrompt<Model>[]) => string);
 
   /**
    * Describe system prompt.

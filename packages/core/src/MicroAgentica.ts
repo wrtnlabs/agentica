@@ -87,7 +87,9 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     if (executes.length) {
       histories.push(...await describe(ctx, executes));
     }
-    return [prompt, ...histories];
+
+    this.histories_.push(prompt, ...histories);
+    return histories;
   }
 
   public getConfig(): IMicroAgenticaConfig<Model> | undefined {
@@ -116,7 +118,6 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   }): MicroAgenticaContext<Model> {
     const dispatch = this.dispatch.bind(this);
     return {
-      type: "microContext",
       operations: this.operations_,
       config: this.props.config,
 

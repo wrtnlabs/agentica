@@ -21,10 +21,12 @@ import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
+import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
 import { createCancelPrompt, createExecutePrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
@@ -42,27 +44,26 @@ export async function call<Model extends ILlmSchema.Model>(
   // ----
   const completionStream = await ctx.request("call", {
     messages: [
-        // COMMON SYSTEM PROMPT
-        {
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
+      // PREVIOUS HISTORIES
+      ...ctx.histories.map(decodePrompt).flat(),
+      // USER INPUT
+      {
+        role: "user",
+        content: ctx.prompt.text,
+      },
+      // SYSTEM PROMPT
+      ...(ctx.config?.systemPrompt?.execute === null
+        ? []
+        : [{
           role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
-        // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
-        // USER INPUT
-        {
-          role: "user",
-          content: ctx.prompt.text,
-        },
-        // SYSTEM PROMPT
-        {
-          role: "system",
-          content:
-            (ctx.type === "context"
-              ? ctx.config?.systemPrompt?.execute?.(ctx.histories)
-              : ctx.config?.systemPrompt?.execute?.(ctx.histories))
+          content: ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaPrompt<Model>[])
             ?? AgenticaSystemPrompt.EXECUTE,
-        },
+        } satisfies OpenAI.ChatCompletionSystemMessageParam]),
     ],
     // STACKED FUNCTIONS
     tools: operations.map(
@@ -145,7 +146,7 @@ export async function call<Model extends ILlmSchema.Model>(
               }),
             );
 
-            if (ctx.type === "context") {
+            if (isAgenticaContext(ctx)) {
               await cancelFunction(ctx, {
                 name: call.operation.name,
                 reason: "completed",
@@ -395,15 +396,15 @@ async function correct<Model extends ILlmSchema.Model>(
           content: ctx.prompt.text,
         },
         // TYPE CORRECTION
-        {
-          role: "system",
-          content:
-            (
-              ctx.type === "context"
-                ? ctx.config?.systemPrompt?.execute?.(ctx.histories)
-                : ctx.config?.systemPrompt?.execute?.(ctx.histories))
-              ?? AgenticaSystemPrompt.EXECUTE,
-        },
+        ...(ctx.config?.systemPrompt?.execute === null
+          ? []
+          : [{
+            role: "system",
+            content:
+            ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaPrompt<Model>[])
+            ?? AgenticaSystemPrompt.EXECUTE,
+          } satisfies OpenAI.ChatCompletionSystemMessageParam]
+        ),
         {
           role: "assistant",
           tool_calls: [
