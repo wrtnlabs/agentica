@@ -1,6 +1,6 @@
 {
   "name": "@agentica/webite",
-  "version": "0.15.6",
+  "version": "0.15.7",
   "description": "Agentica Website",
   "scripts": {
     "dev": "next",
@@ -40,11 +40,13 @@
     "react": "19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.3",
+    "react-toastify": "^11.0.5",
     "react-use": "^17.6.0",
     "rehype-raw": "^7.0.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
-    "tstl": "^3.0.0"
+    "tstl": "^3.0.0",
+    "use-stick-to-bottom": "^1.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
