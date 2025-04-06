@@ -58,7 +58,7 @@
     "uuid": "^11.0.4"
   },
   "devDependencies": {
-    "@nestia/e2e": "^0.8.2",
+    "@nestia/e2e": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
     "@types/node": "^22.13.4",

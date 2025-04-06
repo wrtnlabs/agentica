@@ -53,7 +53,7 @@
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@samchon/shopping-api": "^0.16.0",
+    "@samchon/shopping-api": "^0.17.0",
     "@types/node": "^22.13.4",
     "rimraf": "^6.0.1",
     "rollup": "^4.34.8",
