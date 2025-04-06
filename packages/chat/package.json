@@ -65,7 +65,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
     "@ryoppippi/unplugin-typia": "catalog:typia",
-    "@samchon/shopping-api": "^0.16.0",
+    "@samchon/shopping-api": "^0.17.0",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.10.5",
     "@types/react": "^18.3.11",

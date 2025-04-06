@@ -161,8 +161,8 @@ importers:
         specifier: catalog:typia
         version: 2.1.4(rollup@4.36.0)(typescript@5.8.3)(typia@9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3))(vite@5.4.14(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
       '@samchon/shopping-api':
-        specifier: ^0.16.0
-        version: 0.16.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
+        specifier: ^0.17.0
+        version: 0.17.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
       '@types/js-yaml':
         specifier: ^4.0.9
         version: 4.0.9
@@ -301,8 +301,8 @@ importers:
         version: 11.1.0
     devDependencies:
       '@nestia/e2e':
-        specifier: ^0.8.2
-        version: 0.8.3
+        specifier: ^6.0.1
+        version: 6.0.1
       '@rollup/plugin-terser':
         specifier: ^0.4.4
         version: 0.4.4(rollup@4.36.0)
@@ -346,8 +346,8 @@ importers:
   packages/pg-vector-selector:
     dependencies:
       '@wrtnlabs/connector-hive-api':
-        specifier: ^1.4.1
-        version: 1.4.5(@samchon/openapi@4.0.0)(typescript@5.8.3)
+        specifier: ^1.5.0
+        version: 1.5.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
     devDependencies:
       '@agentica/core':
         specifier: workspace:^
@@ -399,8 +399,8 @@ importers:
         specifier: ^12.1.2
         version: 12.1.2(rollup@4.36.0)(tslib@2.8.1)(typescript@5.8.3)
       '@samchon/shopping-api':
-        specifier: ^0.16.0
-        version: 0.16.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
+        specifier: ^0.17.0
+        version: 0.17.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
@@ -441,8 +441,8 @@ importers:
         specifier: catalog:typia
         version: 4.0.0
       '@samchon/shopping-api':
-        specifier: ^0.16.0
-        version: 0.16.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
+        specifier: ^0.17.0
+        version: 0.17.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1785,16 +1785,14 @@ packages:
   '@napi-rs/wasm-runtime@0.2.7':
     resolution: {integrity: sha512-5yximcFK5FNompXfJFoWanu5l8v1hNGqNHh9du1xETp9HWk/B/PzvchX55WYOPaIeNglG8++68AAiauBAtbnzw==}
 
-  '@nestia/e2e@0.8.3':
-    resolution: {integrity: sha512-SPWseU+5suAx/ce27/HEUZ/pHaN0sMX9Isc7coswBh4oJrsb/tDo9CJrCRNCpE0oOQLOiX8rvvYqwlOBZuFluw==}
-
   '@nestia/e2e@6.0.1':
     resolution: {integrity: sha512-eFvAxzgEmS3TpQhOWgfA7KWTCzPRZNLwmvFlblnRkJG3zenETYq7D/NBk3AFq0AlBVdnEQWTf0B/87hbancEsQ==}
 
-  '@nestia/fetcher@5.0.0':
-    resolution: {integrity: sha512-tKmypxmmHPagOZUsGcUaU08gZxXEVsoaHFfcx/SaFIEuIpsejKq1VXk9/hNriUDR7HWmYkcbNrMlqo+SM9cwfA==}
+  '@nestia/fetcher@6.0.1':
+    resolution: {integrity: sha512-Xver4EOwnGXnJngKFeyedmkn0vYBZQ02rIbSGeT+WIbas06G13wyH+8u6CXJmtE6aQ/0xjo/XprDv7unu4iOfg==}
     peerDependencies:
-      typescript: '>= 4.8.0'
+      '@samchon/openapi': '>=4.0.0 <5.0.0'
+      typia: '>=9.0.1 <10.0.0'
 
   '@next/env@13.5.8':
     resolution: {integrity: sha512-YmiG58BqyZ2FjrF2+5uZExL2BrLr8RTQzLXNDJ8pJr0O+rPlOeDPXp1p1/4OrR3avDidzZo3D8QO2cuDv1KCkw==}
@@ -2421,14 +2419,11 @@ packages:
       vite:
         optional: true
 
-  '@samchon/openapi@3.2.3':
-    resolution: {integrity: sha512-CQVa92i3hvfZftd6mULs13/WRib5a5/5qfEH/L6e5gjSSHIXrKMmwVPawi447F/bQiEd4EPE+dPmGU3lvEsVqw==}
-
   '@samchon/openapi@4.0.0':
     resolution: {integrity: sha512-fzji+KTrLqb3rD6RZID7N1cTN7aDwd0KAq0fP4rl2p1dHEy3uybqS7bP9BjMWP10k0DvFaS+P+g8+a/PA0FyZw==}
 
-  '@samchon/shopping-api@0.16.0':
-    resolution: {integrity: sha512-S51v40tJNW525XSw6h4vxuKWazAFVpMxtm0VoTfb1d6QJu0j44oQ7C8juAKRJ3WtumMmMCAIPWaXSjiO6tfYGg==}
+  '@samchon/shopping-api@0.17.0':
+    resolution: {integrity: sha512-aGDCAD9IhXnFKEhxn2qW5W8bu7DPXtDzabuX0I69vnQrrb/c3FVIqQAaF69d+Fd7jxF/iVguouCm4YdvjdmaCg==}
 
   '@shikijs/core@2.5.0':
     resolution: {integrity: sha512-uu/8RExTKtavlpH7XqnVYBrfBkUc20ngXiX9NSrBhOVZYv/7XQRKUyhtkeflY5QsxC0GbJThCerruZfsUaSldg==}
@@ -2983,8 +2978,8 @@ packages:
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
-  '@wrtnlabs/connector-hive-api@1.4.5':
-    resolution: {integrity: sha512-VWADFykVRDZggYMtF+4kbyh9pnUqQ3+drX/C211vBeIZkTVwF5VUvkqwuso+FdG7nxJLypHCsubVfh5yVD2V2A==}
+  '@wrtnlabs/connector-hive-api@1.5.0':
+    resolution: {integrity: sha512-2PV0kVEEWYLaHrqdl70MnOOLtug5ZRfNN1PmWCHJM+OeNhLaa/z3luoRpnmaCmVx3W3wxAO6HS1fxapwvcfpIA==}
 
   '@wrtnlabs/eslint-config@0.4.3':
     resolution: {integrity: sha512-+bWMa/dglq5YBTE2ouoc+Lb27dpfwAQyzurJllUCKE3jzrADwkoRVRpu0kf5xOS37fM/SgkH0xa/MPqtJugEMw==}
@@ -6985,13 +6980,6 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typia@8.1.1:
-    resolution: {integrity: sha512-R8iLPX52/tY/C/Ff7RhSsiV56JR21jLKbt1CShlrhKIJ6xoGejbXq8+y9RR/vLOo5WmZXi88yb2/zDHWyms2BQ==}
-    hasBin: true
-    peerDependencies:
-      '@samchon/openapi': '>=3.2.2 <4.0.0'
-      typescript: '>=4.8.0 <5.9.0'
-
   typia@9.0.1:
     resolution: {integrity: sha512-ubx0/jugX1PbNT07jpKI/7+eW4RSe3t9QueIqFDza2Dpmfgb3Epa/YY0IDkLWshzXV1/OjBQh8cADM617xDUnw==}
     hasBin: true
@@ -8537,15 +8525,12 @@ snapshots:
       '@tybys/wasm-util': 0.9.0
     optional: true
 
-  '@nestia/e2e@0.8.3': {}
-
   '@nestia/e2e@6.0.1': {}
 
-  '@nestia/fetcher@5.0.0(typescript@5.8.3)':
+  '@nestia/fetcher@6.0.1(@samchon/openapi@4.0.0)(typia@9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3))':
     dependencies:
-      '@samchon/openapi': 3.2.3
-      typescript: 5.8.3
-      typia: 8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.3)
+      '@samchon/openapi': 4.0.0
+      typia: 9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
 
   '@next/env@13.5.8': {}
 
@@ -9105,14 +9090,12 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@samchon/openapi@3.2.3': {}
-
   '@samchon/openapi@4.0.0': {}
 
-  '@samchon/shopping-api@0.16.0(@samchon/openapi@4.0.0)(typescript@5.8.3)':
+  '@samchon/shopping-api@0.17.0(@samchon/openapi@4.0.0)(typescript@5.8.3)':
     dependencies:
-      '@nestia/fetcher': 5.0.0(typescript@5.8.3)
-      typia: 8.1.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
+      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.0.0)(typia@9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3))
+      typia: 9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
       uuid: 11.1.0
     transitivePeerDependencies:
       - '@samchon/openapi'
@@ -9763,11 +9746,11 @@ snapshots:
 
   '@vue/shared@3.5.13': {}
 
-  '@wrtnlabs/connector-hive-api@1.4.5(@samchon/openapi@4.0.0)(typescript@5.8.3)':
+  '@wrtnlabs/connector-hive-api@1.5.0(@samchon/openapi@4.0.0)(typescript@5.8.3)':
     dependencies:
-      '@nestia/fetcher': 5.0.0(typescript@5.8.3)
+      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.0.0)(typia@9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3))
       tgrid: 1.1.0
-      typia: 8.1.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
+      typia: 9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
     transitivePeerDependencies:
       - '@samchon/openapi'
       - bufferutil
@@ -14861,26 +14844,6 @@ snapshots:
       - supports-color
 
   typescript@5.8.3: {}
-
-  typia@8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.3):
-    dependencies:
-      '@samchon/openapi': 3.2.3
-      commander: 10.0.1
-      comment-json: 4.2.5
-      inquirer: 8.2.6
-      package-manager-detector: 0.2.11
-      randexp: 0.5.3
-      typescript: 5.8.3
-
-  typia@8.1.1(@samchon/openapi@4.0.0)(typescript@5.8.3):
-    dependencies:
-      '@samchon/openapi': 4.0.0
-      commander: 10.0.1
-      comment-json: 4.2.5
-      inquirer: 8.2.6
-      package-manager-detector: 0.2.11
-      randexp: 0.5.3
-      typescript: 5.8.3
 
   typia@9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3):
     dependencies:
