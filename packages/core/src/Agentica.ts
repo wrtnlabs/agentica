@@ -19,7 +19,7 @@ import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUs
 import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
 import { createTextHistory } from "./factory/histories";
 import { execute } from "./orchestrate/execute";
-import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
+import { AgenticaHistoryTransformer } from "./transformers/AgenticaHistoryTransformer";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "./utils/StreamUtil";
@@ -86,7 +86,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     this.stack_ = [];
     this.listeners_ = new Map();
     this.histories_ = (props.histories ?? []).map(input =>
-      AgenticaPromptTransformer.transform({
+      AgenticaHistoryTransformer.transform({
         operations: this.operations_.group,
         history: input,
       }),
