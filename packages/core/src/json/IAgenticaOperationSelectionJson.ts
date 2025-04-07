@@ -1,7 +1,7 @@
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 
 /**
- * Nestia agent operation selection.
+ * Agentica agent operation selection.
  *
  * `IAgenticaOperationSelection` is a type represents an operation
  * which has been selected by the A.I. chatbot of {@link Agentica}
@@ -14,6 +14,13 @@ import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
  * @author Samchon
  */
 export interface IAgenticaOperationSelectionJson {
+  /**
+   * The reason of the selection.
+   */
   reason: string;
+
+  /**
+   * Selected operation.
+   */
   operation: IAgenticaOperationJson;
 }

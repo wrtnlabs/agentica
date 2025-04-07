@@ -6,7 +6,7 @@ import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
 import type { IAgenticaConfig } from "./IAgenticaConfig";
 
 /**
- * System prompt collection of the A.I. chatbot.
+ * System prompt collection of the Agentic AI.
  *
  * `IAgenticaSystemPrompt` is a type represents a collection of system
  * prompts that would be used by the A.I. chatbot of {@link Agentica}.

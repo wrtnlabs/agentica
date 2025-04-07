@@ -27,9 +27,11 @@
     "openai": "catalog:libs",
     "tgrid": "^1.1.0",
     "tstl": "^3.0.0",
-    "typia": "catalog:typia"
+    "typia": "catalog:typia",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@types/uuid": "^10.0.0",
     "ts-node": "^10.9.2",
     "ts-patch": "catalog:typescript",
     "typescript": "catalog:typescript"

@@ -2,6 +2,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
+import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 
@@ -13,7 +14,10 @@ import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageU
 import { MPSC } from "../utils/MPSC";
 import { StreamUtil } from "../utils/StreamUtil";
 
-export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
+export async function describe<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  histories: AgenticaExecutePrompt<Model>[],
+): Promise<AgenticaDescribePrompt<Model>[]> {
   if (histories.length === 0) {
     return [];
   }
