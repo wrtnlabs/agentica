@@ -392,21 +392,21 @@ importers:
         specifier: workspace:^
         version: link:../pg-vector-selector
       '@samchon/shopping-api':
-        specifier: ^0.16.0
-        version: 0.16.0(@samchon/openapi@3.2.3)(typescript@5.8.2)
+        specifier: ^0.17.0
+        version: 0.17.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
       openai:
         specifier: catalog:libs
-        version: 4.89.0(zod@3.24.2)
+        version: 4.91.1(zod@3.24.2)
       typia:
-        specifier: ^8.1.1
-        version: 8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2)
+        specifier: catalog:typia
+        version: 9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
     devDependencies:
       '@samchon/openapi':
-        specifier: catalog:libs
-        version: 3.2.3
+        specifier: catalog:typia
+        version: 4.0.0
       '@types/node':
         specifier: ^22.10.5
         version: 22.13.9
@@ -415,16 +415,16 @@ importers:
         version: 6.0.1
       rollup:
         specifier: ^4.29.1
-        version: 4.36.0
+        version: 4.39.0
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.13.9)(typescript@5.8.2)
+        version: 10.9.2(@types/node@22.13.9)(typescript@5.8.3)
       ts-patch:
-        specifier: catalog:typia
+        specifier: catalog:typescript
         version: 3.3.0
       typescript:
-        specifier: catalog:libs
-        version: 5.8.2
+        specifier: catalog:typescript
+        version: 5.8.3
 
   packages/rpc:
     dependencies:
