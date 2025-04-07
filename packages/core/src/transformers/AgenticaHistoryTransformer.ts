@@ -147,7 +147,7 @@ function findOperation<Model extends ILlmSchema.Model>(props: {
   return found;
 }
 
-export const AgenticaPromptTransformer = {
+export const AgenticaHistoryTransformer = {
   transform,
   transformText,
   transformSelect,

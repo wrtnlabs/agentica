@@ -5,7 +5,7 @@ import type { IValidation } from "typia";
 import typia from "typia";
 import { v4 } from "uuid";
 
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import type { AgenticaCancelPrompt } from "../histories/AgenticaCancelPrompt";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";

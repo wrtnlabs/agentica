@@ -1,14 +1,13 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
-
+import type { AgenticaCancelHistory } from "./AgenticaCancelHistory";
 import type { AgenticaDescribeHistory } from "./AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "./AgenticaExecuteHistory";
 import type { AgenticaSelectHistory } from "./AgenticaSelectHistory";
 import type { AgenticaTextHistory } from "./AgenticaTextHistory";
 
 export type AgenticaHistory<Model extends ILlmSchema.Model> =
-  | AgenticaCancelPrompt<Model>
+  | AgenticaCancelHistory<Model>
   | AgenticaDescribeHistory<Model>
   | AgenticaExecuteHistory<Model>
   | AgenticaSelectHistory<Model>
@@ -16,7 +15,7 @@ export type AgenticaHistory<Model extends ILlmSchema.Model> =
 export namespace AgenticaHistory {
   export type Type = AgenticaHistory<any>["type"];
   export interface Mapper<Model extends ILlmSchema.Model> {
-    cancel: AgenticaCancelPrompt<Model>;
+    cancel: AgenticaCancelHistory<Model>;
     describe: AgenticaDescribeHistory<Model>;
     execute: AgenticaExecuteHistory<Model>;
     select: AgenticaSelectHistory<Model>;

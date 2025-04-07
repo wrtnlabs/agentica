@@ -13,7 +13,7 @@ import {
   LlmTypeCheckerV3_1,
 } from "@samchon/openapi";
 
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import type { AgenticaCancelPrompt } from "../histories/AgenticaCancelPrompt";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";

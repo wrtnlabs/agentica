@@ -1,7 +1,7 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
+import type { AgenticaCancelPrompt } from "../histories/AgenticaCancelPrompt";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
