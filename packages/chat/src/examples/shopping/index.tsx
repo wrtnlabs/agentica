@@ -30,6 +30,7 @@ function Application() {
   const [next, setNext] = useState<ShoppingChatApplication.IProps | null>(null);
 
   const startChatApplication = async () => {
+    console.log("startChatApplication()");
     setProgress(true);
 
     // HANDLESHAKE WITH SHOPPING BACKEND
@@ -168,7 +169,7 @@ function Application() {
                   || name.length === 0
                   || mobile.length === 0
                 }
-                onClick={void startChatApplication}
+                onClick={() => void startChatApplication().catch(() => {})}
               >
                 {progress ? "Starting..." : "Start AI Chatbot"}
               </Button>

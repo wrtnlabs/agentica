@@ -290,7 +290,7 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
           || host.length === 0
           || apiKey.length === 0
         }
-        onClick={void open}
+        onClick={void open().catch(() => {})}
       >
         {progress ? "Generating..." : "Generate AI Chatbot"}
       </Button>

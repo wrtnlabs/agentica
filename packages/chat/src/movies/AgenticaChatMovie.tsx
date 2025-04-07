@@ -251,7 +251,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
           {isMobile
             ? (
                 <>
-                  <IconButton onClick={void capture}>
+                  <IconButton onClick={void capture().catch(() => {})}>
                     <AddAPhotoIcon />
                   </IconButton>
                   <IconButton onClick={() => setOpenSide(true)}>
@@ -263,7 +263,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
                 <Button
                   color="inherit"
                   startIcon={<AddAPhotoIcon />}
-                  onClick={void capture}
+                  onClick={void capture().catch(() => {})}
                 >
                   Screenshot Capture
                 </Button>
@@ -312,7 +312,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
             placeholder="Conversate with AI Chatbot"
             value={text}
             multiline={true}
-            onKeyUp={e => void handleKeyUp(e)}
+            onKeyUp={e => void handleKeyUp(e).catch(() => {})}
             onChange={(e) => {
               setText(e.target.value);
               handleResize();
@@ -323,7 +323,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
             style={{ marginLeft: 10 }}
             startIcon={<SendIcon />}
             disabled={!enabled}
-            onClick={void conversate}
+            onClick={() => void conversate().catch(() => {})}
           >
             Send
           </Button>
