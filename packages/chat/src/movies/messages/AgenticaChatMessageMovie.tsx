@@ -1,4 +1,4 @@
-import type { AgenticaPrompt } from "@agentica/core";
+import type { AgenticaHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaChatDescribeMessageMovie } from "./AgenticaChatDescribeMessageMovie";
@@ -17,12 +17,12 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
     ));
   }
   else if (prompt.type === "describe") {
-    return <AgenticaChatDescribeMessageMovie prompt={prompt} />;
+    return <AgenticaChatDescribeMessageMovie history={prompt} />;
   }
   return null;
 }
 export namespace AgenticaChatMessageMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    prompt: AgenticaPrompt<Model>;
+    prompt: AgenticaHistory<Model>;
   }
 }

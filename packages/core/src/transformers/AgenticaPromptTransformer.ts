@@ -1,69 +1,69 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
-import type { AgenticaCancelPrompt } from "../prompts/AgenticaCancelPrompt";
-import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
+import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
+import { createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createTextHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
-import { createCancelPrompt, createDescribePrompt, createExecutePrompt, createSelectPrompt, createTextPrompt } from "../factory/prompts";
 
 function transform<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
-  prompt: IAgenticaPromptJson;
-}): AgenticaPrompt<Model> {
+  history: IAgenticaHistoryJson;
+}): AgenticaHistory<Model> {
   // TEXT
-  if (props.prompt.type === "text") {
+  if (props.history.type === "text") {
     return transformText({
-      prompt: props.prompt,
+      history: props.history,
     });
   }
   // SELECT & CANCEL
-  else if (props.prompt.type === "select") {
+  else if (props.history.type === "select") {
     return transformSelect({
       operations: props.operations,
-      prompt: props.prompt,
+      history: props.history,
     });
   }
-  else if (props.prompt.type === "cancel") {
+  else if (props.history.type === "cancel") {
     return transformCancel({
       operations: props.operations,
-      prompt: props.prompt,
+      history: props.history,
     });
   }
   // EXECUTE
-  else if (props.prompt.type === "execute") {
+  else if (props.history.type === "execute") {
     return transformExecute({
       operations: props.operations,
-      prompt: props.prompt,
+      history: props.history,
     });
   }
-  else if (props.prompt.type === "describe") {
+  else if (props.history.type === "describe") {
     return transformDescribe({
       operations: props.operations,
-      prompt: props.prompt,
+      history: props.history,
     });
   }
   throw new Error("Invalid prompt type.");
 }
 
 function transformText(props: {
-  prompt: IAgenticaPromptJson.IText;
-}): AgenticaTextPrompt {
-  return createTextPrompt(props.prompt);
+  history: IAgenticaHistoryJson.IText;
+}): AgenticaTextHistory {
+  return createTextHistory(props.history);
 }
 
 function transformSelect<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
-  prompt: IAgenticaPromptJson.ISelect;
-}): AgenticaSelectPrompt<Model> {
-  return createSelectPrompt({
-    id: props.prompt.id,
-    selections: props.prompt.selections.map(
+  history: IAgenticaHistoryJson.ISelect;
+}): AgenticaSelectHistory<Model> {
+  return createSelectHistory({
+    id: props.history.id,
+    selections: props.history.selections.map(
       select =>
         createOperationSelection({
           operation: findOperation({
@@ -78,11 +78,11 @@ function transformSelect<Model extends ILlmSchema.Model>(props: {
 
 function transformCancel<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
-  prompt: IAgenticaPromptJson.ICancel;
-}): AgenticaCancelPrompt<Model> {
-  return createCancelPrompt({
-    id: props.prompt.id,
-    selections: props.prompt.selections.map(
+  history: IAgenticaHistoryJson.ICancel;
+}): AgenticaCancelHistory<Model> {
+  return createCancelHistory({
+    id: props.history.id,
+    selections: props.history.selections.map(
       select =>
         createOperationSelection({
           operation: findOperation({
@@ -97,33 +97,33 @@ function transformCancel<Model extends ILlmSchema.Model>(props: {
 
 function transformExecute<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
-  prompt: IAgenticaPromptJson.IExecute;
-}): AgenticaExecutePrompt<Model> {
-  return createExecutePrompt({
-    id: props.prompt.id,
+  history: IAgenticaHistoryJson.IExecute;
+}): AgenticaExecuteHistory<Model> {
+  return createExecuteHistory({
+    id: props.history.id,
     operation: findOperation({
       operations: props.operations,
-      input: props.prompt.operation,
+      input: props.history.operation,
     }),
-    arguments: props.prompt.arguments,
+    arguments: props.history.arguments,
     /**
      * @TODO fix it
      * The property and value have a type mismatch, but it works.
      */
-    value: props.prompt.value as Record<string, unknown>,
+    value: props.history.value as Record<string, unknown>,
   });
 }
 
 function transformDescribe<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
-  prompt: IAgenticaPromptJson.IDescribe;
-}): AgenticaDescribePrompt<Model> {
-  return createDescribePrompt({
-    text: props.prompt.text,
-    executes: props.prompt.executes.map(next =>
+  history: IAgenticaHistoryJson.IDescribe;
+}): AgenticaDescribeHistory<Model> {
+  return createDescribeHistory({
+    text: props.history.text,
+    executes: props.history.executes.map(next =>
       transformExecute({
         operations: props.operations,
-        prompt: next,
+        history: next,
       }),
     ),
   });

@@ -6,7 +6,7 @@ import { Tabs } from "nextra/components";
 import RemoteSource from "../../../components/RemoteSource";
 
 import AgenticaSnippet from "../../snippets/AgenticaSnippet.mdx";
-import AgenticaPromptSnippet from "../../snippets/AgenticaPromptSnippet.mdx";
+import AgenticaHistorySnippet from "../../snippets/AgenticaHistorySnippet.mdx";
 import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
 
 ## Facade Controller
@@ -19,7 +19,7 @@ import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers
-import { Agentica, AgenticaEvent, AgenticaPrompt } from "@agentica/core";
+import { Agentica, AgenticaEvent, AgenticaHistory } from "@agentica/core";
 import OpenAI from "@agentica/openai";
 import { v4 } from "uuid";
 
@@ -52,7 +52,7 @@ export const main = async (id: string): Promise<void> => {
   });
 
   // CONVERSATION & ARCHIVING
-  const prompts: AgenticaPrompt[] = await agent.conversate(
+  const prompts: AgenticaHistory[] = await agent.conversate(
     "I wanna buy Mackbook Pro."
   );
   await archivePrompts(id, prompts);
@@ -86,7 +86,7 @@ You can start chatbot by creating `Agentica` instance, and calling its function 
 
 In the `Agentica.conversate()` function, [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents would be processed including function callings and executions. When the orchestration has been completed, the `Agentica.conversate()` function will return the list of newly created prompts.
 
-If you want to archive the conversation state of current agent, store the returned prompots to your database serializing them from `AgenticaPrompt` type to JSON format's `IAgenticaPromptJson` type. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property when creating a new `Agentica` instance.
+If you want to archive the conversation state of current agent, store the returned prompots to your database serializing them from `AgenticaHistory` type to JSON format's `IAgenticaHistoryJson` type. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property when creating a new `Agentica` instance.
 
 By the way, within framework of the UX (User Experience) it is not a good choice to waiting for completion of the `Agentica.conversate()` function and giving prompt results to the user at once. Delivering the events to the user step by step with streaming is more recommended. Enroll event listeners by calling `Agentica.on()` function, and deliver it to the user.
 
@@ -315,15 +315,15 @@ For reference, `IAgenticaController.name` must be unique, because it is used to 
 <Tabs items={[
   <code>src/main.ts</code>,
   <code>Agentica</code>,
-  <code>AgenticaPrompt</code>,
+  <code>AgenticaHistory</code>,
   <code>AgenticaEvent</code>,
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers
 import {
   Agentica,
-  AgenticaPrompt,
-  IAgenticaPromptJson,
+  AgenticaHistory,
+  IAgenticaHistoryJson,
 } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import { OpenApi, HttpLlm } from "@samchon/openapi";
@@ -337,9 +337,9 @@ export const main = async (id: string): Promise<void> => {
       model: "gpt-4o-mini",
     },
     controllers: [...],
-    histories: (await getHistories(id)) satisfies IAgenticaPromptJson[],
+    histories: (await getHistories(id)) satisfies IAgenticaHistoryJson[],
   });
-  const prompts: AgenticaPrompt[] = await agent.conversate(
+  const prompts: AgenticaHistory[] = await agent.conversate(
     "I wanna buy MacBook Pro",
   );
   await archiveHistories(id, prompts.map((p) => p.toJSON()));
@@ -350,15 +350,15 @@ export const main = async (id: string): Promise<void> => {
     <AgenticaSnippet />
   </Tabs.Tab>
   <Tabs.Tab>
-    <AgenticaPromptSnippet />
+    <AgenticaHistorySnippet />
   </Tabs.Tab>
   <Tabs.Tab>
     <AgenticaEventSnippet />
   </Tabs.Tab>
 </Tabs>
 
-When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions. After the orchestration process, `Agentica.conversate()` function will return the list of newly created prompts in the orchestration process; `AgenticaPrompt`.
+When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions. After the orchestration process, `Agentica.conversate()` function will return the list of newly created prompts in the orchestration process; `AgenticaHistory`.
 
-If you want to archive the conversation state of current agent, store the returned prompts to your database with serialization to `IAgenticaPromptJson` format by calling `AgenticaPrompt.toJSON()` function. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property creating a new `Agentica` instance.
+If you want to archive the conversation state of current agent, store the returned prompts to your database with serialization to `IAgenticaHistoryJson` format by calling `AgenticaHistory.toJSON()` function. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property creating a new `Agentica` instance.
 
 By the way, waiting for the compleltion of internal agents' orchestration nand giving prompt results to the user at once is not a good choice in the UX (User Experience) perspective. In that case, it would better to deliver the events to the user step by step with streaming. Enroll event listeners by calling `Agentica.on()` function, and deliver it to the user.

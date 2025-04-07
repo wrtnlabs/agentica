@@ -1,8 +1,8 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 
@@ -14,7 +14,7 @@ export namespace AgenticaExecuteEvent {
     extends Base<
       "class",
       AgenticaOperation.Class<Model>,
-      AgenticaExecutePrompt.Class<Model>,
+      AgenticaExecuteHistory.Class<Model>,
       unknown
     > {}
 
@@ -22,14 +22,14 @@ export namespace AgenticaExecuteEvent {
     extends Base<
       "http",
       AgenticaOperation.Http<Model>,
-      AgenticaExecutePrompt.Http<Model>,
+      AgenticaExecuteHistory.Http<Model>,
       IHttpResponse
     > {}
 
   interface Base<
     Protocol extends "http" | "class",
     Operation extends AgenticaOperation<any>,
-    Prompt extends AgenticaExecutePrompt<any>,
+    History extends AgenticaExecuteHistory<any>,
     Value,
   > extends AgenticaEventBase<"execute"> {
     protocol: Protocol;
@@ -39,6 +39,6 @@ export namespace AgenticaExecuteEvent {
     value: Value;
 
     toJSON: () => IAgenticaEventJson.IExecute;
-    toPrompt: () => Prompt;
+    toHistory: () => History;
   }
 }

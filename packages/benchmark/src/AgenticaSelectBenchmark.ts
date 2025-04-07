@@ -1,10 +1,9 @@
 import type {
   Agentica,
   AgenticaContext,
+  AgenticaHistory,
   AgenticaOperationSelection,
-  AgenticaPrompt,
-
-  AgenticaTextPrompt,
+  AgenticaTextHistory,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
@@ -46,7 +45,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
   private agent_: Agentica<Model>;
   private scenarios_: IAgenticaSelectBenchmarkScenario<Model>[];
   private config_: AgenticaSelectBenchmark.IConfig;
-  private histories_: AgenticaPrompt<Model>[];
+  private histories_: AgenticaHistory<Model>[];
   private result_: IAgenticaSelectBenchmarkResult<Model> | null;
 
   /**
@@ -61,7 +60,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
       repeat: props.config?.repeat ?? 10,
       simultaneous: props.config?.simultaneous ?? 10,
     };
-    this.histories_ = props.agent.getPromptHistories().slice();
+    this.histories_ = props.agent.getHistories().slice();
     this.result_ = null;
   }
 
@@ -154,11 +153,11 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     const started_at: Date = new Date();
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
-      const prompts: AgenticaPrompt<Model>[]
+      const histories: AgenticaHistory<Model>[]
         = await orchestrate.select({
           ...this.agent_.getContext({
             // @todo core has to export `AgenticaPromptFactory`
-            prompt: factory.createTextPrompt({
+            prompt: factory.createTextHistory({
               role: "user",
               text: scenario.text,
             }),
@@ -169,7 +168,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
           ready: () => true,
           dispatch: async () => {},
         } satisfies AgenticaContext<Model>);
-      const selected: AgenticaOperationSelection<Model>[] = prompts
+      const selected: AgenticaOperationSelection<Model>[] = histories
         .filter(p => p.type === "select")
         .map(p => p.selections)
         .flat();
@@ -183,10 +182,10 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         scenario,
         selected,
         usage,
-        assistantPrompts: prompts
+        assistantPrompts: histories
           .filter(p => p.type === "text")
           .filter(
-            (p): p is AgenticaTextPrompt<"assistant"> => p.role === "assistant",
+            (p): p is AgenticaTextHistory<"assistant"> => p.role === "assistant",
           ),
         started_at,
         completed_at: new Date(),

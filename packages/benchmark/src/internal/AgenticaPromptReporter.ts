@@ -4,14 +4,14 @@
  *
  * @author Wrtn Technologies
  */
-import type { AgenticaPrompt } from "@agentica/core";
+import type { AgenticaHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 export const AgenticaPromptReporter = {
   markdown,
 };
 
-function markdown<Model extends ILlmSchema.Model>(p: AgenticaPrompt<Model>): string {
+function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): string {
   // @TODO use switch statement
   if (p.type === "text") {
     return [`### Text (${p.role})`, p.text, ""].join("\n");

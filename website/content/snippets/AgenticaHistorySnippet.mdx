@@ -1,37 +1,37 @@
-```typescript filename="@agentica/core/AgenticaPrompt" showLineNumbers
-export type AgenticaPrompt =
-  | AgenticaPrompt.Text
-  | AgenticaPrompt.Select
-  | AgenticaPrompt.Cancel
-  | AgenticaPrompt.Execute
-  | AgenticaPrompt.Describe;
-export namespace AgenticaPrompt {
+```typescript filename="@agentica/core/AgenticaHistory" showLineNumbers
+export type AgenticaHistory =
+  | AgenticaHistory.Text
+  | AgenticaHistory.Select
+  | AgenticaHistory.Cancel
+  | AgenticaHistory.Execute
+  | AgenticaHistory.Describe;
+export namespace AgenticaHistory {
   export interface Select extends Base<"select"> {
     id: string;
     selections: AgenticaOperationSelection[];
-    toJSON(): IAgenticaPromptJson.ISelect;
+    toJSON(): IAgenticaHistoryJson.ISelect;
   }
   export interface Cancel extends Base<"cancel"> {
     id: string;
     selections: IAgenticaOperationSelection[];
-    toJSON(): IAgenticaPromptJson.ICancel;
+    toJSON(): IAgenticaHistoryJson.ICancel;
   }
   export interface Execute extends Base<"execute"> {
     id: string;
     operation: AgenticaOperation;
     arguments: Record<string, any>;
     value: any;
-    toJSON(): IAgenticaPromptJson.IExecute;
+    toJSON(): IAgenticaHistoryJson.IExecute;
   }
   export interface Describe extends Base<"describe"> {
     executes: Execute[];
     text: string;
-    toJSON(): IAgenticaPromptJson.IDescribe;
+    toJSON(): IAgenticaHistoryJson.IDescribe;
   }
   export interface Text extends Base<"text"> {
     role: "assistant" | "user";
     text: string;
-    toJSON(): IAgenticaPromptJson.IText;
+    toJSON(): IAgenticaHistoryJson.IText;
   }
   interface Base<Type extends string> {
     type: Type;

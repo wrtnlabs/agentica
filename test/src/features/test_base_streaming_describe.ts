@@ -1,6 +1,6 @@
 import type {
   AgenticaEvent,
-  AgenticaPrompt,
+  AgenticaHistory,
   IAgenticaController,
 } from "@agentica/core";
 
@@ -131,7 +131,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   const b = 3412342134;
 
   // Start conversation - induce function call while requesting additional explanation
-  const result: AgenticaPrompt<"chatgpt">[] = await agent.conversate(
+  const result: AgenticaHistory<"chatgpt">[] = await agent.conversate(
     `Please add ${a} and ${b}. And briefly explain what addition is. Use calculator.`,
   );
 

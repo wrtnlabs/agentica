@@ -1,4 +1,4 @@
-import type { MicroAgenticaPrompt } from "@agentica/core";
+import type { MicroAgenticaHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import { MicroAgentica } from "@agentica/core";
@@ -50,16 +50,16 @@ export async function test_micro_agentica(): Promise<void | false> {
     strategy. Let's visit typia website https://typia.io, and enjoy 
     its super-fast performance.
   `);
-  if (predicate(agent.getPromptHitorie()) === false) {
+  if (predicate(agent.getHistories()) === false) {
     await agent.conversate("Do it.");
-    const result: boolean = predicate(agent.getPromptHitorie());
+    const result: boolean = predicate(agent.getHistories());
     if (result === false) {
-      console.log(agent.getPromptHitorie());
+      console.log(agent.getHistories());
       throw new Error("Failed to call the function.");
     }
   }
 }
 
-function predicate<Model extends ILlmSchema.Model>(histories: MicroAgenticaPrompt<Model>[]): boolean {
+function predicate<Model extends ILlmSchema.Model>(histories: MicroAgenticaHistory<Model>[]): boolean {
   return histories.some(h => h.type === "execute" || h.type === "describe");
 }

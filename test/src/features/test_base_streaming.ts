@@ -1,5 +1,5 @@
 import type {
-  AgenticaPrompt,
+  AgenticaHistory,
   AgenticaRequestEvent,
   AgenticaResponseEvent,
 } from "@agentica/core";
@@ -69,7 +69,7 @@ export async function test_base_streaming(): Promise<void | false> {
   });
 
   // Execute the conversation
-  const result: AgenticaPrompt<"chatgpt">[] = await agent.conversate(
+  const result: AgenticaHistory<"chatgpt">[] = await agent.conversate(
     "Explain what streaming is in 3 short sentences.",
   );
 

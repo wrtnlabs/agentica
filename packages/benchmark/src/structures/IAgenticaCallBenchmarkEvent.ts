@@ -4,7 +4,7 @@
  *
  * @author Wrtn Technologies
  */
-import type { AgenticaPrompt, AgenticaTokenUsage } from "@agentica/core";
+import type { AgenticaHistory, AgenticaTokenUsage } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaCallBenchmarkScenario } from "./IAgenticaCallBenchmarkScenario";
@@ -99,7 +99,7 @@ export namespace IAgenticaCallBenchmarkEvent {
      *
      * List of prompts occurred during the benchmark testing.
      */
-    prompts: AgenticaPrompt<Model>[];
+    prompts: AgenticaHistory<Model>[];
 
     /**
      * Usage of the token during the benchmark.

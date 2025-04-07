@@ -3,8 +3,8 @@ import type OpenAI from "openai";
 
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
@@ -70,7 +70,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
   /**
    * Prompt histories.
    */
-  histories: AgenticaPrompt<Model>[];
+  histories: AgenticaHistory<Model>[];
 
   /**
    * Stacked operations.
@@ -85,7 +85,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    * Text conversation written the by user through the
    * {@link Agentica.conversate} function.
    */
-  prompt: AgenticaTextPrompt<"user">;
+  prompt: AgenticaTextHistory<"user">;
 
   /**
    * Whether the agent is ready.

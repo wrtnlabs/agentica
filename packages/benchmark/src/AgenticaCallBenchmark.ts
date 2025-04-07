@@ -152,7 +152,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       AgenticaBenchmarkPredicator.success({
         expected: scenario.expected,
         operations: agent
-          .getPromptHistories()
+          .getHistories()
           .filter(p => p.type === "execute")
           .map(p => p.operation),
         strict: false,
@@ -161,7 +161,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       const select = AgenticaBenchmarkPredicator.success({
         expected: scenario.expected,
         operations: agent
-          .getPromptHistories()
+          .getHistories()
           .filter(p => p.type === "select")
           .map(p => p.selections)
           .flat()
@@ -174,7 +174,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         scenario,
         select,
         call,
-        prompts: agent.getPromptHistories(),
+        prompts: agent.getHistories(),
         usage: agent.getTokenUsage(),
         started_at,
         completed_at: new Date(),
@@ -205,7 +205,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       return {
         type: "error",
         scenario,
-        prompts: agent.getPromptHistories(),
+        prompts: agent.getHistories(),
         usage: agent.getTokenUsage(),
         error,
         started_at,

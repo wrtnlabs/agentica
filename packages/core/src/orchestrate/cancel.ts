@@ -16,7 +16,7 @@ import type { AgenticaEvent } from "../events/AgenticaEvent";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createCancelPrompt, decodePrompt } from "../factory/prompts";
+import { createCancelHistory, decodeHistory } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
@@ -78,7 +78,7 @@ export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   }
 
   // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaCancelPrompt<Model> = createCancelPrompt({
+  const collection: AgenticaCancelPrompt<Model> = createCancelHistory({
     id: v4(),
     selections: [],
   });
@@ -137,7 +137,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           ),
         },
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
+        ...ctx.histories.map(decodeHistory).flat(),
         // USER INPUT
         {
           role: "user",
@@ -225,7 +225,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           continue;
         }
 
-        const collection: AgenticaCancelPrompt<Model> = createCancelPrompt({
+        const collection: AgenticaCancelPrompt<Model> = createCancelHistory({
           id: tc.id,
           selections: [],
         });

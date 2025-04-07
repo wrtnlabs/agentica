@@ -23,22 +23,22 @@ export * as factory from "./factory";
 export * from "./functional/assertHttpLlmApplication";
 
 export * from "./functional/validateHttpLlmApplication";
+export * from "./histories/AgenticaCancelHistory";
+export * from "./histories/AgenticaDescribeHistory";
+export * from "./histories/AgenticaExecuteHistory";
+export * from "./histories/AgenticaHistory";
+export * from "./histories/AgenticaSelectHistory";
+export * from "./histories/AgenticaTextHistory";
+
+export * from "./histories/MicroAgenticaHistory";
+
 export * from "./json/IAgenticaEventJson";
+export * from "./json/IAgenticaHistoryJson";
 export * from "./json/IAgenticaOperationJson";
 export * from "./json/IAgenticaOperationSelectionJson";
-export * from "./json/IAgenticaPromptJson";
 export * from "./json/IAgenticaTokenUsageJson";
 export * from "./MicroAgentica";
-
 export * as orchestrate from "./orchestrate";
-
-export * from "./prompts/AgenticaCancelPrompt";
-export * from "./prompts/AgenticaDescribePrompt";
-export * from "./prompts/AgenticaExecutePrompt";
-export * from "./prompts/AgenticaPrompt";
-export * from "./prompts/AgenticaSelectPrompt";
-export * from "./prompts/AgenticaTextPrompt";
-export * from "./prompts/MicroAgenticaPrompt";
 
 export * from "./structures/IAgenticaConfig";
 export * from "./structures/IAgenticaController";

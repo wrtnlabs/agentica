@@ -5,7 +5,7 @@
  * `Agentica` is a facade class for the super A.I. chatbot agent
  * which performs the {@link conversate user's conversation function}
  * with LLM (Large Language Model) function calling and manages the
- * {@link getPromptHistories prompt histories}.
+ * {@link getHistories prompt histories}.
  *
  * To understand and compose the `Agentica` class exactly, reference
  * below types concentrating on the documentation comments please.
@@ -20,7 +20,7 @@
  *   - {@link IAgenticaSystemPrompt}
  * - Accessors
  *   - {@link AgenticaOperation}
- *   - {@link AgenticaPrompt}
+ *   - {@link AgenticaHistory}
  *   - {@link AgenticaEvent}
  *   - {@link AgenticaTokenUsage}
  *
@@ -41,12 +41,12 @@ export class Agentica<Model extends ILlmSchema.Model> {
    *
    * When the user's conversation implies the A.I. chatbot to execute a
    * function calling, the returned chat prompts will contain the
-   * function calling information like {@link AgenticaPrompt.Execute}.
+   * function calling information like {@link AgenticaHistory.Execute}.
    *
    * @param content The content to talk
    * @returns List of newly created chat prompts
    */
-  public async conversate(content: string): Promise<AgenticaPrompt<Model>[]>;
+  public async conversate(content: string): Promise<AgenticaHistory<Model>[]>;
 
   /**
    * Add an event listener.
@@ -85,7 +85,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    *
    * @returns List of chat prompts
    */
-  public getPromptHistories(): AgenticaPrompt<Model>[];
+  public getHistories(): AgenticaHistory<Model>[];
 
   /**
    * Get token usage of the A.I. chatbot.

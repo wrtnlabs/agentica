@@ -1,4 +1,4 @@
-import type { AgenticaExecutePrompt } from "@agentica/core";
+import type { AgenticaExecuteHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import { Typography } from "@mui/material";
@@ -38,11 +38,11 @@ export function AgenticaChatExecuteMessageMovie<
 }
 export namespace AgenticaChatExecuteMessageMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    execute: AgenticaExecutePrompt<Model>;
+    execute: AgenticaExecuteHistory<Model>;
   }
 }
 
-function getTitle<Model extends ILlmSchema.Model>(exec: AgenticaExecutePrompt<Model>) {
+function getTitle<Model extends ILlmSchema.Model>(exec: AgenticaExecuteHistory<Model>) {
   return exec.operation.protocol === "http"
     ? `${exec.operation.function.method.toUpperCase()} ${exec.operation.function.path}`
     : exec.operation.function.name;

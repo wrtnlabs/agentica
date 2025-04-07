@@ -1,7 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
 import type { IAgenticaExecutor } from "./IAgenticaExecutor";
 import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
@@ -41,7 +41,7 @@ export interface IAgenticaConfig<Model extends ILlmSchema.Model> {
    */
   executor?:
     | Partial<IAgenticaExecutor<Model>>
-    | ((ctx: AgenticaContext<Model>) => Promise<AgenticaPrompt<Model>[]>);
+    | ((ctx: AgenticaContext<Model>) => Promise<AgenticaHistory<Model>[]>);
 
   /**
    * System prompt messages.

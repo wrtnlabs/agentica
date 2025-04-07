@@ -4,14 +4,14 @@ import type OpenAI from "openai";
 import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
-import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
-export function decodePrompt<Model extends ILlmSchema.Model>(history: AgenticaPrompt<Model>): OpenAI.ChatCompletionMessageParam[] {
+export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaHistory<Model>): OpenAI.ChatCompletionMessageParam[] {
   // NO NEED TO DECODE DESCRIBE
   if (history.type === "describe") {
     return [];
@@ -98,11 +98,11 @@ export function decodePrompt<Model extends ILlmSchema.Model>(history: AgenticaPr
 /* -----------------------------------------------------------
   TEXT PROMPTS
 ----------------------------------------------------------- */
-export function createTextPrompt<Role extends "assistant" | "user" = "assistant" | "user">(props: {
+export function createTextHistory<Role extends "assistant" | "user" = "assistant" | "user">(props: {
   role: Role;
   text: string;
-}): AgenticaTextPrompt<Role> {
-  const prompt: IAgenticaPromptJson.IText<Role> = {
+}): AgenticaTextHistory<Role> {
+  const prompt: IAgenticaHistoryJson.IText<Role> = {
     type: "text",
     role: props.role,
     text: props.text,
@@ -113,10 +113,10 @@ export function createTextPrompt<Role extends "assistant" | "user" = "assistant"
   };
 }
 
-export function createDescribePrompt<Model extends ILlmSchema.Model>(props: {
-  executes: AgenticaExecutePrompt<Model>[];
+export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
+  executes: AgenticaExecuteHistory<Model>[];
   text: string;
-}): AgenticaDescribePrompt<Model> {
+}): AgenticaDescribeHistory<Model> {
   return {
     type: "describe",
     text: props.text,
@@ -132,10 +132,10 @@ export function createDescribePrompt<Model extends ILlmSchema.Model>(props: {
 /* -----------------------------------------------------------
   FUNCTION CALLING PROMPTS
 ----------------------------------------------------------- */
-export function createSelectPrompt<Model extends ILlmSchema.Model>(props: {
+export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
   selections: AgenticaOperationSelection<Model>[];
-}): AgenticaSelectPrompt<Model> {
+}): AgenticaSelectHistory<Model> {
   return {
     type: "select",
     id: props.id,
@@ -148,7 +148,7 @@ export function createSelectPrompt<Model extends ILlmSchema.Model>(props: {
   };
 }
 
-export function createCancelPrompt<Model extends ILlmSchema.Model>(props: {
+export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
   selections: AgenticaOperationSelection<Model>[];
 }): AgenticaCancelPrompt<Model> {
@@ -164,14 +164,14 @@ export function createCancelPrompt<Model extends ILlmSchema.Model>(props: {
   };
 }
 
-export function createExecutePrompt<
+export function createExecuteHistory<
   Model extends ILlmSchema.Model,
 >(props: {
   id: string;
   operation: AgenticaOperation<Model>;
   arguments: Record<string, any>;
   value: unknown;
-}): AgenticaExecutePrompt<Model> {
+}): AgenticaExecuteHistory<Model> {
   return {
     type: "execute",
     protocol: props.operation.protocol as "class",

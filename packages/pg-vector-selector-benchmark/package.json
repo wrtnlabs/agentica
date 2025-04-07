@@ -22,18 +22,18 @@
     "@agentica/benchmark": "workspace:^",
     "@agentica/core": "workspace:^",
     "@agentica/pg-vector-selector": "workspace:^",
-    "@samchon/shopping-api": "^0.16.0",
+    "@samchon/shopping-api": "^0.17.0",
     "dotenv": "^16.4.7",
     "openai": "catalog:libs",
-    "typia": "^8.1.1"
+    "typia": "catalog:typia"
   },
   "devDependencies": {
-    "@samchon/openapi": "catalog:libs",
+    "@samchon/openapi": "catalog:typia",
     "@types/node": "^22.10.5",
     "rimraf": "^6.0.1",
     "rollup": "^4.29.1",
     "ts-node": "^10.9.2",
-    "ts-patch": "catalog:typia",
-    "typescript": "catalog:libs"
+    "ts-patch": "catalog:typescript",
+    "typescript": "catalog:typescript"
   }
 }

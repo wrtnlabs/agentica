@@ -18,18 +18,18 @@ import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
-import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
+import { createCancelHistory, createExecuteHistory, createTextHistory, decodeHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
-import { createCancelPrompt, createExecutePrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
@@ -38,7 +38,7 @@ import { cancelFunction } from "./internal/cancelFunction";
 export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   operations: AgenticaOperation<Model>[],
-): Promise<AgenticaPrompt<Model>[]> {
+): Promise<AgenticaHistory<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -50,7 +50,7 @@ export async function call<Model extends ILlmSchema.Model>(
         content: AgenticaDefaultPrompt.write(ctx.config),
       } satisfies OpenAI.ChatCompletionSystemMessageParam,
       // PREVIOUS HISTORIES
-      ...ctx.histories.map(decodePrompt).flat(),
+      ...ctx.histories.map(decodeHistory).flat(),
       // USER INPUT
       {
         role: "user",
@@ -61,7 +61,7 @@ export async function call<Model extends ILlmSchema.Model>(
         ? []
         : [{
           role: "system",
-          content: ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaPrompt<Model>[])
+          content: ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
             ?? AgenticaSystemPrompt.EXECUTE,
         } satisfies OpenAI.ChatCompletionSystemMessageParam]),
     ],
@@ -96,9 +96,9 @@ export async function call<Model extends ILlmSchema.Model>(
   const closures: Array<
     () => Promise<
       Array<
-        | AgenticaExecutePrompt<Model>
+        | AgenticaExecuteHistory<Model>
         | AgenticaCancelPrompt<Model>
-        | AgenticaTextPrompt
+        | AgenticaTextHistory
       >
     >
   > = [];
@@ -116,7 +116,7 @@ export async function call<Model extends ILlmSchema.Model>(
         }
         closures.push(
           async (): Promise<
-            [AgenticaExecutePrompt<Model>, AgenticaCancelPrompt<Model>]
+            [AgenticaExecuteHistory<Model>, AgenticaCancelPrompt<Model>]
           > => {
             const call: AgenticaCallEvent<Model> = createCallEvent({
               id: tc.id,
@@ -132,7 +132,7 @@ export async function call<Model extends ILlmSchema.Model>(
             }
             await ctx.dispatch(call);
 
-            const execute: AgenticaExecutePrompt<Model> = await propagate(
+            const execute: AgenticaExecuteHistory<Model> = await propagate(
               ctx,
               call,
               0,
@@ -162,7 +162,7 @@ export async function call<Model extends ILlmSchema.Model>(
             }
             return [
               execute,
-              createCancelPrompt({
+              createCancelHistory({
                 id: call.id,
                 selections: [
                   createOperationSelection({
@@ -182,7 +182,7 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content.length > 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextPrompt = createTextPrompt({
+        const value: AgenticaTextHistory = createTextHistory({
           role: "assistant",
           text: choice.message.content!,
         });
@@ -206,7 +206,7 @@ async function propagate<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   call: AgenticaCallEvent<Model>,
   retry: number,
-): Promise<AgenticaExecutePrompt<Model>> {
+): Promise<AgenticaExecuteHistory<Model>> {
   if (call.operation.protocol === "http") {
     // ----
     // HTTP PROTOCOL
@@ -224,7 +224,7 @@ async function propagate<Model extends ILlmSchema.Model>(
         }),
       );
       if (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)) {
-        const trial: AgenticaExecutePrompt<Model> | null = await correct(
+        const trial: AgenticaExecuteHistory<Model> | null = await correct(
           ctx,
           call,
           retry,
@@ -250,7 +250,7 @@ async function propagate<Model extends ILlmSchema.Model>(
         (success === false
           ? await correct(ctx, call, retry, response.body)
           : null)
-        ?? createExecutePrompt({
+        ?? createExecuteHistory({
           operation: call.operation,
           id: call.id,
           arguments: call.arguments,
@@ -260,7 +260,7 @@ async function propagate<Model extends ILlmSchema.Model>(
     }
     catch (error) {
       // DISPATCH ERROR
-      return createExecutePrompt({
+      return createExecuteHistory({
         operation: call.operation,
         id: call.id,
         arguments: call.arguments,
@@ -299,7 +299,7 @@ async function propagate<Model extends ILlmSchema.Model>(
         (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
           ? await correct(ctx, call, retry, check.errors)
           : null)
-        ?? createExecutePrompt({
+        ?? createExecuteHistory({
           id: call.id,
           operation: call.operation,
           arguments: call.arguments,
@@ -314,7 +314,7 @@ async function propagate<Model extends ILlmSchema.Model>(
     // EXECUTE FUNCTION
     try {
       const value = await executeClassOperation(call.operation, call.arguments);
-      return createExecutePrompt({
+      return createExecuteHistory({
         id: call.id,
         operation: call.operation,
         arguments: call.arguments,
@@ -322,7 +322,7 @@ async function propagate<Model extends ILlmSchema.Model>(
       });
     }
     catch (error) {
-      return createExecutePrompt({
+      return createExecuteHistory({
         id: call.id,
         operation: call.operation,
         arguments: call.arguments,
@@ -377,7 +377,7 @@ async function correct<Model extends ILlmSchema.Model>(
   call: AgenticaCallEvent<Model>,
   retry: number,
   error: unknown,
-): Promise<AgenticaExecutePrompt<Model> | null> {
+): Promise<AgenticaExecuteHistory<Model> | null> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -389,7 +389,7 @@ async function correct<Model extends ILlmSchema.Model>(
           content: AgenticaDefaultPrompt.write(ctx.config),
         } satisfies OpenAI.ChatCompletionSystemMessageParam,
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
+        ...ctx.histories.map(decodeHistory).flat(),
         // USER INPUT
         {
           role: "user",
@@ -401,7 +401,7 @@ async function correct<Model extends ILlmSchema.Model>(
           : [{
             role: "system",
             content:
-            ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaPrompt<Model>[])
+            ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
             ?? AgenticaSystemPrompt.EXECUTE,
           } satisfies OpenAI.ChatCompletionSystemMessageParam]
         ),

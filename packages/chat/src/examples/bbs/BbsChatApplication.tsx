@@ -21,7 +21,7 @@ export function BbsChatApplication(props: BbsChatApplication.IProps) {
       {
         protocol: "class",
         name: "bbs",
-        application: typia.llm.applicationOfValidate<
+        application: typia.llm.application<
           BbsArticleService,
           "chatgpt"
         >(),
