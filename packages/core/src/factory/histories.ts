@@ -1,9 +1,9 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
-import type { AgenticaCancelPrompt } from "../histories/AgenticaCancelPrompt";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
@@ -151,7 +151,7 @@ export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
 export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
   selections: AgenticaOperationSelection<Model>[];
-}): AgenticaCancelPrompt<Model> {
+}): AgenticaCancelHistory<Model> {
   return {
     type: "cancel",
     id: props.id,

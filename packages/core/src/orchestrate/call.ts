@@ -13,7 +13,7 @@ import {
   LlmTypeCheckerV3_1,
 } from "@samchon/openapi";
 
-import type { AgenticaCancelPrompt } from "../histories/AgenticaCancelPrompt";
+import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
@@ -97,7 +97,7 @@ export async function call<Model extends ILlmSchema.Model>(
     () => Promise<
       Array<
         | AgenticaExecuteHistory<Model>
-        | AgenticaCancelPrompt<Model>
+        | AgenticaCancelHistory<Model>
         | AgenticaTextHistory
       >
     >
@@ -116,7 +116,7 @@ export async function call<Model extends ILlmSchema.Model>(
         }
         closures.push(
           async (): Promise<
-            [AgenticaExecuteHistory<Model>, AgenticaCancelPrompt<Model>]
+            [AgenticaExecuteHistory<Model>, AgenticaCancelHistory<Model>]
           > => {
             const call: AgenticaCallEvent<Model> = createCallEvent({
               id: tc.id,
