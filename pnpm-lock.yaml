@@ -380,6 +380,52 @@ importers:
         specifier: catalog:vite
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.3))(terser@5.39.0)
 
+  packages/pg-vector-selector-benchmark:
+    dependencies:
+      '@agentica/benchmark':
+        specifier: workspace:^
+        version: link:../benchmark
+      '@agentica/core':
+        specifier: workspace:^
+        version: link:../core
+      '@agentica/pg-vector-selector':
+        specifier: workspace:^
+        version: link:../pg-vector-selector
+      '@samchon/shopping-api':
+        specifier: ^0.16.0
+        version: 0.16.0(@samchon/openapi@3.2.3)(typescript@5.8.2)
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      openai:
+        specifier: catalog:libs
+        version: 4.89.0(zod@3.24.2)
+      typia:
+        specifier: ^8.1.1
+        version: 8.1.1(@samchon/openapi@3.2.3)(typescript@5.8.2)
+    devDependencies:
+      '@samchon/openapi':
+        specifier: catalog:libs
+        version: 3.2.3
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.13.9
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      rollup:
+        specifier: ^4.29.1
+        version: 4.36.0
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.13.9)(typescript@5.8.2)
+      ts-patch:
+        specifier: catalog:typia
+        version: 3.3.0
+      typescript:
+        specifier: catalog:libs
+        version: 5.8.2
+
   packages/rpc:
     dependencies:
       '@agentica/core':
