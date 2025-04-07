@@ -82,7 +82,7 @@ export async function describe<Model extends ILlmSchema.Model>(
         };
         mpsc.produce(choice.delta.content);
 
-        void ctx.dispatch(
+        ctx.dispatch(
           createDescribeEvent({
             executes: histories,
             stream: mpsc.consumer,
@@ -93,7 +93,7 @@ export async function describe<Model extends ILlmSchema.Model>(
               return describeContext[choice.index]!.content;
             },
           }),
-        );
+        ).catch(() => {});
       }
     };
 

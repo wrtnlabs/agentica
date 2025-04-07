@@ -168,7 +168,7 @@ function Application() {
                   || name.length === 0
                   || mobile.length === 0
                 }
-                onClick={void startChatApplication}
+                onClick={() => void startChatApplication().catch(() => {})}
               >
                 {progress ? "Starting..." : "Start AI Chatbot"}
               </Button>

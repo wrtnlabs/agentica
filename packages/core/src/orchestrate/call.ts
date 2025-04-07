@@ -137,28 +137,28 @@ export async function call<Model extends ILlmSchema.Model>(
               call,
               0,
             );
-            void ctx.dispatch(
+            ctx.dispatch(
               createExecuteEvent({
                 id: call.id,
                 operation: call.operation,
                 arguments: execute.arguments,
                 value: execute.value,
               }),
-            );
+            ).catch(() => {});
 
             if (isAgenticaContext(ctx)) {
               await cancelFunction(ctx, {
                 name: call.operation.name,
                 reason: "completed",
               });
-              void ctx.dispatch(
+              ctx.dispatch(
                 createCancelEvent({
                   selection: createOperationSelection({
                     operation: call.operation,
                     reason: "complete",
                   }),
                 }),
-              );
+              ).catch(() => {});
             }
             return [
               execute,
@@ -186,7 +186,7 @@ export async function call<Model extends ILlmSchema.Model>(
           role: "assistant",
           text: choice.message.content!,
         });
-        void ctx.dispatch(
+        ctx.dispatch(
           createTextEvent({
             role: "assistant",
             get: () => value.text,
@@ -194,7 +194,7 @@ export async function call<Model extends ILlmSchema.Model>(
             stream: StreamUtil.to(value.text),
             join: async () => Promise.resolve(value.text),
           }),
-        );
+        ).catch(() => {});
         return [value];
       });
     }
@@ -216,13 +216,13 @@ async function propagate<Model extends ILlmSchema.Model>(
       call.arguments,
     );
     if (check.success === false) {
-      void ctx.dispatch(
+      ctx.dispatch(
         createValidateEvent({
           id: call.id,
           operation: call.operation,
           result: check,
         }),
-      );
+      ).catch(() => {});
       if (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)) {
         const trial: AgenticaExecuteHistory<Model> | null = await correct(
           ctx,
@@ -288,13 +288,13 @@ async function propagate<Model extends ILlmSchema.Model>(
       call.arguments,
     );
     if (check.success === false) {
-      void ctx.dispatch(
+      ctx.dispatch(
         createValidateEvent({
           id: call.id,
           operation: call.operation,
           result: check,
         }),
-      );
+      ).catch(() => {});
       return (
         (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
           ? await correct(ctx, call, retry, check.errors)

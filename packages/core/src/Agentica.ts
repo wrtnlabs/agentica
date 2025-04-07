@@ -261,7 +261,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
 
         const [streamForAggregate, streamForReturn] = temporaryStream.tee();
 
-        void (async () => {
+        (async () => {
           const reader = streamForAggregate.getReader();
           while (true) {
             const chunk = await reader.read();
@@ -276,7 +276,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
               });
             }
           }
-        })();
+        })().catch(() => {});
 
         const [streamForStream, streamForJoin] = streamForEvent.tee();
         await dispatch({

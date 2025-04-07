@@ -106,7 +106,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         };
         mpsc.produce(choice.delta.content);
 
-        void ctx.dispatch(
+        ctx.dispatch(
           createTextEvent({
             role: "assistant",
             stream: mpsc.consumer,
@@ -117,7 +117,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
               return textContext[choice.index]!.content;
             },
           }),
-        );
+        ).catch(() => {});
       }
     };
 
