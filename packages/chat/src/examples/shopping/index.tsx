@@ -30,7 +30,6 @@ function Application() {
   const [next, setNext] = useState<ShoppingChatApplication.IProps | null>(null);
 
   const startChatApplication = async () => {
-    console.log("startChatApplication()");
     setProgress(true);
 
     // HANDLESHAKE WITH SHOPPING BACKEND
