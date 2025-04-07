@@ -3,6 +3,8 @@ import type { ILlmSchema } from "@samchon/openapi";
 import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
 
 import { factory, utils } from "@agentica/core";
+import { AgenticaDefaultPrompt } from "@agentica/core/src/constants/AgenticaDefaultPrompt";
+import { AgenticaSystemPrompt } from "@agentica/core/src/constants/AgenticaSystemPrompt";
 import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
 
 import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
@@ -149,7 +151,7 @@ export namespace AgenticaPgVectorSelector {
       const chunks = await utils.StreamUtil.readAll(completionStream);
       const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
 
-      const resultList = await Promise.all(
+      const toolList = await Promise.all(
         completion.choices[0]?.message.tool_calls?.flatMap(async (v) => {
           const arg = JSON.parse(v.function.arguments) as { query?: string };
           const query = arg.query;
@@ -170,19 +172,50 @@ export namespace AgenticaPgVectorSelector {
             name: v.name,
             description: v.description,
           })),
-        ),
+        ).map((v) => {
+          const op = ctx.operations.flat.get(v.name);
+          if (op === undefined || op.protocol !== "http") {
+            return v;
+          }
+
+          return {
+            ...v,
+            method: op.function.method,
+            path: op.function.path,
+            tags: op.function.tags,
+          };
+        }),
       );
+
+      // console.log("Tool List: ", toolList.map(v => v.name), "Total: ", toolList.length);
+      if (toolList.length === 0) {
+        return [];
+      }
 
       const selectCompletion = await ctx
         .request("select", {
           messages: [
             {
-              role: "developer",
-              content: [
-                props.experimental?.select_prompt
-                ?? "You are an AI assistant that selects and executes the most appropriate function(s) based on the current context, running the functions required by the context in the correct order. First, analyze the user's input or situation and provide a brief reasoning for why you chose the function(s) (one or more). Then, execute the selected function(s). If multiple functions are chosen, the order of execution follows the function call sequence, and the result may vary depending on this order. Return the results directly after execution. If clarification is needed, ask the user a concise question.",
-                `<FUNCTION_LIST>${JSON.stringify(resultList)}</FUNCTION_LIST>`,
-              ].join("\n"),
+              role: "system",
+              content: AgenticaDefaultPrompt.write(ctx.config),
+            },
+            {
+              role: "assistant",
+              tool_calls: [
+                {
+                  type: "function",
+                  id: "getApiFunctions",
+                  function: {
+                    name: "getApiFunctions",
+                    arguments: JSON.stringify({}),
+                  },
+                },
+              ],
+            },
+            {
+              role: "tool",
+              tool_call_id: "getApiFunctions",
+              content: JSON.stringify(toolList),
             },
             ...ctx.histories
               .map(factory.decodeHistory<SchemaModel>)
@@ -191,13 +224,19 @@ export namespace AgenticaPgVectorSelector {
               role: "user",
               content: ctx.prompt.text,
             },
+
+            {
+              role: "system",
+              content: ctx.config?.systemPrompt?.select?.(ctx.histories)
+                ?? AgenticaSystemPrompt.SELECT,
+            },
           ],
           tool_choice: "required",
-          tools: [Tools.execute_function],
+          tools: [Tools.select_function],
         })
         .then(async v => utils.StreamUtil.readAll(v))
         .then(utils.ChatGptCompletionMessageUtil.merge);
-
+      console.log(selectCompletion.choices);
       selectCompletion.choices
         .filter(v => v.message.tool_calls != null)
         .forEach((v) => {
@@ -241,6 +280,14 @@ export namespace AgenticaPgVectorSelector {
             }
           });
         });
+
+      if (prompts.length === 0) {
+        selectCompletion.choices.forEach((v) => {
+          prompts.push(factory.createTextHistory({ role: "assistant", text: v.message.content ?? "" }));
+        });
+      }
+
+      console.log("Prompts: ", prompts);
 
       return prompts;
     };
