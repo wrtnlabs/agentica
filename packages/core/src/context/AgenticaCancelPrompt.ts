@@ -1,7 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 import type { AgenticaHistoryBase } from "../histories/AgenticaHistoryBase";
+import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
 import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
 
