@@ -39,7 +39,8 @@
     "dev": "rimraf lib && tsc --watch",
     "prepack": "pnpm run build",
     "lint": "eslint .",
-    "format": "eslint --fix ."
+    "format": "eslint --fix .",
+    "test": "vitest"
   },
   "publishConfig": {
     "main": "lib/index.js",
@@ -48,9 +49,15 @@
     "access": "public"
   },
   "peerDependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
     "@samchon/openapi": ">=4.0.0 <5.0.0",
     "openai": ">=4.80.0",
     "typia": ">=9.0.1 <10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@modelcontextprotocol/sdk": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@samchon/openapi": "catalog:typia",
@@ -58,17 +65,21 @@
     "uuid": "^11.0.4"
   },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.8.0",
     "@nestia/e2e": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^22.13.4",
     "@types/uuid": "^10.0.0",
+    "import2": "^1.0.3",
     "openai": "catalog:libs",
     "rimraf": "^6.0.1",
     "rollup": "^4.34.8",
     "ts-node": "^10.9.2",
     "ts-patch": "catalog:typescript",
     "typedoc": "^0.27.7",
-    "typescript": "catalog:typescript"
+    "typescript": "catalog:typescript",
+    "vitest": "catalog:vite"
   }
 }
