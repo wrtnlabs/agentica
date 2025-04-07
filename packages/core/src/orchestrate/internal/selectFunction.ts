@@ -24,10 +24,10 @@ export async function selectFunction<Model extends ILlmSchema.Model>(ctx: Agenti
         reason: reference.reason,
       });
   ctx.stack.push(selection);
-  void ctx.dispatch(
+  ctx.dispatch(
     createSelectEvent({
       selection,
     }),
-  );
+  ).catch(() => {});
   return operation;
 }
