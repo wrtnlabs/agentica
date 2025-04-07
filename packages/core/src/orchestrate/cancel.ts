@@ -5,13 +5,13 @@ import type { IValidation } from "typia";
 import typia from "typia";
 import { v4 } from "uuid";
 
-import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { __IChatCancelFunctionsApplication } from "../context/internal/__IChatCancelFunctionsApplication";
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
+import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
