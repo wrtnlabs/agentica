@@ -232,7 +232,7 @@ export namespace AgenticaPgVectorSelector {
                     operation,
                   });
               ctx.stack.push(selection);
-              void ctx.dispatch(factory.createSelectEvent({ selection }));
+              ctx.dispatch(factory.createSelectEvent({ selection })).catch(() => {});
               collection.selections.push(selection);
             });
 
