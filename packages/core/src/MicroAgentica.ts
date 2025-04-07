@@ -4,9 +4,9 @@ import type { AgenticaOperationCollection } from "./context/AgenticaOperationCol
 import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { MicroAgenticaEvent } from "./events/MicroAgenticaEvent";
-import type { AgenticaExecutePrompt } from "./prompts/AgenticaExecutePrompt";
-import type { AgenticaTextPrompt } from "./prompts/AgenticaTextPrompt";
-import type { MicroAgenticaPrompt } from "./prompts/MicroAgenticaPrompt";
+import type { AgenticaExecuteHistory } from "./histories/AgenticaExecuteHistory";
+import type { AgenticaTextHistory } from "./histories/AgenticaTextHistory";
+import type { MicroAgenticaHistory } from "./histories/MicroAgenticaHistory";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import type { IMicroAgenticaConfig } from "./structures/IMicroAgenticaConfig";
@@ -16,7 +16,7 @@ import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
 import { createRequestEvent, createTextEvent } from "./factory/events";
-import { createTextPrompt } from "./factory/prompts";
+import { createTextHistory } from "./factory/histories";
 import { call, describe } from "./orchestrate";
 import { AgenticaPromptTransformer } from "./transformers/AgenticaPromptTransformer";
 import { __map_take } from "./utils/__map_take";
@@ -29,7 +29,7 @@ import { StreamUtil } from "./utils/StreamUtil";
  * `MicroAgentica` is a facade class for the micro AI chatbot agent
  * which performs LLM (Large Language Model) function calling from the
  * {@link conversate user's conversation} and manages the
- * {@link getPromptHitorie prompt histories}.
+ * {@link getHistories prompt histories}.
  *
  * Different between `MicroAgentica` and {@link Agentica} is that
  * `MicroAgentica` does not have function selecting filter. It directly
@@ -55,7 +55,7 @@ import { StreamUtil } from "./utils/StreamUtil";
  */
 export class MicroAgentica<Model extends ILlmSchema.Model> {
   private readonly operations_: AgenticaOperationCollection<Model>;
-  private readonly histories_: MicroAgenticaPrompt<Model>[];
+  private readonly histories_: MicroAgenticaHistory<Model>[];
   private readonly listeners_: Map<string, Set<(event: MicroAgenticaEvent<Model>) => Promise<void>>>;
   private readonly token_usage_: AgenticaTokenUsage;
 
@@ -75,9 +75,9 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     this.histories_ = (props.histories ?? []).map(input =>
       AgenticaPromptTransformer.transform({
         operations: this.operations_.group,
-        prompt: input,
+        history: input,
       }),
-    ) as MicroAgenticaPrompt<Model>[];
+    ) as MicroAgenticaHistory<Model>[];
     this.listeners_ = new Map();
     this.token_usage_ = AgenticaTokenUsage.zero();
   }
@@ -102,13 +102,13 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    *
    * When the user's conversation implies the AI chatbot to execute a
    * function calling, the returned chat prompts will contain the
-   * function callinng information like {@link AgenticaExecutePrompt}
+   * function callinng information like {@link AgenticaExecuteHistory}
    *
    * @param content The content to talk
    * @returns List of newly created histories
    */
-  public async conversate(content: string): Promise<MicroAgenticaPrompt<Model>[]> {
-    const prompt: AgenticaTextPrompt<"user"> = createTextPrompt<"user">({
+  public async conversate(content: string): Promise<MicroAgenticaHistory<Model>[]> {
+    const talk: AgenticaTextHistory<"user"> = createTextHistory<"user">({
       role: "user",
       text: content,
     });
@@ -123,19 +123,19 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     );
 
     const ctx: MicroAgenticaContext<Model> = this.getContext({
-      prompt,
+      prompt: talk,
       usage: this.token_usage_,
     });
-    const histories: MicroAgenticaPrompt<Model>[] = await call(
+    const histories: MicroAgenticaHistory<Model>[] = await call(
       ctx,
       this.operations_.array,
-    ) as MicroAgenticaPrompt<Model>[];
-    const executes: AgenticaExecutePrompt<Model>[] = histories.filter(p => p.type === "execute");
+    ) as MicroAgenticaHistory<Model>[];
+    const executes: AgenticaExecuteHistory<Model>[] = histories.filter(p => p.type === "execute");
     if (executes.length) {
       histories.push(...await describe(ctx, executes));
     }
 
-    this.histories_.push(prompt, ...histories);
+    this.histories_.push(talk, ...histories);
     return histories;
   }
 
@@ -164,13 +164,13 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   }
 
   /**
-   * Get the chatbot's prompt histories.
+   * Get the chatbot's histories.
    *
-   * Get list of chat prompts that the chatbot has been conversated.
+   * Get list of chat histories that the chatbot has been conversated.
    *
-   * @returns List of chat prompts
+   * @returns List of chat histories
    */
-  public getPromptHitorie(): MicroAgenticaPrompt<Model>[] {
+  public getHistories(): MicroAgenticaHistory<Model>[] {
     return this.histories_;
   }
 
@@ -190,7 +190,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * @internal
    */
   public getContext(props: {
-    prompt: AgenticaTextPrompt<"user">;
+    prompt: AgenticaTextHistory<"user">;
     usage: AgenticaTokenUsage;
   }): MicroAgenticaContext<Model> {
     const dispatch = this.dispatch.bind(this);

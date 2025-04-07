@@ -379,7 +379,7 @@ Even though the event listening is not essential, I recommend you to at least li
 
 ## Prompt Histories
 <Tabs items={[
-  <code>AgenticaPrompt</code>,
+  <code>AgenticaHistory</code>,
   <code>IAgenticaExecutePrompt</code>,
 ]}>
   <Tabs.Tab>
@@ -387,8 +387,8 @@ Even though the event listening is not essential, I recommend you to at least li
   </Tabs.Tab>
   <Tabs.Tab>
     <RemoteSource 
-      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/json/IAgenticaPromptJson.ts"
-      filename="@agentica/core/IAgenticaPromptJson"
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/json/IAgenticaHistoryJson.ts"
+      filename="@agentica/core/IAgenticaHistoryJson"
       showLineNumbers />
   </Tabs.Tab>
 </Tabs>
@@ -397,14 +397,14 @@ Here is the list of prompt types returned by the `Agentica.conversate()` functio
 
 When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions, and returns the list of newly created prompts in the orchestration process.
 
-If you want to archive the conversation state of current agent, store the returned prompts to your database. The prompt histories would be serialized from `AgenticaPrompt` to `IAgenticaPromptJson` type. 
+If you want to archive the conversation state of current agent, store the returned prompts to your database. The prompt histories would be serialized from `AgenticaHistory` to `IAgenticaHistoryJson` type. 
 
-When you want to restore the agent, you can do it by creating a new `Agentica` instance with `IAgenticaProps.histories` property assignment. The `Agentica` will deserialize the prompt histories from `IAgenticaPromptJson` to `AgenticaPrompt` type, so that the agent can restore the conversation state.
+When you want to restore the agent, you can do it by creating a new `Agentica` instance with `IAgenticaProps.histories` property assignment. The `Agentica` will deserialize the prompt histories from `IAgenticaHistoryJson` to `AgenticaHistory` type, so that the agent can restore the conversation state.
 
 ```typescript filename="src/main.ts" showLineNumbers
-import { Agentica, IAgenticaPromptJson } from "@agentica/core";
+import { Agentica, IAgenticaHistoryJson } from "@agentica/core";
 
-const histories: IAgenticaPromptJson[] = await getHistories();
+const histories: IAgenticaHistoryJson[] = await getHistories();
 const agent: Agentica<"chatgpt"> = new Agentica({
   ...,
   histories,

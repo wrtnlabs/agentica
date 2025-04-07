@@ -1,4 +1,4 @@
-import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";
+import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 
 /**
  * Micro Agentic AI agent prompt.
@@ -17,7 +17,7 @@ import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";
  *
  * @author Samchon
  */
-export type IMicroAgenticaPromptJson =
-  | IAgenticaPromptJson.IText
-  | IAgenticaPromptJson.IExecute
-  | IAgenticaPromptJson.IDescribe;
+export type IMicroAgenticaHistoryJson =
+  | IAgenticaHistoryJson.IText
+  | IAgenticaHistoryJson.IExecute
+  | IAgenticaHistoryJson.IDescribe;

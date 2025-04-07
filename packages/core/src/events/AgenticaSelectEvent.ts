@@ -2,7 +2,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
-import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
+import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 
@@ -11,5 +11,5 @@ export interface AgenticaSelectEvent<
 > extends AgenticaEventBase<"select"> {
   selection: AgenticaOperationSelection<Model>;
   toJSON: () => IAgenticaEventJson.ISelect;
-  toPrompt: () => AgenticaSelectPrompt<Model>;
+  toPrompt: () => AgenticaSelectHistory<Model>;
 }

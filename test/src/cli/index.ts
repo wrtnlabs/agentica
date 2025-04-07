@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import process from "node:process";
 
-import type { AgenticaPrompt } from "@agentica/core";
+import type { AgenticaHistory } from "@agentica/core";
 import type {
   IHttpConnection,
   IHttpLlmApplication,
@@ -155,7 +155,7 @@ async function main(): Promise<void> {
       );
     }
     else {
-      const histories: AgenticaPrompt<"chatgpt">[]
+      const histories: AgenticaHistory<"chatgpt">[]
         = await agent.conversate(content);
       for (const h of histories.slice(1)) {
         if (h.type === "text") {

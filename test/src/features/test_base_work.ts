@@ -1,4 +1,4 @@
-import type { AgenticaPrompt } from "@agentica/core";
+import type { AgenticaHistory } from "@agentica/core";
 
 import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
@@ -20,7 +20,7 @@ export async function test_base_work(): Promise<void | false> {
     },
     controllers: [],
   });
-  const result: AgenticaPrompt<"chatgpt">[]
+  const result: AgenticaHistory<"chatgpt">[]
     = await agent.conversate("What your role?");
   if (result[0]?.type !== "text" || result[0]?.text !== "What your role?") {
     throw new Error("Result is not equal to prompt histories");

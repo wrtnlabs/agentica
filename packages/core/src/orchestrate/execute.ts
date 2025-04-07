@@ -1,8 +1,8 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { IAgenticaExecutor } from "../structures/IAgenticaExecutor";
 
 import { call } from "./call";
@@ -13,8 +13,8 @@ import { cancelFunction } from "./internal/cancelFunction";
 import { select } from "./select";
 
 export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgenticaExecutor<Model>> | null) {
-  return async (ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> => {
-    const histories: AgenticaPrompt<Model>[] = [];
+  return async (ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> => {
+    const histories: AgenticaHistory<Model>[] = [];
 
     // FUNCTIONS ARE NOT LISTED YET
     if (ctx.ready() === false) {
@@ -55,13 +55,13 @@ export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgent
     // FUNCTION CALLING LOOP
     while (true) {
       // EXECUTE FUNCTIONS
-      const prompts: AgenticaPrompt<Model>[] = await (
+      const prompts: AgenticaHistory<Model>[] = await (
         executor?.call ?? call
       )(ctx, ctx.stack.map(s => s.operation));
       histories.push(...prompts);
 
       // EXPLAIN RETURN VALUES
-      const executes: AgenticaExecutePrompt<Model>[] = prompts.filter(
+      const executes: AgenticaExecuteHistory<Model>[] = prompts.filter(
         prompt => prompt.type === "execute",
       );
       for (const e of executes) {

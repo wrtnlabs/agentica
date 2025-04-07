@@ -1,7 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import type { IMicroAgenticaConfig } from "./IMicroAgenticaConfig";
 
@@ -44,13 +44,13 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `execute` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link AgenticaPrompt histories} parameter.
+   * {@link AgenticaHistory histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns execute system prompt
    * https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/execute.md
    */
-  execute?: null | ((histories: MicroAgenticaPrompt<Model>[]) => string);
+  execute?: null | ((histories: MicroAgenticaHistory<Model>[]) => string);
 
   /**
    * Describe system prompt.
@@ -61,11 +61,11 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `describe` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link AgenticaPrompt histories} parameter.
+   * {@link AgenticaHistory histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns describe system prompt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/describe.md
    */
-  describe?: (histories: AgenticaExecutePrompt<Model>[]) => string;
+  describe?: (histories: AgenticaExecuteHistory<Model>[]) => string;
 }

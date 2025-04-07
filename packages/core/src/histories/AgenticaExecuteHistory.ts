@@ -1,19 +1,19 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
-import type { AgenticaPromptBase } from "./AgenticaPromptBase";
+import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
 
 /**
  * Execute prompt.
  *
  * @author Samchon
  */
-export type AgenticaExecutePrompt<Model extends ILlmSchema.Model> =
-  | AgenticaExecutePrompt.Class<Model>
-  | AgenticaExecutePrompt.Http<Model>;
-export namespace AgenticaExecutePrompt {
+export type AgenticaExecuteHistory<Model extends ILlmSchema.Model> =
+  | AgenticaExecuteHistory.Class<Model>
+  | AgenticaExecuteHistory.Http<Model>;
+export namespace AgenticaExecuteHistory {
   /**
    * Class protocol case.
    */
@@ -30,7 +30,7 @@ export namespace AgenticaExecutePrompt {
     Protocol extends "http" | "class",
     Operation extends AgenticaOperation<any>,
     Value,
-  > extends AgenticaPromptBase<"execute", IAgenticaPromptJson.IExecute> {
+  > extends AgenticaHistoryBase<"execute", IAgenticaHistoryJson.IExecute> {
     /**
      * ID of the LLM tool call result.
      */

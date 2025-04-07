@@ -1,4 +1,4 @@
-import type { AgenticaTextPrompt } from "@agentica/core";
+import type { AgenticaTextHistory } from "@agentica/core";
 
 import FaceIcon from "@mui/icons-material/Face";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
@@ -42,6 +42,6 @@ export function AgenticaChatTextMessageMovie({
 }
 export namespace AgenticaChatTextMessageMovie {
   export interface IProps {
-    prompt: AgenticaTextPrompt;
+    prompt: AgenticaTextHistory;
   }
 }

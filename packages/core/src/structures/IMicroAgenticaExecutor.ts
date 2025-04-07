@@ -1,8 +1,8 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 /**
  * Executor of the Micro Agentic AI.
@@ -44,7 +44,7 @@ export interface IMicroAgenticaExecutor<Model extends ILlmSchema.Model> {
    *          agent is the most general topic which can be universally
    *          applied to all domain fields.
    */
-  call: (ctx: MicroAgenticaContext<Model>) => Promise<MicroAgenticaPrompt<Model>[]>;
+  call: (ctx: MicroAgenticaContext<Model>) => Promise<MicroAgenticaHistory<Model>[]>;
 
   /**
    * Describer agent of the function calling result.
@@ -58,6 +58,6 @@ export interface IMicroAgenticaExecutor<Model extends ILlmSchema.Model> {
    */
   describe: (
     ctx: MicroAgenticaContext<Model>,
-    executes: AgenticaExecutePrompt<Model>[],
-  ) => Promise<MicroAgenticaPrompt<Model>[]>;
+    executes: AgenticaExecuteHistory<Model>[],
+  ) => Promise<MicroAgenticaHistory<Model>[]>;
 }

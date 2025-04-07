@@ -1,4 +1,4 @@
-import type { Agentica, AgenticaDescribeEvent, AgenticaOperationSelection, AgenticaPrompt, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
+import type { Agentica, AgenticaDescribeEvent, AgenticaOperationSelection, AgenticaHistory, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
 import type {
   Theme,
 } from "@mui/material";
@@ -45,8 +45,8 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // STATES
   const [error, setError] = useState<Error | null>(null);
   const [text, setText] = useState("");
-  const [histories, setHistories] = useState<AgenticaPrompt<Model>[]>(
-    agent.getPromptHistories().slice(),
+  const [histories, setHistories] = useState<AgenticaHistory<Model>[]>(
+    agent.getHistories().slice(),
   );
   const [tokenUsage, setTokenUsage] = useState<AgenticaTokenUsage>(
     JSON.parse(JSON.stringify(agent.getTokenUsage())) as AgenticaTokenUsage,
@@ -134,18 +134,18 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     }
 
     histories.splice(0, histories.length);
-    histories.push(...agent.getPromptHistories());
+    histories.push(...agent.getHistories());
     setHistories(histories);
     setTokenUsage(agent.getTokenUsage());
     setEnabled(true);
 
     const selections: AgenticaOperationSelection<Model>[] = agent
-      .getPromptHistories()
+      .getHistories()
       .filter(h => h.type === "select")
       .map(h => h.selections)
       .flat();
     for (const cancel of agent
-      .getPromptHistories()
+      .getHistories()
       .filter(h => h.type === "cancel")
       .map(h => h.selections)
       .flat()) {

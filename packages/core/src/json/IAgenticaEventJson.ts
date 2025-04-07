@@ -2,9 +2,9 @@ import type OpenAI from "openai";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 
+import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
-import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";
 
 /**
  * Agentic AI agent event.
@@ -120,7 +120,7 @@ export namespace IAgenticaEventJson {
      *
      * This prompt describes the return value of them.
      */
-    executes: IAgenticaPromptJson.IExecute[];
+    executes: IAgenticaHistoryJson.IExecute[];
 
     /**
      * Description text.

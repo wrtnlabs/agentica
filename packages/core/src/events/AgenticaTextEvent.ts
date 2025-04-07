@@ -1,5 +1,5 @@
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 
@@ -10,5 +10,5 @@ export interface AgenticaTextEvent<
   stream: ReadableStream<string>;
   join: () => Promise<string>;
   toJSON: () => IAgenticaEventJson.IText;
-  toPrompt: () => AgenticaTextPrompt;
+  toPrompt: () => AgenticaTextHistory;
 }
