@@ -251,7 +251,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
           {isMobile
             ? (
                 <>
-                  <IconButton onClick={void capture().catch(() => {})}>
+                  <IconButton onClick={() => void capture().catch(() => {})}>
                     <AddAPhotoIcon />
                   </IconButton>
                   <IconButton onClick={() => setOpenSide(true)}>
@@ -263,7 +263,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
                 <Button
                   color="inherit"
                   startIcon={<AddAPhotoIcon />}
-                  onClick={void capture().catch(() => {})}
+                  onClick={() => void capture().catch(() => {})}
                 >
                   Screenshot Capture
                 </Button>
