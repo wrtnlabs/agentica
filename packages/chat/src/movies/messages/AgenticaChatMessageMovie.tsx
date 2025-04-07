@@ -17,7 +17,7 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
     ));
   }
   else if (prompt.type === "describe") {
-    return <AgenticaChatDescribeMessageMovie prompt={prompt} />;
+    return <AgenticaChatDescribeMessageMovie history={prompt} />;
   }
   return null;
 }

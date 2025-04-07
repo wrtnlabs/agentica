@@ -1,4 +1,4 @@
-import type { Agentica, AgenticaDescribeEvent, AgenticaOperationSelection, AgenticaHistory, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
+import type { Agentica, AgenticaDescribeEvent, AgenticaHistory, AgenticaOperationSelection, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
 import type {
   Theme,
 } from "@mui/material";
@@ -64,16 +64,16 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // EVENT LISTENERS
   const handleText = async (event: AgenticaTextEvent) => {
     await event.join(); // @todo Jaxtyn: streaming
-    histories.push(event.toPrompt());
+    histories.push(event.toHistory());
     setHistories(histories);
   };
   const handleDescribe = async (event: AgenticaDescribeEvent<Model>) => {
     await event.join(); // @todo Jaxtyn: streaming
-    histories.push(event.toPrompt());
+    histories.push(event.toHistory());
     setHistories(histories);
   };
   const handleSelect = (evevnt: AgenticaSelectEvent<Model>) => {
-    histories.push(evevnt.toPrompt());
+    histories.push(evevnt.toHistory());
     setHistories(histories);
 
     selections.push(evevnt.selection);

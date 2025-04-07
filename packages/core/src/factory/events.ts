@@ -44,7 +44,7 @@ export function createSelectEvent<Model extends ILlmSchema.Model>(props: {
       type: "select",
       selection: props.selection.toJSON(),
     }),
-    toPrompt: () => createSelectHistory({
+    toHistory: () => createSelectHistory({
       id: v4(),
       selections: [props.selection],
     }),
@@ -152,7 +152,7 @@ export function createTextEvent<Role extends "user" | "assistant">(props: {
       done: props.done(),
       text: props.get(),
     }),
-    toPrompt: () => ({
+    toHistory: () => ({
       type: "text",
       role: props.role,
       text: props.get(),

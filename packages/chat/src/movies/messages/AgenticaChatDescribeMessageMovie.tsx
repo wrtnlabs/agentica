@@ -1,4 +1,4 @@
-import type { AgenticaDescribePrompt } from "@agentica/core";
+import type { AgenticaDescribeHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -19,7 +19,7 @@ import { AgenticaChatExecuteMessageMovie } from "./AgenticaChatExecuteMessageMov
 export function AgenticaChatDescribeMessageMovie<
   Model extends ILlmSchema.Model,
 >({
-  prompt,
+  history,
 }: AgenticaChatDescribeMessageMovie.IProps<Model>) {
   const [expanded, setExpanded] = useState(false);
   return (
@@ -33,7 +33,7 @@ export function AgenticaChatDescribeMessageMovie<
     >
       <CardContent>
         <Chip label="Function Describer" variant="outlined" color="secondary" />
-        <MarkdownViewer>{prompt.text}</MarkdownViewer>
+        <MarkdownViewer>{history.text}</MarkdownViewer>
       </CardContent>
       <CardActions style={{ textAlign: "right" }}>
         <Button
@@ -51,7 +51,7 @@ export function AgenticaChatDescribeMessageMovie<
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {prompt.executes.map(execute => (
+          {history.executes.map(execute => (
             <AgenticaChatExecuteMessageMovie execute={execute} />
           ))}
         </CardContent>
@@ -61,6 +61,6 @@ export function AgenticaChatDescribeMessageMovie<
 }
 export namespace AgenticaChatDescribeMessageMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    prompt: AgenticaDescribePrompt<Model>;
+    history: AgenticaDescribeHistory<Model>;
   }
 }
