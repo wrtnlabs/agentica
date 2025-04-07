@@ -14,6 +14,13 @@ import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
  * @author Samchon
  */
 export interface IAgenticaOperationSelectionJson {
+  /**
+   * The reason of the selection.
+   */
   reason: string;
+
+  /**
+   * Selected operation.
+   */
   operation: IAgenticaOperationJson;
 }

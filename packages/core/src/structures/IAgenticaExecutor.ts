@@ -24,8 +24,8 @@ import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
  * the executor logic, it can entirely break the {@link Agentica}'s
  * operation.
  *
- * @reference https://github.com/wrtnlabs/agentica?tab=readme-ov-file#principles
- * @reference https://github.com/wrtnlabs/agentica/blob/main/packages/agent/src/chatgpt/ChatGptAgent.ts
+ * @reference https://wrtnlabs.io/agentica/docs/concepts/function-calling/#orchestration-strategy
+ * @reference https://github.com/wrtnlabs/agentica/blob/main/packages/core/src/orchestrate/execute.ts
  * @author Samchon
  */
 export interface IAgenticaExecutor<Model extends ILlmSchema.Model> {

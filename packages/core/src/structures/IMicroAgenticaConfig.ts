@@ -3,6 +3,16 @@ import type { ILlmSchema } from "@samchon/openapi";
 import type { IMicroAgenticaExecutor } from "./IMicroAgenticaExecutor";
 import type { IMicroAgenticaSystemPrompt } from "./IMicroAgenticaSystemPrompt";
 
+/**
+ * Configuration for Micro Agentic Agent.
+ *
+ * `INicroAgenticaConfig` is an interface that defines the configuration
+ * properties of the {@link MicroAgentica}. With this configuration, you
+ * can set the user's {@link locale}, {@link timezone}, and some of
+ * {@link systemPrompt system prompts}.
+ *
+ * @author Samchon
+ */
 export interface IMicroAgenticaConfig<Model extends ILlmSchema.Model> {
   /**
    * Agent executor.

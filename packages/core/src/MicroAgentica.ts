@@ -23,6 +23,36 @@ import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "./utils/StreamUtil";
 
+/**
+ * Micro AI chatbot.
+ *
+ * `MicroAgentica` is a facade class for the micro AI chatbot agent
+ * which performs LLM (Large Language Model) function calling from the
+ * {@link conversate user's conversation} and manages the
+ * {@link getPromptHitorie prompt histories}.
+ *
+ * Different between `MicroAgentica` and {@link Agentica} is that
+ * `MicroAgentica` does not have function selecting filter. It directly
+ * list up every functions to the agent. Besides, {@link Agentica} has
+ * a function selecting mechanism to reduce the number of functions to
+ * be listed up to the agent.
+ *
+ * Therefore, if you have a lot of functions to call, you must not
+ * use this `MicroAgentica` class. Use this `MicroAgentica` class only
+ * when you have a few functions to call.
+ *
+ * - [Multi-agent orchestration of `@agentica`](https://wrtnlabs.io/agentica/docs/concepts/function-calling/#orchestration-strategy)
+ * - Internal agents of `MicroAgentica`
+ *   - executor
+ *   - describier
+ * - Internal agents of {@link Agentica}
+ *   - initializer
+ *   - **selector**
+ *   - executor
+ *   - describer
+ *
+ * @author Samchon
+ */
 export class MicroAgentica<Model extends ILlmSchema.Model> {
   private readonly operations_: AgenticaOperationCollection<Model>;
   private readonly histories_: MicroAgenticaPrompt<Model>[];
@@ -32,6 +62,11 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   /* -----------------------------------------------------------
     CONSTRUCTOR
   ----------------------------------------------------------- */
+  /**
+   * Initializer Constructor.
+   *
+   * @param props Properties to construct the micro agent
+   */
   public constructor(private readonly props: IMicroAgenticaProps<Model>) {
     this.operations_ = AgenticaOperationComposer.compose({
       controllers: props.controllers,
@@ -60,6 +95,18 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   /* -----------------------------------------------------------
     ACCESSORS
   ----------------------------------------------------------- */
+  /**
+   * Conversate with the micro agent.
+   *
+   * User talks to the AI chatbot with the given content.
+   *
+   * When the user's conversation implies the AI chatbot to execute a
+   * function calling, the returned chat prompts will contain the
+   * function callinng information like {@link AgenticaExecutePrompt}
+   *
+   * @param content The content to talk
+   * @returns List of newly created histories
+   */
   public async conversate(content: string): Promise<MicroAgenticaPrompt<Model>[]> {
     const prompt: AgenticaTextPrompt<"user"> = createTextPrompt<"user">({
       role: "user",
@@ -92,26 +139,56 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     return histories;
   }
 
+  /**
+   * Get configuration.
+   */
   public getConfig(): IMicroAgenticaConfig<Model> | undefined {
     return this.props.config;
   }
 
+  /**
+   * Get LLM vendor.
+   */
   public getVendor(): IAgenticaVendor {
     return this.props.vendor;
   }
 
+  /**
+   * Get controllers.
+   *
+   * Get list of controllers, which are the collection of functions that
+   * the agent can execute.
+   */
   public getControllers(): ReadonlyArray<IAgenticaController<Model>> {
     return this.props.controllers;
   }
 
+  /**
+   * Get the chatbot's prompt histories.
+   *
+   * Get list of chat prompts that the chatbot has been conversated.
+   *
+   * @returns List of chat prompts
+   */
   public getPromptHitorie(): MicroAgenticaPrompt<Model>[] {
     return this.histories_;
   }
 
+  /**
+   * Get token usage of the AI chatbot.
+   *
+   * Entire token usage of the AI chatbot during the conversating
+   * with the user by {@link conversate} method callings.
+   *
+   * @returns Cost of the AI chatbot
+   */
   public getTokenUsage(): AgenticaTokenUsage {
     return this.token_usage_;
   }
 
+  /**
+   * @internal
+   */
   public getContext(props: {
     prompt: AgenticaTextPrompt<"user">;
     usage: AgenticaTokenUsage;

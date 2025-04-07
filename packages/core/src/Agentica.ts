@@ -25,11 +25,11 @@ import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUt
 import { StreamUtil } from "./utils/StreamUtil";
 
 /**
- * Agentica A.I. chatbot agent.
+ * Agentica AI chatbot agent.
  *
- * `Agentica` is a facade class for the super A.I. chatbot agent
- * which performs the {@link conversate user's conversation function}
- * with LLM (Large Language Model) function calling and manages the
+ * `Agentica` is a facade class for the super AI chatbot agent
+ * which performs LLM (Large Language Model) function calling from the
+ * {@link conversate user's conversation}, and manages the
  * {@link getPromptHistories prompt histories}.
  *
  * To understand and compose the `Agentica` class exactly, reference
@@ -115,13 +115,13 @@ export class Agentica<Model extends ILlmSchema.Model> {
     ACCESSORS
   ----------------------------------------------------------- */
   /**
-   * Conversate with the A.I. chatbot.
+   * Conversate with the AI chatbot.
    *
-   * User talks to the A.I. chatbot with the content.
+   * User talks to the AI chatbot with the given content.
    *
-   * When the user's conversation implies the A.I. chatbot to execute a
+   * When the user's conversation implies the AI chatbot to execute a
    * function calling, the returned chat prompts will contain the
-   * function calling information like {@link IAgenticaPromptJson.IExecute}.
+   * function calling information like {@link AgenticaExecutePrompt}.
    *
    * @param content The content to talk
    * @returns List of newly created chat prompts
@@ -169,7 +169,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * Get controllers.
    *
    * Get list of controllers, which are the collection of functions that
-   * the "Super A.I. Chatbot" can execute.
+   * the "Super AI Chatbot" can execute.
    */
   public getControllers(): ReadonlyArray<IAgenticaController<Model>> {
     return this.props.controllers;
@@ -199,12 +199,12 @@ export class Agentica<Model extends ILlmSchema.Model> {
   }
 
   /**
-   * Get token usage of the A.I. chatbot.
+   * Get token usage of the AI chatbot.
    *
-   * Entire token usage of the A.I. chatbot during the conversating
+   * Entire token usage of the AI chatbot during the conversating
    * with the user by {@link conversate} method callings.
    *
-   * @returns Cost of the A.I. chatbot
+   * @returns Cost of the AI chatbot
    */
   public getTokenUsage(): AgenticaTokenUsage {
     return this.token_usage_;

@@ -7,11 +7,12 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
 import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";
 
 /**
- * Agentica A.I. chatbot event.
+ * Agentic AI agent event.
  *
  * `IAgenticaEventJson` is an union type of all possible events that can
- * be emitted by the A.I. chatbot of the {@link Agentica} class. You
- * can discriminate the subtype by checking the {@link type} property.
+ * be emitted by the A.I. chatbot of the {@link Agentica} class.
+ *
+ * You can discriminate the subtype by checking the {@link type} property.
  *
  * @author Samchon
  */

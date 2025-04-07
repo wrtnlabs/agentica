@@ -11,20 +11,20 @@ import type { AgenticaOperationCollection } from "./AgenticaOperationCollection"
 import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
 
 /**
- * Context of the Agentica A.I. agent.
+ * Context of the Agentic AI agent.
  *
- * `IAgenticaContext` is a structure defining the context of the
+ * `AgenticaContext` is a structure defining the context of the
  * internal agents composing the {@link Agentica}, like function
  * selector, executor, and describer, and so on. For example, if an
  * agent has been configured to utilize the OpenAI, the context will
  * be delivered to the below components.
  *
- * - {@link ChatGptAgent}
- *   - {@link ChatGptInitializeFunctionAgent}
- *   - {@link ChatGptSelectFunctionAgent}
- *   - {@link ChatGptExecuteFunctionAgent}
- *   - {@link ChatGptDescribeFunctionAgent}
- *   - {@link ChatGptCancelFunctionAgent}
+ * - {@link orchestrate.execute}
+ *   - {@link orchestrate.initialize}
+ *   - {@link orchestrate.select}
+ *   - {@link orchestrate.call}
+ *   - {@link orchestrate.describe}
+ *   - {@link orchestrate.cancel}
  *
  * Also, as its name is context, it contains every information that
  * is required to interact with the AI vendor like OpenAI. It

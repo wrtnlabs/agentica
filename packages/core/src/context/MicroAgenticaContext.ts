@@ -8,6 +8,27 @@ import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
 
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
 
+/**
+ * Context of the Micro Agentic AI agent.
+ *
+ * `MicroAgenticaContext` is a structure defining the context of the
+ * internal agents composing the {@link MicroAgentica}.
+ *
+ * It contains every information that is required to interact with
+ * the AI vendor like OpenAI. It contains every operations for LLM
+ * function calling, and configuration used for the agent construction.
+ * And it contains the prompt histories, and facade controller
+ * functions for interacting with the {@link MicroAgentica} like
+ * {@link dispatch}.
+ *
+ * In such reasons, if you're planning to customize some internal
+ * agents, or add new agents with new process routine, you have to
+ * understand this context structure. Otherwise you don't have any
+ * plan to customize the internal agents, this context information is
+ * not important for you.
+ *
+ * @author Samchon
+ */
 export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
   // ----
   // APPLICATION

@@ -4,6 +4,20 @@ import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
 import type { MicroAgenticaPrompt } from "../prompts/MicroAgenticaPrompt";
 
+/**
+ * Executor of the Micro Agentic AI.
+ *
+ * `IMicroAgenticaExecutor` represents an executor of the
+ * {@link MicroAgentica}, composing its internal agents to accomplish
+ * the Agentic AI through the LLM (Large Language Model) function
+ * calling.
+ *
+ * You can customize one of these intnernal agents by configuring
+ * properties of the `IMicroAgenticaExecutor` type, and assigning
+ * it to the {@link IMicroAgenticaConfig.executor} property.
+ *
+ * @author Samchon
+ */
 export interface IMicroAgenticaExecutor<Model extends ILlmSchema.Model> {
   /**
    * Function caller agent.
