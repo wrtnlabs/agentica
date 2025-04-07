@@ -5,7 +5,7 @@
  * @author Wrtn Technologies
  */
 
-import type { Agentica, AgenticaOperation, AgenticaHistory } from "@agentica/core";
+import type { Agentica, AgenticaHistory, AgenticaOperation } from "@agentica/core";
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
