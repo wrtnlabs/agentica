@@ -19,27 +19,43 @@ export const Tools = {
     },
   },
 
-  execute_function: {
+  select_function: {
     type: "function",
     function: {
-      name: "execute_function",
-      description: "execute the function",
+      name: "select_function",
+      description: `Select proper API functions to call.
+
+If you A.I. agent has found some proper API functions to call
+from the conversation with user, please select the API functions
+just by calling this function.
+
+When user wants to call a same function multiply, you A.I. agent must
+list up it multiply in the \`functions\` property. Otherwise the user has
+requested to call many different functions, you A.I. agent have to assign
+them all into the \`functions\` property.
+
+Also, if you A.I. agent can't specify a specific function to call due to lack
+of specificity or homogeneity of candidate functions, just assign all of them
+by in the \`functions\` property too. Instead, when you A.I. agent can specify
+a specific function to call, the others would be eliminated.
+
+@param props Properties of the function`,
       parameters: {
         type: "object",
         properties: {
           function_name_list: {
             type: "array",
-            description: "the function to execute",
+            description: "The list of functions to select.",
             items: {
               type: "object",
               properties: {
                 reason: {
                   type: "string",
-                  description: "the reason for executing the function",
+                  description: "The reason of the function selection.\n\nJust write the reason why you've determined to select this function.",
                 },
                 function_name: {
                   type: "string",
-                  description: "the name of the function to execute",
+                  description: "Name of the target function to call.",
                 },
               },
               required: ["reason", "function_name"],
