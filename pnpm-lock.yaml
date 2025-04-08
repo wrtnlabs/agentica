@@ -223,10 +223,6 @@ importers:
       vite:
         specifier: ^5.4.9
         version: 5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0)
-    optionalDependencies:
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.9.0
-        version: 1.9.0
 
   packages/cli:
     devDependencies:
