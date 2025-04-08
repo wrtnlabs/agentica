@@ -1,5 +1,5 @@
-import type { SSEClientTransportOptions } from "@modelcontextprotocol/sdk/client/sse";
-import type { StdioServerParameters } from "@modelcontextprotocol/sdk/client/stdio";
+import type { SSEClientTransportOptions } from "@modelcontextprotocol/sdk/client/sse.d.ts";
+import type { StdioServerParameters } from "@modelcontextprotocol/sdk/client/stdio.d.ts";
 
 export type IMcpLlmTransportProps = IMcpLlmTransportPropsHttp | IMcpLlmTransportPropsStdio;
 
