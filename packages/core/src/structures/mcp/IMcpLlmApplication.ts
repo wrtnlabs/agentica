@@ -1,13 +1,14 @@
 import type { IMcpLlmFunction } from "./IMcpLlmFunction";
+import type { IMcpLlmTransportProps } from "./IMcpLlmTransportProps";
 
 /**
  * MCP LLM application.
  */
 export interface IMcpLlmApplication {
   /**
-   * URL of the MCP server.
+   * Name of the MCP server.
    */
-  url: URL;
+  name: string;
 
   /**
    * Version of the MCP server.
@@ -18,4 +19,9 @@ export interface IMcpLlmApplication {
    * Functions of the MCP server.
    */
   functions: IMcpLlmFunction[];
+
+  /**
+   * Transport properties of the MCP server.
+   */
+  transport: IMcpLlmTransportProps;
 }

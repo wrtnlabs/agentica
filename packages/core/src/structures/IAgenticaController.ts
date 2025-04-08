@@ -8,7 +8,7 @@ import type {
   ILlmSchema,
 } from "@samchon/openapi";
 
-import type { IMcpLlmApplication } from "./IMcpLlmApplication";
+import type { IMcpLlmApplication } from "./mcp/IMcpLlmApplication";
 
 /**
  * Controller of the Agentica Agent.

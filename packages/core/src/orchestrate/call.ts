@@ -12,7 +12,6 @@ import {
   HttpLlm,
   LlmTypeCheckerV3_1,
 } from "@samchon/openapi";
-import import2 from "import2";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
@@ -444,19 +443,28 @@ async function executeClassOperation<Model extends ILlmSchema.Model>(operation: 
 }
 
 async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationArguments: Record<string, unknown>): Promise<unknown> {
-  const { Client } = await import2<typeof import("@modelcontextprotocol/sdk/client/index")>("@modelcontextprotocol/sdk/client/index");
-  const { SSEClientTransport } = await import2<typeof import("@modelcontextprotocol/sdk/client/sse")>("@modelcontextprotocol/sdk/client/sse");
+  const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+  const { SSEClientTransport } = await import("@modelcontextprotocol/sdk/client/sse.js");
+  const { StdioClientTransport } = await import("@modelcontextprotocol/sdk/client/stdio.js");
 
   const client = new Client({
     name: operation.name,
     version: operation.controller.application.version,
   });
 
-  const transport = new SSEClientTransport(operation.controller.application.url);
+  const transport = (() => {
+    switch (operation.controller.application.transport.type) {
+      case "http":
+        return new SSEClientTransport(operation.controller.application.transport.url);
+      case "stdio":
+        return new StdioClientTransport(operation.controller.application.transport);
+      default:
+        operation.controller.application.transport satisfies never;
+        throw new Error("Unsupported transport type");
+    }
+  })();
   await client.connect(transport);
-
   const result = await client.callTool({ method: operation.function.name, name: operation.function.name, arguments: operationArguments });
-  console.log(result);
   return result.content;
 }
 

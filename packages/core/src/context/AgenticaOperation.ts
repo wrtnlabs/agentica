@@ -2,7 +2,7 @@ import type { IHttpLlmFunction, ILlmFunction, ILlmSchema } from "@samchon/openap
 
 import type { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
 import type { IAgenticaController } from "../structures/IAgenticaController";
-import type { IMcpLlmFunction } from "../structures/IMcpLlmFunction";
+import type { IMcpLlmFunction } from "../structures/mcp/IMcpLlmFunction";
 
 /**
  * Operation information in the Agentica Agent.

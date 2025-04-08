@@ -10,6 +10,7 @@ async function main(): Promise<void> {
   // DO TEST
   const include: string[] = TestGlobal.getArguments("include");
   const exclude: string[] = TestGlobal.getArguments("exclude");
+
   const report: DynamicExecutor.IReport = await DynamicExecutor.validate({
     prefix: "test_",
     location: path.join(__dirname, "features"),

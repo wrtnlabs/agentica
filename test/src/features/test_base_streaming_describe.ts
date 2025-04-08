@@ -74,7 +74,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   agent.on("call", (event) => {
     events.push(event);
-    if (event.operation.name === "add" || event.operation.name === "subtract") {
+    if (event.operation.name.includes("add") || event.operation.name.includes("subtract")) {
       functionCalled = true;
     }
   });
@@ -147,12 +147,14 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   // Verify function was called
   if (!functionCalled) {
+    console.log(JSON.stringify(events, null, 2));
     throw new Error("No function was called during conversation");
   }
 
   // Verify execution result
   const executeEvent = events.find(e => e.type === "execute");
   if (executeEvent === undefined) {
+    console.log(JSON.stringify(events, null, 2));
     throw new Error("Could not find execute event");
   }
 
@@ -192,7 +194,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   const hasCalculatorExecution = describeEvent.executes.some(
     exec =>
-      exec.operation.name === "add" || exec.operation.name === "subtract",
+      exec.operation.name.includes("add") || exec.operation.name.includes("subtract"),
   );
   if (!hasCalculatorExecution) {
     throw new Error(

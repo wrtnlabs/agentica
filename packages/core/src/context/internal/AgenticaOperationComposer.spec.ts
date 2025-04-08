@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
-import type { IMcpLlmFunction } from "../../structures/IMcpLlmFunction";
+import type { IMcpLlmFunction } from "../../structures/mcp/IMcpLlmFunction";
 
 import { compose, divide, getOperations, toClassOperations, toHttpOperations, toMcpOperations } from "./AgenticaOperationComposer";
 
@@ -67,8 +67,14 @@ function createMockMcpController(name: string, functions: IMcpLlmFunction[]): IA
     name,
     protocol: "mcp" as const,
     application: {
-      url: new URL("https://example.com"),
+      name: "mcp",
       version: "1.0.0",
+      transport: {
+        name: "mcp",
+        version: "1.0.0",
+        type: "http",
+        url: new URL("https://example.com"),
+      },
       functions,
     },
   };
