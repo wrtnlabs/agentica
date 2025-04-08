@@ -154,6 +154,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
         { value: "nodejs", label: `NodeJS ${picocolors.blueBright("Agent Server")}` },
         { value: "nestjs", label: `NestJS ${picocolors.blueBright("Agent Server")}` },
         { value: "react", label: `React ${picocolors.blueBright("Application")}` },
+        { value: "react-native", label: `React Native ${picocolors.blueBright("Application")}` },
         { value: "nestjs+react", label: `NestJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
         { value: "nodejs+react", label: `NodeJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
       ] as const satisfies { value: StarterTemplate; label: string }[],
