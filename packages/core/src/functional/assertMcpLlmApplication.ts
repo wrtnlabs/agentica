@@ -1,9 +1,8 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse";
-import { ListToolsResultSchema } from "@modelcontextprotocol/sdk/types";
+import type { Client as McpClient } from "@modelcontextprotocol/sdk/client/index";
+
+import import2 from "import2";
 
 import type { IMcpLlmApplication } from "../structures/IMcpLlmApplication";
-
 /**
  * Create an MCP LLM application instance with type assertion.
  *
@@ -32,6 +31,10 @@ export async function assertMcpLlmApplication(props: {
    */
   version: string;
 }): Promise<IMcpLlmApplication> {
+  const { Client } = await import2<{ Client: typeof McpClient }>("@modelcontextprotocol/sdk/client/index");
+  const { SSEClientTransport } = await import2<typeof import("@modelcontextprotocol/sdk/client/sse")>("@modelcontextprotocol/sdk/client/sse");
+  const { ListToolsResultSchema } = await import2<typeof import("@modelcontextprotocol/sdk/types")>("@modelcontextprotocol/sdk/types");
+
   const client = new Client({
     name: props.name,
     version: props.version,

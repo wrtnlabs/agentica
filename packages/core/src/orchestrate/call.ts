@@ -12,6 +12,7 @@ import {
   HttpLlm,
   LlmTypeCheckerV3_1,
 } from "@samchon/openapi";
+import import2 from "import2";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
@@ -242,22 +243,14 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
     props.call.arguments,
   );
   if (check.success === false) {
-    void props.ctx.dispatch(
+    props.ctx.dispatch(
       createValidateEvent({
         id: props.call.id,
         operation: props.operation,
         result: check,
       }),
-    );
-    if (check.success === false) {
-      props.ctx.dispatch(
-        createValidateEvent({
-          id: props.call.id,
-          operation: props.call.operation,
-          result: check,
-        }),
-      ).catch(() => {});
-     
+    ).catch(() => {});
+
     if (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)) {
       const trial: AgenticaExecuteHistory<Model> | null = await correct(
         props.ctx,
@@ -281,7 +274,7 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
             || response.status === 422)
           && props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)
           && typeof response.body) === false;
-    // DISPATCH EVENT
+      // DISPATCH EVENT
     return (
       (success === false
         ? await correct(props.ctx, props.call, props.retry, response.body)
@@ -451,8 +444,8 @@ async function executeClassOperation<Model extends ILlmSchema.Model>(operation: 
 }
 
 async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationArguments: Record<string, unknown>): Promise<unknown> {
-  const { Client } = await import("@modelcontextprotocol/sdk/client/index");
-  const { SSEClientTransport } = await import("@modelcontextprotocol/sdk/client/sse");
+  const { Client } = await import2<typeof import("@modelcontextprotocol/sdk/client/index")>("@modelcontextprotocol/sdk/client/index");
+  const { SSEClientTransport } = await import2<typeof import("@modelcontextprotocol/sdk/client/sse")>("@modelcontextprotocol/sdk/client/sse");
 
   const client = new Client({
     name: operation.name,

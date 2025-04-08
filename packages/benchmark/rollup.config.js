@@ -9,6 +9,7 @@ module.exports = {
     entryFileNames: "[name].mjs",
     sourcemap: true,
   },
+  treeshake: true,
   plugins: [
     typescript({
       tsconfig: "tsconfig.json",

@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@agentica/core": "workspace:^",
+    "@modelcontextprotocol/sdk": "^1.8.0",
     "@mui/icons-material": "^6.4.0",
     "@mui/material": "^6.4.0",
     "@samchon/openapi": "catalog:typia",
