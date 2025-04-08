@@ -87,8 +87,5 @@
     "typescript": "catalog:typescript",
     "typescript-eslint": "^8.10.0",
     "vite": "^5.4.9"
-  },
-  "optionalDependencies": {
-    "@modelcontextprotocol/sdk": "^1.9.0"
   }
 }
