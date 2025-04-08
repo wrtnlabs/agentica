@@ -3,19 +3,19 @@
  * Start command
  */
 
-import { existsSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import process from "node:process";
-
 import type { SimplifyDeep } from "type-fest";
-
-import * as p from "@clack/prompts";
-import * as picocolors from "picocolors";
-import typia from "typia";
-
 import type { Service, UnwrapTaggedService } from "../connectors";
 import type { PackageManager } from "../packages";
+import { existsSync } from "node:fs";
+
+import { readFile, writeFile } from "node:fs/promises";
+
+import { join } from "node:path";
+import process from "node:process";
+import * as p from "@clack/prompts";
+
+import * as picocolors from "picocolors";
+import typia from "typia";
 
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
@@ -27,6 +27,7 @@ export type StarterTemplate =
   | "nodejs"
   | "nestjs"
   | "react"
+  | "react-native"
   | "standalone"
   | "nestjs+react"
   | "nodejs+react";
@@ -425,6 +426,31 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
     services: context.services,
   });
 }
+export async function setupReactNativeProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+  // download and place template in project
+  await downloadTemplateAndPlaceInProject({
+    template: "react-native",
+    project: projectAbsolutePath,
+  });
+  p.log.success("✅ Template downloaded");
+
+  // write .env file
+  await writeEnvKeysToDotEnv({
+    projectPath: projectAbsolutePath,
+    apiKeys: [{
+      key: "OPENAI_API_KEY",
+      value: context.openAIKey ?? "",
+    }],
+  });
+  p.log.success("✅ .env created");
+
+  // install dependencies
+  await installServicesAsDependencies({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+    services: context.services,
+  });
+}
 
 /**
  * Start a new project
@@ -449,6 +475,12 @@ export async function start({ template }: StartOptions) {
       break;
     case "react":
       await setupReactProject({ projectAbsolutePath, context });
+      break;
+    case "react-native":
+      await setupReactNativeProject({
+        projectAbsolutePath,
+        context,
+      });
       break;
     case "nestjs+react":
       // nestjs+rect project is a combination of nestjs and react projects
