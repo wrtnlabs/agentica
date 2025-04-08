@@ -1,6 +1,6 @@
 {
   "name": "@agentica/webite",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "description": "Agentica Website",
   "scripts": {
     "dev": "next",
