@@ -147,14 +147,12 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   // Verify function was called
   if (!functionCalled) {
-    console.log(JSON.stringify(events, null, 2));
     throw new Error("No function was called during conversation");
   }
 
   // Verify execution result
   const executeEvent = events.find(e => e.type === "execute");
   if (executeEvent === undefined) {
-    console.log(JSON.stringify(events, null, 2));
     throw new Error("Could not find execute event");
   }
 
