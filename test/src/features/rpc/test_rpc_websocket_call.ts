@@ -13,13 +13,33 @@ import { TestValidator } from "@nestia/e2e";
 import OpenAI from "openai";
 import { WebSocketConnector, WebSocketServer } from "tgrid";
 import { randint } from "tstl";
+import typia from "typia";
 
-import { TestGlobal } from "../TestGlobal";
+import { BbsArticleService } from "../../internal/BbsArticleService";
+import { TestGlobal } from "../../TestGlobal";
 
-export async function test_base_websocket(): Promise<void | false> {
+export async function test_rpc_websocket_call(): Promise<void | false> {
   if (TestGlobal.chatgptApiKey.length === 0) {
     return false;
   }
+
+  const agent: Agentica<"chatgpt"> = new Agentica({
+    model: "chatgpt",
+    vendor: {
+      model: "gpt-4o-mini",
+      api: new OpenAI({
+        apiKey: TestGlobal.chatgptApiKey,
+      }),
+    },
+    controllers: [
+      {
+        protocol: "class",
+        name: "bbs",
+        application: typia.llm.application<BbsArticleService, "chatgpt">(),
+        execute: new BbsArticleService(),
+      },
+    ],
+  });
 
   const port: number = randint(30_001, 65_001);
   const server: WebSocketServer<
@@ -28,16 +48,6 @@ export async function test_base_websocket(): Promise<void | false> {
     IAgenticaRpcListener
   > = new WebSocketServer();
   await server.open(port, async (acceptor) => {
-    const agent: Agentica<"chatgpt"> = new Agentica({
-      model: "chatgpt",
-      vendor: {
-        model: "gpt-4o-mini",
-        api: new OpenAI({
-          apiKey: TestGlobal.chatgptApiKey,
-        }),
-      },
-      controllers: [],
-    });
     await acceptor.accept(
       new AgenticaRpcService({
         agent,
@@ -61,26 +71,43 @@ export async function test_base_websocket(): Promise<void | false> {
     initialize: async (evt) => {
       events.push(evt);
     },
+    select: async (evt) => {
+      events.push(evt);
+    },
+    call: async (evt) => {
+      events.push(evt);
+    },
+    execute: async (evt) => {
+      events.push(evt);
+    },
+    cancel: async (evt) => {
+      events.push(evt);
+    },
   });
   await connector.connect(`ws://localhost:${port}`);
 
   const driver: Driver<IAgenticaRpcService<"chatgpt">> = connector.getDriver();
   await driver.conversate("What can you do?");
-  await connector.close();
+  await driver.conversate(`
+    Create an article like below:
 
+      - title: Hello World
+      - body: Hello, my name is John Doe
+      - thumbnail: null
+  `);
+  await connector.close();
   await server.close();
 
-  TestValidator.equals("events")([
-    {
-      type: "text",
-      role: "user",
-    },
-    {
-      type: "initialize",
-    },
-    {
-      type: "text",
-      role: "assistant",
-    },
-  ])(events);
+  TestValidator.equals("events")(
+    events.filter(e => e.type !== "cancel").map(e => e.type),
+  )([
+    "text",
+    "initialize",
+    "text",
+    "text",
+    "select",
+    "call",
+    "execute",
+    "describe",
+  ]);
 }

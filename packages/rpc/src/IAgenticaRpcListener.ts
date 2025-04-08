@@ -105,7 +105,7 @@ export interface IAgenticaRpcListener {
    * @param evt Event of a function calling
    * @return New arguments if you want to modify, otherwise null or undefined
    */
-  call?: (evt: IAgenticaEventJson.ICall) => Promise<object | null | undefined>;
+  call?: (evt: IAgenticaEventJson.ICall) => Promise<object | null | void | undefined>;
 
   /**
    * Executition of a function.
