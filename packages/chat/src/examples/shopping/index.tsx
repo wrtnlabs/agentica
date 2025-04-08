@@ -53,6 +53,7 @@ function Application() {
         name,
       },
     );
+    console.log(connection.headers);
 
     // ADVANCE TO THE NEXT STEP
     setNext({
