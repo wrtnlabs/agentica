@@ -20,7 +20,15 @@ export function compose<Model extends ILlmSchema.Model>(props: {
   controllers: IAgenticaController<Model>[];
   config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model> | undefined;
 }): AgenticaOperationCollection<Model> {
-  const array: AgenticaOperation<Model>[] = getOperations({ controllers: props.controllers });
+  const unique: boolean = (props.controllers.length === 1 || (() => {
+    const names = props.controllers.map(controllers => controllers.application.functions.map(func => func.name)).flat();
+    return new Set(names).size === names.length;
+  })());
+
+  const array: AgenticaOperation<Model>[] = getOperations({
+    controllers: props.controllers,
+    naming: (func: string, controllerIndex: number) => unique ? func : `_${controllerIndex}_${func}`,
+  });
   const capacity: number | undefined = (props.config as IAgenticaConfig<Model>)?.capacity;
   const divided: AgenticaOperation<Model>[][] | undefined
       = capacity !== undefined && array.length > capacity
@@ -47,22 +55,21 @@ export function compose<Model extends ILlmSchema.Model>(props: {
   };
 }
 
-const naming = (func: string, ci: number) => `_${ci}_${func}`;
-
 /**
  * @internal
  */
 export function getOperations<Model extends ILlmSchema.Model>(props: {
   controllers: IAgenticaController<Model>[];
+  naming: (func: string, controllerIndex: number) => string;
 }): AgenticaOperation<Model>[] {
   return props.controllers.flatMap((controller, idx) => {
     switch (controller.protocol) {
       case "http":{
-        return toHttpOperations({ controller, index: idx }); }
+        return toHttpOperations({ controller, index: idx, naming: props.naming }); }
       case "class":{
-        return toClassOperations({ controller, index: idx }); }
+        return toClassOperations({ controller, index: idx, naming: props.naming }); }
       case "mcp": {
-        return toMcpOperations({ controller, index: idx });
+        return toMcpOperations({ controller, index: idx, naming: props.naming });
       }
       default:
         controller satisfies never;
@@ -77,17 +84,18 @@ export function getOperations<Model extends ILlmSchema.Model>(props: {
 export function toHttpOperations<Model extends ILlmSchema.Model>(props: {
   controller: IAgenticaController.IHttp<Model>;
   index: number;
+  naming: (func: string, controllerIndex: number) => string;
 }): AgenticaOperation<Model>[] {
   return props.controller.application.functions.map(func => ({
     protocol: "http",
     controller: props.controller,
     function: func,
-    name: naming(func.name, props.index),
+    name: props.naming(func.name, props.index),
     toJSON: () => ({
       protocol: "http",
       controller: props.controller.name,
       function: func.name,
-      name: naming(func.name, props.index),
+      name: props.naming(func.name, props.index),
     }),
   }));
 }
@@ -98,17 +106,18 @@ export function toHttpOperations<Model extends ILlmSchema.Model>(props: {
 export function toClassOperations<Model extends ILlmSchema.Model>(props: {
   controller: IAgenticaController.IClass<Model>;
   index: number;
+  naming: (func: string, controllerIndex: number) => string;
 }): AgenticaOperation<Model>[] {
   return props.controller.application.functions.map(func => ({
     protocol: "class",
     controller: props.controller,
     function: func,
-    name: naming(func.name, props.index),
+    name: props.naming(func.name, props.index),
     toJSON: () => ({
       protocol: "class",
       controller: props.controller.name,
       function: func.name,
-      name: naming(func.name, props.index),
+      name: props.naming(func.name, props.index),
     }),
   }));
 }
@@ -119,17 +128,18 @@ export function toClassOperations<Model extends ILlmSchema.Model>(props: {
 export function toMcpOperations<Model extends ILlmSchema.Model>(props: {
   controller: IAgenticaController.IMcp;
   index: number;
+  naming: (func: string, controllerIndex: number) => string;
 }): AgenticaOperation<Model>[] {
   return props.controller.application.functions.map(func => ({
     protocol: "mcp",
     controller: props.controller,
     function: func,
-    name: naming(func.name, props.index),
+    name: props.naming(func.name, props.index),
     toJSON: () => ({
       protocol: "mcp",
       controller: props.controller.name,
       function: func.name,
-      name: naming(func.name, props.index),
+      name: props.naming(func.name, props.index),
     }),
   }));
 }

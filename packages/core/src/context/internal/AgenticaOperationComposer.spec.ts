@@ -6,7 +6,7 @@ import type { IMcpLlmFunction } from "../../structures/mcp/IMcpLlmFunction";
 
 import { compose, divide, getOperations, toClassOperations, toHttpOperations, toMcpOperations } from "./AgenticaOperationComposer";
 
-// 테스트 헬퍼 함수들
+// test helper functions
 function createMockHttpFunction(name: string, method: "get" | "post" | "patch" | "put" | "delete", path: string): IHttpLlmFunction<any> {
   return {
     name,
@@ -142,7 +142,7 @@ describe("a AgenticaOperationComposer", () => {
         createMockHttpFunction("function2", "post", "/api/function2"),
       ]);
 
-      const result = getOperations({ controllers: [mockController] });
+      const result = getOperations({ controllers: [mockController], naming: (func, idx) => `_${idx}_${func}` });
 
       expect(result).toHaveLength(2);
       expect(result[0]?.protocol).toBe("http");
@@ -160,7 +160,7 @@ describe("a AgenticaOperationComposer", () => {
         },
       ]);
 
-      const result = getOperations({ controllers: [mockController] });
+      const result = getOperations({ controllers: [mockController], naming: (func, idx) => `_${idx}_${func}` });
 
       expect(result).toHaveLength(1);
       expect(result[0]?.protocol).toBe("class");
@@ -175,7 +175,7 @@ describe("a AgenticaOperationComposer", () => {
         },
       ]);
 
-      const result = getOperations({ controllers: [mockController] });
+      const result = getOperations({ controllers: [mockController], naming: (func, idx) => `_${idx}_${func}` });
 
       expect(result).toHaveLength(1);
       expect(result[0]?.protocol).toBe("mcp");
@@ -190,7 +190,7 @@ describe("a AgenticaOperationComposer", () => {
         application: { } as unknown as IAgenticaController.IHttp<any>["application"],
       };
 
-      expect(() => getOperations({ controllers: [mockController] })).toThrow("Unsupported protocol: unsupported");
+      expect(() => getOperations({ controllers: [mockController], naming: (func, idx) => `_${idx}_${func}` })).toThrow("Unsupported protocol: unsupported");
     });
   });
 
@@ -201,7 +201,7 @@ describe("a AgenticaOperationComposer", () => {
         createMockHttpFunction("function2", "post", "/api/function2"),
       ]);
 
-      const result = toHttpOperations({ controller: mockController, index: 0 });
+      const result = toHttpOperations({ controller: mockController, index: 0, naming: (func, idx) => `_${idx}_${func}` });
 
       expect(result).toHaveLength(2);
       expect(result[0]?.protocol).toBe("http");
@@ -221,7 +221,7 @@ describe("a AgenticaOperationComposer", () => {
         },
       ]);
 
-      const result = toClassOperations({ controller: mockController, index: 0 });
+      const result = toClassOperations({ controller: mockController, index: 0, naming: (func, idx) => `_${idx}_${func}` });
 
       expect(result).toHaveLength(1);
       expect(result[0]?.protocol).toBe("class");
@@ -238,7 +238,7 @@ describe("a AgenticaOperationComposer", () => {
         },
       ]);
 
-      const result = toMcpOperations({ controller: mockController, index: 0 });
+      const result = toMcpOperations({ controller: mockController, index: 0, naming: (func, idx) => `_${idx}_${func}` });
 
       expect(result).toHaveLength(1);
       expect(result[0]?.protocol).toBe("mcp");

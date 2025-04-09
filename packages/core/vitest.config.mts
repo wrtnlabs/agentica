@@ -7,6 +7,6 @@ export default defineConfig({
   ],
   test: {
     globals: true,
-    exclude: ["**/node_modules/**", "**/dist/**", "**/prompts/**", "**/build/**", "**/examples/**"],
+    exclude: ["**/node_modules/**", "**/dist/**", "**/prompts/**", "**/build/**", "**/examples/**", "**/lib/**"],
   },
 });
