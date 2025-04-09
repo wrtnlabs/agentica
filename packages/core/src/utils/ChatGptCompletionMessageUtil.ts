@@ -3,7 +3,6 @@ import type {
   ChatCompletionChunk,
   ChatCompletionMessage,
   ChatCompletionMessageToolCall,
-  CompletionUsage,
 } from "openai/resources";
 
 import typia from "typia";
