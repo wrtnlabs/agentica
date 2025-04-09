@@ -382,7 +382,7 @@ async function propagateMcp<Model extends ILlmSchema.Model>(props: {
   // ----
   // MCP PROTOCOL
   // ----
-
+  // @TODO: implement argument validation logic
   try {
     const value = await executeMcpOperation(props.operation, props.call.arguments);
     return createExecuteHistory({
@@ -443,6 +443,7 @@ async function executeClassOperation<Model extends ILlmSchema.Model>(operation: 
 }
 
 async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationArguments: Record<string, unknown>): Promise<unknown> {
+  // for peerDependencies
   const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
   const { SSEClientTransport } = await import("@modelcontextprotocol/sdk/client/sse.js");
   const { StdioClientTransport } = await import("@modelcontextprotocol/sdk/client/stdio.js");
@@ -457,6 +458,9 @@ async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationAr
       case "http":
         return new SSEClientTransport(operation.controller.application.transport.url);
       case "stdio":
+        // @TODO: implement StdioClientTransport cache
+        // StdioClientTransport and connects a new child process every time it is initialized and connected.
+        // This results in significant latency and resource waste.
         return new StdioClientTransport(operation.controller.application.transport);
       default:
         operation.controller.application.transport satisfies never;
