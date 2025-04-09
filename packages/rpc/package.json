@@ -45,6 +45,9 @@
     "lint": "eslint .",
     "format": "eslint --fix ."
   },
+  "peerDependencies": {
+    "@agentica/core": "workspace:^"
+  },
   "dependencies": {
     "@agentica/core": "workspace:^",
     "@samchon/openapi": "catalog:typia",

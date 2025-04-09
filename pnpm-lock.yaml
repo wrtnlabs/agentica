@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   libs:
+    '@modelcontextprotocol/sdk':
+      specifier: ^1.8.0
+      version: 1.9.0
     openai:
       specifier: ^4.80.0
       version: 4.91.1
@@ -284,9 +287,6 @@ importers:
 
   packages/core:
     dependencies:
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.8.0
-        version: 1.8.0
       '@samchon/openapi':
         specifier: catalog:typia
         version: 4.0.0
@@ -297,6 +297,9 @@ importers:
         specifier: ^11.0.4
         version: 11.1.0
     devDependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: catalog:libs
+        version: 1.9.0
       '@nestia/e2e':
         specifier: ^6.0.1
         version: 6.0.1
@@ -1505,10 +1508,6 @@ packages:
 
   '@mermaid-js/parser@0.4.0':
     resolution: {integrity: sha512-wla8XOWvQAwuqy+gxiZqY+c7FokraOTHRWMsbB4AgRx9Sy7zKslNyejy7E+a77qHfey5GXw/ik3IXv/NHMJgaA==}
-
-  '@modelcontextprotocol/sdk@1.8.0':
-    resolution: {integrity: sha512-e06W7SwrontJDHwCawNO5SGxG+nU9AAx+jpHHZqGl/WrDBdWOpvirC+s58VpJTB5QemI4jTRcjWT4Pt3Q1NPQQ==}
-    engines: {node: '>=18'}
 
   '@modelcontextprotocol/sdk@1.9.0':
     resolution: {integrity: sha512-Jq2EUCQpe0iyO5FGpzVYDNFR6oR53AIrwph9yWl7uSc7IWUMsrmpmSaTGra5hQNunXpM+9oit85p924jWuHzUA==}
@@ -5877,10 +5876,6 @@ packages:
     resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
     engines: {node: '>=12'}
 
-  pkce-challenge@4.1.0:
-    resolution: {integrity: sha512-ZBmhE1C9LcPoH9XZSdwiPtbPHZROwAnMy+kIFQVrnMCxY4Cudlz3gBOpzilgc0jOgRaiT3sIWfpMomW2ar2orQ==}
-    engines: {node: '>=16.20.0'}
-
   pkce-challenge@5.0.0:
     resolution: {integrity: sha512-ueGLflrrnvwB3xuo/uGob5pd5FN7l0MsLf0Z87o/UQmRtwjvfylfc9MurIxRAWywCYTgrvpXBcqjV4OfCYGCIQ==}
     engines: {node: '>=16.20.0'}
@@ -8374,21 +8369,6 @@ snapshots:
     dependencies:
       langium: 3.3.1
 
-  '@modelcontextprotocol/sdk@1.8.0':
-    dependencies:
-      content-type: 1.0.5
-      cors: 2.8.5
-      cross-spawn: 7.0.6
-      eventsource: 3.0.6
-      express: 5.1.0
-      express-rate-limit: 7.5.0(express@5.1.0)
-      pkce-challenge: 4.1.0
-      raw-body: 3.0.0
-      zod: 3.24.2
-      zod-to-json-schema: 3.24.5(zod@3.24.2)
-    transitivePeerDependencies:
-      - supports-color
-
   '@modelcontextprotocol/sdk@1.9.0':
     dependencies:
       content-type: 1.0.5
@@ -8403,7 +8383,6 @@ snapshots:
       zod-to-json-schema: 3.24.5(zod@3.24.2)
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   '@mswjs/interceptors@0.37.6':
     dependencies:
@@ -13583,10 +13562,7 @@ snapshots:
 
   picomatch@4.0.2: {}
 
-  pkce-challenge@4.1.0: {}
-
-  pkce-challenge@5.0.0:
-    optional: true
+  pkce-challenge@5.0.0: {}
 
   pkg-dir@4.2.0:
     dependencies:
