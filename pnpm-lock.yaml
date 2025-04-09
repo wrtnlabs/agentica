@@ -7,14 +7,11 @@ settings:
 catalogs:
   libs:
     '@modelcontextprotocol/sdk':
-      specifier: ^1.8.0
+      specifier: ^1.9.0
       version: 1.9.0
     openai:
       specifier: ^4.80.0
       version: 4.91.1
-    type-fest:
-      specifier: ^4.37.0
-      version: 4.39.1
   typescript:
     ts-patch:
       specifier: ^3.3.0
@@ -318,9 +315,6 @@ importers:
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
-      import2:
-        specifier: ^1.0.3
-        version: 1.0.3
       openai:
         specifier: catalog:libs
         version: 4.91.1(zod@3.24.2)

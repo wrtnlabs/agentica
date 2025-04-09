@@ -67,7 +67,6 @@
     "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^22.13.4",
     "@types/uuid": "^10.0.0",
-    "import2": "^1.0.3",
     "openai": "catalog:libs",
     "rimraf": "^6.0.1",
     "rollup": "^4.34.8",
