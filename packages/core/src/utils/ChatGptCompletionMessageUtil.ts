@@ -15,7 +15,7 @@ function transformCompletionChunk(source: string | Uint8Array): ChatCompletionCh
   const str
       = source instanceof Uint8Array ? ByteArrayUtil.toUtf8(source) : source;
   const result: ChatCompletionChunk = JSON.parse(str) as ChatCompletionChunk;
-  const valid = typia.validate<ChatCompletionChunk & { usage: CompletionUsage | null | undefined }>(result);
+  const valid = typia.validate<ChatCompletionChunk>(result);
   if (valid.success === false) {
     console.error("Invalid ChatCompletionChunk", valid.errors);
   }
