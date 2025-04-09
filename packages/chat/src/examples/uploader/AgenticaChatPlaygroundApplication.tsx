@@ -1,22 +1,21 @@
 import type { IAgenticaVendor } from "@agentica/core";
-import type { IHttpConnection, IHttpLlmApplication } from "@samchon/openapi";
+import type { IHttpConnection, ILlmSchema, OpenApi } from "@samchon/openapi";
 import type { ReactElement } from "react";
 
 import { Agentica } from "@agentica/core";
 import {
   Button,
   FormControl,
-  FormControlLabel,
   FormLabel,
-  Radio,
-  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
+import { HttpLlm } from "@samchon/openapi";
 import OpenAI from "openai";
 import React, { useState } from "react";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
+import { VendorConfigurationMovie } from "../common/VendorConfigurationMovie";
 
 import { AgenticaChatUploaderMovie } from "./AgenticaChatUploaderMovie";
 
@@ -26,21 +25,22 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
   const [headersText, setHeadersText] = useState<string>(JSON.stringify({
     Authorization: "YOUR_SERVER_API_KEY",
   }, null, 2));
-  const [model, setModel] = useState("gpt-4o-mini");
-  const [apiKey, setApiKey] = useState("");
+  const [config, setConfig] = useState<VendorConfigurationMovie.IConfig>(
+    VendorConfigurationMovie.defaultConfig(),
+  );
 
   // RESULT
-  const [application, setApplication]
-  = useState<IHttpLlmApplication<"chatgpt"> | null>(null);
+  const [document, setDocument] = useState<OpenApi.IDocument | null>(null);
   const [progress, setProgress] = useState(false);
 
   const headers: Record<string, IHttpConnection.HeaderValue> | null = parseHeaders(headersText);
   const disabled: boolean = progress === true
     || headers === null
     || document === null
-    || application === null
     || host.length === 0
-    || apiKey.length === 0;
+    || config.apiKey.length === 0
+    || config.vendorModel.length === 0
+    || config.schemaModel.length === 0;
 
   // HANDLERS
   const handleError = (error: string) => {
@@ -49,37 +49,41 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
     }
     else { alert(error); }
   };
-  const handleApplication = (
-    application: IHttpLlmApplication<"chatgpt"> | null,
+  const handleDocument = (
+    document: OpenApi.IDocument | null,
     error: string | null,
   ) => {
-    setApplication(application);
+    setDocument(document);
     if (error !== null) {
       handleError(error);
     }
   };
 
   const open = async () => {
-    if (application === null) {
+    if (document === null) {
       return;
     }
     setProgress(true);
     try {
       const vendor: IAgenticaVendor = {
         api: new OpenAI({
-          apiKey,
+          apiKey: config.apiKey,
+          baseURL: config.baseURL,
           dangerouslyAllowBrowser: true,
         }),
-        model: model as "gpt-4o",
+        model: config.vendorModel,
       };
-      const agent: Agentica<"chatgpt"> = new Agentica({
-        model: "chatgpt",
+      const agent: Agentica<ILlmSchema.Model> = new Agentica({
+        model: config.schemaModel,
         vendor,
         controllers: [
           {
             protocol: "http",
             name: "main",
-            application,
+            application: HttpLlm.application({
+              model: config.schemaModel,
+              document,
+            }),
             connection: {
               host,
               headers: headers!,
@@ -97,7 +101,7 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
 
   return (
     <div style={props.style}>
-      <AgenticaChatUploaderMovie onChange={handleApplication} />
+      <AgenticaChatUploaderMovie onChange={handleDocument} />
       <br />
       <FormControl fullWidth>
         <Typography variant="h6">HTTP Connection</Typography>
@@ -123,38 +127,10 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
         />
         <br />
         <br />
-        <Typography variant="h6">LLM Arguments</Typography>
+        <Typography variant="h6">OpenAI Configuration</Typography>
         <br />
-        <FormLabel> LLM Provider </FormLabel>
-        <RadioGroup defaultValue="chatgpt" style={{ paddingLeft: 15 }}>
-          <FormControlLabel
-            value="chatgpt"
-            control={<Radio />}
-            label="OpenAI (ChatGPT)"
-          />
-        </RadioGroup>
-        <FormLabel style={{ paddingTop: 20 }}> OpenAI Model </FormLabel>
-        <RadioGroup
-          defaultValue={model}
-          onChange={(_e, value) => setModel(value)}
-          style={{ paddingLeft: 15 }}
-        >
-          <FormControlLabel
-            value="gpt-4o-mini"
-            control={<Radio />}
-            label="GPT-4o Mini"
-          />
-          <FormControlLabel value="gpt-4o" control={<Radio />} label="GPT-4o" />
-        </RadioGroup>
+        <VendorConfigurationMovie config={config} onChange={setConfig} />
         <br />
-        <TextField
-          onChange={e => setApiKey(e.target.value)}
-          defaultValue={apiKey}
-          label="OpenAI API Key"
-          variant="outlined"
-          placeholder="Your OpenAI API Key"
-          error={apiKey.length === 0}
-        />
       </FormControl>
       <br />
       <br />
