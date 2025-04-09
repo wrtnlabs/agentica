@@ -1,12 +1,12 @@
-import type { IHttpLlmApplication } from "@samchon/openapi";
-import type { IValidation } from "typia";
+import type { OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
 
-import { validateHttpLlmApplication } from "@agentica/core";
+import { OpenApi } from "@samchon/openapi";
 import { load } from "js-yaml";
 import React from "react";
 // eslint-disable-next-line ts/ban-ts-comment
 // @ts-ignore
 import FileUpload from "react-mui-fileuploader";
+import typia from "typia";
 
 interface ExtendedFileProps extends Blob {
   arrayBuffer: () => Promise<ArrayBuffer>;
@@ -34,18 +34,17 @@ export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProp
 
     try {
       const document: unknown = extension === "json" ? JSON.parse(content) : load(content);
-      const application: IValidation<IHttpLlmApplication<"chatgpt">>
-        = validateHttpLlmApplication({
-          model: "chatgpt",
-          document,
-          options: {
-            reference: true,
-          },
-        });
-      if (application.success === true) {
-        props.onChange(application.data, null);
+      const result = typia.validate<SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument | OpenApi.IDocument>(document);
+      if (result.success === false) {
+        props.onChange(null, JSON.stringify(result.errors, null, 2));
+        return;
       }
-      else { props.onChange(null, JSON.stringify(application.errors, null, 2)); }
+      else {
+        props.onChange(
+          OpenApi.convert(result.data),
+          null,
+        );
+      }
     }
     catch {
       props.onChange(
@@ -77,7 +76,7 @@ export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProp
 export namespace AgenticaChatUploaderMovie {
   export interface IProps {
     onChange: (
-      application: IHttpLlmApplication<"chatgpt"> | null,
+      document: OpenApi.IDocument | null,
       error: string | null,
     ) => void;
   }

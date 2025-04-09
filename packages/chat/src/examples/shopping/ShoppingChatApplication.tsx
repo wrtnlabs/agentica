@@ -1,6 +1,7 @@
 import type {
   IHttpConnection,
   IHttpLlmApplication,
+  ILlmSchema,
 } from "@samchon/openapi";
 import type OpenAI from "openai";
 
@@ -16,12 +17,12 @@ import { AgenticaChatApplication } from "../../AgenticaChatApplication";
 
 export function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
   const [application, setApplication]
-    = useState<IHttpLlmApplication<"chatgpt"> | null>(null);
+    = useState<IHttpLlmApplication<ILlmSchema.Model> | null>(null);
   useEffect(() => {
     (async () => {
       setApplication(
         HttpLlm.application({
-          model: "chatgpt",
+          model: props.schemaModel,
           document: OpenApi.convert(
             await fetch(
               "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/customer.swagger.json",
@@ -44,11 +45,11 @@ export function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
     );
   }
 
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica<ILlmSchema.Model> = new Agentica({
+    model: props.schemaModel,
     vendor: {
       api: props.api,
-      model: "gpt-4o-mini",
+      model: props.vendorModel,
     },
     controllers: [
       {
@@ -69,6 +70,8 @@ export function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
 export namespace ShoppingChatApplication {
   export interface IProps {
     api: OpenAI;
+    vendorModel: string;
+    schemaModel: ILlmSchema.Model;
     connection: IHttpConnection;
     name: string;
     mobile: string;
