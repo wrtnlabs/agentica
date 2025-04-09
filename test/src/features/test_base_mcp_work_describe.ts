@@ -19,7 +19,7 @@ export async function test_base_mcp_work_describe(): Promise<void | false> {
   const calculatorController: IAgenticaController<"chatgpt"> = {
     protocol: "mcp",
     name: "calculator",
-    application: await assertMcpLlmApplication({ name: "calculator", version: "1.0.0", type: "stdio", command: "npx", args: ["-y", "@wrtnlabs/calculator-mcp"] }),
+    application: await assertMcpLlmApplication({ type: "stdio", command: "npx", args: ["-y", "@wrtnlabs/calculator-mcp"] }),
   };
 
   // Agentica instance
