@@ -271,7 +271,7 @@ const main = async (): Promise<void> => {
         protocol: "mcp",
         name: "rag",
         application: await assertMcpLlmApplication({
-          type: "http",
+          type: "sse",
           url: new URL("http://localhost:8931/sse"),
         }),
       }
