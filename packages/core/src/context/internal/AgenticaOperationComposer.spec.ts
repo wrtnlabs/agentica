@@ -66,7 +66,7 @@ function createMockMcpController(name: string, functions: IMcpLlmFunction[]): IA
     protocol: "mcp",
     application: {
       transport: {
-        type: "http",
+        type: "sse",
         url: new URL("https://example.com"),
       },
       functions,

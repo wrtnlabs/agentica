@@ -3,7 +3,7 @@ import type { StdioServerParameters } from "@modelcontextprotocol/sdk/client/std
 
 export type IMcpLlmTransportProps = IMcpLlmTransportPropsHttp | IMcpLlmTransportPropsStdio;
 
-export interface IMcpLlmTransportPropsHttp extends IMcpLlmTransportPropsBase<"http">, SSEClientTransportOptions {
+export interface IMcpLlmTransportPropsHttp extends IMcpLlmTransportPropsBase<"sse">, SSEClientTransportOptions {
   url: URL;
 }
 export interface IMcpLlmTransportPropsStdio extends IMcpLlmTransportPropsBase<"stdio">, StdioServerParameters {}

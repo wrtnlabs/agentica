@@ -25,7 +25,7 @@ export async function assertMcpLlmApplication(props: IMcpLlmTransportProps): Pro
 
   const transport = (() => {
     switch (props.type) {
-      case "http":
+      case "sse":
         return new SSEClientTransport(props.url);
       case "stdio":
         return new StdioClientTransport(props);

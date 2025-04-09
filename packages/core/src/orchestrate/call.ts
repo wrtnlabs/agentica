@@ -455,7 +455,7 @@ async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationAr
 
   const transport = (() => {
     switch (operation.controller.application.transport.type) {
-      case "http":
+      case "sse":
         return new SSEClientTransport(operation.controller.application.transport.url);
       case "stdio":
         // @TODO: implement StdioClientTransport cache
