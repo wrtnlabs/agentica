@@ -42,7 +42,7 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
       setSchemaModel("chatgpt");
     }
     else {
-      config.baseURL = "openrouter.ai/api/v1";
+      config.baseURL = "https://openrouter.ai/api/v1";
       setBaseURL("https://openrouter.ai/api/v1");
     }
     props.onChange(config);
