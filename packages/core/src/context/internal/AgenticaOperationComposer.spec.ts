@@ -36,7 +36,7 @@ function createMockHttpFunction(name: string, method: "get" | "post" | "patch" |
 function createMockHttpController(name: string, functions: IHttpLlmFunction<any>[]): IAgenticaController.IHttp<any> {
   return {
     name,
-    protocol: "http" as const,
+    protocol: "http",
     connection: { host: "https://example.com" },
     application: {
       model: "chatgpt",
@@ -50,7 +50,7 @@ function createMockHttpController(name: string, functions: IHttpLlmFunction<any>
 function createMockClassController(name: string, functions: ILlmFunction<any>[]): IAgenticaController.IClass<any> {
   return {
     name,
-    protocol: "class" as const,
+    protocol: "class",
     application: {
       model: "chatgpt",
       options: {},
@@ -63,7 +63,7 @@ function createMockClassController(name: string, functions: ILlmFunction<any>[])
 function createMockMcpController(name: string, functions: IMcpLlmFunction[]): IAgenticaController.IMcp {
   return {
     name,
-    protocol: "mcp" as const,
+    protocol: "mcp",
     application: {
       name: "mcp",
       version: "1.0.0",
