@@ -9,7 +9,5 @@ export interface IMcpLlmTransportPropsHttp extends IMcpLlmTransportPropsBase<"ht
 export interface IMcpLlmTransportPropsStdio extends IMcpLlmTransportPropsBase<"stdio">, StdioServerParameters {}
 
 export interface IMcpLlmTransportPropsBase<T extends string> {
-  name: string;
-  version: string;
   type: T;
 }

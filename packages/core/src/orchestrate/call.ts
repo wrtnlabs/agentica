@@ -450,7 +450,7 @@ async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationAr
 
   const client = new Client({
     name: operation.name,
-    version: operation.controller.application.version,
+    version: "1.0.0",
   });
 
   const transport = (() => {

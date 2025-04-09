@@ -19,8 +19,8 @@ import type { IMcpLlmApplication, IMcpLlmTransportProps } from "../structures/mc
  */
 export async function assertMcpLlmApplication(props: IMcpLlmTransportProps): Promise<IMcpLlmApplication> {
   const client = new Client({
-    name: props.name,
-    version: props.version,
+    name: "get_tool_list",
+    version: "1.0.0",
   });
 
   const transport = (() => {
@@ -38,8 +38,6 @@ export async function assertMcpLlmApplication(props: IMcpLlmTransportProps): Pro
 
   const toolList = await client.request({ method: "tools/list" }, ListToolsResultSchema);
   return {
-    name: props.name,
-    version: props.version,
     functions: toolList.tools.map(tool => ({
       name: tool.name,
       description: tool.description,

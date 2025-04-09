@@ -6,16 +6,6 @@ import type { IMcpLlmTransportProps } from "./IMcpLlmTransportProps";
  */
 export interface IMcpLlmApplication {
   /**
-   * Name of the MCP server.
-   */
-  name: string;
-
-  /**
-   * Version of the MCP server.
-   */
-  version: string;
-
-  /**
    * Functions of the MCP server.
    */
   functions: IMcpLlmFunction[];
