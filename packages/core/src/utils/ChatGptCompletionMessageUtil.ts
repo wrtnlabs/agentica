@@ -6,7 +6,7 @@ import type {
   CompletionUsage,
 } from "openai/resources";
 
-import { json } from "typia";
+import typia from "typia";
 
 import { ByteArrayUtil } from "./ByteArrayUtil";
 import { ChatGptTokenUsageAggregator } from "./ChatGptTokenUsageAggregator";
@@ -14,9 +14,12 @@ import { ChatGptTokenUsageAggregator } from "./ChatGptTokenUsageAggregator";
 function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
   const str
       = source instanceof Uint8Array ? ByteArrayUtil.toUtf8(source) : source;
-  return json.assertParse<
-      ChatCompletionChunk & { usage: CompletionUsage | null | undefined }
-  >(str);
+  const result: ChatCompletionChunk = JSON.parse(str) as ChatCompletionChunk;
+  const valid = typia.validate<ChatCompletionChunk & { usage: CompletionUsage | null | undefined }>(result);
+  if (valid.success === false) {
+    console.error("Invalid ChatCompletionChunk", valid.errors);
+  }
+  return result;
 }
 
 function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCompletion {
