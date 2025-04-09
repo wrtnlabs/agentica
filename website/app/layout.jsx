@@ -1,4 +1,4 @@
-import { Footer, Layout, Navbar } from "nextra-theme-docs";
+import { Layout, Navbar } from "nextra-theme-docs";
 import Script from "next/script";
 import "nextra-theme-docs/style.css";
 import { Head } from "nextra/components";
@@ -6,7 +6,7 @@ import { getPageMap } from "nextra/page-map";
 
 import "./globals.css";
 import ToastProvider from "./_providers/ToastProvider";
-
+import Footer from "./_components/layout/Footer";
 export const metadata = {
   // ... your metadata API
   // https://nextjs.org/docs/app/building-your-application/optimizing/metadata
@@ -17,11 +17,6 @@ const navbar = (
     logo={<b>Agentica</b>}
     projectLink="https://github.com/wrtnlabs/agentica"
   />
-);
-const footer = (
-  <Footer className="flex-col items-center md:items-start">
-    MIT {new Date().getFullYear()} © Wrtn Technologies.
-  </Footer>
 );
 
 export default async function RootLayout(props) {
@@ -108,7 +103,7 @@ export default async function RootLayout(props) {
           docsRepositoryBase="https://github.com/wrtnlabs/agentica/tree/main/website"
           editLink="Edit this page on GitHub"
           sidebar={{ defaultMenuCollapseLevel: 1 }}
-          footer={footer}
+          footer={<Footer />}
           nextThemes={{
             defaultTheme: "dark",
           }}
