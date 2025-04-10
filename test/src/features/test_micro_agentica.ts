@@ -50,6 +50,7 @@ export async function test_micro_agentica(): Promise<void | false> {
     strategy. Let's visit typia website https://typia.io, and enjoy 
     its super-fast performance.
   `);
+  typia.assert<MicroAgenticaHistory.Type[]>(agent.getHistories().map(h => h.type));
   if (predicate(agent.getHistories()) === false) {
     await agent.conversate("Do it.");
     const result: boolean = predicate(agent.getHistories());
