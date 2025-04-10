@@ -112,7 +112,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       role: "user",
       text: content,
     });
-    await this.dispatch(
+    this.dispatch(
       createTextEvent({
         role: "user",
         stream: StreamUtil.to(content),
@@ -120,7 +120,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
         get: () => content,
         join: async () => Promise.resolve(content),
       }),
-    );
+    ).catch(() => {});
 
     const ctx: MicroAgenticaContext<Model> = this.getContext({
       prompt: talk,

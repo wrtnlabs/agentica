@@ -34,7 +34,6 @@ interface IFailure {
 }
 
 export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaCancelHistory<Model>[]> {
-  console.error("orchestrate.cancel");
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
