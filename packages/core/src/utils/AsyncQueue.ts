@@ -13,16 +13,25 @@ export class AsyncQueue<T> {
   }
 
   async dequeue(): Promise<IteratorResult<T, undefined>> {
-    if (this.queue.length > 0) {
-      return { value: this.queue.shift()!, done: false };
-    }
-    if (this.closed) {
-      if (this.emptyResolvers.length > 0) {
-        this.emptyResolvers.forEach(resolve => resolve());
-        this.emptyResolvers = [];
+    const item = (() => {
+      if (this.queue.length > 0) {
+        return { value: this.queue.shift()!, done: false } as const;
       }
-      return { value: undefined, done: true };
+      if (this.closed) {
+        return { value: undefined, done: true } as const;
+      }
+      return undefined;
+    })();
+
+    if (this.emptyResolvers.length > 0) {
+      this.emptyResolvers.forEach(resolve => resolve());
+      this.emptyResolvers = [];
     }
+
+    if (item !== undefined) {
+      return item;
+    }
+
     return new Promise(resolve => this.resolvers.push(resolve));
   }
 
