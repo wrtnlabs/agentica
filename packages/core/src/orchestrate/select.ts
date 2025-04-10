@@ -22,7 +22,7 @@ import { createTextEvent } from "../factory/events";
 import { createSelectHistory, createTextHistory, decodeHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { StreamUtil } from "../utils/StreamUtil";
+import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { selectFunction } from "./internal/selectFunction";
 
@@ -269,7 +269,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       ctx.dispatch(
         createTextEvent({
           role: "assistant",
-          stream: StreamUtil.to(text.text),
+          stream: toAsyncGenerator(text.text),
           join: async () => Promise.resolve(text.text),
           done: () => true,
           get: () => text.text,

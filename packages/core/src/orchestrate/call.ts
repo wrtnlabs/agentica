@@ -31,7 +31,7 @@ import { createCallEvent, createExecuteEvent, createTextEvent, createValidateEve
 import { createCancelHistory, createExecuteHistory, createTextHistory, decodeHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { StreamUtil } from "../utils/StreamUtil";
+import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { cancelFunction } from "./internal/cancelFunction";
 
@@ -184,7 +184,7 @@ export async function call<Model extends ILlmSchema.Model>(
             role: "assistant",
             get: () => value.text,
             done: () => true,
-            stream: StreamUtil.to(value.text),
+            stream: toAsyncGenerator(value.text),
             join: async () => Promise.resolve(value.text),
           }),
         ).catch(() => {});

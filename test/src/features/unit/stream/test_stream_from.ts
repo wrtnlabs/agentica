@@ -1,7 +1,7 @@
-import { utils } from "@agentica/core";
+import { StreamUtil } from "@agentica/core/src/utils/StreamUtil";
 
-export async function test_stream_to(): Promise<void | false> {
-  const stream = utils.StreamUtil.to("Hello, world!");
+export async function test_stream_from(): Promise<void | false> {
+  const stream = StreamUtil.from("Hello, world!");
   const reader = stream.getReader();
   const { done, value } = await reader.read();
 

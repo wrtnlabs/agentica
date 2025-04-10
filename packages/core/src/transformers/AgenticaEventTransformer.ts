@@ -14,7 +14,7 @@ import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
 import { createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createTextEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
-import { StreamUtil } from "../utils/StreamUtil";
+import { toAsyncGenerator } from "../utils/StreamUtil";
 
 function findOperation<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
@@ -124,7 +124,7 @@ function transformDescribe<Model extends ILlmSchema.Model>(props: {
         event: next,
       }),
     ),
-    stream: StreamUtil.to(props.event.text),
+    stream: toAsyncGenerator(props.event.text),
     done: () => true,
     get: () => props.event.text,
     join: async () => props.event.text,
@@ -176,7 +176,7 @@ function transformText(props: {
 }): AgenticaTextEvent {
   return createTextEvent({
     role: props.event.role,
-    stream: StreamUtil.to(props.event.text),
+    stream: toAsyncGenerator(props.event.text),
     done: () => true,
     get: () => props.event.text,
     join: async () => props.event.text,
