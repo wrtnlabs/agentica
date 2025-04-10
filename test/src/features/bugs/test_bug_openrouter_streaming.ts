@@ -1,4 +1,7 @@
+import type { AgenticaHistory } from "@agentica/core";
+
 import { Agentica } from "@agentica/core";
+import { TestValidator } from "@nestia/e2e";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -28,20 +31,8 @@ export async function test_bug_openrouter_streaming(): Promise<void | false> {
       },
     ],
   });
-  agent.on("text", async (event) => {
-    if (event.role === "assistant") {
-      const reader = event.stream.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          break;
-        }
-        console.log(value);
-      }
-    }
-  });
 
-  await agent.conversate(`
+  const histories: AgenticaHistory<"chatgpt">[] = await agent.conversate(`
     I will create a new article.
 
     Title is "Introduce typia, superfast runtime validator", and thumbnail URL is https://typia.io/logo.png
@@ -61,4 +52,10 @@ export async function test_bug_openrouter_streaming(): Promise<void | false> {
     strategy. Let's visit typia website https://typia.io, and enjoy 
     its super-fast performance.
   `);
+  TestValidator.predicate("text.length")(
+    () =>
+      histories
+        .filter(h => h.type === "text")
+        .every(h => h.text.length !== 0),
+  );
 }

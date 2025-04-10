@@ -88,7 +88,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
           continue;
         }
 
-        if (choice.delta.content == null) {
+        if (choice.delta.content == null || choice.delta.content.length === 0) {
           continue;
         }
 
@@ -142,6 +142,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
       prompts.push(
         createTextHistory({

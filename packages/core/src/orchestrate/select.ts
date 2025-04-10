@@ -258,6 +258,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
       const text: AgenticaTextHistory = createTextHistory({
         role: "assistant",

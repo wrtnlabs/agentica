@@ -171,8 +171,8 @@ export async function call<Model extends ILlmSchema.Model>(
     }
     if (
       choice.message.role === "assistant"
-      && choice.message.content !== null
-      && choice.message.content.length > 0
+      && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
         const value: AgenticaTextHistory = createTextHistory({
