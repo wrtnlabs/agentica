@@ -1,0 +1,172 @@
+---
+title: Agentica > Tutorial > React Native
+---
+
+# React Native + Expo + Agentica
+
+This tutorial guides you through integrating and using the Agentica library in a React Native project.
+
+## 1. Prerequisites
+
+- Node.js (>=18)
+- iOS/Android development environment setup (Simulator)
+
+## 2. Project Setup
+
+First, create a React Native project. We'll use the Agentica CLI to get started.
+
+```bash
+npx agentica@latest start
+```
+
+During the project creation process, you'll need to configure the following:
+
+- Project name
+- Package Manager selection (npm, yarn, or pnpm)
+- Project Type: Select React Native
+- OpenAI API key setup
+
+## 3. Running the Application
+
+```bash
+npm run start
+
+### ios
+npx pod-install
+npm run ios
+
+### android
+npm run android
+```
+
+## 4. Generated Code
+
+### 4.1 App.tsx
+
+`App.tsx` is the main file containing Agentica configuration.
+
+### 4.2 shim.ts
+
+The `shim.ts` file is a polyfill file required for using OpenAI and Agentica. It must always be imported first.
+
+### 4.3 controller/*
+The Controller folder contains functions that will be passed to the LLM. The template project includes the following example controllers:
+
+#### SMS Controller (`src/controller/sms.ts`)
+
+- Provides SMS message sending functionality
+- Implemented using the `expo-sms` package
+- Supports sending messages to single or multiple recipients
+
+#### Battery Controller (`src/controller/battery.ts`)
+
+- Provides battery-related information retrieval functionality
+- Implemented using the `expo-battery` package
+- Can retrieve battery level, status, power state, and other information
+
+#### Calendar Controller (`src/controller/calendar.ts`)
+
+- Provides calendar-related functionality
+- Supports adding, viewing, modifying, and deleting events
+
+## 5. Controller Development Guide
+
+With Agentica, you can easily add any functionality you can think of! (Even if it's only available in Native). To add your own functionality to Agentica, follow these steps:
+
+1. First, define the function for the functionality you want to implement.
+When writing functions, they must follow this format:
+
+  - Functions must have exactly one parameter
+  - The parameter must be an Object type
+  - Detailed JS Doc must be written. This JS Doc is used by the AI to select and execute functions
+  - Function parameters can only use basic JSON types (Native Classes like Date, Error are not supported)
+  - Using [`typia.tag`](https://typia.io/docs/validators/tags/) to structure Parameter Types can provide more detailed information to the LLM
+
+Here's an example code. You can include any code that can run in a React Native environment.
+
+```tsx
+/**
+ * A basic calculator that performs addition and subtraction operations.
+ */
+namespace Calculator {
+  /**
+   * Parameters for addition operation
+   */
+  interface AddProps {
+    /**
+     * First number to add
+     */
+    a: number;
+    /**
+     * Second number to add
+     */
+    b: number;
+  }
+
+  /**
+   * Parameters for subtraction operation
+   */
+  interface SubProps {
+    /**
+     * Number to subtract from
+     */
+    a: number;
+    /**
+     * Number to subtract
+     */
+    b: number;
+  }
+
+  /**
+   * Adds two numbers together.
+   * @returns The sum of two numbers
+   */
+  export function add(props: AddProps): number {
+    return props.a + props.b;
+  }
+
+  /**
+   * Subtracts the second number from the first number.
+   * @returns The result of subtracting the second number from the first number
+   */
+  export function sub(props: SubProps): number {
+    return props.a - props.b;
+  }
+}
+```
+
+2. You need to declare the Controller to apply it to Agentica.
+
+```tsx
+export const CalculatorController: IAgenticaController<'chatgpt'> = {
+  protocol: 'class',
+  name: 'calculator',
+  execute: async props =>
+    (Calculator as any)[props.function.name](props.arguments),
+  application: typia.llm.application<typeof Calculator, 'chatgpt'>(),
+};
+```
+
+3. Finally, go to App.tsx and apply your created Controller. That's it!
+
+```tsx
+new MicroAgentica({
+  model: 'chatgpt',
+  vendor: {
+    /**
+     * @warning
+     * This template is a proof-of-concept template created to demonstrate whether Agentica can call native features.
+     * To use this in a production environment, architectural modifications are required to properly secure the OpenAI Key.
+     */
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    }),
+    model: 'gpt-4o',
+  },
+  controllers: [CalculatorController], // Insert CalculatorController. 
+});
+```
+
+4. Start the development server and try chatting with Agentica! Agentica will call your created Controller based on the situation.
+
