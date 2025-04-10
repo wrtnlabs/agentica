@@ -1,8 +1,3 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { ListToolsResultSchema } from "@modelcontextprotocol/sdk/types.js";
-
 import type { IMcpLlmApplication, IMcpLlmTransportProps } from "../structures/mcp";
 /**
  * Create an MCP LLM application instance with type assertion.
@@ -18,6 +13,12 @@ import type { IMcpLlmApplication, IMcpLlmTransportProps } from "../structures/mc
  * @author Samchon
  */
 export async function assertMcpLlmApplication(props: IMcpLlmTransportProps): Promise<IMcpLlmApplication> {
+  // for peerDependencies
+  const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+  const { SSEClientTransport } = await import("@modelcontextprotocol/sdk/client/sse.js");
+  const { StdioClientTransport } = await import("@modelcontextprotocol/sdk/client/stdio.js");
+  const { ListToolsResultSchema } = await import("@modelcontextprotocol/sdk/types.js");
+
   const client = new Client({
     name: "get_tool_list",
     version: "1.0.0",
