@@ -18,7 +18,7 @@ With these strategies, you can build Agentic AI chatbot only with Swagger docume
 
 Look at the below demonstration, and feel how `@agentica/core` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
 
-```typescript filename="src/main.ts" showLineNumbers {17-24, 35-36, 42-43, 49-50}
+```typescript filename="src/main.ts" showLineNumbers {15-22, 33-34, 40-41, 47-48}
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import typia from "typia";
@@ -198,7 +198,7 @@ await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript filename="src/main.llama.ts" showLineNumbers {12-19, 23}
+```typescript filename="src/main.llama.ts" showLineNumbers {13-20, 24}
 import { 
   Agentica,
   IAgenticaController,
@@ -241,7 +241,7 @@ Otherwise you want to serve the function calling from a TypeScript class, create
 
 For reference, `IAgenticaController.name` must be unique, because it is used to identify the controller in the agent. Also, if number of your controller functions are too many, it would better to configure `executor.selector` as vector selector of plugin. If you don't do it, too much LLM token costs would be consumed.
 
-```typescript filename="src/main.ts" showLineNumbers {13-51}
+```typescript filename="src/main.ts" showLineNumbers {12-50}
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import typia from "typia";

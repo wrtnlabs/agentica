@@ -14,12 +14,12 @@ import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
   <code>src/main.ts</code>,
   <code>Agentica</code>,
   <code>IAgenticaProps</code>,
-  <code>IAgenticaVendor</code>,
+  <code>IAgenticaConfig</code>,
   <code>IAgenticaController</code>,
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers
-import { Agentica, AgenticaEvent, AgenticaHistory } from "@agentica/core";
+import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "@agentica/openai";
 import { v4 } from "uuid";
 
@@ -31,8 +31,31 @@ export const main = async (id: string): Promise<void> => {
       api: new OpenAI({ apiKey: "********" }),
       model: "gpt-4o-mini",
     },
-    controllers: [...],
-    histories: await getPrompts(id),
+    controllers: [
+      {
+        protocol: "http",
+        name: "shopping",
+        application: assertHttpLlmApplication({
+          model: "chatgpt",
+          document: await fetch(
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
+          ).then(r => r.json()),
+        }),
+        connection: {
+          host: "https://shopping-be.wrtn.ai",
+          headers: {
+            Authorization: "Bearer *****",
+          },
+        },
+      },
+      {
+        protocol: "class",
+        name: "policy",
+        application: typia.llm.application<ShoppingPolicy, "chatgpt">(),
+        execute: new ShoppingPolicy(),
+      },
+    ],
+    histories: await getHistories(id),
   });
 
   // EVENT HANDLING
@@ -52,10 +75,10 @@ export const main = async (id: string): Promise<void> => {
   });
 
   // CONVERSATION & ARCHIVING
-  const prompts: AgenticaHistory[] = await agent.conversate(
+  const histories: AgenticaHistory[] = await agent.conversate(
     "I wanna buy Mackbook Pro."
   );
-  await archivePrompts(id, prompts);
+  await archiveHistories(id, histories);
 };
 ```
   </Tabs.Tab>
@@ -333,7 +356,6 @@ import {
   IAgenticaHistoryJson,
 } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
-import { OpenApi, HttpLlm } from "@samchon/openapi";
 import typia from "typia";
 
 export const main = async (id: string): Promise<void> => {
