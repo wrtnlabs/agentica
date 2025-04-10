@@ -12,7 +12,12 @@
 <a href="https://github.com/samchon/typia">
     <img src="https://img.shields.io/badge/poweredby-Typia-blue?style=for-the-badge" alt="Badge">
 </a>
+<!-- [![](https://dcbadge.limes.pink/api/server/INVITE)](https://discord.gg/INVITE) -->
+<a href="https://discord.gg/aMhRmzkqCx">
+  <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx" alt="Discord">
+</a>
 </p>
+
 <p align="center">
     <strong>Agentic AI Framework specialized in LLM Function Calling</strong>
     <br>
@@ -129,7 +134,7 @@ Traditional LLM frameworks struggle with structured outputs:
 
 ## 💬 Community & Support
 
-<!-- TODO: add slack link -->
+- [Discord](https://discord.gg/aMhRmzkqCx)
 
 ---
 
