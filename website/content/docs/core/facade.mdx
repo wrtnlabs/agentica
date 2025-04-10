@@ -222,8 +222,8 @@ flowchart
   <code>IAgenticaController</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {12-50}
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+```typescript filename="src/main.ts" showLineNumbers {12-53}
+import { Agentica, assertHttpLlmApplication, assertMcpLlmApplication } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import typia from "typia";
 
@@ -259,19 +259,22 @@ const main = async (): Promise<void> => {
         execute: new ShoppingCounselor(),
       },
       {
-        protocol: "class",
+        protocol: "mcp",
         name: "policy",
-        application: 
-          typia.llm.application<ShoppingPolicy, "chatgpt">(),
-        execute: new ShoppingPolicy(),
+        application: await assertMcpLlmApplication({
+          type: "stdio",
+          command: "npx",
+          args: ["-y", "@wrtnlabs/shopping-policy-mcp"],
+        }),
       },
       {
-        protocol: "class",
+        protocol: "mcp",
         name: "rag",
-        application: 
-          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
-        execute: new ShoppingSearchRag(),
-      },
+        application: await assertMcpLlmApplication({
+          type: "sse",
+          url: new URL("http://localhost:8931/sse"),
+        }),
+      }
     ],
     config: {
       executor: {
@@ -303,6 +306,10 @@ main().catch(console.error);
 In `@agentica/core`, there is a concept of controller, a set LLM function calling schemas (application schema) and execute functions for actual function calling. And `@agentica/core` supports two protocol types of controllers; HTTP server and TypeScript class.
 
 When you're using HTTP server controller, create LLM application schema from `assertHttpLlmApplication()` or `validateHttpLlmApplication()` function. These functions will validate whether the target Swagger/OpenAPI document is correct or not. And then, configure connection information to the HTTP server with destination URL and headers. 
+
+When you want to serve the function calling from a MCP (Model Context Protocol) application, create LLM application schema from `assertMcpLlmApplication()`.  
+These functions will validate whether the target MCP application is correct or not. And then, configure the MCP application with type, command and arguments.  
+Currently, we support `stdio` and `sse` types of MCP applications.
 
 Otherwise you want to serve the function calling from a TypeScript class, create LLM application schema from `typia.llm.application<Class, Model>()` function. And provide the class instance for the actual function calling.
 
