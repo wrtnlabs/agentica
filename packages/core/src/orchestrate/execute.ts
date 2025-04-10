@@ -9,7 +9,6 @@ import { call } from "./call";
 import { cancel } from "./cancel";
 import { describe } from "./describe";
 import { initialize } from "./initialize";
-import { cancelFunction } from "./internal/cancelFunction";
 import { select } from "./select";
 
 export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgenticaExecutor<Model>> | null) {
@@ -64,12 +63,6 @@ export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgent
       const executes: AgenticaExecuteHistory<Model>[] = prompts.filter(
         prompt => prompt.type === "execute",
       );
-      for (const e of executes) {
-        await cancelFunction(ctx, {
-          reason: "completed",
-          name: e.operation.name,
-        });
-      }
       histories.push(
         ...(await (
           executor?.describe ?? describe
