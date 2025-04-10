@@ -27,7 +27,7 @@ import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
-import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
+import { createCallEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
 import { createCancelHistory, createExecuteHistory, createTextHistory, decodeHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
@@ -118,7 +118,7 @@ export async function call<Model extends ILlmSchema.Model>(
         }
         closures.push(
           async (): Promise<
-            [AgenticaExecuteHistory<Model>, AgenticaCancelHistory<Model>]
+            Array<AgenticaExecuteHistory<Model> | AgenticaCancelHistory<Model>>
           > => {
             const call: AgenticaCallEvent<Model> = createCallEvent({
               id: tc.id,
@@ -149,31 +149,24 @@ export async function call<Model extends ILlmSchema.Model>(
             ).catch(() => {});
 
             if (isAgenticaContext(ctx)) {
-              await cancelFunction(ctx, {
+              cancelFunction(ctx, {
                 name: call.operation.name,
                 reason: "completed",
               });
-              ctx.dispatch(
-                createCancelEvent({
-                  selection: createOperationSelection({
-                    operation: call.operation,
-                    reason: "complete",
-                  }),
+              return [
+                execute,
+                createCancelHistory({
+                  id: call.id,
+                  selections: [
+                    createOperationSelection({
+                      operation: call.operation,
+                      reason: "complete",
+                    }),
+                  ],
                 }),
-              ).catch(() => {});
+              ];
             }
-            return [
-              execute,
-              createCancelHistory({
-                id: call.id,
-                selections: [
-                  createOperationSelection({
-                    operation: call.operation,
-                    reason: "complete",
-                  }),
-                ],
-              }),
-            ] as const;
+            return [execute];
           },
         );
       }
