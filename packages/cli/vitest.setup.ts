@@ -2,6 +2,7 @@ import { mockServer } from "./mocks/server";
 
 const ALLOW_REGEX_LIST = [
   /https:\/\/api\.github\.com\/repos/,
+  /https:\/\/raw\.githubusercontent\.com\/wrtnlabs\/connectors\//,
 ];
 
 beforeAll(() => mockServer.listen({
