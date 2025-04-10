@@ -1,0 +1,256 @@
+---
+title: Agentica > Guide Documents > Core Library > MicroAgentica
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../components/RemoteSource";
+
+import MicroAgenticaSnippet from "../../snippets/MicroAgenticaSnippet.mdx";
+import AgenticaHistorySnippet from "../../snippets/AgenticaHistorySnippet.mdx";
+import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
+
+## `MicroAgentica`
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>MicroAgentica</code>,
+  <code>IMicroAgenticaProps</code>,
+  <code>IMicroAgenticaConfig</code>,
+  <code>IAgenticaController</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { MicroAgentica, MicroAgenticaHistory } from "@agentica/core";
+import OpenAI from "@agentica/openai";
+import { v4 } from "uuid";
+
+export const main = async (id: string): Promise<void> => {
+  // CONSTRUCTION
+  const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
+    model: "chatgpt",
+    vendor: {
+      api: new OpenAI({ apiKey: "********" }),
+      model: "gpt-4o-mini",
+    },
+    controllers: [
+      {
+        protocol: "class",
+        name: "bbs",
+        application: typia.llm.application<BbsArticleService, "chatgpt">(),
+        execute: new MicroAgenticaHistory(),
+      }
+    ],
+    histories: await getPrompts(id),
+  });
+
+  // EVENT HANDLING
+  agent.on("text", async (event) => {
+    for await (const piece of event.stream)
+      console.log(piece);
+  });
+  agent.on("describe", async (event) => {
+    console.log(
+      "describe", 
+      event.executes.map((x) => x.operation.function.name),
+      await event.join(), // full text joining instead of streaming
+    );
+  });
+
+  // CONVERSATION & ARCHIVING
+  const prompts: MicroAgenticaHistory[] = await agent.conversate(
+    "I wanna buy Mackbook Pro."
+  );
+  await archiveHistories(id, prompts);
+};
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <MicroAgenticaSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IMicroAgenticaProps.ts"
+      filename="@agentica/core/IMicroAgenticaProps"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IMicroAgenticaConfig.ts"
+      filename="@agentica/core/IMicroAgenticaConfig"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaController.ts"
+      filename="@agentica/core/IAgenticaController"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+## API Vendor
+<Tabs 
+  items={[
+    <code>src/main.chatgpt.ts</code>,
+    <code>src/main.llama.ts</code>,
+    <code>IAgenticaProps</code>,
+    <code>IAgenticaVendor</code>,
+  ]}
+  defaultIndex={1}>
+  <Tabs.Tab>
+```typescript filename="src/main.chatgpt.ts" showLineNumbers {12-18, 23}
+import { 
+  Agentica,
+  IAgenticaController,
+  IAgenticaProps,
+  IAgenticaVendor
+} from "@agentica/core";
+import OpenAI from "openai";
+
+import { BbsArticleService } from "./services/BbsArticleService";
+
+const agent: Agentica<"chatgpt"> = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: "********",
+    }),
+  } satisfies IAgenticaVendor,
+  controllers: [
+    {
+      protocol: "http",
+      name: "class",
+      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController<"chatgpt">,
+  ]
+} satisfies IAgenticaProps<"chatgpt">);
+await agent.conversate("I wanna buy MacBook Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.llama.ts" showLineNumbers {12-19, 24}
+import { 
+  MicroAgentica,
+  IAgenticaController,
+  IAgenticaVendor,
+  IMicroAgenticaProps
+} from "@agentica/core";
+import OpenAI from "openai";
+
+import { BbsArticleService } from "./services/BbsArticleService";
+
+const agent: Agentica<"llama"> = new Agentica({
+  model: "llama",
+  vendor: {
+    model: "llama3.3-70b",
+    api: new OpenAI({
+      apiKey: "********",
+      baseURL: "https://api.llama-api.com",
+    }),
+  } satisfies IAgenticaVendor,
+  controllers: [
+    {
+      protocol: "http",
+      name: "class",
+      application: typia.llm.application<BbsArticleService, "llama">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController<"llama">,
+  ]
+} satisfies IAgenticaProps<"llama">);
+await agent.conversate("I wanna buy MacBook Pro");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IMicroAgenticaProps.ts"
+      filename="@agentica/core/IMicroAgenticaProps"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaVendor.ts"
+      filename="@agentica/core/IAgenticaVendor"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+## Function Controller
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaProps</code>,
+  <code>IAgenticaController</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12-50}
+import { MicroAgentica, assertHttpLlmApplication } from "@agentica/core";
+import typia from "typia";
+
+const main = async (): Promise<void> => {
+  const agent = new Agentica({
+    model: "chatgpt",
+    vendor: {
+      api: new OpenAI({ apiKey: "*****" }),
+      model: "gpt-4o-mini",
+    },
+    controllers: [
+      {
+        protocol: "http",
+        name: "shopping",
+        application: assertHttpLlmApplication({
+          model: "chatgpt",
+          document: await fetch(
+            "https://shopping-be.wrtn.ai/editor/swagger.json",
+          ).then((r) => r.json()),
+        }),
+        connection: {
+          host: "https://shopping-be.wrtn.ai",
+          headers: {
+            Authorization: "Bearer *****",
+          },
+        },
+      },
+      {
+        protocol: "class",
+        name: "counselor",
+        application: 
+          typia.llm.application<ShoppingCounselor, "chatgpt">(),
+        execute: new ShoppingCounselor(),
+      },
+      {
+        protocol: "class",
+        name: "policy",
+        application: 
+          typia.llm.application<ShoppingPolicy, "chatgpt">(),
+        execute: new ShoppingPolicy(),
+      },
+      {
+        protocol: "class",
+        name: "rag",
+        application: 
+          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
+        execute: new ShoppingSearchRag(),
+      },
+    ],
+  });
+  await agent.conversate("I wanna buy MacBook Pro");
+};
+main().catch(console.error);
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IMicroAgenticaProps.ts"
+      filename="@agentica/core/IMicroAgenticaProps"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaController.ts"
+      filename="@agentica/core/IAgenticaController"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+
+
+## Conversation
