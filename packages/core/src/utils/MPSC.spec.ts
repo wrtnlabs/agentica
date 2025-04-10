@@ -1,6 +1,6 @@
 import { MPSC } from "./MPSC";
 
-describe("mPSC", () => {
+describe("the MPSC", () => {
   describe("basic functionality", () => {
     it("basic MPSC functionality test", async () => {
       const mpsc = new MPSC<number>();

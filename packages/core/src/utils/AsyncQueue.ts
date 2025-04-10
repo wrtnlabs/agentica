@@ -6,6 +6,11 @@ export class AsyncQueue<T> {
   private closed = false;
 
   enqueue(item: T) {
+    if (this.closed) {
+      console.warn("this queue is closed, you can't enqueue item", new Error().stack);
+      return;
+    }
+
     this.queue.push(item);
     if (this.resolvers.length > 0) {
       this.resolvers.shift()?.({ value: this.queue.shift()!, done: false });
@@ -14,21 +19,21 @@ export class AsyncQueue<T> {
 
   async dequeue(): Promise<IteratorResult<T, undefined>> {
     const item = (() => {
-      if (this.queue.length > 0) {
+      if (this.queue.length !== 0) {
         return { value: this.queue.shift()!, done: false } as const;
       }
       if (this.closed) {
         return { value: undefined, done: true } as const;
       }
-      return undefined;
+      return null;
     })();
 
-    if (this.emptyResolvers.length > 0) {
+    if (this.isEmpty() && this.emptyResolvers.length !== 0) {
       this.emptyResolvers.forEach(resolve => resolve());
       this.emptyResolvers = [];
     }
 
-    if (item !== undefined) {
+    if (item !== null) {
       return item;
     }
 
@@ -55,6 +60,13 @@ export class AsyncQueue<T> {
     this.closeResolvers.forEach(resolve => resolve());
   }
 
+  /**
+   * Wait until the queue is empty
+   *
+   * if the queue is closed, it will not resolve promise
+   * this function only check the queue is empty
+   * @returns A promise that resolves when the queue is empty
+   */
   async waitUntilEmpty() {
     if (this.isEmpty()) {
       return Promise.resolve();
