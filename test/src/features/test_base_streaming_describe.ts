@@ -74,7 +74,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   agent.on("call", (event) => {
     events.push(event);
-    if (event.operation.name === "add" || event.operation.name === "subtract") {
+    if (event.operation.name.includes("add") || event.operation.name.includes("subtract")) {
       functionCalled = true;
     }
   });
@@ -192,7 +192,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   const hasCalculatorExecution = describeEvent.executes.some(
     exec =>
-      exec.operation.name === "add" || exec.operation.name === "subtract",
+      exec.operation.name.includes("add") || exec.operation.name.includes("subtract"),
   );
   if (!hasCalculatorExecution) {
     throw new Error(

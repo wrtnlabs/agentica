@@ -1,52 +1,28 @@
 import type { AgenticaEvent, IAgenticaController } from "@agentica/core";
 
-import { Agentica } from "@agentica/core";
+import { Agentica, assertMcpLlmApplication } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
 
 import { TestGlobal } from "../TestGlobal";
 
-// 간단한 계산기 컨트롤러를 생성
-class Calculator {
-  /**
-   * 두 숫자를 더합니다.
-   *
-   * @param params 더할 두 숫자
-   * @returns 두 숫자의 합
-   */
-  public add(params: { a: number; b: number }): number {
-    return params.a + params.b;
-  }
-
-  /**
-   * 첫 번째 숫자에서 두 번째 숫자를 뺍니다.
-   *
-   * @param params 연산할 두 숫자
-   * @returns 뺄셈 결과
-   */
-  public subtract(params: { a: number; b: number }): number {
-    return params.a - params.b;
-  }
-}
-
-export async function test_base_work_describe(): Promise<void | false> {
+export async function test_base_mcp_work_describe(): Promise<void | false> {
   if (TestGlobal.chatgptApiKey.length === 0) {
     return false;
   }
 
-  // 이벤트 추적을 위한 변수들
+  // for trace event
   const events: AgenticaEvent<"chatgpt">[] = [];
   let functionCalled = false;
 
-  // 계산기 컨트롤러 생성
+  // calculator controller
   const calculatorController: IAgenticaController<"chatgpt"> = {
-    protocol: "class",
+    protocol: "mcp",
     name: "calculator",
-    application: typia.llm.application<Calculator, "chatgpt">(),
-    execute: new Calculator(),
+    application: await assertMcpLlmApplication({ type: "stdio", command: "npx", args: ["-y", "@wrtnlabs/calculator-mcp"] }),
   };
 
-  // Agentica 인스턴스 생성
+  // Agentica instance
   const agent: Agentica<"chatgpt"> = new Agentica({
     model: "chatgpt",
     vendor: {
@@ -58,7 +34,7 @@ export async function test_base_work_describe(): Promise<void | false> {
     controllers: [calculatorController],
   });
 
-  // 이벤트 리스너 등록
+  // event listener
   agent.on("select", (event) => {
     events.push(event);
   });
@@ -76,26 +52,26 @@ export async function test_base_work_describe(): Promise<void | false> {
 
   const a = 5123123123;
   const b = 3412342134;
-  // 대화 시작 - 함수 호출을 유도하는 메시지
+  // start conversation - induce function call
   await agent.conversate(
     `Could you add ${a} and ${b} for me?; You should use calculator`,
   );
 
-  // 함수 호출 확인
+  // check function call
   if (!functionCalled) {
     throw new Error("Function was not called during conversation");
   }
 
-  // 결과 확인
+  // check result
   const executeEvent = events.find(e => e.type === "execute");
 
   if (executeEvent === undefined) {
     throw new Error("Execute event not found");
   }
 
-  if (executeEvent.value !== a + b) {
-    throw new Error(
-      `Expected result to be ${a + b}, but got ${executeEvent.value as string}`,
+  if (!typia.is<[{ type: "text"; text: string }]>(executeEvent.value) || !executeEvent.value[0].text.includes(`${a + b}`)) {
+    throw new TypeError(
+      `Expected result to be ${a + b}, but got ${JSON.stringify(executeEvent.value)}`,
     );
   }
 }
