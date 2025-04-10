@@ -131,7 +131,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       role: "user",
       text: content,
     });
-    await this.dispatch(
+    this.dispatch(
       createTextEvent({
         role: "user",
         stream: StreamUtil.to(content),
@@ -139,7 +139,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
         get: () => content,
         join: async () => Promise.resolve(content),
       }),
-    );
+    ).catch(() => {});
 
     const newbie: AgenticaHistory<Model>[] = await this.executor_(
       this.getContext({

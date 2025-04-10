@@ -258,6 +258,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
       const text: AgenticaTextHistory = createTextHistory({
         role: "assistant",
@@ -265,7 +266,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       });
       prompts.push(text);
 
-      await ctx.dispatch(
+      ctx.dispatch(
         createTextEvent({
           role: "assistant",
           stream: StreamUtil.to(text.text),
@@ -273,7 +274,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           done: () => true,
           get: () => text.text,
         }),
-      );
+      ).catch(() => {});
     }
   }
 
