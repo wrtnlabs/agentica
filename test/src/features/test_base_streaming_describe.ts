@@ -92,16 +92,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
     describeStreamProcessed = true;
     describeJoinResult = await event.join();
 
-    const reader = event.stream.getReader();
-    while (true) {
-      const { done, value } = await reader.read().catch((e) => {
-        console.error(e);
-        return { done: true, value: undefined };
-      });
-      if (done) {
-        break;
-      }
-
+    for await (const value of event.stream) {
       // Extract text content from stream chunks
       try {
         if (typeof value === "string") {

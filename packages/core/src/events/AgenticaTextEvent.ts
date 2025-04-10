@@ -7,7 +7,7 @@ export interface AgenticaTextEvent<
   Role extends "assistant" | "user" = "assistant" | "user",
 > extends AgenticaEventBase<"text"> {
   role: Role;
-  stream: ReadableStream<string>;
+  stream: AsyncGenerator<string, undefined, undefined>;
   join: () => Promise<string>;
   toJSON: () => IAgenticaEventJson.IText;
   toHistory: () => AgenticaTextHistory;

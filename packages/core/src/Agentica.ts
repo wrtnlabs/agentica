@@ -22,7 +22,7 @@ import { execute } from "./orchestrate/execute";
 import { AgenticaHistoryTransformer } from "./transformers/AgenticaHistoryTransformer";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
-import { StreamUtil } from "./utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil, toAsyncGenerator } from "./utils/StreamUtil";
 
 /**
  * Agentica AI chatbot agent.
@@ -134,7 +134,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     this.dispatch(
       createTextEvent({
         role: "user",
-        stream: StreamUtil.to(content),
+        stream: toAsyncGenerator(content),
         done: () => true,
         get: () => content,
         join: async () => Promise.resolve(content),
@@ -282,7 +282,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
         await dispatch({
           type: "response",
           source,
-          stream: streamForStream,
+          stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
           body: event.body,
           options: event.options,
           join: async () => {

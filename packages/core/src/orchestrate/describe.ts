@@ -12,7 +12,7 @@ import { createDescribeEvent } from "../factory/events";
 import { createDescribeHistory, decodeHistory } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
-import { StreamUtil } from "../utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
 
 export async function describe<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
@@ -85,7 +85,7 @@ export async function describe<Model extends ILlmSchema.Model>(
         ctx.dispatch(
           createDescribeEvent({
             executes: histories,
-            stream: mpsc.consumer,
+            stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
             done: () => mpsc.done(),
             get: () => describeContext[choice.index]?.content ?? "",
             join: async () => {

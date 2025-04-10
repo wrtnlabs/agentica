@@ -136,7 +136,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
 ----------------------------------------------------------- */
 export function createTextEvent<Role extends "user" | "assistant">(props: {
   role: Role;
-  stream: ReadableStream<string>;
+  stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
@@ -167,7 +167,7 @@ export function createTextEvent<Role extends "user" | "assistant">(props: {
 
 export function createDescribeEvent<Model extends ILlmSchema.Model>(props: {
   executes: AgenticaExecuteHistory<Model>[];
-  stream: ReadableStream<string>;
+  stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
@@ -216,7 +216,7 @@ export function createResponseEvent(props: {
   source: AgenticaEventSource;
   body: OpenAI.ChatCompletionCreateParamsStreaming;
   options?: OpenAI.RequestOptions | undefined;
-  stream: ReadableStream<OpenAI.ChatCompletionChunk>;
+  stream: AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>;
   join: () => Promise<OpenAI.ChatCompletion>;
 }): AgenticaResponseEvent {
   return {

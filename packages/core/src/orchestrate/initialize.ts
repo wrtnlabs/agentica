@@ -13,7 +13,7 @@ import { createTextEvent } from "../factory/events";
 import { createTextHistory, decodeHistory } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
-import { StreamUtil } from "../utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
 
 const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
   __IChatInitialApplication,
@@ -109,7 +109,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         ctx.dispatch(
           createTextEvent({
             role: "assistant",
-            stream: mpsc.consumer,
+            stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
             done: () => mpsc.done(),
             get: () => textContext[choice.index]!.content,
             join: async () => {
