@@ -266,7 +266,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       });
       prompts.push(text);
 
-      await ctx.dispatch(
+      ctx.dispatch(
         createTextEvent({
           role: "assistant",
           stream: StreamUtil.to(text.text),
@@ -274,7 +274,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           done: () => true,
           get: () => text.text,
         }),
-      );
+      ).catch(() => {});
     }
   }
 
