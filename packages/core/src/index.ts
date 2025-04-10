@@ -37,6 +37,8 @@ export * from "./json/IAgenticaHistoryJson";
 export * from "./json/IAgenticaOperationJson";
 export * from "./json/IAgenticaOperationSelectionJson";
 export * from "./json/IAgenticaTokenUsageJson";
+export * from "./json/IMicroAgenticaEventJson";
+export * from "./json/IMicroAgenticaHistoryJson";
 export * from "./MicroAgentica";
 export * as orchestrate from "./orchestrate";
 
