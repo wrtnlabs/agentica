@@ -39,13 +39,13 @@ export function AgenticaChatSideMovie<Model extends ILlmSchema.Model>(props: Age
       <hr />
       <ul>
         <li>
-          {" "}
           Model:
+          {" "}
           {props.vendor.model}
         </li>
         <li>
-          {" "}
           Locale:
+          {" "}
           {props.config?.locale ?? navigator.language}
         </li>
         <li>

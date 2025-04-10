@@ -1,167 +1,46 @@
 import type { IAgenticaVendor } from "@agentica/core";
-import type { IHttpLlmApplication } from "@samchon/openapi";
+import type { IHttpConnection, ILlmSchema, OpenApi } from "@samchon/openapi";
 import type { ReactElement } from "react";
 
 import { Agentica } from "@agentica/core";
 import {
   Button,
   FormControl,
-  FormControlLabel,
   FormLabel,
-  Radio,
-  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
+import { HttpLlm } from "@samchon/openapi";
 import OpenAI from "openai";
 import React, { useState } from "react";
-import JsonInput from "react-json-editor-ajrm";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
+import { VendorConfigurationMovie } from "../common/VendorConfigurationMovie";
 
 import { AgenticaChatUploaderMovie } from "./AgenticaChatUploaderMovie";
-
-/**
- * {@link https://github.com/AndrewRedican/react-json-editor-ajrm}
- */
-const locale = {
-  format: "{reason} at line {line}",
-  symbols: {
-    colon: "colon",
-    // :
-    comma: "comma",
-    // ,  ،  、
-    semicolon: "semicolon",
-    // ;
-    slash: "slash",
-    // /  relevant for comment syntax support
-    backslash: "backslash",
-    // \  relevant for escaping character
-    brackets: {
-      round: "round brackets",
-      // ( )
-      square: "square brackets",
-      // [ ]
-      curly: "curly brackets",
-      // { }
-      angle: "angle brackets", // < >
-
-    },
-    period: "period",
-    // . Also known as full point, full stop, or dot
-    quotes: {
-      single: "single quote",
-      // '
-      double: "double quote",
-      // "
-      grave: "grave accent", // ` used on Javascript ES6 Syntax for String Templates
-
-    },
-    space: "space",
-    //
-    ampersand: "ampersand",
-    // &
-    asterisk: "asterisk",
-    // *  relevant for some comment sytanx
-    at: "at sign",
-    // @  multiple uses in other coding languages including certain data types
-    equals: "equals sign",
-    // =
-
-    hash: "hash",
-    // #
-
-    percent: "percent",
-    // %
-
-    plus: "plus",
-    // +
-
-    minus: "minus",
-    // −
-
-    dash: "dash",
-    // −
-
-    hyphen: "hyphen",
-    // −
-
-    tilde: "tilde",
-    // ~
-
-    underscore: "underscore",
-    // _
-
-    bar: "vertical bar",
-    // |
-
-  },
-  types: {
-    key: "key",
-    value: "value",
-    number: "number",
-    string: "string",
-    primitive: "primitive",
-    boolean: "boolean",
-    character: "character",
-    integer: "integer",
-    array: "array",
-    float: "float", // ... Reference: https://en.wikipedia.org/wiki/List_of_data_structures
-
-  },
-  invalidToken: {
-    tokenSequence: {
-      prohibited: "'{firstToken}' token cannot be followed by '{secondToken}' token(s)",
-      permitted: "'{firstToken}' token can only be followed by '{secondToken}' token(s)",
-    },
-    termSequence: {
-      prohibited: "A {firstTerm} cannot be followed by a {secondTerm}",
-      permitted: "A {firstTerm} can only be followed by a {secondTerm}",
-    },
-    double: "'{token}' token cannot be followed by another '{token}' token",
-    useInstead: "'{badToken}' token is not accepted. Use '{goodToken}' instead",
-    unexpected: "Unexpected '{token}' token found",
-  },
-  brace: {
-    curly: {
-      missingOpen: "Missing '{' open curly brace",
-      missingClose: "Open '{' curly brace is missing closing '}' curly brace",
-      cannotWrap: "'{token}' token cannot be wrapped in '{}' curly braces",
-    },
-    square: {
-      missingOpen: "Missing '[' open square brace",
-      missingClose: "Open '[' square brace is missing closing ']' square brace",
-      cannotWrap: "'{token}' token cannot be wrapped in '[]' square braces",
-    },
-  },
-  string: {
-    missingOpen: "Missing/invalid opening string '{quote}' token",
-    missingClose: "Missing/invalid closing string '{quote}' token",
-    mustBeWrappedByQuotes: "Strings must be wrapped by quotes",
-    nonAlphanumeric: "Non-alphanumeric token '{token}' is not allowed outside string notation",
-    unexpectedKey: "Unexpected key found at string position",
-  },
-  key: {
-    numberAndLetterMissingQuotes: "Key beginning with number and containing letters must be wrapped by quotes",
-    spaceMissingQuotes: "Key containing space must be wrapped by quotes",
-    unexpectedString: "Unexpected string found at key position",
-  },
-  noTrailingOrLeadingComma: "Trailing or leading commas in arrays and objects are not permitted",
-};
 
 export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderApplication.IProps) {
   // PARAMETERS
   const [host, setHost] = useState("http://localhost:37001");
-  const [headers, setHeaders] = useState<Record<string, string>>({
+  const [headersText, setHeadersText] = useState<string>(JSON.stringify({
     Authorization: "YOUR_SERVER_API_KEY",
-  });
-  const [model, setModel] = useState("gpt-4o-mini");
-  const [apiKey, setApiKey] = useState("");
+  }, null, 2));
+  const [config, setConfig] = useState<VendorConfigurationMovie.IConfig>(
+    VendorConfigurationMovie.defaultConfig(),
+  );
 
   // RESULT
-  const [application, setApplication]
-    = useState<IHttpLlmApplication<"chatgpt"> | null>(null);
+  const [document, setDocument] = useState<OpenApi.IDocument | null>(null);
   const [progress, setProgress] = useState(false);
+
+  const headers: Record<string, IHttpConnection.HeaderValue> | null = parseHeaders(headersText);
+  const disabled: boolean = progress === true
+    || headers === null
+    || document === null
+    || host.length === 0
+    || config.apiKey.length === 0
+    || config.vendorModel.length === 0
+    || config.schemaModel.length === 0;
 
   // HANDLERS
   const handleError = (error: string) => {
@@ -170,40 +49,44 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
     }
     else { alert(error); }
   };
-  const handleApplication = (
-    application: IHttpLlmApplication<"chatgpt"> | null,
+  const handleDocument = (
+    document: OpenApi.IDocument | null,
     error: string | null,
   ) => {
-    setApplication(application);
+    setDocument(document);
     if (error !== null) {
       handleError(error);
     }
   };
 
   const open = async () => {
-    if (application === null) {
+    if (document === null) {
       return;
     }
     setProgress(true);
     try {
       const vendor: IAgenticaVendor = {
         api: new OpenAI({
-          apiKey,
+          apiKey: config.apiKey,
+          baseURL: config.baseURL,
           dangerouslyAllowBrowser: true,
         }),
-        model: model as "gpt-4o",
+        model: config.vendorModel,
       };
-      const agent: Agentica<"chatgpt"> = new Agentica({
-        model: "chatgpt",
+      const agent: Agentica<ILlmSchema.Model> = new Agentica({
+        model: config.schemaModel,
         vendor,
         controllers: [
           {
             protocol: "http",
             name: "main",
-            application,
+            application: HttpLlm.application({
+              model: config.schemaModel,
+              document,
+            }),
             connection: {
               host,
-              headers,
+              headers: headers!,
             },
           },
         ],
@@ -218,7 +101,7 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
 
   return (
     <div style={props.style}>
-      <AgenticaChatUploaderMovie onChange={handleApplication} />
+      <AgenticaChatUploaderMovie onChange={handleDocument} />
       <br />
       <FormControl fullWidth>
         <Typography variant="h6">HTTP Connection</Typography>
@@ -233,47 +116,21 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
         />
         <br />
         <FormLabel> Headers </FormLabel>
-        <JsonInput
-          locale={locale}
-          theme="dark_vscode_tribute"
-          placeholder={headers}
-          onChange={setHeaders}
-          height="100px"
-        />
-        <br />
-        <br />
-        <Typography variant="h6">LLM Arguments</Typography>
-        <br />
-        <FormLabel> LLM Provider </FormLabel>
-        <RadioGroup defaultValue="chatgpt" style={{ paddingLeft: 15 }}>
-          <FormControlLabel
-            value="chatgpt"
-            control={<Radio />}
-            label="OpenAI (ChatGPT)"
-          />
-        </RadioGroup>
-        <FormLabel style={{ paddingTop: 20 }}> OpenAI Model </FormLabel>
-        <RadioGroup
-          defaultValue={model}
-          onChange={(_e, value) => setModel(value)}
-          style={{ paddingLeft: 15 }}
-        >
-          <FormControlLabel
-            value="gpt-4o-mini"
-            control={<Radio />}
-            label="GPT-4o Mini"
-          />
-          <FormControlLabel value="gpt-4o" control={<Radio />} label="GPT-4o" />
-        </RadioGroup>
-        <br />
         <TextField
-          onChange={e => setApiKey(e.target.value)}
-          defaultValue={apiKey}
-          label="OpenAI API Key"
-          variant="outlined"
-          placeholder="Your OpenAI API Key"
-          error={apiKey.length === 0}
+          fullWidth
+          multiline
+          defaultValue={headersText}
+          onChange={e => setHeadersText(e.target.value)}
+          maxRows={10}
+          error={headers === null}
+          helperText={headers === null ? "Invalid JSON format" : undefined}
         />
+        <br />
+        <br />
+        <Typography variant="h6">OpenAI Configuration</Typography>
+        <br />
+        <VendorConfigurationMovie config={config} onChange={setConfig} />
+        <br />
       </FormControl>
       <br />
       <br />
@@ -283,13 +140,7 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
         variant="contained"
         color="info"
         size="large"
-        disabled={
-          progress === true
-          || document === null
-          || application === null
-          || host.length === 0
-          || apiKey.length === 0
-        }
+        disabled={disabled}
         onClick={() => void open().catch(() => {})}
       >
         {progress ? "Generating..." : "Generate AI Chatbot"}
@@ -302,5 +153,14 @@ export namespace AgenticaChatUploaderApplication {
     style?: React.CSSProperties;
     onError?: (error: string) => void;
     onSuccess: (element: ReactElement) => void;
+  }
+}
+
+function parseHeaders(text: string): Record<string, IHttpConnection.HeaderValue> | null {
+  try {
+    return JSON.parse(text) as Record<string, IHttpConnection.HeaderValue>;
+  }
+  catch {
+    return null;
   }
 }

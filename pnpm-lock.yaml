@@ -9,9 +9,6 @@ catalogs:
     openai:
       specifier: ^4.80.0
       version: 4.91.1
-    type-fest:
-      specifier: ^4.37.0
-      version: 4.39.1
   typescript:
     ts-patch:
       specifier: ^3.3.0
@@ -29,10 +26,6 @@ catalogs:
     typia:
       specifier: ^9.0.1
       version: 9.0.1
-  vite:
-    vitest:
-      specifier: ^3.0.9
-      version: 3.1.1
 
 overrides:
   '@types/react': 19.0.0
@@ -175,9 +168,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.1
         version: 18.3.6(@types/react@19.0.0)
-      '@types/react-json-editor-ajrm':
-        specifier: ^2.5.6
-        version: 2.5.6
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
@@ -205,9 +195,6 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-      react-json-editor-ajrm:
-        specifier: ^2.5.14
-        version: 2.5.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-mui-fileuploader:
         specifier: ^0.5.2
         version: 0.5.2(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@mui/icons-material@6.4.10(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@19.0.0)(prop-types@15.8.1)
@@ -2673,9 +2660,6 @@ packages:
     resolution: {integrity: sha512-nf22//wEbKXusP6E9pfOCDwFdHAX4u172eaJI4YkDRQEZiorm6KfYnSC2SWLDMVWUOWPERmJnN0ujeAfTBLvrw==}
     peerDependencies:
       '@types/react': 19.0.0
-
-  '@types/react-json-editor-ajrm@2.5.6':
-    resolution: {integrity: sha512-Dk8WUF0UPzHCnDfgNQ7EBtjZRsHLZPfjm/fFZOrHVO4TbD1EQpKS/i8p3EpVEnvgE5LJack35eAxFjxN1UWMnA==}
 
   '@types/react-transition-group@4.4.12':
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
@@ -6048,12 +6032,6 @@ packages:
   react-is@19.1.0:
     resolution: {integrity: sha512-Oe56aUPnkHyyDxxkvqtd7KkdQP5uIUfHxd5XTb3wE9d/kRnZLmKbDB0GWk919tdQ+mxxPtG6EAs6RMT6i1qtHg==}
 
-  react-json-editor-ajrm@2.5.14:
-    resolution: {integrity: sha512-z2035l5lnU0Wo73AUonj68d1Eh9vjVcLXEa8YogDEeFPcogzYkfT6R38fvYlLKDhP0oI+LyOO/IBWsFkXs4M0Q==}
-    peerDependencies:
-      react: '>=16.2.0'
-      react-dom: '>=16.2.0'
-
   react-markdown@9.1.0:
     resolution: {integrity: sha512-xaijuJB0kzGiUdG7nc2MOMDUDBWPyGAjZtUrow9XxUeua8IqeP+VlIfAZ3bphpcLTnSZXz6z9jcVC/TCwbfgdw==}
     peerDependencies:
@@ -9310,10 +9288,6 @@ snapshots:
   '@types/prop-types@15.7.14': {}
 
   '@types/react-dom@18.3.6(@types/react@19.0.0)':
-    dependencies:
-      '@types/react': 19.0.0
-
-  '@types/react-json-editor-ajrm@2.5.6':
     dependencies:
       '@types/react': 19.0.0
 
@@ -13522,12 +13496,6 @@ snapshots:
   react-is@16.13.1: {}
 
   react-is@19.1.0: {}
-
-  react-json-editor-ajrm@2.5.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@babel/runtime': 7.27.0
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
 
   react-markdown@9.1.0(@types/react@19.0.0)(react@18.3.1):
     dependencies:
