@@ -1,4 +1,5 @@
 import { FeedbackIcon } from "../_components/icons/Feedback";
+import { MCPIcon } from "../_components/icons/MCP";
 import { SwaggerIcon } from "../_components/icons/Swagger";
 import { TypescriptClassIcon } from "../_components/icons/TypescriptClass";
 import { DeclarativeIcon } from "../_components/icons/grapic/Declarative";
@@ -257,7 +258,7 @@ export const FUNC_CALLS = [
   },
   {
     icon: SwaggerIcon,
-    title: "Swagger/OpenAPI Document",
+    title: "Swagger",
     description:
       "Just upload a Swagger document, and AI will handle API calls. It understands your backend and interacts with it automatically. No extra setup—just seamless AI-powered API execution.",
   },
@@ -266,6 +267,12 @@ export const FUNC_CALLS = [
     title: "TypeScript Class",
     description:
       "Turn your TypeScript classes into AI-powered tools. AI reads your class types and calls the right methods on its own. No extra coding—just connect and start using AI.",
+  },
+  {
+    icon: MCPIcon,
+    title: "MCP Support",
+    description:
+      "Connect AI to external tools with MCP, a widely adopted protocol. Agentica will support MCP combining stability with industry-standard compatibility.",
   },
 ];
 
