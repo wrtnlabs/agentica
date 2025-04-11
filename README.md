@@ -32,7 +32,7 @@
 
 <h3 align="center">
 
-[Homepage](https://wrtnlabs.io/agentica) // [Documentation](https://wrtnlabs.io/agentica/docs) // [Tutorials](https://youtube.com) // [Playgound](https://wrtnlabs.io/agentica/playground)
+[Homepage](https://wrtnlabs.io/agentica) // [Documentation](https://wrtnlabs.io/agentica/docs) // [Tutorials](https://youtube.com) // [Playground](https://wrtnlabs.io/agentica/playground)
 
 </h3>
 
