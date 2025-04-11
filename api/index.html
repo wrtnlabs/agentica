@@ -1,95 +1,120 @@
-<!DOCTYPE html><html class="default" lang="en" data-base="."><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@agentica/webite</title><meta name="description" content="Documentation for @agentica/webite"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><script async src="assets/hierarchy.js" id="tsd-hierarchy-script"></script><link rel="stylesheet" href="assets/typedoc-github-style.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search"><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@agentica/webite</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>@agentica/webite</h1></div><div class="tsd-panel tsd-typography"><a id="agentica" class="tsd-anchor"></a><h1 class="tsd-anchor-link">Agentica<a href="#agentica" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p><img src="https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57" alt="agentica-conceptual-diagram"></p>
-<p><a href="https://github.com/wrtnlabs/agentica/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a>
-<a href="https://www.npmjs.com/package/@agentica/core"><img src="https://img.shields.io/npm/v/@agentica/core.svg" alt="npm version"></a>
-<a href="https://www.npmjs.com/package/@agentica/core"><img src="https://img.shields.io/npm/dm/@agentica/core.svg" alt="Downloads"></a>
-<a href="https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild"><img src="https://github.com/wrtnlabs/agentica/workflows/build/badge.svg" alt="Build Status"></a>
-<a href="https://wrtnlabs.io/agentica/docs/"><img src="https://img.shields.io/badge/Guide-Documents-forestgreen" alt="Guide Documents"></a>
-<a href="https://gurubase.io/g/agentica"><img src="https://img.shields.io/badge/Gurubase-Document%20Chatbot-006BFF" alt="Gurubase"></a></p>
-<p>The simplest <strong>Agentic AI</strong> library, specialized in <strong>LLM Function Calling</strong>.</p>
-<p>Don't compose complicate agent graph or workflow, but just deliver <strong>Swagger/OpenAPI</strong> documents or <strong>TypeScript class</strong> types linearly to the <code>agentica</code>. Then <code>agentica</code> will do everything with the function calling.</p>
-<p>Look at the below demonstration, and feel how <code>agentica</code> is easy and powerful.</p>
-<!-- eslint-skip -->
-<pre><code class="typescript"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">Agentica</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@agentica/core&quot;</span><span class="hl-1">;</span><br/><span class="hl-0">import</span><span class="hl-1"> </span><span class="hl-2">typia</span><span class="hl-1"> </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;typia&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">agent</span><span class="hl-1"> = </span><span class="hl-4">new</span><span class="hl-1"> </span><span class="hl-6">Agentica</span><span class="hl-1">({</span><br/><span class="hl-1">  </span><span class="hl-2">controllers:</span><span class="hl-1"> [</span><br/><span class="hl-1">    </span><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-6">fetch</span><span class="hl-1">(</span><br/><span class="hl-1">      </span><span class="hl-3">&quot;https://shopping-be.wrtn.ai/editor/swagger.json&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">    ).</span><span class="hl-6">then</span><span class="hl-1">(</span><span class="hl-2">r</span><span class="hl-1"> </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-2">r</span><span class="hl-1">.</span><span class="hl-6">json</span><span class="hl-1">()),</span><br/><span class="hl-1">    </span><span class="hl-2">typia</span><span class="hl-1">.</span><span class="hl-2">llm</span><span class="hl-1">.</span><span class="hl-6">application</span><span class="hl-1">&lt;</span><span class="hl-7">ShoppingCounselor</span><span class="hl-1">&gt;(),</span><br/><span class="hl-1">    </span><span class="hl-2">typia</span><span class="hl-1">.</span><span class="hl-2">llm</span><span class="hl-1">.</span><span class="hl-6">application</span><span class="hl-1">&lt;</span><span class="hl-7">ShoppingPolicy</span><span class="hl-1">&gt;(),</span><br/><span class="hl-1">    </span><span class="hl-2">typia</span><span class="hl-1">.</span><span class="hl-2">llm</span><span class="hl-1">.</span><span class="hl-6">application</span><span class="hl-1">&lt;</span><span class="hl-7">ShoppingSearchRag</span><span class="hl-1">&gt;(),</span><br/><span class="hl-1">  ],</span><br/><span class="hl-1">});</span><br/><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">agent</span><span class="hl-1">.</span><span class="hl-6">conversate</span><span class="hl-1">(</span><span class="hl-3">&quot;I wanna buy MacBook Pro&quot;</span><span class="hl-1">);</span>
+<!DOCTYPE html><html class="default" lang="en" data-base="."><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@agentica/webite</title><meta name="description" content="Documentation for @agentica/webite"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><script async src="assets/hierarchy.js" id="tsd-hierarchy-script"></script><link rel="stylesheet" href="assets/typedoc-github-style.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search"><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@agentica/webite</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>@agentica/webite</h1></div><div class="tsd-panel tsd-typography"><p align="center" >
+    <img src="media/AgenticaFN.png" width="300" height="300" alt="Agentica Logo" />
+</p>
+<h1 align="center">Agentica</h1>
+<p align="center">
+<a href="https://www.npmjs.com/package/@agentica/core">
+  <img src="https://img.shields.io/npm/v/@agentica/core?style=for-the-badge" alt="npm version">
+</a>
+<a href="https://www.npmjs.com/package/@agentica/core">
+  <img src="https://img.shields.io/npm/dm/@agentica/core?style=for-the-badge" alt="Downloads">
+</a>
+<a href="https://github.com/samchon/typia">
+    <img src="https://img.shields.io/badge/poweredby-Typia-blue?style=for-the-badge" alt="Badge">
+</a>
+<!-- [![](https://dcbadge.limes.pink/api/server/INVITE)](https://discord.gg/INVITE) -->
+<a href="https://discord.gg/aMhRmzkqCx">
+  <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx" alt="Discord">
+</a>
+</p>
+<p align="center">
+    <strong>Agentic AI Framework specialized in LLM Function Calling</strong>
+    <br>
+    <strong>enhanced by TypeScript compiler skills</strong>
+</p>
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57" alt="agentica-conceptual-diagram">
+</p>
+<hr>
+<h3 align="center">
+<p><a href="https://wrtnlabs.io/agentica">Homepage</a> // <a href="https://wrtnlabs.io/agentica/docs">Documentation</a> // <a href="https://youtube.com">Tutorials</a> // <a href="https://wrtnlabs.io/agentica/playground">Playgound</a></p>
+</h3>
+<hr>
+<p><em>Agentica</em> is an open-source framework that makes working with AI agents simple and reliable. It helps you integrate structured function calls with Large Language Models (LLMs) without the usual headaches.</p>
+<p>Built around <a href="https://typia.io/">Typia's</a> robust JSON Schema validation, Agentica eliminates the common frustrations of building agent systems - no more dealing with unpredictable outputs or complex integration challenges.</p>
+<a id="🚀-key-features" class="tsd-anchor"></a><h2 class="tsd-anchor-link">🚀 Key Features<a href="#🚀-key-features" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><strong>✅ Schema-Driven Reliability</strong>: Automatically validates and corrects parameters from LLMs.</li>
+<li><strong>🔄 Automatic Error Correction</strong>: Feedback loops to iteratively improve output accuracy.</li>
+<li><strong>📐 Complex Parameter Support</strong>: Easily handle union types, nested objects, and recursive schemas.</li>
+<li><strong>🌐 OpenAPI Integration</strong>: Convert existing APIs into powerful agent capabilities effortlessly.</li>
+<li><strong>👨‍💻 Exceptional Developer Experience</strong>: TypeScript-first approach with automatic schema generation.</li>
+<li><strong>🛠️Model Context Protocol(MCP) Support</strong>: Seamlessly integrate with various LLMs, including Claude Desktop, Cursor, and more.</li>
+</ul>
+<a id="⚡-quickstart" class="tsd-anchor"></a><h2 class="tsd-anchor-link">⚡ Quickstart<a href="#⚡-quickstart" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><a id="step-1-setup-agentica-project" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Step 1. Setup Agentica project<a href="#step-1-setup-agentica-project" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p><em>For more details, check out the <a href="https://wrtnlabs.io/agentica/docs/setup/">Getting Started</a> guide.</em></p>
+<p>You can create a new Agentica project using the following command:</p>
+<pre><code class="sh"><span class="hl-0"># npm</span><br/><span class="hl-1">npx</span><span class="hl-2"> </span><span class="hl-3">agentica@latest</span><span class="hl-2"> </span><span class="hl-3">start</span><br/><br/><span class="hl-0"># yarn</span><br/><span class="hl-1">yarn</span><span class="hl-2"> </span><span class="hl-3">agentica</span><span class="hl-2"> </span><span class="hl-3">start</span><br/><br/><span class="hl-0"># pnpm</span><br/><span class="hl-1">pnpx</span><span class="hl-2"> </span><span class="hl-3">agentica</span><span class="hl-2"> </span><span class="hl-3">start</span><br/><br/><span class="hl-0"># bun</span><br/><span class="hl-1">bunx</span><span class="hl-2"> </span><span class="hl-3">agentica</span><span class="hl-2"> </span><span class="hl-3">start</span>
 </code><button type="button">Copy</button></pre>
 
-<blockquote>
-<p><a href="https://github.com/user-attachments/assets/e1faf30b-c703-4451-b68b-2e7a8170bce5">https://github.com/user-attachments/assets/e1faf30b-c703-4451-b68b-2e7a8170bce5</a></p>
-<p>Demonstration video of Shopping AI Chatbot</p>
-</blockquote>
-<!-- To do: re-capture demonstration video with Wrtnlabs title -->
-<a id="playground" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Playground<a href="#playground" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>You can experience how typia works by playground website:</p>
-<p>💻 <a href="https://wrtnlabs.io/agentica/playground">https://wrtnlabs.io/agentica/playground</a></p>
-<a id="guide-documents" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Guide Documents<a href="#guide-documents" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Check out the document in the <a href="https://wrtnlabs.io/agentica">website</a>:</p>
-<a id="🏠-home" class="tsd-anchor"></a><h3 class="tsd-anchor-link">🏠 Home<a href="#🏠-home" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li><a href="https://wrtnlabs.io/agentica/docs">🚀 Getting Started</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/setup">📦 Setup</a></li>
-<li>🔍 Concepts
+<a id="step-2-creaste-your-own-ai-agent" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Step 2. Creaste your own AI agent<a href="#step-2-creaste-your-own-ai-agent" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Open <code>src/index.ts</code> and create your own agent.</p>
+<p>Agentica accepts TypeScript types and OpenAPI specifications as input. You can use any of the following:</p>
 <ul>
-<li><a href="https://wrtnlabs.io/agentica/docs/concepts/function-calling">Function Calling</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development">Compiler Driven Development</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/concepts/document-driven-development">Document Driven Development</a></li>
+<li><strong>TypeScript Types</strong>: Define your own types and let Agentica generate the OpenAPI spec for you, powered by Typia.</li>
+<li><strong>OpenAPI Specification</strong>: Use an existing OpenAPI spec to create an agent. Agentica converts it for tool calling!</li>
+<li><strong>Custom Controllers</strong>: Create your own controllers to extend Agentica's functionality.</li>
 </ul>
-</li>
+<!-- eslint-skip -->
+<pre><code class="typescript"><span class="hl-4">import</span><span class="hl-2"> { </span><span class="hl-5">Agentica</span><span class="hl-2"> } </span><span class="hl-4">from</span><span class="hl-2"> </span><span class="hl-3">&quot;@agentica/core&quot;</span><span class="hl-2">;</span><br/><span class="hl-4">import</span><span class="hl-2"> </span><span class="hl-5">typia</span><span class="hl-2"> </span><span class="hl-4">from</span><span class="hl-2"> </span><span class="hl-3">&quot;typia&quot;</span><span class="hl-2">;</span><br/><br/><span class="hl-6">const</span><span class="hl-2"> </span><span class="hl-7">agent</span><span class="hl-2"> = </span><span class="hl-6">new</span><span class="hl-2"> </span><span class="hl-1">Agentica</span><span class="hl-2">({</span><br/><span class="hl-2">  </span><span class="hl-5">controllers:</span><span class="hl-2"> [</span><br/><span class="hl-2">    </span><span class="hl-4">await</span><span class="hl-2"> </span><span class="hl-1">fetch</span><span class="hl-2">(</span><br/><span class="hl-2">      </span><span class="hl-3">&quot;https://shopping-be.wrtn.ai/editor/swagger.json&quot;</span><span class="hl-2">,</span><br/><span class="hl-2">    ).</span><span class="hl-1">then</span><span class="hl-2">(</span><span class="hl-5">r</span><span class="hl-2"> </span><span class="hl-6">=&gt;</span><span class="hl-2"> </span><span class="hl-5">r</span><span class="hl-2">.</span><span class="hl-1">json</span><span class="hl-2">()),</span><br/><span class="hl-2">    </span><span class="hl-5">typia</span><span class="hl-2">.</span><span class="hl-5">llm</span><span class="hl-2">.</span><span class="hl-1">application</span><span class="hl-2">&lt;</span><span class="hl-8">ShoppingCounselor</span><span class="hl-2">&gt;(),</span><br/><span class="hl-2">    </span><span class="hl-5">typia</span><span class="hl-2">.</span><span class="hl-5">llm</span><span class="hl-2">.</span><span class="hl-1">application</span><span class="hl-2">&lt;</span><span class="hl-8">ShoppingPolicy</span><span class="hl-2">&gt;(),</span><br/><span class="hl-2">    </span><span class="hl-5">typia</span><span class="hl-2">.</span><span class="hl-5">llm</span><span class="hl-2">.</span><span class="hl-1">application</span><span class="hl-2">&lt;</span><span class="hl-8">ShoppingSearchRag</span><span class="hl-2">&gt;(),</span><br/><span class="hl-2">  ],</span><br/><span class="hl-2">});</span><br/><span class="hl-4">await</span><span class="hl-2"> </span><span class="hl-5">agent</span><span class="hl-2">.</span><span class="hl-1">conversate</span><span class="hl-2">(</span><span class="hl-3">&quot;I wanna buy a MacBook Pro&quot;</span><span class="hl-2">);</span>
+</code><button type="button">Copy</button></pre>
+
+<a id="step-3-run-your-agent" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Step 3. Run your agent<a href="#step-3-run-your-agent" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Let's play with your agent!</p>
+<pre><code class="sh"><span class="hl-1">npm</span><span class="hl-2"> </span><span class="hl-3">run</span><span class="hl-2"> </span><span class="hl-3">build</span><br/><span class="hl-1">npm</span><span class="hl-2"> </span><span class="hl-3">run</span><span class="hl-2"> </span><span class="hl-3">start</span><span class="hl-2"> </span><span class="hl-0"># 🎉</span>
+</code><button type="button">Copy</button></pre>
+
+<a id="🌟-why-choose-agentica" class="tsd-anchor"></a><h2 class="tsd-anchor-link">🌟 Why Choose Agentica?<a href="#🌟-why-choose-agentica" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Traditional LLM frameworks struggle with structured outputs:</p>
+<table>
+<thead>
+<tr>
+<th>Problem Area</th>
+<th>Vanilla LLMs</th>
+<th>✅ Agentica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parameter Validation</td>
+<td>❌ Poor reliability</td>
+<td>✅ JSON Schema-driven</td>
+</tr>
+<tr>
+<td>Complex Data Handling</td>
+<td>❌ Struggles</td>
+<td>✅ Robust Typia support</td>
+</tr>
+<tr>
+<td>Error Correction</td>
+<td>❌ Manual</td>
+<td>✅ Auto-correcting loop</td>
+</tr>
+<tr>
+<td>Integration Complexity</td>
+<td>❌ High effort</td>
+<td>✅ Seamless OpenAPI</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<a id="📚-documentation--tutorials--paper" class="tsd-anchor"></a><h2 class="tsd-anchor-link">📚 Documentation &amp; Tutorials &amp; Paper<a href="#📚-documentation--tutorials--paper" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><a href="https://wrtnlabs.io/agentica/docs/getting-started">Getting Started</a></li>
+<li><a href="https://wrtnlabs.io/agentica/tutorial/">Tutorials</a></li>
+<li><a href="https://wrtnlabs.io/agentica/docs/api">API Reference</a></li>
+<li><a href="https://wrtnlabs.io/agentica/docs/paper">Paper</a></li>
 </ul>
-<a id="📖-features" class="tsd-anchor"></a><h3 class="tsd-anchor-link">📖 Features<a href="#📖-features" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li><strong>📚 Core Library</strong>
-<ul>
-<li><a href="https://wrtnlabs.io/agentica/docs/core">Agentic AI</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/core/facade">Facade Controller</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/core/config">Configurations</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/core/event">Event Handling</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/core/history">Prompt Histories</a></li>
+<hr>
+<a id="💬-community--support" class="tsd-anchor"></a><h2 class="tsd-anchor-link">💬 Community &amp; Support<a href="#💬-community--support" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><a href="https://discord.gg/aMhRmzkqCx">Discord</a></li>
 </ul>
-</li>
-<li><strong>📡 WebSocket Protocol</strong>
-<ul>
-<li><a href="https://wrtnlabs.io/agentica/docs/websocket">Remote Procedure Call</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/websocket/nestjs">NestJS Server</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/websocket/nodejs">NodeJS Server</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/websocket/client">Client Application</a></li>
-</ul>
-</li>
-<li><strong>🌉 Plugin Modules</strong>
-<ul>
-<li><a href="https://wrtnlabs.io/agentica/docs/plugins/benchmark">Benchmark Program</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/plugins/openai-vector-store">OpenAI Vector Store</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/plugins/pg-vector-selector">PG Vector Selector</a></li>
-</ul>
-</li>
-</ul>
-<a id="🔗-appendix" class="tsd-anchor"></a><h3 class="tsd-anchor-link">🔗 Appendix<a href="#🔗-appendix" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li><a href="https://wrtnlabs.io/agentica/docs/roadmap">📅 Roadmap</a></li>
-<li>📊 Related Projects
-<ul>
-<li><a href="https://wrtnlabs.io/agentica/docs/related/os">Agent OS</a></li>
-<li><a href="https://wrtnlabs.io/agentica/docs/related/autoview">AutoView</a></li>
-</ul>
-</li>
-<li><a href="https://wrtnlabs.io/agentica/api">⇲ API Documents</a></li>
-</ul>
-<a id="how-to-contribute" class="tsd-anchor"></a><h2 class="tsd-anchor-link">How to Contribute?<a href="#how-to-contribute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Please refer to the <a href="media/CONTRIBUTING.md">CONTRIBUTING.md</a> file for more information.</p>
-<p>Thank you for your interest in contributing to Agentica!</p>
-<!--
-## Roadmap
-### Guide Documents
-In here README document, `@agentica/core` is introducing its key concepts, principles, and demonstrating some examples.
-
-However, this contents are not fully enough for new comers of AI Chatbot development. We need much more guide documents and example projects are required for education. We have to guide backend developers to write proper definitions optimized for LLM function calling. We should introduce the best way of multi-agent orchestration implementation.
-
-We'll write such fully detailed guide documents until 2025-03-31, and we will continuously release documents that are in the middle of being completed.
-
-### Playground
-https://nestia.io/chat/playground
-
-I had developed Swagger AI chatbot playground website for a long time ago.
-
-However, the another part obtaining function schemas from TypeScript class type, it is not prepared yet. I'll make the TypeScript class type based playground website by embedding TypeScript compiler (`tsc`).
-
-The new playground website would be published until 2025-03-15.
-
-### Optimization
-As I've concenstrated on POC (Proof of Concept) development on the early stage level, internal agents composing `@agentica/core` are not cost optimized yet. Especially, `selector` agent is consuming LLM tokens too much repeatedly. We'll optimize the `selector` agent by RAG (Retrieval Augmented Generation) skills.
-
-Also, we will support dozens of useful add-on agents which can connect with `@agentica/core` by TypeScript class function calling. One of them is `@wrtnlabs/hive` which optimizes `selector` agent so that reducing LLM costs dramatically. The others would be OpenAI Vector Store handler and Postgres based RAG engine.
-
-With these `@agentica/core` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@agentica/core` makes the Multi agent system interaction super easily. --></div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#agentica"><span>Agentica</span></a><ul><li><a href="#playground"><span>Playground</span></a></li><li><a href="#guide-documents"><span>Guide <wbr/>Documents</span></a></li><li><ul><li><a href="#🏠-home"><span>🏠 <wbr/>Home</span></a></li><li><a href="#📖-features"><span>📖 <wbr/>Features</span></a></li><li><a href="#🔗-appendix"><span>🔗 <wbr/>Appendix</span></a></li></ul></li><li><a href="#how-to-contribute"><span>How to <wbr/>Contribute?</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">@agentica/webite</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a> with <a href="https://github.com/JulianWowra/typedoc-github-theme" target="_blank">typedoc-github-theme</a></p></footer><div class="overlay"></div></body></html>
+<hr>
+<a id="👐-contributing" class="tsd-anchor"></a><h2 class="tsd-anchor-link">👐 Contributing<a href="#👐-contributing" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>We welcome contributions from the community! Check out our <a href="media/CONTRIBUTING.md">CONTRIBUTING.md</a> to get started.</p>
+<hr>
+<a id="⚖️-license" class="tsd-anchor"></a><h2 class="tsd-anchor-link">⚖️ License<a href="#⚖️-license" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Agentica is open-source and available under the <a href="https://github.com/wrtnlabs/agentica/blob/main/LICENSE">MIT License</a>.</p>
+<hr>
+<hr>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2a143ef8-6a9d-4258-96ce-fb3a59137a5b" alt="Wrtn Technologies Logo"/>
+</p>
+<div align="center">
+Agentica is proudly developed and maintained by [Wrtn Technologies](https://wrtnlabs.io).<br>
+Empowering developers to build reliable and structured AI agents effortlessly.
+</div>
+<hr>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#🚀-key-features"><span>🚀 <wbr/>Key <wbr/>Features</span></a><a href="#⚡-quickstart"><span>⚡ <wbr/>Quickstart</span></a><ul><li><a href="#step-1-setup-agentica-project"><span>Step 1. <wbr/>Setup <wbr/>Agentica project</span></a></li><li><a href="#step-2-creaste-your-own-ai-agent"><span>Step 2. <wbr/>Creaste your own AI agent</span></a></li><li><a href="#step-3-run-your-agent"><span>Step 3. <wbr/>Run your agent</span></a></li></ul><a href="#🌟-why-choose-agentica"><span>🌟 <wbr/>Why <wbr/>Choose <wbr/>Agentica?</span></a><a href="#📚-documentation--tutorials--paper"><span>📚 <wbr/>Documentation &amp; <wbr/>Tutorials &amp; <wbr/>Paper</span></a><a href="#💬-community--support"><span>💬 <wbr/>Community &amp; <wbr/>Support</span></a><a href="#👐-contributing"><span>👐 <wbr/>Contributing</span></a><a href="#⚖️-license"><span>⚖️ <wbr/>License</span></a></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">@agentica/webite</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a> with <a href="https://github.com/JulianWowra/typedoc-github-theme" target="_blank">typedoc-github-theme</a></p></footer><div class="overlay"></div></body></html>
