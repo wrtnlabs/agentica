@@ -1,19 +1,87 @@
-# Agentica
+<p align="center" >
+    <img src="./docs/AgenticaFN.png" width="300" height="300" alt="Agentica Logo" />
+</p>
+<h1 align="center">Agentica</h1>
+<p align="center">
+<a href="https://www.npmjs.com/package/@agentica/core">
+  <img src="https://img.shields.io/npm/v/@agentica/core?style=for-the-badge" alt="npm version">
+</a>
+<a href="https://www.npmjs.com/package/@agentica/core">
+  <img src="https://img.shields.io/npm/dm/@agentica/core?style=for-the-badge" alt="Downloads">
+</a>
+<a href="https://github.com/samchon/typia">
+    <img src="https://img.shields.io/badge/poweredby-Typia-blue?style=for-the-badge" alt="Badge">
+</a>
+<!-- [![](https://dcbadge.limes.pink/api/server/INVITE)](https://discord.gg/INVITE) -->
+<a href="https://discord.gg/aMhRmzkqCx">
+  <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx" alt="Discord">
+</a>
+</p>
 
-![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
+<p align="center">
+    <strong>Agentic AI Framework specialized in LLM Function Calling</strong>
+    <br>
+    <strong>enhanced by TypeScript compiler skills</strong>
+</p>
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
-[![npm version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
-[![Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
-[![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
-[![Guide Documents](https://img.shields.io/badge/Guide-Documents-forestgreen)](https://wrtnlabs.io/agentica/docs/)
-[![Gurubase](https://img.shields.io/badge/Gurubase-Document%20Chatbot-006BFF)](https://gurubase.io/g/agentica)
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57" alt="agentica-conceptual-diagram">
+</p>
 
-The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
+---
 
-Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `agentica`. Then `agentica` will do everything with the function calling.
+<h3 align="center">
 
-Look at the below demonstration, and feel how `agentica` is easy and powerful.
+[Homepage](https://wrtnlabs.io/agentica) // [Documentation](https://wrtnlabs.io/agentica/docs) // [Tutorials](https://youtube.com) // [Playgound](https://wrtnlabs.io/agentica/playground)
+
+</h3>
+
+---
+
+_Agentica_ is an open-source framework that makes working with AI agents simple and reliable. It helps you integrate structured function calls with Large Language Models (LLMs) without the usual headaches.
+
+Built around [Typia's](https://typia.io/) robust JSON Schema validation, Agentica eliminates the common frustrations of building agent systems - no more dealing with unpredictable outputs or complex integration challenges.
+
+## 🚀 Key Features
+
+- **✅ Schema-Driven Reliability**: Automatically validates and corrects parameters from LLMs.
+- **🔄 Automatic Error Correction**: Feedback loops to iteratively improve output accuracy.
+- **📐 Complex Parameter Support**: Easily handle union types, nested objects, and recursive schemas.
+- **🌐 OpenAPI Integration**: Convert existing APIs into powerful agent capabilities effortlessly.
+- **👨‍💻 Exceptional Developer Experience**: TypeScript-first approach with automatic schema generation.
+- **🛠️Model Context Protocol(MCP) Support**: Seamlessly integrate with various LLMs, including Claude Desktop, Cursor, and more.
+
+## ⚡ Quickstart
+
+### Step 1. Setup Agentica project
+
+_For more details, check out the [Getting Started](https://wrtnlabs.io/agentica/docs/setup/) guide._
+
+You can create a new Agentica project using the following command:
+
+```sh
+# npm
+npx agentica@latest start
+
+# yarn
+yarn agentica start
+
+# pnpm
+pnpx agentica start
+
+# bun
+bunx agentica start
+```
+
+### Step 2. Creaste your own AI agent
+
+Open `src/index.ts` and create your own agent.
+
+Agentica accepts TypeScript types and OpenAPI specifications as input. You can use any of the following:
+
+- **TypeScript Types**: Define your own types and let Agentica generate the OpenAPI spec for you, powered by Typia.
+- **OpenAPI Specification**: Use an existing OpenAPI spec to create an agent. Agentica converts it for tool calling!
+- **Custom Controllers**: Create your own controllers to extend Agentica's functionality.
 
 <!-- eslint-skip -->
 
@@ -31,87 +99,67 @@ const agent = new Agentica({
     typia.llm.application<ShoppingSearchRag>(),
   ],
 });
-await agent.conversate("I wanna buy MacBook Pro");
+await agent.conversate("I wanna buy a MacBook Pro");
 ```
 
-> https://github.com/user-attachments/assets/e1faf30b-c703-4451-b68b-2e7a8170bce5
->
-> Demonstration video of Shopping AI Chatbot
+### Step 3. Run your agent
 
-<!-- To do: re-capture demonstration video with Wrtnlabs title -->
+Let's play with your agent!
 
-## Playground
+```sh
+npm run build
+npm run start # 🎉
+```
 
-You can experience how typia works by playground website:
+## 🌟 Why Choose Agentica?
 
-💻 https://wrtnlabs.io/agentica/playground
+Traditional LLM frameworks struggle with structured outputs:
 
-## Guide Documents
+| Problem Area           | Vanilla LLMs        | ✅ Agentica             |
+| ---------------------- | ------------------- | ----------------------- |
+| Parameter Validation   | ❌ Poor reliability | ✅ JSON Schema-driven   |
+| Complex Data Handling  | ❌ Struggles        | ✅ Robust Typia support |
+| Error Correction       | ❌ Manual           | ✅ Auto-correcting loop |
+| Integration Complexity | ❌ High effort      | ✅ Seamless OpenAPI     |
 
-Check out the document in the [website](https://wrtnlabs.io/agentica):
+---
 
-### 🏠 Home
+## 📚 Documentation & Tutorials & Paper
 
-- [🚀 Getting Started](https://wrtnlabs.io/agentica/docs)
-- [📦 Setup](https://wrtnlabs.io/agentica/docs/setup)
-- 🔍 Concepts
-  - [Function Calling](https://wrtnlabs.io/agentica/docs/concepts/function-calling)
-  - [Compiler Driven Development](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development)
-  - [Document Driven Development](https://wrtnlabs.io/agentica/docs/concepts/document-driven-development)
+- [Getting Started](https://wrtnlabs.io/agentica/docs/getting-started)
+- [Tutorials](https://wrtnlabs.io/agentica/tutorial/)
+- [API Reference](https://wrtnlabs.io/agentica/docs/api)
+- [Paper](https://wrtnlabs.io/agentica/docs/paper)
 
-### 📖 Features
+---
 
-- **📚 Core Library**
-  - [Agentic AI](https://wrtnlabs.io/agentica/docs/core)
-  - [Facade Controller](https://wrtnlabs.io/agentica/docs/core/facade)
-  - [Configurations](https://wrtnlabs.io/agentica/docs/core/config)
-  - [Event Handling](https://wrtnlabs.io/agentica/docs/core/event)
-  - [Prompt Histories](https://wrtnlabs.io/agentica/docs/core/history)
-- **📡 WebSocket Protocol**
-  - [Remote Procedure Call](https://wrtnlabs.io/agentica/docs/websocket)
-  - [NestJS Server](https://wrtnlabs.io/agentica/docs/websocket/nestjs)
-  - [NodeJS Server](https://wrtnlabs.io/agentica/docs/websocket/nodejs)
-  - [Client Application](https://wrtnlabs.io/agentica/docs/websocket/client)
-- **🌉 Plugin Modules**
-  - [Benchmark Program](https://wrtnlabs.io/agentica/docs/plugins/benchmark)
-  - [OpenAI Vector Store](https://wrtnlabs.io/agentica/docs/plugins/openai-vector-store)
-  - [PG Vector Selector](https://wrtnlabs.io/agentica/docs/plugins/pg-vector-selector)
+## 💬 Community & Support
 
-### 🔗 Appendix
+- [Discord](https://discord.gg/aMhRmzkqCx)
 
-- [📅 Roadmap](https://wrtnlabs.io/agentica/docs/roadmap)
-- 📊 Related Projects
-  - [Agent OS](https://wrtnlabs.io/agentica/docs/related/os)
-  - [AutoView](https://wrtnlabs.io/agentica/docs/related/autoview)
-- [⇲ API Documents](https://wrtnlabs.io/agentica/api)
+---
 
-## How to Contribute?
+## 👐 Contributing
 
-Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) file for more information.
+We welcome contributions from the community! Check out our [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
 
-Thank you for your interest in contributing to Agentica!
+---
 
-<!--
-## Roadmap
-### Guide Documents
-In here README document, `@agentica/core` is introducing its key concepts, principles, and demonstrating some examples.
+## ⚖️ License
 
-However, this contents are not fully enough for new comers of AI Chatbot development. We need much more guide documents and example projects are required for education. We have to guide backend developers to write proper definitions optimized for LLM function calling. We should introduce the best way of multi-agent orchestration implementation.
+Agentica is open-source and available under the [MIT License](https://github.com/wrtnlabs/agentica/blob/main/LICENSE).
 
-We'll write such fully detailed guide documents until 2025-03-31, and we will continuously release documents that are in the middle of being completed.
+---
 
-### Playground
-https://nestia.io/chat/playground
+---
 
-I had developed Swagger AI chatbot playground website for a long time ago.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2a143ef8-6a9d-4258-96ce-fb3a59137a5b" alt="Wrtn Technologies Logo"/>
+</p>
 
-However, the another part obtaining function schemas from TypeScript class type, it is not prepared yet. I'll make the TypeScript class type based playground website by embedding TypeScript compiler (`tsc`).
+<div align="center">
+Agentica is proudly developed and maintained by [Wrtn Technologies](https://wrtnlabs.io).<br>
+Empowering developers to build reliable and structured AI agents effortlessly.
+</div>
 
-The new playground website would be published until 2025-03-15.
-
-### Optimization
-As I've concenstrated on POC (Proof of Concept) development on the early stage level, internal agents composing `@agentica/core` are not cost optimized yet. Especially, `selector` agent is consuming LLM tokens too much repeatedly. We'll optimize the `selector` agent by RAG (Retrieval Augmented Generation) skills.
-
-Also, we will support dozens of useful add-on agents which can connect with `@agentica/core` by TypeScript class function calling. One of them is `@wrtnlabs/hive` which optimizes `selector` agent so that reducing LLM costs dramatically. The others would be OpenAI Vector Store handler and Postgres based RAG engine.
-
-With these `@agentica/core` providing add-on agents, you can learn how to implement the Multi-agent orchestration through TypeScript class function calling, and understand how `@agentica/core` makes the Multi agent system interaction super easily. -->
+---
