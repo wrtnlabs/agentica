@@ -2,4 +2,35 @@
 title: Agentica > Guide Documents > Core Library > Function Controllers > MCP Protocol
 ---
 
-@todo SunRabbit
+
+## MCP SDK
+
+```typescript filename="src/main.ts" showLineNumbers copy
+import { Agentica, assertMcpLlmApplication } from "@wrtnlabs/agentica";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+
+const client = new Client({
+  name: "calculator",
+  version: "1.0.0",
+});
+
+await client.connect(new StdioClientTransport({
+  command: "npx",
+  args: ["-y", "@wrtnlabs/calculator-mcp"],
+}));
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "*****"})
+    model: "gpt-4o-mini"
+  },
+  controllers: [{
+    protocol: "mcp",
+    name: "calculator",
+    application: assertMcpLlmApplication({ client }),
+  }]
+});
+await agent.conversate("What can you do?");
+```
