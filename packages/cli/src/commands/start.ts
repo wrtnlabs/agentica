@@ -6,7 +6,7 @@
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import process, { env } from "node:process";
+import process from "node:process";
 
 import type { SimplifyDeep } from "type-fest";
 
@@ -213,6 +213,13 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     const envInfos: EnvInfo[] = [];
 
     if (p.isCancel(isConfirm) || !isConfirm) {
+      envList.forEach((env) => {
+        envInfos.push({
+          key: env,
+          value: "",
+        });
+      });
+
       p.cancel("Skipping environment variables input.");
     }
     else {
