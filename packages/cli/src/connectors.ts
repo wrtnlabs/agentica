@@ -9,7 +9,7 @@ import typia from "typia";
 
 import { capitalize } from "./utils";
 
-const CONNECTORS_LIST_URL = "https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/fix/connector_list/connectors-list.json";
+const CONNECTORS_LIST_URL = "https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json";
 const CONNECTOR_PREFIX = "@wrtnlabs/connector-";
 
 /**
@@ -25,7 +25,7 @@ export type Connector = `${typeof CONNECTOR_PREFIX}${Service}`;
 export type Env = Tagged<string, "Env">;
 
 export interface EnvInfo {
-  name: Env;
+  key: Env;
   value: string;
 }
 

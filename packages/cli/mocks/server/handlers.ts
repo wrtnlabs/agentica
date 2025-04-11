@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
 
 export const connectorsListHandler
-= http.get("https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/fix/connector_list/connectors-list.json", () => {
+= http.get("https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json", () => {
   const response = {
     connectors: [
       {

@@ -6,7 +6,7 @@
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import process from "node:process";
+import process, { env } from "node:process";
 
 import type { SimplifyDeep } from "type-fest";
 
@@ -205,7 +205,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     })));
 
     const isConfirm = await p.confirm({
-      message: `Do you want to enter environment variables? (Number of environment variables to enter: about ${envList.length})`,
+      message: `Do you want to enter environment variables? (Number of environment variables to enter: ${envList.length})`,
       initialValue: false,
     });
 
@@ -215,23 +215,35 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       p.cancel("Skipping environment variables input.");
     }
     else {
-      for (const env of envList) {
+      for (let i = 0; i < envList.length; i++) {
+        const env = envList[i];
+
         const envValue = await p.text({
           message: `${env}: `,
           defaultValue: "",
         });
 
         if (p.isCancel(envValue)) {
+          const canceledEnvList = envList.splice(i);
+          canceledEnvList.forEach((env) => {
+            envInfos.push({
+              key: env,
+              value: "",
+            });
+          });
+
           p.cancel("Skipping environment variables input.");
           break;
         }
 
         envInfos.push({
-          name: env,
-          value: typeof envValue === "string" ? envValue : "",
+          key: env,
+          value: envValue,
         });
       }
     }
+
+    console.log(envInfos);
 
     context.envList = envInfos;
   }
@@ -301,8 +313,8 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     apiKeys: [{
       key: "OPENAI_API_KEY",
       value: context.openAIKey ?? "",
-    }, ...(context.envList ?? []).map(({ name, value }) => ({
-      key: name,
+    }, ...(context.envList ?? []).map(({ key, value }) => ({
+      key,
       value,
     }))],
   });
@@ -361,8 +373,8 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "PORT",
       value: context.port?.toString() ?? "3000",
-    }, ...(context.envList ?? []).map(({ name, value }) => ({
-      key: name,
+    }, ...(context.envList ?? []).map(({ key, value }) => ({
+      key,
       value,
     }))],
   });
@@ -423,8 +435,8 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "API_PORT",
       value: context.port?.toString() ?? "3000",
-    }, ...(context.envList ?? []).map(({ name, value }) => ({
-      key: name,
+    }, ...(context.envList ?? []).map(({ key, value }) => ({
+      key,
       value,
     }))],
   });
