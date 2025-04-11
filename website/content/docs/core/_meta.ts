@@ -2,7 +2,13 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   index: "Agentic AI",
-  facade: "Facade Class",
+  vendor: "LLM Vendors",
+  controller: {
+    title: "Function Controllers",
+    theme: {
+      collapsed: false,
+    },
+  },
   config: "Configurations",
   event: "Event Handling",
   history: "Prompt Histories",
