@@ -12,6 +12,9 @@ catalogs:
     openai:
       specifier: ^4.80.0
       version: 4.91.1
+    type-fest:
+      specifier: ^4.37.0
+      version: 4.39.1
   typescript:
     ts-patch:
       specifier: ^3.3.0
@@ -483,6 +486,9 @@ importers:
       '@agentica/rpc':
         specifier: workspace:^
         version: link:../packages/rpc
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.9.0
+        version: 1.9.0
       '@nestia/e2e':
         specifier: ^6.0.1
         version: 6.0.1
