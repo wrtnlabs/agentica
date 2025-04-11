@@ -11,6 +11,12 @@ import { assertMcpLlmApplication } from "../../functional/assertMcpLlmApplicatio
 
 import { compose, divide, getOperations, toClassOperations, toHttpOperations, toMcpOperations } from "./AgenticaOperationComposer";
 
+
+const client = new Client({
+  name: "calculator",
+  version: "1.0.0",
+});
+
 // test helper functions
 function createMockHttpFunction(name: string, method: "get" | "post" | "patch" | "put" | "delete", path: string): IHttpLlmFunction<any> {
   return {
@@ -66,15 +72,6 @@ function createMockClassController(name: string, functions: ILlmFunction<any>[])
 }
 
 async function createMockMcpController(name: string, functions: IMcpLlmFunction[]): Promise<IAgenticaController.IMcp> {
-  const client = new Client({
-    name: "calculator",
-    version: "1.0.0",
-  });
-
-  await client.connect(new StdioClientTransport({
-    command: "npx",
-    args: ["-y", "@wrtnlabs/calculator-mcp"],
-  }));
 
   return {
     name,
@@ -88,7 +85,14 @@ async function createMockMcpController(name: string, functions: IMcpLlmFunction[
   };
 }
 
+
 describe("a AgenticaOperationComposer", () => {
+  beforeAll(async () => {    
+    await client.connect(new StdioClientTransport({
+      command: "npx",
+      args: ["-y", "@wrtnlabs/calculator-mcp"],
+    }));
+  })
   describe("compose", () => {
     it("should compose operations from controllers", async () => {
       // Mock controllers
