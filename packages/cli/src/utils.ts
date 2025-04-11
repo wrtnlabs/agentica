@@ -37,5 +37,23 @@ export async function formatWithPrettier(content: string) {
   }
 }
 
+/**
+ * Format the given content with indent-string.
+ * If indent-string & detect-indent is not installed, it returns the content as is.
+ */
+export async function formatWithIndent(content: string) {
+  try {
+    const [detectIndent, indentString] = await Promise.all([
+      import("detect-indent"),
+      import("indent-string"),
+    ]);
+    const intend = detectIndent.default(content);
+    return indentString.default(content, intend.amount, { indent: intend.type });
+  }
+  catch {
+    return content;
+  }
+}
+
 /** promisified exec */
 export const execAsync = promisify(exec);
