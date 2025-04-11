@@ -60,7 +60,7 @@ In that case, configure `IAgenticaVendor.api.baseURL` and `IAgenticaVendor.model
   - [`ILlmSchemaV3`](/api/types/_samchon_openapi.ILlmSchemaV3-1.html): middle layer based on OpenAPI v3.0 specification
   - [`ILlmSchemaV3_1`](/api/types/_samchon_openapi.ILlmSchemaV3_1-1.html): middle layer based on OpenAPI v3.1 specification
 
-You know what? JSON schema models are different between LLM vendors. 
+You know what? JSON schema models are different between LLM vendors.
 
 Thus, when creating `Agentica` instance and composing LLM function calling schemas, you have to choose proper schema model suitable for the target LLM vendor. For example, if you are using Google Gemini, you have to specify the schema model as `"gemini"`.
 
