@@ -224,7 +224,7 @@ describe("the MPSC", () => {
 
       // waitUntilEmpty should not resolve since queue is not empty
       const waitPromise = mpsc.waitUntilEmpty();
-      
+
       // Read first value
       const read1 = await reader.read();
       expect(read1.value).toBe(1);
@@ -239,7 +239,6 @@ describe("the MPSC", () => {
 
       // Now queue is empty, waitUntilEmpty should resolve
       await waitPromise;
-
     });
 
     it("waitUntilEmpty test on closed queue", async () => {

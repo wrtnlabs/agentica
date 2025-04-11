@@ -1,3 +1,10 @@
+export class AsyncQueueClosedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AsyncQueueClosedError";
+  }
+}
+
 export class AsyncQueue<T> {
   private queue: T[] = [];
   private resolvers: ((value: IteratorResult<T, undefined>) => void)[] = [];
@@ -7,8 +14,7 @@ export class AsyncQueue<T> {
 
   enqueue(item: T) {
     if (this.closed) {
-      console.warn("this queue is closed, you can't enqueue item", new Error().stack);
-      return;
+      console.error(new AsyncQueueClosedError("this queue is closed, you can't enqueue item"));
     }
 
     this.queue.push(item);
