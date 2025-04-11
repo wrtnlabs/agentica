@@ -15,6 +15,7 @@ export class AsyncQueue<T> {
   enqueue(item: T) {
     if (this.closed) {
       console.error(new AsyncQueueClosedError("this queue is closed, you can't enqueue item"));
+      return;
     }
 
     this.queue.push(item);
@@ -25,10 +26,10 @@ export class AsyncQueue<T> {
 
   async dequeue(): Promise<IteratorResult<T, undefined>> {
     const item = (() => {
-      if (this.queue.length !== 0) {
+      if (!this.isEmpty()) {
         return { value: this.queue.shift()!, done: false } as const;
       }
-      if (this.closed) {
+      if (this.isClosed()) {
         return { value: undefined, done: true } as const;
       }
       return null;
