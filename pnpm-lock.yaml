@@ -486,6 +486,9 @@ importers:
       '@agentica/rpc':
         specifier: workspace:^
         version: link:../packages/rpc
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.9.0
+        version: 1.9.0
       '@nestia/e2e':
         specifier: ^6.0.1
         version: 6.0.1

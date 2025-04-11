@@ -1,10 +1,20 @@
 import type { IHttpLlmFunction, ILlmFunction, IValidation } from "@samchon/openapi";
 
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
 import type { IMcpLlmFunction } from "../../structures/mcp/IMcpLlmFunction";
 
+import { assertMcpLlmApplication } from "../../functional/assertMcpLlmApplication";
+
 import { compose, divide, getOperations, toClassOperations, toHttpOperations, toMcpOperations } from "./AgenticaOperationComposer";
+
+const client = new Client({
+  name: "calculator",
+  version: "1.0.0",
+});
 
 // test helper functions
 function createMockHttpFunction(name: string, method: "get" | "post" | "patch" | "put" | "delete", path: string): IHttpLlmFunction<any> {
@@ -60,23 +70,28 @@ function createMockClassController(name: string, functions: ILlmFunction<any>[])
   };
 }
 
-function createMockMcpController(name: string, functions: IMcpLlmFunction[]): IAgenticaController.IMcp {
+async function createMockMcpController(name: string, functions: IMcpLlmFunction[]): Promise<IAgenticaController.IMcp> {
   return {
     name,
     protocol: "mcp",
-    application: {
-      transport: {
-        type: "sse",
-        url: new URL("https://example.com"),
-      },
+    application: await assertMcpLlmApplication({
+      client,
+    }).then(v => ({
+      ...v,
       functions,
-    },
+    })),
   };
 }
 
 describe("a AgenticaOperationComposer", () => {
+  beforeAll(async () => {
+    await client.connect(new StdioClientTransport({
+      command: "npx",
+      args: ["-y", "@wrtnlabs/calculator-mcp"],
+    }));
+  });
   describe("compose", () => {
-    it("should compose operations from controllers", () => {
+    it("should compose operations from controllers", async () => {
       // Mock controllers
       const mockHttpController = createMockHttpController("httpController", [
         createMockHttpFunction("function1", "get", "/api/function1"),
@@ -92,7 +107,7 @@ describe("a AgenticaOperationComposer", () => {
         },
       ]);
 
-      const mockMcpController = createMockMcpController("mcpController", [
+      const mockMcpController = await createMockMcpController("mcpController", [
         {
           name: "function4",
           parameters: {},
@@ -163,8 +178,8 @@ describe("a AgenticaOperationComposer", () => {
       expect(result[0]?.name).toBe("_0_function1");
     });
 
-    it("should get operations from mcp controllers", () => {
-      const mockController = createMockMcpController("mcpController", [
+    it("should get operations from mcp controllers", async () => {
+      const mockController = await createMockMcpController("mcpController", [
         {
           name: "function1",
           parameters: {},
@@ -226,8 +241,8 @@ describe("a AgenticaOperationComposer", () => {
   });
 
   describe("toMcpOperations", () => {
-    it("should convert mcp controller to operations", () => {
-      const mockController = createMockMcpController("mcpController", [
+    it("should convert mcp controller to operations", async () => {
+      const mockController = await createMockMcpController("mcpController", [
         {
           name: "function1",
           parameters: {},
