@@ -205,7 +205,8 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
     })));
 
     const isConfirm = await p.confirm({
-      message: `Do you want to enter environment variables? (Number of environment variables to enter: ${envList.length})`,
+      message: `Do you want to enter environment variables? (Number of environment variables to enter: ${envList.length})
+        ${picocolors.cyan("If you press <ctrl+c>, you can skip this step.")}`,
       initialValue: false,
     });
 
@@ -232,7 +233,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
             });
           });
 
-          p.cancel("Skipping environment variables input.");
+          p.cancel(`Skipping environment variables input: ${canceledEnvList.slice(0, 3).join(", ")}... (count: ${canceledEnvList.length})`);
           break;
         }
 
@@ -242,8 +243,6 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
         });
       }
     }
-
-    console.log(envInfos);
 
     context.envList = envInfos;
   }
