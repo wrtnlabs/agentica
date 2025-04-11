@@ -49,6 +49,7 @@ Built around [Typia's](https://typia.io/) robust JSON Schema validation, Agentic
 - **📐 Complex Parameter Support**: Easily handle union types, nested objects, and recursive schemas.
 - **🌐 OpenAPI Integration**: Convert existing APIs into powerful agent capabilities effortlessly.
 - **👨‍💻 Exceptional Developer Experience**: TypeScript-first approach with automatic schema generation.
+- **🛠️Model Context Protocol(MCP) Support**: Seamlessly integrate with various LLMs, including Claude Desktop, Cursor, and more.
 
 ## ⚡ Quickstart
 
