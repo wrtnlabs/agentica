@@ -9,10 +9,12 @@
 <a href="https://www.npmjs.com/package/@agentica/core">
   <img src="https://img.shields.io/npm/dm/@agentica/core?style=for-the-badge" alt="Downloads">
 </a>
+<a href="https://opensource.org/licenses/MIT">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License">
+</a>
 <a href="https://github.com/samchon/typia">
     <img src="https://img.shields.io/badge/poweredby-Typia-blue?style=for-the-badge" alt="Badge">
 </a>
-<!-- [![](https://dcbadge.limes.pink/api/server/INVITE)](https://discord.gg/INVITE) -->
 <a href="https://discord.gg/aMhRmzkqCx">
   <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx" alt="Discord">
 </a>
