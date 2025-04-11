@@ -4,10 +4,6 @@ title: Agentica > Guide Documents > Core Library > Function Controllers > MCP Pr
 
 ## Overview
 
-MCP (Model Context Protocol) is a protocol for connecting LLM applications with various transports. Currently, MCP only supports tools functionality, while prompts and resources are not yet supported.
-
-Here's a complete example of how to use it:
-
 ```typescript filename="src/main.ts" showLineNumbers copy
 import { Agentica, assertMcpLlmApplication } from "@wrtnlabs/agentica";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -40,6 +36,14 @@ const agent = new Agentica({
   }]
 });
 await agent.conversate("What can you do?");
+```
+
+MCP (Model Context Protocol) is a protocol for connecting LLM applications with various transports. Currently, MCP only supports tools functionality, while prompts and resources are not yet supported.
+
+To use MCP, you need to install the MCP SDK package separately:
+
+```bash
+npm install @modelcontextprotocol/sdk
 ```
 
 ## Transport Options
@@ -84,3 +88,6 @@ Note that `StdioClientTransport` uses Node.js's `child_process` module internall
 
 ### Feature Support
 Currently, MCP only supports tools functionality. Prompts and resources are not yet supported in the current version.
+
+### LLM Model Compatibility
+The compatibility of custom MCP servers with different LLM models may vary. This is because each LLM model supports different JSON schemas for function calling. If an MCP server provides a schema that doesn't match the LLM's expected format, the model may not be able to understand or properly use the provided tools. Always verify that your MCP server's schema is compatible with your chosen LLM model.
