@@ -29,7 +29,7 @@ const agent = new Agentica({
   controllers: [{
     protocol: "mcp",
     name: "calculator",
-    application: assertMcpLlmApplication({ client }),
+    application: await assertMcpLlmApplication({ client }),
   }]
 });
 await agent.conversate("What can you do?");
