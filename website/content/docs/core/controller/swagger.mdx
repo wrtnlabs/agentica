@@ -1,0 +1,54 @@
+---
+title: Agentica > Guide Documents > Core Library > Function Controllers > Swagger/OpenAPI
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../../components/RemoteSource";
+
+import OpenApiDiagramSnippet from "../../../snippets/OpenApiDiagramSnippet.mdx";
+
+## Swagger/OpenAPI
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import OpenAI from "openai";
+import typia from "typia";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      protocol: "http",
+      name: "shopping",
+      application: assertHttpLlmApplication({
+        model: "chatgpt",
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then((r) => r.json()),
+      }),
+      connection: {
+        host: "https://shopping-be.wrtn.ai",
+        headers: {
+          Authorization: "Bearer ********",
+        },
+      },
+    },
+  ],
+});
+await agent.conversate("What you can do?");
+```
+
+
+
+## LLM Schema Conversion
+<OpenApiDiagramSnippet />
+
+
+## Authorization
+
+
+
+## Validation Feedback

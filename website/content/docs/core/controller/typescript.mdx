@@ -1,0 +1,53 @@
+---
+title: Agentica > Guide Documents > Core Library > Function Controllers > TypeScript Class
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../../components/RemoteSource";
+
+import BbsArticleServiceSnippet from "../../../snippets/BbsArticleServiceSnippet.mdx";
+import IBbsArticleSnippet from "../../../snippets/IBbsArticleSnippet.mdx";
+
+## TypeScript Class
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>BbsArticleService</code>,
+  <code>IBbsArticle</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers
+import { Agentica } from "@agentica/core";
+import OpenAI from "openai";
+import typia from "typia";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      protocol: "class",
+      name: "bbs",
+      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      execute: new BbsArticleService(),
+    },
+  ],
+});
+await agent.conversate("What you can do?");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <BbsArticleServiceSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IBbsArticleSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+## Documentation
+
+## Validation Feedback
+
+## Restrictions
