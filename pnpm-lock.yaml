@@ -12,6 +12,9 @@ catalogs:
     openai:
       specifier: ^4.80.0
       version: 4.91.1
+    type-fest:
+      specifier: ^4.37.0
+      version: 4.39.1
   typescript:
     ts-patch:
       specifier: ^3.3.0
@@ -571,6 +574,9 @@ importers:
       nextra-theme-docs:
         specifier: ^4.2.16
         version: 4.2.17(@types/react@19.0.0)(next@15.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nextra@4.2.17(acorn@8.14.1)(next@15.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      pagefind:
+        specifier: ^1.3.0
+        version: 1.3.0
       prism-react-renderer:
         specifier: ^2.4.1
         version: 2.4.1(react@18.3.1)
@@ -1783,6 +1789,31 @@ packages:
 
   '@open-draft/until@2.1.0':
     resolution: {integrity: sha512-U69T3ItWHvLwGg5eJ0n3I62nWuE6ilHlmz7zM0npLBRvPRd7e6NYmg54vvRtP5mZG7kZqZCFVdsTWo7BPtBujg==}
+
+  '@pagefind/darwin-arm64@1.3.0':
+    resolution: {integrity: sha512-365BEGl6ChOsauRjyVpBjXybflXAOvoMROw3TucAROHIcdBvXk9/2AmEvGFU0r75+vdQI4LJdJdpH4Y6Yqaj4A==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@pagefind/darwin-x64@1.3.0':
+    resolution: {integrity: sha512-zlGHA23uuXmS8z3XxEGmbHpWDxXfPZ47QS06tGUq0HDcZjXjXHeLG+cboOy828QIV5FXsm9MjfkP5e4ZNbOkow==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@pagefind/linux-arm64@1.3.0':
+    resolution: {integrity: sha512-8lsxNAiBRUk72JvetSBXs4WRpYrQrVJXjlRRnOL6UCdBN9Nlsz0t7hWstRk36+JqHpGWOKYiuHLzGYqYAqoOnQ==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@pagefind/linux-x64@1.3.0':
+    resolution: {integrity: sha512-hAvqdPJv7A20Ucb6FQGE6jhjqy+vZ6pf+s2tFMNtMBG+fzcdc91uTw7aP/1Vo5plD0dAOHwdxfkyw0ugal4kcQ==}
+    cpu: [x64]
+    os: [linux]
+
+  '@pagefind/windows-x64@1.3.0':
+    resolution: {integrity: sha512-BR1bIRWOMqkf8IoU576YDhij1Wd/Zf2kX/kCI0b2qzCKC8wcc2GQJaaRMCpzvCCrmliO4vtJ6RITp/AnoYUUmQ==}
+    cpu: [x64]
+    os: [win32]
 
   '@pkgr/core@0.1.2':
     resolution: {integrity: sha512-fdDH1LSGfZdTH2sxdpVMw31BanV28K/Gry0cVFxaNP77neJSkd82mM8ErPNYs9e+0O7SdHBLTDzDgwUuy18RnQ==}
@@ -5776,6 +5807,10 @@ packages:
   package-manager-detector@1.1.0:
     resolution: {integrity: sha512-Y8f9qUlBzW8qauJjd/eu6jlpJZsuPJm2ZAV0cDVd420o4EdpH5RPdoCv+60/TdJflGatr4sDfpAL6ArWZbM5tA==}
 
+  pagefind@1.3.0:
+    resolution: {integrity: sha512-8KPLGT5g9s+olKMRTU9LFekLizkVIu9tes90O1/aigJ0T5LmyPqTzGJrETnSw3meSYg58YH7JTzhTTW/3z6VAw==}
+    hasBin: true
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -8599,6 +8634,21 @@ snapshots:
       outvariant: 1.4.3
 
   '@open-draft/until@2.1.0': {}
+
+  '@pagefind/darwin-arm64@1.3.0':
+    optional: true
+
+  '@pagefind/darwin-x64@1.3.0':
+    optional: true
+
+  '@pagefind/linux-arm64@1.3.0':
+    optional: true
+
+  '@pagefind/linux-x64@1.3.0':
+    optional: true
+
+  '@pagefind/windows-x64@1.3.0':
+    optional: true
 
   '@pkgr/core@0.1.2': {}
 
@@ -13469,6 +13519,14 @@ snapshots:
       quansync: 0.2.10
 
   package-manager-detector@1.1.0: {}
+
+  pagefind@1.3.0:
+    optionalDependencies:
+      '@pagefind/darwin-arm64': 1.3.0
+      '@pagefind/darwin-x64': 1.3.0
+      '@pagefind/linux-arm64': 1.3.0
+      '@pagefind/linux-x64': 1.3.0
+      '@pagefind/windows-x64': 1.3.0
 
   parent-module@1.0.1:
     dependencies:
