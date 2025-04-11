@@ -51,3 +51,57 @@ await agent.conversate("What you can do?");
 ## Validation Feedback
 
 ## Restrictions
+```typescript filename="src/examples/llm.application.violation.ts" showLineNumbers
+import { ILlmApplication } from "@samchon/openapi";
+import typia, { tags } from "typia";
+
+const app: ILlmApplication<"chatgpt"> = typia.llm.application<
+  BbsArticleController,
+  "chatgpt"
+>();
+console.log(app);
+
+interface BbsArticleController {
+  /**
+   * Create a new article.
+   *
+   * Writes a new article and archives it into the DB.
+   *
+   * @param props Properties of create function
+   * @returns Newly created article
+   */
+  create(props: {
+    /**
+     * Information of the article to create
+     */
+    input: IBbsArticle.ICreate;
+  }): Promise<IBbsArticle | undefined>;
+
+  erase(id: string & tags.Format<"uuid">): Promise<void>;
+}
+```
+
+> ```bash filename="Terminal"
+> src/examples/llm.application.violation.ts:4:41 - error TS(typia.llm.application): unsupported type detected    
+> 
+> - BbsArticleController.create: unknown
+>   - LLM application's function ("create")'s return type must not be union type with undefined.    
+> 
+> - BbsArticleController.erase: unknown
+>   - LLM application's function ("erase")'s parameter must be an object type.
+> 
+> 4 const app: ILlmApplication<"chatgpt"> = typia.llm.application<
+>                                           ~~~~~~~~~~~~~~~~~~~~~~
+> 5   BbsArticleController,
+>   ~~~~~~~~~~~~~~~~~~~~~~~
+> 6   "chatgpt"
+>   ~~~~~~~~~~~
+> 7 >();
+>   ~~~
+> ```
+
+Only one parameter with object type.
+
+You know what? Functions delivering to LLM must have only one parameter of object type. It's the LLM function calling's rule. If you define a function with multiple parameters, or non object type, you will get an compilation error message like above.
+
+Also, `@agentica` does not allow a function of returning an union type with `undefined`. It is because JSON schema cannot express the undefindable return type. If you want to make a function returning an union type with `undefined`, wrap it to an object type please. If do not so, you will get a compilation error message like above too.
