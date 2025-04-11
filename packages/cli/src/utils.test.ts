@@ -1,4 +1,4 @@
-import { capitalize, formatWithPrettier } from "./utils";
+import { capitalize, formatWithIndent, formatWithPrettier } from "./utils";
 
 describe("capitalize", () => {
   it("should return a string with the first letter capitalized", () => {
@@ -14,3 +14,11 @@ describe("formatWithPrettier", () => {
     expect(result).toBe(content);
   });
 });
+
+describe("formatWithIndent", () => {
+  it("should return the same content if indent is not available", async () => {
+    const content = `const foo = "bar";\n`;
+    const result = await formatWithIndent(content);
+    expect(result).toBe(content);
+  });
+})
