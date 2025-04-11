@@ -1,13 +1,15 @@
 import type { IHttpLlmFunction, ILlmFunction, IValidation } from "@samchon/openapi";
 
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
 import type { IMcpLlmFunction } from "../../structures/mcp/IMcpLlmFunction";
 
-import { compose, divide, getOperations, toClassOperations, toHttpOperations, toMcpOperations } from "./AgenticaOperationComposer";
 import { assertMcpLlmApplication } from "../../functional/assertMcpLlmApplication";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+import { compose, divide, getOperations, toClassOperations, toHttpOperations, toMcpOperations } from "./AgenticaOperationComposer";
 
 // test helper functions
 function createMockHttpFunction(name: string, method: "get" | "post" | "patch" | "put" | "delete", path: string): IHttpLlmFunction<any> {
@@ -68,12 +70,12 @@ async function createMockMcpController(name: string, functions: IMcpLlmFunction[
     name: "calculator",
     version: "1.0.0",
   });
-  
+
   await client.connect(new StdioClientTransport({
     command: "npx",
     args: ["-y", "@wrtnlabs/calculator-mcp"],
   }));
-  
+
   return {
     name,
     protocol: "mcp",

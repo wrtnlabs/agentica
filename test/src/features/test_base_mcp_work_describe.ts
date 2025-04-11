@@ -1,8 +1,8 @@
 import type { AgenticaEvent, IAgenticaController } from "@agentica/core";
 
+import { Agentica, assertMcpLlmApplication } from "@agentica/core";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { Agentica, assertMcpLlmApplication } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -22,7 +22,7 @@ export async function test_base_mcp_work_describe(): Promise<void | false> {
     name: "calculator",
     version: "1.0.0",
   });
-  
+
   await client.connect(new StdioClientTransport({
     command: "npx",
     args: ["-y", "@wrtnlabs/calculator-mcp"],

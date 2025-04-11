@@ -1,5 +1,6 @@
-import type { IMcpLlmApplication } from "../structures/mcp";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.d.ts";
+
+import type { IMcpLlmApplication } from "../structures/mcp";
 /**
  * Create an MCP LLM application instance with type assertion.
  *
@@ -15,8 +16,7 @@ import type { Client } from "@modelcontextprotocol/sdk/client/index.d.ts";
  */
 export async function assertMcpLlmApplication(props: {
   client: Client;
-}
-): Promise<IMcpLlmApplication> {
+}): Promise<IMcpLlmApplication> {
   // for peerDependencies
   const { ListToolsResultSchema } = await import("@modelcontextprotocol/sdk/types.js");
 
