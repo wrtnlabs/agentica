@@ -14,7 +14,7 @@ export class AsyncQueue<T> {
 
   enqueue(item: T) {
     if (this.closed) {
-      console.error(new AsyncQueueClosedError("this queue is closed, you can't enqueue item"));
+      console.error(new AsyncQueueClosedError("Cannot enqueue item: queue is closed."));
       return;
     }
 
