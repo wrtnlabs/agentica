@@ -85,7 +85,7 @@ export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   for (const e of events) {
     if (e.type === "select") {
       collection.selections.push(e.selection);
-      await cancelFunction(ctx, {
+      cancelFunction(ctx, {
         name: e.selection.operation.name,
         reason: e.selection.reason,
       });
@@ -231,7 +231,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         });
 
         for (const reference of input.functions) {
-          const operation = await cancelFunction(ctx, reference);
+          const operation = cancelFunction(ctx, reference);
           if (operation !== null) {
             collection.selections.push(operation);
           }

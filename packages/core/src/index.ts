@@ -6,9 +6,9 @@ export * from "./context/AgenticaOperation";
 export * from "./context/AgenticaOperationCollection";
 export * from "./context/AgenticaOperationSelection";
 export * from "./context/AgenticaTokenUsage";
+
 export * from "./events/AgenticaCallEvent";
 export * from "./events/AgenticaCancelEvent";
-
 export * from "./events/AgenticaDescribeEvent";
 export * from "./events/AgenticaEvent";
 export * from "./events/AgenticaEventSource";
@@ -19,10 +19,14 @@ export * from "./events/AgenticaSelectEvent";
 export * from "./events/AgenticaTextEvent";
 export * from "./events/AgenticaValidateEvent";
 export * from "./events/MicroAgenticaEvent";
-export * as factory from "./factory";
-export * from "./functional/assertHttpLlmApplication";
 
+export * as factory from "./factory";
+
+export * from "./functional/assertHttpLlmApplication";
+export * from "./functional/assertMcpLlmApplication";
 export * from "./functional/validateHttpLlmApplication";
+// @TODO: implement validateMcpLlmApplication
+
 export * from "./histories/AgenticaCancelHistory";
 export * from "./histories/AgenticaDescribeHistory";
 export * from "./histories/AgenticaExecuteHistory";
@@ -37,6 +41,8 @@ export * from "./json/IAgenticaHistoryJson";
 export * from "./json/IAgenticaOperationJson";
 export * from "./json/IAgenticaOperationSelectionJson";
 export * from "./json/IAgenticaTokenUsageJson";
+export * from "./json/IMicroAgenticaEventJson";
+export * from "./json/IMicroAgenticaHistoryJson";
 export * from "./MicroAgentica";
 export * as orchestrate from "./orchestrate";
 

@@ -1,0 +1,381 @@
+---
+title: Agentica > Guide Documents > Core Library > LLM Vendors
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../components/RemoteSource";
+
+import AgenticaExampleVendorChatGptSnippet from "../../snippets/AgenticaExampleVendorChatGptSnippet.mdx";
+import AgenticaExampleVendorClaudeSnippet from "../../snippets/AgenticaExampleVendorClaudeSnippet.mdx";
+import AgenticaExampleVendorDeepSeekSnippet from "../../snippets/AgenticaExampleVendorDeepSeekSnippet.mdx";
+import AgenticaExampleVendorGeminiSnippet from "../../snippets/AgenticaExampleVendorGeminiSnippet.mdx";
+import AgenticaExampleVendorLlamaSnippet from "../../snippets/AgenticaExampleVendorLlamaSnippet.mdx";
+import AgenticaExampleVendorMistralSnippet from "../../snippets/AgenticaExampleVendorMistralSnippet.mdx";
+import OpenApiDiagramSnippet from "../../snippets/OpenApiDiagramSnippet.mdx";
+
+## LLM Vendors
+<Tabs 
+  items={[
+    "OpenAI",
+    "Claude",
+    "DeepSeek",
+    "Gemini",
+    "Llama",
+  ]}
+  defaultIndex={4}>
+  <Tabs.Tab>
+    <AgenticaExampleVendorChatGptSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaExampleVendorClaudeSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaExampleVendorDeepSeekSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaExampleVendorGeminiSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaExampleVendorLlamaSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+When creating `Agentica` instance, you can specify the LLM service vendor.
+
+`Agentica` is utilizing OpenAI SDK (`npm i openai`) for LLM (Large Language Model) service interaction. However, it does not mean you can use only the OpenAPI's GTP models. The OpenAI SDK is just a connection tool to the LLM vendor's API, and as the most of modern LLMs are following the OpenAI's API design, you can use other LLM vendors like Claude, DeepSeek, and so on.
+
+In that case, configure `IAgenticaVendor.api.baseURL` and `IAgenticaVendor.model` properties to the LLM vendor's API endpoint and model name. For example, if you want to use Meta Llama instead of OpenAI GPT, you can do it like below. Instead, as LLM schema models are different between vendors, you have to change the `IAgenticaProps.model` property to the vendor's model name `"llama"`.
+
+
+
+
+## Schema Specification
+<OpenApiDiagramSnippet />
+
+  - [`IChatGptSchema`](/api/types/_samchon_openapi.IChatGptSchema-1.html): OpenAI GPT
+  - [`IClaudeSchema`](/api/types/_samchon_openapi.IClaudeSchema-1.html): Anthropic Claude
+  - [`IGeminiSchema`](/api/types/_samchon_openapi.IGeminiSchema-1.html): Google Gemini
+  - [`ILlamaSchema`](/api/types/_samchon_openapi.ILlamaSchema-1.html): Meta Llama
+- Midldle layer schemas
+  - [`ILlmSchemaV3`](/api/types/_samchon_openapi.ILlmSchemaV3-1.html): middle layer based on OpenAPI v3.0 specification
+  - [`ILlmSchemaV3_1`](/api/types/_samchon_openapi.ILlmSchemaV3_1-1.html): middle layer based on OpenAPI v3.1 specification
+
+You know what? JSON schema models are different between LLM vendors.
+
+Thus, when creating `Agentica` instance and composing LLM function calling schemas, you have to choose proper schema model suitable for the target LLM vendor. For example, if you are using Google Gemini, you have to specify the schema model as `"gemini"`.
+
+Additionally, OpenAI GPT and Google Gemini have their own JSON schema models that is different from each other, even not following the standard JSON schema specification. So you have to be take care of the schema model when using OpenAI or Gemini.
+
+Besides, Anthropic Claude, HF DeepSeek, and Meta Llama are following the standard JSON schema specification (JSON schema 2020-12 draft, OpenAPI v3.1 is based on it). So, (`IClaudeSchema`, `IDeepSeekSchema`, `ILlamaSchema`) are actually the same as `ILlmSchemaV3_1`.
+
+### Standard JSON Schema
+<Tabs items={[
+  "Claude",
+  "Llama",
+  <code>ILlmSchemaV3_1</code>,
+  <code>src/main.mistra.ts</code>,
+]}>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/IClaudeSchema.ts"
+      filename="@samchon/openapi/IClaudeSchema"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/ILlamaSchema.ts"
+      filename="@samchon/openapi/ILlamaSchema"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/ILlmSchemaV3_1.ts"
+      filename="@samchon/openapi/ILlmSchemaV3_1"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <AgenticaExampleVendorMistralSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+In the major LLM vendors, (Anthropic Claude, HF DeepSeek and Meta Llama) are following the standard JSON schema specification (JSON schema 2020-12 draft, OpenAPI v3.1 is based on it). So, (`IClaudeSchema`, `IDeepSeekSchema`, `ILlamaSchema`) are actually the same type with `ILlmSchemaV3_1`.
+
+In actually, only Anthropic Claude has announced that they are supporting the full specification of JSON schema 2020-12 draft. DeepSeek has not documented it yet, but there was not any problem when we tested it. Meta Llama does not support tool calling feature, so that it is based on prompting logic, and no explicit schema model specified, so no problem either.
+
+In the same reason, if you take some other LLM vendor like [Mistral AI](https://mistral.ai/), which has not specified any JSON schema model, you can use `ILlmSchemaV3_1` as well, and it is actually working fine.
+
+### ChatGPT Schema
+<Tabs items={[
+  <code>src/chatgpt.parameters.ts</code>,
+  <code>bin/chatgpt.parameters.js</code>,
+  <code>IChatGptSchema</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/chatgpt.parameters.ts" showLineNumbers
+import typia, { tags } from "typia";
+
+typia.llm.parameters<{
+  /**
+   * Primary Key.
+   * 
+   * Primary Key generated by System.
+   */
+  id: string & tags.Format<"uuid">;
+
+  /**
+   * Age of the user.
+   * 
+   * Age of the user in years.
+   */
+  age: number & tags.Type<"uint32"> & tags.Maximum<100>;
+
+  /**
+   * Email address of the user.
+   * 
+   * Email address written when membership joining.
+   */
+  email: string & tags.Format<"email">;
+}, "chatgpt">();
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```javascript filename="bin/chatgpt.parameters.js" showLineNumbers
+import typia from "typia";
+({
+  description: "",
+  type: "object",
+  properties: {
+    id: {
+      title: "Primary Key",
+      description:
+        "Primary Key.\n\nPrimary Key generated by System.\n\n\n@format uuid",
+      type: "string",
+    },
+    age: {
+      title: "Age of the user",
+      description:
+        "Age of the user.\n\nAge of the user in years.\n\n\n@minimum 0\n@maximum 100",
+      type: "integer",
+    },
+    email: {
+      title: "Email address of the user",
+      description:
+        "Email address of the user.\n\nEmail address written when membership joining.\n\n\n@format email",
+      type: "string",
+    },
+  },
+  required: ["id", "age", "email"],
+  additionalProperties: false,
+  $defs: {},
+});
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/IChatGptSchema.ts"
+      filename="@samchon/openapi/IChatGptSchema"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+OpenAI has its own JSON schema model different from the standard JSON schema specification.
+
+OpenAI's JSON schema model is based on JSON schema 2020-12 draft (OpenAPI v3.1 is following), but it has banned some constraint properties like `IJsonSchema.IString.format` and `IJsonSchema.IInteger.minimum`. In detailly, these specifications are not supported in the OpenAI's JSON schema model `IChatGptSchema`.
+
+  - `IJsonSchema.INumber.minimum`
+  - `IJsonSchema.INumber.maximum`
+  - `IJsonSchema.INumber.exclusiveMinimum`
+  - `IJsonSchema.INumber.exclusiveMaximum`
+  - `IJsonSchema.INumber.multipleOf`
+  - `IJsonSchema.IString.minLength`
+  - `IJsonSchema.IString.maxLength`
+  - `IJsonSchema.IString.format`
+  - `IJsonSchema.IString.pattern`
+  - `IJsonSchema.IString.contentMediaType`
+  - `IJsonSchema.IArray.minItems`
+  - `IJsonSchema.IArray.maxItems`
+  - `IJsonSchema.IArray.uniqueItems`
+
+By the way, `IJsonSchema.IString.format` like properties, they sometimes become very important information for the LLM function calling. For example, above `id` is a `string` typed property with `format: "uuid"` constraint. However, OpenAI does not support the `format` constraint in its JSON schema model. 
+
+So with OpenAI's JSON schema model, every LLM function calling to the `UUID` typed property will be failed, because OpenAI does not support it. To avoid this critical problem, `@agentica`'s dependency libraries [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://typia.io) is filling `description` property with the `format` constraint information like below.
+
+However, as OpenAI does not understand the `@format uuid` description text exactly, it may lead to the [#Validation Feedback](http://localhost:3000/agentica/docs/concepts/function-calling/#validation-feedback), which corrects the wrong typed parameter values from the LLM function calling. In other words, such non-standard JSON schema model like OpenAI's `IChatGptSchema`, it is the principle reason why you have to use `@agentica`.
+
+```json showLineNumbers
+{
+  "type": "string",
+  "description": "Primary Key.\n\n@format uuid"
+}
+```
+
+### Gemini Schema
+<Tabs items={[
+  <code>src/chatgpt.schema.ts</code>,
+  <code>IGeminiSchema</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/gemini.schema.ts" showLineNumbers
+import typia from "typia";
+
+type Shape = Circle | Rectangle;
+interface Circle {
+  type: "circle";
+  radius: number;
+}
+interface Rectangle {
+  type: "rectangle";
+  width: number;
+  height: number;
+}
+typia.llm.schema<Shape, "gemini">();
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/IGeminiSchema.ts"
+      filename="@samchon/openapi/IGeminiSchema"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+> ```bash filename="Terminal"
+> unsupported type detected
+>
+> - (Circle | Rectangle)\n  - Gemini model does not support the union type.
+> ```
+
+Google Gemini has its own JSON schema model different from the standard JSON schema specification.
+
+Gemini's JSON schema model is based on JSON schema draft-07 (OpenAPI v3.0 is following), but it has banned many types and constraint properties like `IJsonSchema.IReference.$ref`, `IJsonSchema.IOneOf.oneOf` and `IJsonSchema.IInteger.maximum`. In detailly, these specifications are not supported in the Gemini's JSON schema model `IGeminiSchema`.
+
+As Gemini has banned `$ref`, `oneOf` and `anyOf`, it is not possible to using recursive and union types in Gemini. By the way, such reference and union types are important in many applications, I do not recommend using Gemini for the LLM function calling.
+
+  - Banned types
+    - `IJsonSchema.IReference.$ref`
+    - `IJsonSchema.IOneOf.oneOf`
+    - `IJsonSchema.IAnyOf.anyOf`
+  - Banned constraint properties
+    - `IJsonSchema.INumber.minimum`
+    - `IJsonSchema.INumber.maximum`
+    - `IJsonSchema.INumber.exclusiveMinimum`
+    - `IJsonSchema.INumber.exclusiveMaximum`
+    - `IJsonSchema.INumber.multipleOf`
+    - `IJsonSchema.IString.minLength`
+    - `IJsonSchema.IString.maxLength`
+    - `IJsonSchema.IString.format`
+    - `IJsonSchema.IString.pattern`
+    - `IJsonSchema.IString.contentMediaType`
+    - `IJsonSchema.IArray.minItems`
+    - `IJsonSchema.IArray.maxItems`
+    - `IJsonSchema.IArray.uniqueItems`
+
+<Tabs items={[
+  <code>src/gemini.parameters.ts</code>,
+  <code>bin/gemini.parameters.js</code>,
+  <code>IGeminiSchema</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/gemini.parameters.ts" showLineNumbers
+import typia, { tags } from "typia";
+
+typia.llm.parameters<{
+  /**
+   * Primary Key.
+   * 
+   * Primary Key generated by System.
+   */
+  id: string & tags.Format<"uuid">;
+
+  /**
+   * Age of the user.
+   * 
+   * Age of the user in years.
+   */
+  age: number & tags.Type<"uint32"> & tags.Maximum<100>;
+
+  /**
+   * Email address of the user.
+   * 
+   * Email address written when membership joining.
+   */
+  email: string & tags.Format<"email">;
+}, "gemini">();
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```javascript filename="bin/gemini.parameters.js" showLineNumbers
+import typia from "typia";
+({
+  description: "",
+  type: "object",
+  properties: {
+    id: {
+      title: "Primary Key",
+      description:
+        "Primary Key.\n\nPrimary Key generated by System.\n\n\n@format uuid",
+      type: "string",
+    },
+    age: {
+      title: "Age of the user",
+      description:
+        "Age of the user.\n\nAge of the user in years.\n\n\n@minimum 0\n@maximum 100",
+      type: "integer",
+    },
+    email: {
+      title: "Email address of the user",
+      description:
+        "Email address of the user.\n\nEmail address written when membership joining.\n\n\n@format email",
+      type: "string",
+    },
+  },
+  required: ["id", "age", "email"],
+  additionalProperties: false,
+  $defs: {},
+});
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/IGeminiSchema.ts"
+      filename="@samchon/openapi/IGeminiSchema"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+Also, `IJsonSchema.IString.format` like properties, they sometimes become very important information for the LLM function calling. For example, above `id` is a `string` typed property with `format: "uuid"` constraint. However, Gemini does not support the `format` constraint in its JSON schema model. 
+
+So with Gemini's JSON schema model, every LLM function calling to the `UUID` typed property will be failed, because Gemini does not support it. To avoid this critical problem, `@agentica`'s dependency libraries [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://typia.io) is filling `description` property with the `format` constraint information like below.
+
+However, as Gemini does not understand the `@format uuid` description text exactly, it may lead to the [#Validation Feedback](http://localhost:3000/agentica/docs/concepts/function-calling/#validation-feedback), which corrects the wrong typed parameter values from the LLM function calling. In other words, such non-standard JSON schema model like Gemini's `IGeminiSchema`, it is the principle reason why you have to use `@agentica`
+
+```json showLineNumbers
+{
+  "type": "string",
+  "description": "Primary Key.\n\n@format uuid"
+}
+```
+
+## Leaderboard
+In this page, we've learned how to specify and utilize famous LLM vendors.
+
+However, LLM vendors are not only (OpenAI, Claude, DeepSeek, Gemini, Llama). There are much more Local LLMs. We Wrtn Technologies are preparing a leaderboard for a lot of LLM vendors measuring the performance of LLM function calling.
+
+Here is one of the leaderboard example, which is measuring the LLM function calling performance about OpenAI's `o3-mini` model. The number means how many attempts are needed to get the correct parameter values from the LLM function calling. If the value is 1, it means that the function calling was successful in the first attempt, and if the value is 2, it means that the function calling was successful in the second attempt with one time [validation feedback](http://localhost:3000/agentica/docs/concepts/function-calling/#validation-feedback).
+
+Wait for our leaderboard release. You can choose the best LLM vendor for your application, effiectively and economically.
+
+Name | Status
+:----|:-------
+`ObjectConstraint` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+`ObjectFunctionSchema` | 2️⃣2️⃣4️⃣2️⃣2️⃣2️⃣2️⃣2️⃣5️⃣2️⃣
+`ObjectHierarchical` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣2️⃣1️⃣1️⃣2️⃣
+`ObjectJsonSchema` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+`ObjectSimple` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+`ObjectUnionExplicit` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+`ObjectUnionImplicit` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+`ShoppingCartCommodity` | 1️⃣2️⃣2️⃣3️⃣1️⃣1️⃣4️⃣2️⃣1️⃣2️⃣
+`ShoppingOrderCreate` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+`ShoppingOrderPublish` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣❌1️⃣1️⃣1️⃣
+`ShoppingSaleDetail` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+`ShoppingSalePage` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣

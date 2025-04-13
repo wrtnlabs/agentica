@@ -1,6 +1,6 @@
 {
   "name": "@agentica/rpc",
-  "version": "0.16.4",
+  "version": "0.18.0",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -44,6 +44,9 @@
     "prepack": "pnpm run build",
     "lint": "eslint .",
     "format": "eslint --fix ."
+  },
+  "peerDependencies": {
+    "@agentica/core": "workspace:^"
   },
   "dependencies": {
     "@agentica/core": "workspace:^",

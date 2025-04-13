@@ -74,7 +74,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   agent.on("call", (event) => {
     events.push(event);
-    if (event.operation.name === "add" || event.operation.name === "subtract") {
+    if (event.operation.name.includes("add") || event.operation.name.includes("subtract")) {
       functionCalled = true;
     }
   });
@@ -92,16 +92,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
     describeStreamProcessed = true;
     describeJoinResult = await event.join();
 
-    const reader = event.stream.getReader();
-    while (true) {
-      const { done, value } = await reader.read().catch((e) => {
-        console.error(e);
-        return { done: true, value: undefined };
-      });
-      if (done) {
-        break;
-      }
-
+    for await (const value of event.stream) {
       // Extract text content from stream chunks
       try {
         if (typeof value === "string") {
@@ -192,7 +183,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
 
   const hasCalculatorExecution = describeEvent.executes.some(
     exec =>
-      exec.operation.name === "add" || exec.operation.name === "subtract",
+      exec.operation.name.includes("add") || exec.operation.name.includes("subtract"),
   );
   if (!hasCalculatorExecution) {
     throw new Error(

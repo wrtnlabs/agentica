@@ -10,10 +10,10 @@ import { createOperationSelection } from "../../factory/operations";
 /**
  * @internal
  */
-export async function cancelFunction<Model extends ILlmSchema.Model>(
+export function cancelFunction<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model>,
   reference: __IChatFunctionReference,
-): Promise<AgenticaOperationSelection<Model> | null> {
+): AgenticaOperationSelection<Model> | null {
   const index: number = ctx.stack.findIndex(
     item => item.operation.name === reference.name,
   );
@@ -23,13 +23,13 @@ export async function cancelFunction<Model extends ILlmSchema.Model>(
 
   const item: AgenticaOperationSelection<Model> = ctx.stack[index]!;
   ctx.stack.splice(index, 1);
-  await ctx.dispatch(
+  ctx.dispatch(
     createCancelEvent({
       selection: createOperationSelection({
         operation: item.operation,
         reason: reference.reason,
       }),
     }),
-  );
+  ).catch(() => {});
   return item;
 }

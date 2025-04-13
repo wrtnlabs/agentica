@@ -46,13 +46,7 @@ export async function test_base_streaming(): Promise<void | false> {
   agent.on("response", async (event: AgenticaResponseEvent) => {
     responseEventFired = true;
     // Test the stream
-    const reader = event.stream.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        break;
-      }
-      // Collect content from stream chunks
+    for await (const value of event.stream) {
       if (value.choices !== undefined && value.choices[0]?.delta?.content !== undefined) {
         streamContentPieces.push(value.choices[0].delta.content as string);
       }

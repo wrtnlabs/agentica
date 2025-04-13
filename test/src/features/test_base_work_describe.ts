@@ -65,7 +65,7 @@ export async function test_base_work_describe(): Promise<void | false> {
 
   agent.on("call", (event) => {
     events.push(event);
-    if (event.operation.name === "add" || event.operation.name === "subtract") {
+    if (event.operation.name.includes("add") || event.operation.name.includes("subtract")) {
       functionCalled = true;
     }
   });

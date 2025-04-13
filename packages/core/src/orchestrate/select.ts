@@ -22,7 +22,7 @@ import { createTextEvent } from "../factory/events";
 import { createSelectHistory, createTextHistory, decodeHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { StreamUtil } from "../utils/StreamUtil";
+import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { selectFunction } from "./internal/selectFunction";
 
@@ -258,6 +258,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
       const text: AgenticaTextHistory = createTextHistory({
         role: "assistant",
@@ -265,15 +266,15 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       });
       prompts.push(text);
 
-      await ctx.dispatch(
+      ctx.dispatch(
         createTextEvent({
           role: "assistant",
-          stream: StreamUtil.to(text.text),
+          stream: toAsyncGenerator(text.text),
           join: async () => Promise.resolve(text.text),
           done: () => true,
           get: () => text.text,
         }),
-      );
+      ).catch(() => {});
     }
   }
 

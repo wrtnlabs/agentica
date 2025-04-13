@@ -25,6 +25,7 @@ function Application() {
       style={{
         width: "100%",
         height: "100%",
+        overflow: start === true ? undefined : "auto",
       }}
     >
       {start === true

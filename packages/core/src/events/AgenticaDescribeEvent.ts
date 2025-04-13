@@ -10,7 +10,7 @@ export interface AgenticaDescribeEvent<
   Model extends ILlmSchema.Model,
 > extends AgenticaEventBase<"describe"> {
   executes: AgenticaExecuteHistory<Model>[];
-  stream: ReadableStream<string>;
+  stream: AsyncGenerator<string, undefined, undefined>;
 
   join: () => Promise<string>;
   toJSON: () => IAgenticaEventJson.IDescribe;
