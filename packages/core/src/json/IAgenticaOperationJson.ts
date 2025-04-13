@@ -17,7 +17,7 @@ export interface IAgenticaOperationJson {
   /**
    * Protocol discriminator.
    */
-  protocol: "class" | "http";
+  protocol: "class" | "http" | "mcp";
 
   /**
    * Belonged controller of the target function.

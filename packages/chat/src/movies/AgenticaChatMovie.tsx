@@ -1,4 +1,4 @@
-import type { Agentica, AgenticaDescribeEvent, AgenticaOperationSelection, AgenticaPrompt, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
+import type { Agentica, AgenticaDescribeEvent, AgenticaHistory, AgenticaOperationSelection, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
 import type {
   Theme,
 } from "@mui/material";
@@ -45,8 +45,8 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // STATES
   const [error, setError] = useState<Error | null>(null);
   const [text, setText] = useState("");
-  const [histories, setHistories] = useState<AgenticaPrompt<Model>[]>(
-    agent.getPromptHistories().slice(),
+  const [histories, setHistories] = useState<AgenticaHistory<Model>[]>(
+    agent.getHistories().slice(),
   );
   const [tokenUsage, setTokenUsage] = useState<AgenticaTokenUsage>(
     JSON.parse(JSON.stringify(agent.getTokenUsage())) as AgenticaTokenUsage,
@@ -64,16 +64,16 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // EVENT LISTENERS
   const handleText = async (event: AgenticaTextEvent) => {
     await event.join(); // @todo Jaxtyn: streaming
-    histories.push(event.toPrompt());
+    histories.push(event.toHistory());
     setHistories(histories);
   };
   const handleDescribe = async (event: AgenticaDescribeEvent<Model>) => {
     await event.join(); // @todo Jaxtyn: streaming
-    histories.push(event.toPrompt());
+    histories.push(event.toHistory());
     setHistories(histories);
   };
   const handleSelect = (evevnt: AgenticaSelectEvent<Model>) => {
-    histories.push(evevnt.toPrompt());
+    histories.push(evevnt.toHistory());
     setHistories(histories);
 
     selections.push(evevnt.selection);
@@ -134,18 +134,18 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     }
 
     histories.splice(0, histories.length);
-    histories.push(...agent.getPromptHistories());
+    histories.push(...agent.getHistories());
     setHistories(histories);
     setTokenUsage(agent.getTokenUsage());
     setEnabled(true);
 
     const selections: AgenticaOperationSelection<Model>[] = agent
-      .getPromptHistories()
+      .getHistories()
       .filter(h => h.type === "select")
       .map(h => h.selections)
       .flat();
     for (const cancel of agent
-      .getPromptHistories()
+      .getHistories()
       .filter(h => h.type === "cancel")
       .map(h => h.selections)
       .flat()) {
@@ -251,7 +251,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
           {isMobile
             ? (
                 <>
-                  <IconButton onClick={void capture}>
+                  <IconButton onClick={() => void capture().catch(() => {})}>
                     <AddAPhotoIcon />
                   </IconButton>
                   <IconButton onClick={() => setOpenSide(true)}>
@@ -263,7 +263,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
                 <Button
                   color="inherit"
                   startIcon={<AddAPhotoIcon />}
-                  onClick={void capture}
+                  onClick={() => void capture().catch(() => {})}
                 >
                   Screenshot Capture
                 </Button>
@@ -312,7 +312,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
             placeholder="Conversate with AI Chatbot"
             value={text}
             multiline={true}
-            onKeyUp={e => void handleKeyUp(e)}
+            onKeyUp={e => void handleKeyUp(e).catch(() => {})}
             onChange={(e) => {
               setText(e.target.value);
               handleResize();
@@ -323,7 +323,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
             style={{ marginLeft: 10 }}
             startIcon={<SendIcon />}
             disabled={!enabled}
-            onClick={void conversate}
+            onClick={() => void conversate().catch(() => {})}
           >
             Send
           </Button>

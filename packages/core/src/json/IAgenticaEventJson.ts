@@ -2,16 +2,17 @@ import type OpenAI from "openai";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 
+import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
-import type { IAgenticaPromptJson } from "./IAgenticaPromptJson";
 
 /**
- * Nestia A.I. chatbot event.
+ * Agentic AI agent event.
  *
  * `IAgenticaEventJson` is an union type of all possible events that can
- * be emitted by the A.I. chatbot of the {@link Agentica} class. You
- * can discriminate the subtype by checking the {@link type} property.
+ * be emitted by the A.I. chatbot of the {@link Agentica} class.
+ *
+ * You can discriminate the subtype by checking the {@link type} property.
  *
  * @author Samchon
  */
@@ -119,7 +120,7 @@ export namespace IAgenticaEventJson {
      *
      * This prompt describes the return value of them.
      */
-    executes: IAgenticaPromptJson.IExecute[];
+    executes: IAgenticaHistoryJson.IExecute[];
 
     /**
      * Description text.

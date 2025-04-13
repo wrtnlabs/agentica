@@ -1,13 +1,13 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { IAgenticaPromptJson } from "../json/IAgenticaPromptJson";
+import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
 import type { IAgenticaConfig } from "./IAgenticaConfig";
 import type { IAgenticaController } from "./IAgenticaController";
 import type { IAgenticaVendor } from "./IAgenticaVendor";
 
 /**
- * Properties of the Nestia Agent.
+ * Properties of the Agentica Agent.
  *
  * `IAgenticaProps` is an interface that defines the properties
  * of the {@link Agentica.constructor}. In the `IAgenticaProps`,
@@ -66,5 +66,5 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
    * If you're starting the conversation from an existing session,
    * assign the previouis prompt histories to this property.
    */
-  histories?: IAgenticaPromptJson[];
+  histories?: IAgenticaHistoryJson[];
 }

@@ -1,6 +1,6 @@
 {
   "name": "@agentica/core",
-  "version": "0.15.6",
+  "version": "0.17.1",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -39,7 +39,8 @@
     "dev": "rimraf lib && tsc --watch",
     "prepack": "pnpm run build",
     "lint": "eslint .",
-    "format": "eslint --fix ."
+    "format": "eslint --fix .",
+    "test": "vitest"
   },
   "publishConfig": {
     "main": "lib/index.js",
@@ -48,27 +49,31 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@samchon/openapi": ">=3.2.2 <4.0.0",
-    "openai": ">=4.80.0",
-    "typia": ">=8.1.0 <9.0.0"
+    "@modelcontextprotocol/sdk": "catalog:libs",
+    "@samchon/openapi": "catalog:typia",
+    "openai": "catalog:libs",
+    "typia": "catalog:typia"
   },
   "dependencies": {
-    "@samchon/openapi": "catalog:libs",
+    "@samchon/openapi": "catalog:typia",
     "typia": "catalog:typia",
     "uuid": "^11.0.4"
   },
   "devDependencies": {
-    "@nestia/e2e": "^0.8.2",
+    "@modelcontextprotocol/sdk": "catalog:libs",
+    "@nestia/e2e": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^22.13.4",
     "@types/uuid": "^10.0.0",
     "openai": "catalog:libs",
     "rimraf": "^6.0.1",
     "rollup": "^4.34.8",
     "ts-node": "^10.9.2",
-    "ts-patch": "catalog:typia",
+    "ts-patch": "catalog:typescript",
     "typedoc": "^0.27.7",
-    "typescript": "catalog:libs"
+    "typescript": "catalog:typescript",
+    "vitest": "catalog:vite"
   }
 }

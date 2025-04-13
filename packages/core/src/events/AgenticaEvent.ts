@@ -46,4 +46,10 @@ export namespace AgenticaEvent {
     text: AgenticaTextEvent;
     validate: AgenticaValidateEvent<Model>;
   }
+  export type Source =
+    | "initialize"
+    | "select"
+    | "cancel"
+    | "call"
+    | "describe";
 }

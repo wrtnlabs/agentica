@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 25
+    versioning-strategy: increase
+    allow:
+      - dependency-name: "@ryoppippi/unplugin-typia"
+      - dependency-name: "@samchon/openapi"
+      - dependency-name: typia
+      - dependency-name: typescript
+      - dependency-name: ts-patch
+      - dependency-name: openai
+    groups:
+      typia:
+        patterns:
+          - "@ryoppippi/unplugin-typia"
+          - "@samchon/openapi"
+          - typia
+      typescript:
+        patterns:
+          - typescript
+          - ts-patch
+      vendor:
+        patterns:
+          - openai

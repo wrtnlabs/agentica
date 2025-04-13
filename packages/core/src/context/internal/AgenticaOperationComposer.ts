@@ -2,68 +2,39 @@ import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
+import type { IMicroAgenticaConfig } from "../../structures/IMicroAgenticaConfig";
 import type { AgenticaOperation } from "../AgenticaOperation";
 import type { AgenticaOperationCollection } from "../AgenticaOperationCollection";
 
 import { __map_take } from "../../utils/__map_take";
 
+/**
+ * Compose the agentica operation collection.
+ *
+ * Compose the {@link AgenticaOperationCollection} from the given
+ * controllers and config.
+ *
+ * @internal
+ */
 export function compose<Model extends ILlmSchema.Model>(props: {
   controllers: IAgenticaController<Model>[];
-  config?: IAgenticaConfig<Model> | undefined;
+  config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model> | undefined;
 }): AgenticaOperationCollection<Model> {
-  const unique: boolean
-      = props.controllers.length === 1
-        || (() => {
-          const names: string[] = props.controllers
-            .map(controller =>
-              controller.application.functions.map(func => func.name),
-            )
-            .flat();
-          return new Set(names).size === names.length;
-        })();
-  const naming = (func: string, ci: number) =>
-    unique ? func : `_${ci}_${func}`;
+  const unique: boolean = (props.controllers.length === 1 || (() => {
+    const names = props.controllers.map(controllers => controllers.application.functions.map(func => func.name)).flat();
+    return new Set(names).size === names.length;
+  })());
 
-  const array: AgenticaOperation<Model>[] = props.controllers
-    .map((controller, ci) =>
-      controller.protocol === "http"
-        ? controller.application.functions.map(
-            func =>
-                ({
-                  protocol: "http",
-                  controller,
-                  function: func,
-                  name: naming(func.name, ci),
-                  toJSON: () => ({
-                    protocol: "http",
-                    controller: controller.name,
-                    function: func.name,
-                    name: naming(func.name, ci),
-                  }),
-                }) satisfies AgenticaOperation.Http<Model>,
-          )
-        : controller.application.functions.map(
-            func =>
-                ({
-                  protocol: "class",
-                  controller,
-                  function: func,
-                  name: naming(func.name, ci),
-                  toJSON: () => ({
-                    protocol: "class",
-                    controller: controller.name,
-                    function: func.name,
-                    name: naming(func.name, ci),
-                  }),
-                }) satisfies AgenticaOperation.Class<Model>,
-          ),
-    )
-    .flat();
+  const array: AgenticaOperation<Model>[] = getOperations({
+    controllers: props.controllers,
+    naming: (func: string, controllerIndex: number) => unique ? func : `_${controllerIndex}_${func}`,
+  });
+  const capacity: number | undefined = (props.config as IAgenticaConfig<Model>)?.capacity;
   const divided: AgenticaOperation<Model>[][] | undefined
-      = props.config?.capacity !== undefined && array.length > props.config.capacity
+      = capacity !== undefined && array.length > capacity
         ? divide({
             array,
-            capacity: props.config.capacity,
+            capacity,
           })
         : undefined;
 
@@ -84,10 +55,112 @@ export function compose<Model extends ILlmSchema.Model>(props: {
   };
 }
 
-function divide<T>(props: {
+/**
+ * @internal
+ */
+export function getOperations<Model extends ILlmSchema.Model>(props: {
+  controllers: IAgenticaController<Model>[];
+  naming: (func: string, controllerIndex: number) => string;
+}): AgenticaOperation<Model>[] {
+  return props.controllers.flatMap((controller, idx) => {
+    switch (controller.protocol) {
+      case "http":{
+        return toHttpOperations({ controller, index: idx, naming: props.naming }); }
+      case "class":{
+        return toClassOperations({ controller, index: idx, naming: props.naming }); }
+      case "mcp": {
+        return toMcpOperations({ controller, index: idx, naming: props.naming });
+      }
+      default:
+        controller satisfies never;
+        throw new Error(`Unsupported protocol: ${(controller as { protocol: string }).protocol}`);
+    }
+  });
+}
+
+/**
+ * @internal
+ */
+export function toHttpOperations<Model extends ILlmSchema.Model>(props: {
+  controller: IAgenticaController.IHttp<Model>;
+  index: number;
+  naming: (func: string, controllerIndex: number) => string;
+}): AgenticaOperation<Model>[] {
+  return props.controller.application.functions.map(func => ({
+    protocol: "http",
+    controller: props.controller,
+    function: func,
+    name: props.naming(func.name, props.index),
+    toJSON: () => ({
+      protocol: "http",
+      controller: props.controller.name,
+      function: func.name,
+      name: props.naming(func.name, props.index),
+    }),
+  }));
+}
+
+/**
+ * @internal
+ */
+export function toClassOperations<Model extends ILlmSchema.Model>(props: {
+  controller: IAgenticaController.IClass<Model>;
+  index: number;
+  naming: (func: string, controllerIndex: number) => string;
+}): AgenticaOperation<Model>[] {
+  return props.controller.application.functions.map(func => ({
+    protocol: "class",
+    controller: props.controller,
+    function: func,
+    name: props.naming(func.name, props.index),
+    toJSON: () => ({
+      protocol: "class",
+      controller: props.controller.name,
+      function: func.name,
+      name: props.naming(func.name, props.index),
+    }),
+  }));
+}
+
+/**
+ * @internal
+ */
+export function toMcpOperations<Model extends ILlmSchema.Model>(props: {
+  controller: IAgenticaController.IMcp;
+  index: number;
+  naming: (func: string, controllerIndex: number) => string;
+}): AgenticaOperation<Model>[] {
+  return props.controller.application.functions.map(func => ({
+    protocol: "mcp",
+    controller: props.controller,
+    function: func,
+    name: props.naming(func.name, props.index),
+    toJSON: () => ({
+      protocol: "mcp",
+      controller: props.controller.name,
+      function: func.name,
+      name: props.naming(func.name, props.index),
+    }),
+  }));
+}
+
+/**
+ * @internal
+ */
+export function divide<T>(props: {
   array: T[];
   capacity: number;
 }): T[][] {
+  if (props.capacity <= 0) {
+    throw new Error("Capacity must be a positive integer");
+  }
+  if (Number.isNaN(props.capacity)) {
+    throw new TypeError("Capacity must be a positive integer");
+  }
+  if (props.capacity === Infinity) {
+    throw new Error("Capacity must be a positive integer");
+  }
+
   const size: number = Math.ceil(props.array.length / props.capacity);
   const capacity: number = Math.ceil(props.array.length / size);
   const replica: T[] = props.array.slice();

@@ -8,6 +8,9 @@ import type { __IChatFunctionReference } from "../../context/internal/__IChatFun
 import { createSelectEvent } from "../../factory/events";
 import { createOperationSelection } from "../../factory/operations";
 
+/**
+ * @internal
+ */
 export async function selectFunction<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, reference: __IChatFunctionReference): Promise<AgenticaOperation<Model> | null> {
   const operation: AgenticaOperation<Model> | undefined
       = ctx.operations.flat.get(reference.name);
@@ -21,10 +24,10 @@ export async function selectFunction<Model extends ILlmSchema.Model>(ctx: Agenti
         reason: reference.reason,
       });
   ctx.stack.push(selection);
-  void ctx.dispatch(
+  ctx.dispatch(
     createSelectEvent({
       selection,
     }),
-  );
+  ).catch(() => {});
   return operation;
 }

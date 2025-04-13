@@ -1,12 +1,12 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
 import type { IAgenticaConfig } from "./IAgenticaConfig";
 
 /**
- * System prompt collection of the A.I. chatbot.
+ * System prompt collection of the Agentic AI.
  *
  * `IAgenticaSystemPrompt` is a type represents a collection of system
  * prompts that would be used by the A.I. chatbot of {@link Agentica}.
@@ -43,13 +43,13 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, the `initialize` system prompt would be used. You can
    * customize the `initialize` system prompt by assigning this function
-   * with the given {@link AgenticaPrompt histories} parameter.
+   * with the given {@link AgenticaHistory histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns initialize system prompt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/initialize.md
    */
-  initialize?: (histories: AgenticaPrompt<Model>[]) => string;
+  initialize?: (histories: AgenticaHistory<Model>[]) => string;
 
   /**
    * Select system prompt.
@@ -60,7 +60,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `select` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link AgenticaPrompt histories} parameter.
+   * {@link AgenticaHistory histories} parameter.
    *
    * Note that, the `"select"` means only the function selection. It does
    * not contain the filling argument or executing the function. It
@@ -70,7 +70,7 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns select system promopt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/select.md
    */
-  select?: (histories: AgenticaPrompt<Model>[]) => string;
+  select?: (histories: AgenticaHistory<Model>[]) => string;
 
   /**
    * Cancel system prompt.
@@ -81,13 +81,13 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `cancel` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link AgenticaPrompt histories} parameter.
+   * {@link AgenticaHistory histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns cancel system prompt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/cancel.md
    */
-  cancel?: (histories: AgenticaPrompt<Model>[]) => string;
+  cancel?: (histories: AgenticaHistory<Model>[]) => string;
 
   /**
    * Execute system prompt.
@@ -99,13 +99,13 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `execute` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link AgenticaPrompt histories} parameter.
+   * {@link AgenticaHistory histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns execute system prompt
    * https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/execute.md
    */
-  execute?: (histories: AgenticaPrompt<Model>[]) => string;
+  execute?: (histories: AgenticaHistory<Model>[]) => string;
 
   /**
    * Describe system prompt.
@@ -116,11 +116,11 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    *
    * In that case, this `describe` system prompt would be used. You can
    * customize it by assigning this function with the given
-   * {@link AgenticaPrompt histories} parameter.
+   * {@link AgenticaHistory histories} parameter.
    *
    * @param histories Histories of the previous prompts
    * @returns describe system prompt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/describe.md
    */
-  describe?: (histories: AgenticaExecutePrompt<Model>[]) => string;
+  describe?: (histories: AgenticaExecuteHistory<Model>[]) => string;
 }

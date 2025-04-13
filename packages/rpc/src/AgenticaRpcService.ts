@@ -78,7 +78,7 @@ implements IAgenticaRpcService<Model> {
       listener.cancel!(evt.toJSON()).catch(() => {});
     });
     agent.on("call", async (evt) => {
-      const args: object | null | undefined = await listener.call!(
+      const args: object | null | undefined | void = await listener.call!(
         evt.toJSON(),
       );
       if (args != null) {

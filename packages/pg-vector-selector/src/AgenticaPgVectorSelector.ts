@@ -1,4 +1,4 @@
-import type { AgenticaContext, AgenticaOperation, AgenticaOperationSelection, AgenticaPrompt, AgenticaSelectPrompt } from "@agentica/core";
+import type { AgenticaContext, AgenticaHistory, AgenticaOperation, AgenticaOperationSelection, AgenticaSelectHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
 
@@ -114,12 +114,12 @@ export namespace AgenticaPgVectorSelector {
 
     const selectorExecute = async (
       ctx: AgenticaContext<SchemaModel>,
-    ): Promise<AgenticaPrompt<SchemaModel>[]> => {
+    ): Promise<AgenticaHistory<SchemaModel>[]> => {
       if (!isEmbeddedContext(ctx)) {
         await embedContext(ctx);
       }
 
-      const prompts: AgenticaPrompt<SchemaModel>[] = [];
+      const prompts: AgenticaHistory<SchemaModel>[] = [];
 
       const filter = getFilterFromContext(ctx);
 
@@ -134,7 +134,7 @@ export namespace AgenticaPgVectorSelector {
             ].join("\n"),
           },
           ...ctx.histories
-            .map(factory.decodePrompt<SchemaModel>)
+            .map(factory.decodeHistory<SchemaModel>)
             .flat(),
           {
             role: "user",
@@ -185,7 +185,7 @@ export namespace AgenticaPgVectorSelector {
               ].join("\n"),
             },
             ...ctx.histories
-              .map(factory.decodePrompt<SchemaModel>)
+              .map(factory.decodeHistory<SchemaModel>)
               .flat(),
             {
               role: "user",
@@ -203,7 +203,7 @@ export namespace AgenticaPgVectorSelector {
         .forEach((v) => {
           v.message
             .tool_calls!.filter(tc => tc.function.name === "execute_function").forEach((tc) => {
-            const collection: AgenticaSelectPrompt<SchemaModel> = {
+            const collection: AgenticaSelectHistory<SchemaModel> = {
               type: "select",
               id: tc.id,
               selections: [],
@@ -232,7 +232,7 @@ export namespace AgenticaPgVectorSelector {
                     operation,
                   });
               ctx.stack.push(selection);
-              void ctx.dispatch(factory.createSelectEvent({ selection }));
+              ctx.dispatch(factory.createSelectEvent({ selection })).catch(() => {});
               collection.selections.push(selection);
             });
 

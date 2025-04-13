@@ -20,6 +20,7 @@ const FOOTER_CONTENTS = [
       { label: "Autoview", href: "https://wrtnlabs.io/autoview/" },
       { label: "Github", href: "https://github.com/wrtnlabs" },
       { label: "Docs", href: "https://wrtnlabs.io/agentica/docs/" },
+      { label: "Discord", href: "https://discord.gg/aMhRmzkqCx" },
     ],
   },
 ];

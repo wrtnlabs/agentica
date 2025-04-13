@@ -1,0 +1,271 @@
+---
+title: Agentica > Guide Documents > Core Library > Function Controllers > TypeScript Class
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../../components/RemoteSource";
+
+import BbsArticleServiceSnippet from "../../../snippets/BbsArticleServiceSnippet.mdx";
+import IBbsArticleSnippet from "../../../snippets/IBbsArticleSnippet.mdx";
+
+import DocumentationStrategyDtoDescriptionSnippet from "../../../snippets/DocumentationStrategyDtoDescriptionSnippet.mdx";
+import DocumentationStrategyPropertyDescriptionSnippet from "../../../snippets/DocumentationStrategyPropertyDescriptionSnippet.mdx";
+import DocumentationStrategyNamespaceSnippet from "../../../snippets/DocumentationStrategyNamespaceSnippet.mdx";
+
+## TypeScript Class
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>BbsArticleService</code>,
+  <code>IBbsArticle</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12-17}
+import { Agentica, IAgenticaController } from "@agentica/core";
+import OpenAI from "openai";
+import typia from "typia";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      protocol: "class",
+      name: "bbs",
+      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController.IClass<"chatgpt">,
+  ],
+});
+await agent.conversate("What you can do?");
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <BbsArticleServiceSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <IBbsArticleSnippet />
+  </Tabs.Tab>
+</Tabs>
+
+TypeScript Class Functions for LLM Function Calling.
+
+In `@agentica/core`, there is a concept of controller, a set of LLM (Large Language Model) function calling schemas, and executor for actual function calling. And `@agentica/core` supports three protocol types of the controllers; HTTP Restful API, MCP (Model Context Protocol), and <u>TypeScript class</u>.
+
+When you want to serve functions from a TypeScript class, create an LLM application schema from `typia.llm.application<Class, Model>()` function. And provide the class instance for the actual function calling.
+
+If you compose a TypeScript class controller of above `BbsArticleService` class, you can start conversation with the `BbsArticleService` class like below demonstration video.
+
+<br/>
+<iframe 
+  src="https://www.youtube.com/embed/pdsplQyok8k?si=geL7DH5CWcC8qlz_" 
+  title="Shopping A.I. Chatbot built with Typia" 
+  width="100%" 
+  height="600" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" 
+  allowFullScreen 
+/>
+
+
+
+
+## Documentation Strategy
+### Function Description
+```typescript filename="src/ShoppingSaleService.ts" showLineNumbers
+import { tags } from "typia";
+
+import { IPage } from "@samchon/shopping-api/lib/structures/common/IPage";
+import { IShoppingActorEntity } from "@samchon/shopping-api/lib/structures/shoppings/actors/IShoppingActorEntity";
+import { IShoppingSale } from "@samchon/shopping-api/lib/structures/shoppings/sales/IShoppingSale";
+
+export class ShoppingSaleService {
+  /**
+   * List up every summarized sales.
+   *
+   * List up every {@link IShoppingSale.ISummary summarized sales}.
+   *
+   * As you can see, returned sales are summarized, not detailed. It does not
+   * contain the SKU (Stock Keeping Unit) information represented by the
+   * {@link IShoppingSaleUnitOption} and {@link IShoppingSaleUnitStock} types.
+   * If you want to get such detailed information of a sale, use
+   * `GET /shoppings/customers/sales/{id}` operation for each sale.
+   *
+   * > If you're an A.I. chatbot, and the user wants to buy or compose
+   * > {@link IShoppingCartCommodity shopping cart} from a sale, please
+   * > call the `GET /shoppings/customers/sales/{id}` operation at least once
+   * > to the target sale to get detailed SKU information about the sale.
+   * > It needs to be run at least once for the next steps.
+   *
+   * @returns Paginated sales with summarized information
+   */
+  @TypedRoute.Patch()
+  public index(props: {
+    /**
+     * Request info of pagination, searching and sorting
+     */
+    input: IShoppingSale.IRequest,
+  }): Promise<IPage<IShoppingSale.ISummary>>;
+
+  /**
+   * Get a sale with detailed information.
+   *
+   * Get a {@link IShoppingSale sale} with detailed information including
+   * the SKU (Stock Keeping Unit) information represented by the
+   * {@link IShoppingSaleUnitOption} and {@link IShoppingSaleUnitStock} types.
+   *
+   * > If you're an A.I. chatbot, and the user wants to buy or compose a
+   * > {@link IShoppingCartCommodity shopping cart} from a sale, please call
+   * > this operation at least once to the target sale to get detailed SKU
+   * > information about the sale.
+   * >
+   * > It needs to be run at least once for the next steps. In other words,
+   * > if you A.I. agent has called this operation to a specific sale, you
+   * > don't need to call this operation again for the same sale.
+   * >
+   * > Additionally, please do not summarize the SKU information. Just show
+   * > the every options and stocks in the sale with detailed information.
+   *
+   * @returns Detailed sale information
+   */
+  @TypedRoute.Get(":id")
+  public at(props: {
+    /**
+     * Target sale's {@link IShoppingSale.id}
+     */
+    id: string & tags.Format<"uuid">,
+  }): Promise<IShoppingSale>;
+}
+```
+
+Describe purpose of each function with descriiption comment.
+
+In the `@agentica`'s internal [#Orchestration Strategy](/docs/concepts/function-calling/#orchestration-logic), candidate functions are determined by referencing the function name and description. So, if you're serving a lot of functions, you need to describe the purpose of each function detaily with description comments.
+
+If there're relationships between some functions, like prerequisite or postrequisite conditions, also describe the relationships in the description comment.
+
+### DTO Description
+<DocumentationStrategyDtoDescriptionSnippet />
+
+### Property Description
+<DocumentationStrategyPropertyDescriptionSnippet />
+
+### Namespace Strategy
+<DocumentationStrategyNamespaceSnippet />
+
+
+
+
+## Validation Feedback
+<Tabs items={[
+  <code>ILlmApplication</code>,
+  <code>ILlmFunction</code>,
+]} defaultIndex={1}>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/ILlmApplication.ts"
+      filename="@samchon/openapi/ILlmApplication"
+      showLineNumbers
+      highlight="36-41" />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/ILlmFunction.ts"
+      filename="@samchon/openapi/ILlmFunction"
+      showLineNumbers
+      highlight="81-110, 130-155" />
+  </Tabs.Tab>
+</Tabs>
+
+`typia.llm.application<Class, Model>()` embeds [#Validation Feedback Strategy](/docs/concepts/function-calling/#validation-feedback).
+
+You know what? LLM (Large Language Model) like OpenAI takes a lot of mistakes when commposing arguments in the function calling. Even though `number` like simple type is defined in the parameters schema, LLM often fills it just by a `string` typed value.
+
+To correct such LLM function calling mistakes, `@agentica` is running a validation feedback strategy which informs the validation errors to the AI agent, so that induce the AI agent to correct the mistakes at the next trial.
+
+And when you compose LLM function calling schemas from the [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application) function, [`ILlmFunction.validate()`](/api/interfaces/_samchon_openapi.ILlmFunction-1.html#validate) functions for each parameters are constructed at the same time, and they are used for the validation feedback correcting mistakes of the LLM function calling.
+
+> Name | Status
+> :----|:-------
+> `ObjectConstraint` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectFunctionSchema` | 2️⃣2️⃣4️⃣2️⃣2️⃣2️⃣2️⃣2️⃣5️⃣2️⃣
+> `ObjectHierarchical` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣2️⃣1️⃣1️⃣2️⃣
+> `ObjectJsonSchema` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectSimple` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectUnionExplicit` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectUnionImplicit` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ShoppingCartCommodity` | 1️⃣2️⃣2️⃣3️⃣1️⃣1️⃣4️⃣2️⃣1️⃣2️⃣
+> `ShoppingOrderCreate` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ShoppingOrderPublish` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣❌1️⃣1️⃣1️⃣
+> `ShoppingSaleDetail` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ShoppingSalePage` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> 
+> Benchmark on OpenAI's `o3-mini` model.
+>
+> The number 1 means the function calling succeeded at the first trial without validation feedback. And other number means that validation feedback was done to correct the mistakes.
+
+
+
+
+## Restrictions
+```typescript filename="src/examples/llm.application.violation.ts" showLineNumbers
+import { ILlmApplication } from "@samchon/openapi";
+import typia, { tags } from "typia";
+
+const app: ILlmApplication<"chatgpt"> = typia.llm.application<
+  BbsArticleController,
+  "chatgpt"
+>();
+console.log(app);
+
+interface BbsArticleController {
+  /**
+   * Create a new article.
+   *
+   * Writes a new article and archives it into the DB.
+   *
+   * @param props Properties of create function
+   * @returns Newly created article, or undefined if failed
+   */
+  create(props: {
+    /**
+     * Information of the article to create
+     */
+    input: IBbsArticle.ICreate;
+  }): Promise<IBbsArticle | undefined>;
+
+  /**
+   * Erase an article.
+   * 
+   * @warning Cannot convert to LLM function schema
+   *          Its because the parameter is not an object type
+   */
+  erase(id: string & tags.Format<"uuid">): Promise<void>;
+}
+```
+
+> ```bash filename="Terminal"
+> src/examples/llm.application.violation.ts:4:41 - error TS(typia.llm.application): unsupported type detected    
+> 
+> - BbsArticleController.create: unknown
+>   - LLM application's function ("create")'s return type must not be union type with undefined.    
+> 
+> - BbsArticleController.erase: unknown
+>   - LLM application's function ("erase")'s parameter must be an object type.
+> 
+> 4 const app: ILlmApplication<"chatgpt"> = typia.llm.application<
+>                                           ~~~~~~~~~~~~~~~~~~~~~~
+> 5   BbsArticleController,
+>   ~~~~~~~~~~~~~~~~~~~~~~~
+> 6   "chatgpt"
+>   ~~~~~~~~~~~
+> 7 >();
+>   ~~~
+> ```
+
+Only one parameter with object type.
+
+You know what? Functions delivering to LLM must have only one parameter of object type. It's the LLM function calling's rule. If you define a function with multiple parameters, or non object type, you will get an compilation error message like above.
+
+Also, `@agentica` does not allow a function of returning an union type with `undefined`. It is because JSON schema cannot express the undefindable return type. If you want to make a function returning an union type with `undefined`, wrap it to an object type please. If do not so, you will get a compilation error message like above too.

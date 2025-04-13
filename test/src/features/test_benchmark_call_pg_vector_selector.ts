@@ -37,7 +37,7 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
     {
       channel_code: "samchon",
       external_user: null,
-      href: "http://localhost:3000/@agentica/core/test_benchmark_call",
+      href: "http://localhost:3000/@agentica/core/test_benchmark_call_pg_vector_selector",
       referrer: "http://localhost:3000/NodeJS",
     },
   );

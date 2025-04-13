@@ -1,21 +1,22 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
 import type { IAgenticaExecutor } from "./IAgenticaExecutor";
 import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
 
 /**
- * Configuration for Nestia Agent.
+ * Configuration for Agentic Agent.
  *
  * `IAgenticaConfig` is an interface that defines the configuration
  * properties of the {@link Agentica}. With this configuration, you
- * can set the user's locale, timezone, and some of system prompts.
+ * can set the user's {@link locale}, {@link timezone}, and some of
+ * {@link systemPrompt system prompts}.
  *
  * Also, you can affect to the LLM function selecing/calling logic by
  * configuring additional properties. For an example, if you configure the
- * {@link capacity} property, the A.I. chatbot will divide the functions
+ * {@link capacity} property, the AI chatbot will divide the functions
  * into the several groups with the configured capacity and select proper
  * functions to call by operating the multiple LLM function selecting
  * agents parallelly.
@@ -40,7 +41,7 @@ export interface IAgenticaConfig<Model extends ILlmSchema.Model> {
    */
   executor?:
     | Partial<IAgenticaExecutor<Model>>
-    | ((ctx: AgenticaContext<Model>) => Promise<AgenticaPrompt<Model>[]>);
+    | ((ctx: AgenticaContext<Model>) => Promise<AgenticaHistory<Model>[]>);
 
   /**
    * System prompt messages.

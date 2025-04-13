@@ -5,18 +5,18 @@ import type { IValidation } from "typia";
 import typia from "typia";
 import { v4 } from "uuid";
 
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { __IChatCancelFunctionsApplication } from "../context/internal/__IChatCancelFunctionsApplication";
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
+import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createCancelPrompt, decodePrompt } from "../factory/prompts";
+import { createCancelHistory, decodeHistory } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
@@ -33,7 +33,7 @@ interface IFailure {
   validation: IValidation.IFailure;
 }
 
-export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaCancelPrompt<Model>[]> {
+export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaCancelHistory<Model>[]> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
@@ -41,7 +41,7 @@ export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   const stacks: AgenticaOperationSelection<Model>[][]
       = ctx.operations.divided.map(() => []);
   const events: AgenticaEvent<Model>[] = [];
-  const prompts: AgenticaCancelPrompt<Model>[][] = await Promise.all(
+  const prompts: AgenticaCancelHistory<Model>[][] = await Promise.all(
     ctx.operations.divided.map(async (operations, i) =>
       step(
         {
@@ -78,14 +78,14 @@ export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   }
 
   // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaCancelPrompt<Model> = createCancelPrompt({
+  const collection: AgenticaCancelHistory<Model> = createCancelHistory({
     id: v4(),
     selections: [],
   });
   for (const e of events) {
     if (e.type === "select") {
       collection.selections.push(e.selection);
-      await cancelFunction(ctx, {
+      cancelFunction(ctx, {
         name: e.selection.operation.name,
         reason: e.selection.reason,
       });
@@ -94,7 +94,7 @@ export async function cancel<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   return [collection];
 }
 
-async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, operations: AgenticaOperation<Model>[], retry: number, failures?: IFailure[]): Promise<AgenticaCancelPrompt<Model>[]> {
+async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, operations: AgenticaOperation<Model>[], retry: number, failures?: IFailure[]): Promise<AgenticaCancelHistory<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -137,7 +137,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           ),
         },
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
+        ...ctx.histories.map(decodeHistory).flat(),
         // USER INPUT
         {
           role: "user",
@@ -207,7 +207,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
   // ----
   // PROCESS COMPLETION
   // ----
-  const prompts: AgenticaCancelPrompt<Model>[] = [];
+  const prompts: AgenticaCancelHistory<Model>[] = [];
   for (const choice of completion.choices) {
     // TOOL CALLING HANDLER
     if (choice.message.tool_calls != null) {
@@ -225,13 +225,13 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           continue;
         }
 
-        const collection: AgenticaCancelPrompt<Model> = createCancelPrompt({
+        const collection: AgenticaCancelHistory<Model> = createCancelHistory({
           id: tc.id,
           selections: [],
         });
 
         for (const reference of input.functions) {
-          const operation = await cancelFunction(ctx, reference);
+          const operation = cancelFunction(ctx, reference);
           if (operation !== null) {
             collection.selections.push(operation);
           }

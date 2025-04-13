@@ -32,7 +32,7 @@ export namespace AgenticaEvent {
   }
   export interface Describe<Model extends ILlmSchema.Model> 
     extends Base<"describe"> {
-    executes: AgenticaPrompt.Execute<Model>[];
+    executes: AgenticaHistory.Execute<Model>[];
     stream: ReadableStream<string>;
     join(): Promise<string>;
   }

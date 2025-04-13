@@ -10,71 +10,81 @@ import type { IValidation } from "typia";
 import {
   ChatGptTypeChecker,
   HttpLlm,
+  LlmTypeCheckerV3_1,
 } from "@samchon/openapi";
 
-import type { AgenticaCancelPrompt } from "../context/AgenticaCancelPrompt";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createCallEvent, createCancelEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
+import { isAgenticaContext } from "../context/internal/isAgenticaContext";
+import { createCallEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
+import { createCancelHistory, createExecuteHistory, createTextHistory, decodeHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
-import { createCancelPrompt, createExecutePrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { StreamUtil } from "../utils/StreamUtil";
+import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { cancelFunction } from "./internal/cancelFunction";
 
-export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+export async function call<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  operations: AgenticaOperation<Model>[],
+): Promise<AgenticaHistory<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
   const completionStream = await ctx.request("call", {
     messages: [
-        // COMMON SYSTEM PROMPT
-        {
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
+      // PREVIOUS HISTORIES
+      ...ctx.histories.map(decodeHistory).flat(),
+      // USER INPUT
+      {
+        role: "user",
+        content: ctx.prompt.text,
+      },
+      // SYSTEM PROMPT
+      ...(ctx.config?.systemPrompt?.execute === null
+        ? []
+        : [{
           role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
-        // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
-        // USER INPUT
-        {
-          role: "user",
-          content: ctx.prompt.text,
-        },
-        // SYSTEM PROMPT
-        {
-          role: "system",
-          content:
-            ctx.config?.systemPrompt?.execute?.(ctx.histories)
+          content: ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
             ?? AgenticaSystemPrompt.EXECUTE,
-        },
+        } satisfies OpenAI.ChatCompletionSystemMessageParam]),
     ],
     // STACKED FUNCTIONS
-    tools: ctx.stack.map(
+    tools: operations.map(
       s =>
         ({
           type: "function",
           function: {
-            name: s.operation.name,
-            description: s.operation.function.description,
-            parameters: (s.operation.function.separated !== undefined
-              ? (s.operation.function.separated.llm
-                ?? ({
-                  type: "object",
-                  properties: {},
-                  required: [],
-                  additionalProperties: false,
-                  $defs: {},
-                } satisfies IChatGptSchema.IParameters))
-              : s.operation.function.parameters) as Record<string, any>,
+            name: s.name,
+            description: s.function.description,
+            parameters: (
+              "separated" in s.function
+              && s.function.separated !== undefined
+                ? (s.function.separated.llm
+                  ?? ({
+                    type: "object",
+                    properties: {},
+                    required: [],
+                    additionalProperties: false,
+                    $defs: {},
+                  } satisfies IChatGptSchema.IParameters))
+                : s.function.parameters) as Record<string, any>,
           },
         }) as OpenAI.ChatCompletionTool,
     ),
@@ -88,9 +98,9 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
   const closures: Array<
     () => Promise<
       Array<
-        | AgenticaExecutePrompt<Model>
-        | AgenticaCancelPrompt<Model>
-        | AgenticaTextPrompt
+        | AgenticaExecuteHistory<Model>
+        | AgenticaCancelHistory<Model>
+        | AgenticaTextHistory
       >
     >
   > = [];
@@ -108,7 +118,7 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
         }
         closures.push(
           async (): Promise<
-            [AgenticaExecutePrompt<Model>, AgenticaCancelPrompt<Model>]
+            Array<AgenticaExecuteHistory<Model> | AgenticaCancelHistory<Model>>
           > => {
             const call: AgenticaCallEvent<Model> = createCallEvent({
               id: tc.id,
@@ -124,67 +134,62 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
             }
             await ctx.dispatch(call);
 
-            const execute: AgenticaExecutePrompt<Model> = await propagate(
+            const execute: AgenticaExecuteHistory<Model> = await propagate(
               ctx,
               call,
               0,
             );
-            void ctx.dispatch(
+            ctx.dispatch(
               createExecuteEvent({
                 id: call.id,
                 operation: call.operation,
                 arguments: execute.arguments,
                 value: execute.value,
               }),
-            );
+            ).catch(() => {});
 
-            await cancelFunction(ctx, {
-              name: call.operation.name,
-              reason: "completed",
-            });
-            void ctx.dispatch(
-              createCancelEvent({
-                selection: createOperationSelection({
-                  operation: call.operation,
-                  reason: "complete",
+            if (isAgenticaContext(ctx)) {
+              cancelFunction(ctx, {
+                name: call.operation.name,
+                reason: "completed",
+              });
+              return [
+                execute,
+                createCancelHistory({
+                  id: call.id,
+                  selections: [
+                    createOperationSelection({
+                      operation: call.operation,
+                      reason: "complete",
+                    }),
+                  ],
                 }),
-              }),
-            );
-            return [
-              execute,
-              createCancelPrompt({
-                id: call.id,
-                selections: [
-                  createOperationSelection({
-                    operation: call.operation,
-                    reason: "complete",
-                  }),
-                ],
-              }),
-            ] as const;
+              ];
+            }
+            return [execute];
           },
         );
       }
     }
     if (
       choice.message.role === "assistant"
-      && choice.message.content !== null
-      && choice.message.content.length > 0
+      && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextPrompt = createTextPrompt({
+        const value: AgenticaTextHistory = createTextHistory({
           role: "assistant",
           text: choice.message.content!,
         });
-        void ctx.dispatch(
+        ctx.dispatch(
           createTextEvent({
             role: "assistant",
             get: () => value.text,
             done: () => true,
-            stream: StreamUtil.to(value.text),
+            stream: toAsyncGenerator(value.text),
             join: async () => Promise.resolve(value.text),
           }),
-        );
+        ).catch(() => {});
         return [value];
       });
     }
@@ -192,127 +197,98 @@ export async function call<Model extends ILlmSchema.Model>(ctx: AgenticaContext<
   return (await Promise.all(closures.map(async fn => fn()))).flat();
 }
 
-async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, call: AgenticaCallEvent<Model>, retry: number): Promise<AgenticaExecutePrompt<Model>> {
-  if (call.operation.protocol === "http") {
-    // ----
-    // HTTP PROTOCOL
-    // ----
-    // NESTED VALIDATOR
-    const check: IValidation<unknown> = call.operation.function.validate(
-      call.arguments,
-    );
-    if (check.success === false) {
-      void ctx.dispatch(
-        createValidateEvent({
-          id: call.id,
-          operation: call.operation,
-          result: check,
-        }),
+async function propagate<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  call: AgenticaCallEvent<Model>,
+  retry: number,
+): Promise<AgenticaExecuteHistory<Model>> {
+  switch (call.operation.protocol) {
+    case "http": {
+      return propagateHttp({ ctx, operation: call.operation, call, retry });
+    }
+    case "class": {
+      return propagateClass({ ctx, operation: call.operation, call, retry });
+    }
+    case "mcp": {
+      return propagateMcp({ ctx, operation: call.operation, call, retry });
+    }
+    default: {
+      call.operation satisfies never;
+      throw new Error("Unsupported protocol");
+    }
+  }
+}
+
+async function propagateHttp<Model extends ILlmSchema.Model>(
+  props: {
+    ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
+    operation: AgenticaOperation.Http<Model>;
+    call: AgenticaCallEvent<Model>;
+    retry: number;
+  },
+): Promise<AgenticaExecuteHistory<Model>> {
+  // ----
+  // HTTP PROTOCOL
+  // ----
+  // NESTED VALIDATOR
+  const check: IValidation<unknown> = props.operation.function.validate(
+    props.call.arguments,
+  );
+  if (check.success === false) {
+    props.ctx.dispatch(
+      createValidateEvent({
+        id: props.call.id,
+        operation: props.operation,
+        result: check,
+      }),
+    ).catch(() => {});
+
+    if (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)) {
+      const trial: AgenticaExecuteHistory<Model> | null = await correct(
+        props.ctx,
+        props.call,
+        props.retry,
+        check.errors,
       );
-      if (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)) {
-        const trial: AgenticaExecutePrompt<Model> | null = await correct(
-          ctx,
-          call,
-          retry,
-          check.errors,
-        );
-        if (trial !== null) {
-          return trial;
-        }
+      if (trial !== null) {
+        return trial;
       }
     }
-    try {
-      // CALL HTTP API
-      const response: IHttpResponse = await executeHttpOperation(call.operation, call.arguments);
-      // CHECK STATUS
-      const success: boolean
+  }
+
+  try {
+    // CALL HTTP API
+    const response: IHttpResponse = await executeHttpOperation(props.operation, props.call.arguments);
+    // CHECK STATUS
+    const success: boolean
           = ((response.status === 400
             || response.status === 404
             || response.status === 422)
-          && retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
+          && props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)
           && typeof response.body) === false;
-        // DISPATCH EVENT
-      return (
-        (success === false
-          ? await correct(ctx, call, retry, response.body)
-          : null)
-        ?? createExecutePrompt({
-          operation: call.operation,
-          id: call.id,
-          arguments: call.arguments,
-          value: response,
-        })
-      );
-    }
-    catch (error) {
-      // DISPATCH ERROR
-      return createExecutePrompt({
-        operation: call.operation,
-        id: call.id,
-        arguments: call.arguments,
-        value: {
-          status: 500,
-          headers: {},
-          body:
-              error instanceof Error
-                ? {
-                    ...error,
-                    name: error.name,
-                    message: error.message,
-                  }
-                : error,
-        },
-      });
-    }
-  }
-  else {
-    // ----
-    // CLASS FUNCTION
-    // ----
-    // VALIDATE FIRST
-    const check: IValidation<unknown> = call.operation.function.validate(
-      call.arguments,
+      // DISPATCH EVENT
+    return (
+      (success === false
+        ? await correct(props.ctx, props.call, props.retry, response.body)
+        : null)
+      ?? createExecuteHistory({
+        operation: props.call.operation,
+        id: props.call.id,
+        arguments: props.call.arguments,
+        value: response,
+      })
     );
-    if (check.success === false) {
-      void ctx.dispatch(
-        createValidateEvent({
-          id: call.id,
-          operation: call.operation,
-          result: check,
-        }),
-      );
-      return (
-        (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)
-          ? await correct(ctx, call, retry, check.errors)
-          : null)
-        ?? createExecutePrompt({
-          id: call.id,
-          operation: call.operation,
-          arguments: call.arguments,
-          value: {
-            name: "TypeGuardError",
-            message: "Invalid arguments.",
-            errors: check.errors,
-          },
-        })
-      );
-    }
-    // EXECUTE FUNCTION
-    try {
-      const value = await executeClassOperation(call.operation, call.arguments);
-      return createExecutePrompt({
-        id: call.id,
-        operation: call.operation,
-        arguments: call.arguments,
-        value,
-      });
-    }
-    catch (error) {
-      return createExecutePrompt({
-        id: call.id,
-        operation: call.operation,
-        arguments: call.arguments,
-        value:
+  }
+  catch (error) {
+    // DISPATCH ERROR
+    return createExecuteHistory({
+      operation: props.call.operation,
+      id: props.call.id,
+      arguments: props.call.arguments,
+      value: {
+        status: 500,
+        headers: {},
+        body:
           error instanceof Error
             ? {
                 ...error,
@@ -320,8 +296,109 @@ async function propagate<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mo
                 message: error.message,
               }
             : error,
-      });
-    }
+      },
+    });
+  }
+}
+
+async function propagateClass<Model extends ILlmSchema.Model>(props: {
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
+  operation: AgenticaOperation.Class<Model>;
+  call: AgenticaCallEvent<Model>;
+  retry: number;
+}): Promise<AgenticaExecuteHistory<Model>> {
+// ----
+  // CLASS FUNCTION
+  // ----
+  // VALIDATE FIRST
+  const check: IValidation<unknown> = props.operation.function.validate(
+    props.call.arguments,
+  );
+
+  if (check.success === false) {
+    props.ctx.dispatch(
+      createValidateEvent({
+        id: props.call.id,
+        operation: props.call.operation,
+        result: check,
+      }),
+    ).catch(() => {});
+    return (
+      (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)
+        ? await correct(props.ctx, props.call, props.retry, check.errors)
+        : null)
+      ?? createExecuteHistory({
+        id: props.call.id,
+        operation: props.call.operation,
+        arguments: props.call.arguments,
+        value: {
+          name: "TypeGuardError",
+          message: "Invalid arguments.",
+          errors: check.errors,
+        },
+      })
+    );
+  }
+  // EXECUTE FUNCTION
+  try {
+    const value = await executeClassOperation(props.operation, props.call.arguments);
+    return createExecuteHistory({
+      id: props.call.id,
+      operation: props.call.operation,
+      arguments: props.call.arguments,
+      value,
+    });
+  }
+  catch (error) {
+    return createExecuteHistory({
+      id: props.call.id,
+      operation: props.call.operation,
+      arguments: props.call.arguments,
+      value:
+        error instanceof Error
+          ? {
+              ...error,
+              name: error.name,
+              message: error.message,
+            }
+          : error,
+    });
+  }
+}
+
+async function propagateMcp<Model extends ILlmSchema.Model>(props: {
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
+  operation: AgenticaOperation.Mcp;
+  call: AgenticaCallEvent<Model>;
+  retry: number;
+}): Promise<AgenticaExecuteHistory<Model>> {
+  // ----
+  // MCP PROTOCOL
+  // ----
+  // @TODO: implement argument validation logic
+  try {
+    const value = await executeMcpOperation(props.operation, props.call.arguments);
+    return createExecuteHistory({
+      id: props.call.id,
+      operation: props.call.operation,
+      arguments: props.call.arguments,
+      value,
+    });
+  }
+  catch (error) {
+    return createExecuteHistory({
+      id: props.call.id,
+      operation: props.call.operation,
+      arguments: props.call.arguments,
+      value:
+        error instanceof Error
+          ? {
+              ...error,
+              name: error.name,
+              message: error.message,
+            }
+          : error,
+    });
   }
 }
 
@@ -358,7 +435,42 @@ async function executeClassOperation<Model extends ILlmSchema.Model>(operation: 
   return ((execute as Record<string, unknown>)[operation.function.name] as (...args: unknown[]) => Promise<unknown>)(operationArguments);
 }
 
-async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, call: AgenticaCallEvent<Model>, retry: number, error: unknown): Promise<AgenticaExecutePrompt<Model> | null> {
+async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationArguments: Record<string, unknown>): Promise<unknown> {
+  // for peerDependencies
+  const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+  const { SSEClientTransport } = await import("@modelcontextprotocol/sdk/client/sse.js");
+  const { StdioClientTransport } = await import("@modelcontextprotocol/sdk/client/stdio.js");
+
+  const client = new Client({
+    name: operation.name,
+    version: "1.0.0",
+  });
+
+  const transport = (() => {
+    switch (operation.controller.application.transport.type) {
+      case "sse":
+        return new SSEClientTransport(operation.controller.application.transport.url);
+      case "stdio":
+        // @TODO: implement StdioClientTransport cache
+        // StdioClientTransport and connects a new child process every time it is initialized and connected.
+        // This results in significant latency and resource waste.
+        return new StdioClientTransport(operation.controller.application.transport);
+      default:
+        operation.controller.application.transport satisfies never;
+        throw new Error("Unsupported transport type");
+    }
+  })();
+  await client.connect(transport);
+  const result = await client.callTool({ method: operation.function.name, name: operation.function.name, arguments: operationArguments });
+  return result.content;
+}
+
+async function correct<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  call: AgenticaCallEvent<Model>,
+  retry: number,
+  error: unknown,
+): Promise<AgenticaExecuteHistory<Model> | null> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -370,19 +482,22 @@ async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
           content: AgenticaDefaultPrompt.write(ctx.config),
         } satisfies OpenAI.ChatCompletionSystemMessageParam,
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
+        ...ctx.histories.map(decodeHistory).flat(),
         // USER INPUT
         {
           role: "user",
           content: ctx.prompt.text,
         },
         // TYPE CORRECTION
-        {
-          role: "system",
-          content:
-            ctx.config?.systemPrompt?.execute?.(ctx.histories)
+        ...(ctx.config?.systemPrompt?.execute === null
+          ? []
+          : [{
+            role: "system",
+            content:
+            ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
             ?? AgenticaSystemPrompt.EXECUTE,
-        },
+          } satisfies OpenAI.ChatCompletionSystemMessageParam]
+        ),
         {
           role: "assistant",
           tool_calls: [
@@ -421,16 +536,18 @@ async function correct<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Mode
            * @TODO fix it
            * The property and value have a type mismatch, but it works.
            */
-          parameters: (call.operation.function.separated !== undefined
-            ? (call.operation.function.separated?.llm
-              ?? ({
-                $defs: {},
-                type: "object",
-                properties: {},
-                additionalProperties: false,
-                required: [],
-              } satisfies IChatGptSchema.IParameters))
-            : call.operation.function.parameters) as unknown as Record<string, unknown>,
+          parameters: (
+            "separated" in call.operation.function
+            && call.operation.function.separated !== undefined
+              ? (call.operation.function.separated?.llm
+                ?? ({
+                  $defs: {},
+                  type: "object",
+                  properties: {},
+                  additionalProperties: false,
+                  required: [],
+                } satisfies IChatGptSchema.IParameters))
+              : call.operation.function.parameters) as unknown as Record<string, unknown>,
         },
       },
     ],
@@ -495,5 +612,7 @@ function isObject($defs: Record<string, IChatGptSchema>, schema: IChatGptSchema)
       && isObject($defs, $defs[schema.$ref.split("/").at(-1)!]!))
     || (ChatGptTypeChecker.isAnyOf(schema)
       && schema.anyOf.every(schema => isObject($defs, schema)))
+    || (LlmTypeCheckerV3_1.isOneOf(schema)
+      && schema.oneOf.every(schema => isObject($defs, schema)))
   );
 }

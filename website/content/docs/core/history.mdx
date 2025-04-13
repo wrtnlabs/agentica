@@ -3,22 +3,22 @@ title: Agentica > Guide Documents > Core Library > Prompt Histories
 ---
 import { Tabs } from "nextra/components";
 
-import AgenticaPromptSnippet from "../../snippets/AgenticaPromptSnippet.mdx";
+import AgenticaHistorySnippet from "../../snippets/AgenticaHistorySnippet.mdx";
 import AgenticaOperationSelectionSnippet from "../../snippets/AgenticaOperationSelectionSnippet.mdx";
 import AgenticaOperationSnippet from "../../snippets/AgenticaOperationSnippet.mdx";
 
 ## Prompt Histories
 <Tabs items={[
   <code>src/main.ts</code>,
-  <code>AgenticaPrompt</code>,
-  <code>IAgenticaPromptJson</code>,
+  <code>AgenticaHistory</code>,
+  <code>IAgenticaHistoryJson</code>,
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers {16, 21}
 import {
   Agentica,
-  AgenticaPrompt,
-  IAgenticaPromptJson,
+  AgenticaHistory,
+  IAgenticaHistoryJson,
 } from "@agentica/core";
 import OpenAI from "openai";
 
@@ -30,9 +30,9 @@ export const main = async (id: string): Promise<void> => {
       model: "gpt-4o-mini",
     },
     controllers: [...],
-    histories: (await getHistories(id)) satisfies IAgenticaPromptJson[],
+    histories: (await getHistories(id)) satisfies IAgenticaHistoryJson[],
   });
-  const prompts: AgenticaPrompt[] = await agent.conversate(
+  const prompts: AgenticaHistory[] = await agent.conversate(
     "I wanna buy MacBook Pro",
   );
   await archiveHistories(id, prompts.map((p) => p.toJSON()));
@@ -40,7 +40,7 @@ export const main = async (id: string): Promise<void> => {
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <AgenticaPromptSnippet />
+    <AgenticaHistorySnippet />
   </Tabs.Tab>
   <Tabs.Tab>
     <AgenticaOperationSelectionSnippet />
@@ -51,11 +51,11 @@ You can start chatbot by creating `Agentica` instance, and calling its function 
 
 In the `Agentica.conversate()` function, [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents would be processed including function callings and executions. When the orchestration has been completed, the `Agentica.conversate()` function will return the list of newly created prompts.
 
-When you want to archive the conversation state of current agent, store the returned prompots to your database serializing them from `AgenticaPrompt` type to JSON format's `IAgenticaPromptJson` type. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property when creating a new `Agentica` instance.
+When you want to archive the conversation state of current agent, store the returned prompots to your database serializing them from `AgenticaHistory` type to JSON format's `IAgenticaHistoryJson` type. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property when creating a new `Agentica` instance.
 
 For reference, loading and saving the prompt histories, it is possible to change its content or remove some of them for management purpose. For example, you can summarize some or all prompts to a single prompt to reduce the LLM token costs.
 
-If you're not considering the summarization, but just hope to remove some of the prompt histories, you can remove `AgenticaPrompt.Select` and `AgenticaPrompt.Execute` types. In that case, remained `AgenticaPrompt.Describe` type will keep the context.
+If you're not considering the summarization, but just hope to remove some of the prompt histories, you can remove `AgenticaHistory.Select` and `AgenticaHistory.Execute` types. In that case, remained `AgenticaHistory.Describe` type will keep the context.
 
 
 
@@ -63,12 +63,12 @@ If you're not considering the summarization, but just hope to remove some of the
 ## Text Prompt
 <Tabs items={[
   <code>src/main.ts</code>,
-  <code>AgenticaPrompt</code>,
+  <code>AgenticaHistory</code>,
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers {17}
-import { Agentica, AgenticaPrompt } from "@agentica/core";
+import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
@@ -80,7 +80,7 @@ const agent = new Agentica({
   controllers: [...],
 });
 
-const prompts: AgenticaPrompt[] = await agent.conversate(
+const prompts: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
 for (const p of prompts)
@@ -88,13 +88,13 @@ for (const p of prompts)
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <AgenticaPromptSnippet />
+    <AgenticaHistorySnippet />
   </Tabs.Tab>
 </Tabs>
 
 Text conversation history.
 
-`AgenticaPrompt.Text` is a type of history that represents the text conversation between the user and the agent. And it is separated by the role of the speaker, which is either `user` or `agent`.
+`AgenticaHistory.Text` is a type of history that represents the text conversation between the user and the agent. And it is separated by the role of the speaker, which is either `user` or `agent`.
 
 
 
@@ -102,13 +102,13 @@ Text conversation history.
 ## Select Prompt
 <Tabs items={[
   <code>src/main.ts</code>,
-  <code>AgenticaPrompt</code>,
+  <code>AgenticaHistory</code>,
   <code>AgenticaOperationSelection</code>,
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers {17}
-import { Agentica, AgenticaPrompt } from "@agentica/core";
+import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
@@ -120,7 +120,7 @@ const agent = new Agentica({
   controllers: [...],
 });
 
-const prompts: AgenticaPrompt[] = await agent.conversate(
+const prompts: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
 for (const p of prompts)
@@ -134,7 +134,7 @@ for (const p of prompts)
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <AgenticaPromptSnippet />
+    <AgenticaHistorySnippet />
   </Tabs.Tab>
   <Tabs.Tab>
     <AgenticaOperationSelectionSnippet />
@@ -146,24 +146,24 @@ for (const p of prompts)
 
 Selection history of the candidate functions.
 
-`AgenticaPrompt.Select` is a type of history that represents the selection of the candidate functions to call with detailed reasons.
+`AgenticaHistory.Select` is a type of history that represents the selection of the candidate functions to call with detailed reasons.
 
-For reference, as the selection is sometimes done by grouping several functions together, if `AgenticaPrompt.Select.selections` has more than one element, it means that the selection to multiple functions are made by just one conversation step.
+For reference, as the selection is sometimes done by grouping several functions together, if `AgenticaHistory.Select.selections` has more than one element, it means that the selection to multiple functions are made by just one conversation step.
 
-Also, if you want to reduce the number of prompt histories to reduce the LLM token costs, this `AgenticaPrompt.Select` type can be the elimination target with `AgenticaPrompt.Execute` type. Instead, you have to keep the `AgenticaPrompt.Describe` type to remain the context.
+Also, if you want to reduce the number of prompt histories to reduce the LLM token costs, this `AgenticaHistory.Select` type can be the elimination target with `AgenticaHistory.Execute` type. Instead, you have to keep the `AgenticaHistory.Describe` type to remain the context.
 
 
 
 ## Execute Prompt
 <Tabs items={[
   <code>src/main.ts</code>,
-  <code>AgenticaPrompt</code>,
+  <code>AgenticaHistory</code>,
   <code>AgenticaOperationSelection</code>,
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers
-import { Agentica, AgenticaPrompt } from "@agentica/core";
+import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
@@ -174,7 +174,7 @@ const agent = new Agentica({
   },
   controllers: [...],
 });
-const prompts: AgenticaPrompt[] = await agent.conversate(
+const prompts: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
 for (const p of prompts)
@@ -188,7 +188,7 @@ for (const p of prompts)
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <AgenticaPromptSnippet />
+    <AgenticaHistorySnippet />
   </Tabs.Tab>
   <Tabs.Tab>
     <AgenticaOperationSelectionSnippet />
@@ -200,9 +200,9 @@ for (const p of prompts)
 
 Execution history of the function call.
 
-`AgenticaPrompt.Execute` is a type of history that represents the execution of the function call with its arguments composed by LLM function calling, and return value by the execution. If a target function comes from an HTTP controller, the return value also contains the status and headers of the HTTP response.
+`AgenticaHistory.Execute` is a type of history that represents the execution of the function call with its arguments composed by LLM function calling, and return value by the execution. If a target function comes from an HTTP controller, the return value also contains the status and headers of the HTTP response.
 
-For reference, this `AgenticaPrompt.Execute` often becomes the elimination target with `AgenticaPrompt.Select` when you want to reduce the number of prompt histories to reduce the LLM token costs. It is okay to eliminating `AgenticaPrompt.Execute` and `AgenticaPrompt.Select` types from the prompt histories, but you have to keep the `AgenticaPrompt.Describe` type to remain the context.
+For reference, this `AgenticaHistory.Execute` often becomes the elimination target with `AgenticaHistory.Select` when you want to reduce the number of prompt histories to reduce the LLM token costs. It is okay to eliminating `AgenticaHistory.Execute` and `AgenticaHistory.Select` types from the prompt histories, but you have to keep the `AgenticaHistory.Describe` type to remain the context.
 
 
 
@@ -210,13 +210,13 @@ For reference, this `AgenticaPrompt.Execute` often becomes the elimination targe
 ## Describe Prompt
 <Tabs items={[
   <code>src/main.ts</code>,
-  <code>AgenticaPrompt</code>,
+  <code>AgenticaHistory</code>,
   <code>AgenticaOperationSelection</code>,
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers
-import { Agentica, AgenticaPrompt } from "@agentica/core";
+import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
@@ -227,7 +227,7 @@ const agent = new Agentica({
   },
   controllers: [...],
 });
-const prompts: AgenticaPrompt[] = await agent.conversate(
+const prompts: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
 for (const p of prompts)
@@ -240,7 +240,7 @@ for (const p of prompts)
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-    <AgenticaPromptSnippet />
+    <AgenticaHistorySnippet />
   </Tabs.Tab>
   <Tabs.Tab>
     <AgenticaOperationSelectionSnippet />
@@ -252,6 +252,6 @@ for (const p of prompts)
 
 Description history of function calling results.
 
-`AgenticaPrompt.Describe` is a type of history that represents the description of the function calling results. It contains the list of target function execution prompts, and the text description about the results.
+`AgenticaHistory.Describe` is a type of history that represents the description of the function calling results. It contains the list of target function execution prompts, and the text description about the results.
 
-If you want to reduce the LLM token costs, make `AgenticaPrompt.Describe.text` to be shorter by configuring system prompt of the describe agent, or summarize `AgenticaPrompt.Text` and `AgenticaPrompt.Describe` types to a single prompt after eliminating the `AgenticaPrompt.Select` and `AgenticaPrompt.Execute` types.
+If you want to reduce the LLM token costs, make `AgenticaHistory.Describe.text` to be shorter by configuring system prompt of the describe agent, or summarize `AgenticaHistory.Text` and `AgenticaHistory.Describe` types to a single prompt after eliminating the `AgenticaHistory.Select` and `AgenticaHistory.Execute` types.

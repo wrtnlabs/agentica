@@ -1,6 +1,6 @@
 {
   "name": "@agentica/benchmark",
-  "version": "0.15.6",
+  "version": "0.17.1",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -45,9 +45,12 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
+  "peerDependencies": {
+    "@agentica/core": "workspace:^"
+  },
   "dependencies": {
     "@agentica/core": "workspace:^",
-    "@samchon/openapi": "catalog:libs",
+    "@samchon/openapi": "catalog:typia",
     "openai": "catalog:libs",
     "tstl": "^3.0.0",
     "typia": "catalog:typia"
@@ -58,8 +61,8 @@
     "@types/node": "^22.13.4",
     "rimraf": "^6.0.1",
     "rollup": "^4.34.8",
-    "ts-patch": "catalog:typia",
+    "ts-patch": "catalog:typescript",
     "typedoc": "^0.27.7",
-    "typescript": "catalog:libs"
+    "typescript": "catalog:typescript"
   }
 }

@@ -3,28 +3,28 @@ import type OpenAI from "openai";
 
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
 
 /**
- * Context of the Nestia A.I. agent.
+ * Context of the Agentic AI agent.
  *
- * `IAgenticaContext` is a structure defining the context of the
+ * `AgenticaContext` is a structure defining the context of the
  * internal agents composing the {@link Agentica}, like function
  * selector, executor, and describer, and so on. For example, if an
  * agent has been configured to utilize the OpenAI, the context will
  * be delivered to the below components.
  *
- * - {@link ChatGptAgent}
- *   - {@link ChatGptInitializeFunctionAgent}
- *   - {@link ChatGptSelectFunctionAgent}
- *   - {@link ChatGptExecuteFunctionAgent}
- *   - {@link ChatGptDescribeFunctionAgent}
- *   - {@link ChatGptCancelFunctionAgent}
+ * - {@link orchestrate.execute}
+ *   - {@link orchestrate.initialize}
+ *   - {@link orchestrate.select}
+ *   - {@link orchestrate.call}
+ *   - {@link orchestrate.describe}
+ *   - {@link orchestrate.cancel}
  *
  * Also, as its name is context, it contains every information that
  * is required to interact with the AI vendor like OpenAI. It
@@ -70,7 +70,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
   /**
    * Prompt histories.
    */
-  histories: AgenticaPrompt<Model>[];
+  histories: AgenticaHistory<Model>[];
 
   /**
    * Stacked operations.
@@ -85,7 +85,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    * Text conversation written the by user through the
    * {@link Agentica.conversate} function.
    */
-  prompt: AgenticaTextPrompt<"user">;
+  prompt: AgenticaTextHistory<"user">;
 
   /**
    * Whether the agent is ready.

@@ -27,6 +27,7 @@ export type StarterTemplate =
   | "nodejs"
   | "nestjs"
   | "react"
+  | "react-native"
   | "standalone"
   | "nestjs+react"
   | "nodejs+react";
@@ -153,6 +154,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
         { value: "nodejs", label: `NodeJS ${picocolors.blueBright("Agent Server")}` },
         { value: "nestjs", label: `NestJS ${picocolors.blueBright("Agent Server")}` },
         { value: "react", label: `React ${picocolors.blueBright("Application")}` },
+        { value: "react-native", label: `React Native ${picocolors.blueBright("Application")}` },
         { value: "nestjs+react", label: `NestJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
         { value: "nodejs+react", label: `NodeJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
       ] as const satisfies { value: StarterTemplate; label: string }[],
@@ -425,6 +427,31 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
     services: context.services,
   });
 }
+export async function setupReactNativeProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+  // download and place template in project
+  await downloadTemplateAndPlaceInProject({
+    template: "react-native",
+    project: projectAbsolutePath,
+  });
+  p.log.success("✅ Template downloaded");
+
+  // write .env file
+  await writeEnvKeysToDotEnv({
+    projectPath: projectAbsolutePath,
+    apiKeys: [{
+      key: "OPENAI_API_KEY",
+      value: context.openAIKey ?? "",
+    }],
+  });
+  p.log.success("✅ .env created");
+
+  // install dependencies
+  await installServicesAsDependencies({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+    services: context.services,
+  });
+}
 
 /**
  * Start a new project
@@ -449,6 +476,12 @@ export async function start({ template }: StartOptions) {
       break;
     case "react":
       await setupReactProject({ projectAbsolutePath, context });
+      break;
+    case "react-native":
+      await setupReactNativeProject({
+        projectAbsolutePath,
+        context,
+      });
       break;
     case "nestjs+react":
       // nestjs+rect project is a combination of nestjs and react projects

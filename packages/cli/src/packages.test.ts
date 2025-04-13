@@ -1,4 +1,4 @@
-import { detectPackageManager, installCommand } from "./packages";
+import { detectPackageManager, installCommand, runCommand } from "./packages";
 
 describe("installCommand", () => {
   it("npm", () => {
@@ -53,6 +53,35 @@ describe("installCommand", () => {
     const packageManager = "unsupported";
     // @ts-expect-error type is not matched
     expect(() => installCommand({ packageManager, pkg: "openai" })).toThrowError("Unsupported package manager: unsupported");
+  });
+});
+
+describe("runCommand", () => {
+  it("npm", () => {
+    const result = runCommand({ packageManager: "npm", command: "start" });
+    expect(result).toBe("npm run start");
+  });
+
+  it("yarn", () => {
+    const result = runCommand({ packageManager: "yarn", command: "start" });
+    expect(result).toBe("yarn start");
+  });
+
+  it("pnpm", () => {
+    const result = runCommand({ packageManager: "pnpm", command: "start" });
+    expect(result).toBe("pnpm start");
+  });
+
+  it("bun", () => {
+    const result = runCommand({ packageManager: "bun", command: "start" });
+    expect(result).toBe("bun start");
+  });
+
+  it("unsupported", () => {
+    // @ts-expect-error type is not matched
+    expect(() => runCommand({ packageManager: "unsupported", command: "start" })).toThrowError(
+      "Unsupported package manager: unsupported",
+    );
   });
 });
 

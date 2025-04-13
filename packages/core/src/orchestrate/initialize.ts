@@ -5,22 +5,22 @@ import typia from "typia";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createTextEvent } from "../factory/events";
-import { createTextPrompt, decodePrompt } from "../factory/prompts";
+import { createTextHistory, decodeHistory } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
-import { StreamUtil } from "../utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
 
 const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
   __IChatInitialApplication,
   "chatgpt"
 >().functions[0]!;
 
-export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -32,7 +32,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
           content: AgenticaDefaultPrompt.write(ctx.config),
         } satisfies OpenAI.ChatCompletionSystemMessageParam,
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
+        ...ctx.histories.map(decodeHistory).flat(),
         // USER INPUT
         {
           role: "user",
@@ -88,7 +88,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
           continue;
         }
 
-        if (choice.delta.content == null) {
+        if (choice.delta.content == null || choice.delta.content.length === 0) {
           continue;
         }
 
@@ -106,10 +106,10 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         };
         mpsc.produce(choice.delta.content);
 
-        void ctx.dispatch(
+        ctx.dispatch(
           createTextEvent({
             role: "assistant",
-            stream: mpsc.consumer,
+            stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
             done: () => mpsc.done(),
             get: () => textContext[choice.index]!.content,
             join: async () => {
@@ -117,7 +117,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
               return textContext[choice.index]!.content;
             },
           }),
-        );
+        ).catch(() => {});
       }
     };
 
@@ -137,14 +137,15 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
   // ----
   // PROCESS COMPLETION
   // ----
-  const prompts: AgenticaPrompt<Model>[] = [];
+  const prompts: AgenticaHistory<Model>[] = [];
   for (const choice of completion.choices) {
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
       prompts.push(
-        createTextPrompt({
+        createTextHistory({
           role: "assistant",
           text: choice.message.content,
         }),

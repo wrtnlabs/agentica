@@ -6,7 +6,7 @@ import { Tabs } from "nextra/components";
 import RemoteSource from "../../../components/RemoteSource";
 
 import AgenticaSnippet from "../../snippets/AgenticaSnippet.mdx";
-import AgenticaPromptSnippet from "../../snippets/AgenticaPromptSnippet.mdx";
+import AgenticaHistorySnippet from "../../snippets/AgenticaHistorySnippet.mdx";
 import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
 
 ## `@agentica/core`
@@ -18,7 +18,7 @@ With these strategies, you can build Agentic AI chatbot only with Swagger docume
 
 Look at the below demonstration, and feel how `@agentica/core` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
 
-```typescript filename="src/main.ts" showLineNumbers {17-24, 35-36, 42-43, 49-50}
+```typescript filename="src/main.ts" showLineNumbers {15-22, 33-34, 40-41, 47-48}
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import typia from "typia";
@@ -198,7 +198,7 @@ await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript filename="src/main.llama.ts" showLineNumbers {12-19, 23}
+```typescript filename="src/main.llama.ts" showLineNumbers {13-20, 24}
 import { 
   Agentica,
   IAgenticaController,
@@ -241,7 +241,7 @@ Otherwise you want to serve the function calling from a TypeScript class, create
 
 For reference, `IAgenticaController.name` must be unique, because it is used to identify the controller in the agent. Also, if number of your controller functions are too many, it would better to configure `executor.selector` as vector selector of plugin. If you don't do it, too much LLM token costs would be consumed.
 
-```typescript filename="src/main.ts" showLineNumbers {13-51}
+```typescript filename="src/main.ts" showLineNumbers {12-50}
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import typia from "typia";
@@ -379,16 +379,16 @@ Even though the event listening is not essential, I recommend you to at least li
 
 ## Prompt Histories
 <Tabs items={[
-  <code>AgenticaPrompt</code>,
+  <code>AgenticaHistory</code>,
   <code>IAgenticaExecutePrompt</code>,
 ]}>
   <Tabs.Tab>
-    <AgenticaPromptSnippet />
+    <AgenticaHistorySnippet />
   </Tabs.Tab>
   <Tabs.Tab>
     <RemoteSource 
-      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/json/IAgenticaPromptJson.ts"
-      filename="@agentica/core/IAgenticaPromptJson"
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/json/IAgenticaHistoryJson.ts"
+      filename="@agentica/core/IAgenticaHistoryJson"
       showLineNumbers />
   </Tabs.Tab>
 </Tabs>
@@ -397,14 +397,14 @@ Here is the list of prompt types returned by the `Agentica.conversate()` functio
 
 When you call `Agentica.conversate()` function, the agent will start the [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents including function calling and executions, and returns the list of newly created prompts in the orchestration process.
 
-If you want to archive the conversation state of current agent, store the returned prompts to your database. The prompt histories would be serialized from `AgenticaPrompt` to `IAgenticaPromptJson` type. 
+If you want to archive the conversation state of current agent, store the returned prompts to your database. The prompt histories would be serialized from `AgenticaHistory` to `IAgenticaHistoryJson` type. 
 
-When you want to restore the agent, you can do it by creating a new `Agentica` instance with `IAgenticaProps.histories` property assignment. The `Agentica` will deserialize the prompt histories from `IAgenticaPromptJson` to `AgenticaPrompt` type, so that the agent can restore the conversation state.
+When you want to restore the agent, you can do it by creating a new `Agentica` instance with `IAgenticaProps.histories` property assignment. The `Agentica` will deserialize the prompt histories from `IAgenticaHistoryJson` to `AgenticaHistory` type, so that the agent can restore the conversation state.
 
 ```typescript filename="src/main.ts" showLineNumbers
-import { Agentica, IAgenticaPromptJson } from "@agentica/core";
+import { Agentica, IAgenticaHistoryJson } from "@agentica/core";
 
-const histories: IAgenticaPromptJson[] = await getHistories();
+const histories: IAgenticaHistoryJson[] = await getHistories();
 const agent: Agentica<"chatgpt"> = new Agentica({
   ...,
   histories,
