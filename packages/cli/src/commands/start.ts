@@ -319,11 +319,9 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     apiKeys: [{
       key: "OPENAI_API_KEY",
       value: context.openAIKey ?? "",
-    }, ...(context.envList ?? []).map(({ key, value }) => ({
-      key,
-      value,
-    }))],
+    }, ...(context.envList ?? [])],
   });
+
   p.log.success("✅ .env created");
 
   // install dependencies
@@ -379,10 +377,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "PORT",
       value: context.port?.toString() ?? "3000",
-    }, ...(context.envList ?? []).map(({ key, value }) => ({
-      key,
-      value,
-    }))],
+    }, ...(context.envList ?? [])],
   });
   p.log.success("✅ .env created");
 
@@ -441,10 +436,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "API_PORT",
       value: context.port?.toString() ?? "3000",
-    }, ...(context.envList ?? []).map(({ key, value }) => ({
-      key,
-      value,
-    }))],
+    }, ...(context.envList ?? [])],
   });
   p.log.success("✅ .env created");
 
@@ -545,6 +537,6 @@ export async function start({ template }: StartOptions) {
 
   p.outro(`
 🎉 Project ${projectAbsolutePath} created
-⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts
+⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in index.ts
 `);
 }

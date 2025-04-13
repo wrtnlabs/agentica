@@ -40,7 +40,7 @@ export type UnwrapTaggedService = UnwrapTagged<Service>;
 export type UnwrapTaggedConnector = `${typeof CONNECTOR_PREFIX}${UnwrapTaggedService}`;
 export type UnwrapTaggedEnv = UnwrapTagged<Env>;
 export interface UnwrapTaggedEnvInfo {
-  name: UnwrapTaggedEnv;
+  key: UnwrapTaggedEnv;
   value: string;
 }
 export interface UnwrapTaggedConnectorInfo {
