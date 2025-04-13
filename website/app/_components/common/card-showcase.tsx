@@ -29,7 +29,7 @@ export function CardShowcase({
         <div className={cn(cardShowcaseBoxVariants({ status }))}>
           <div
             className={cn(
-              "relative flex justify-center items-center aspect-[16/9] max-h-[200px] overflow-hidden rounded-md bg-zinc-400 md:max-h-[400px]",
+              "relative flex justify-center items-center aspect-[16/9] max-h-[200px] overflow-hidden rounded-md bg-[#18181B] md:max-h-[400px]",
               !isActive && "opacity-50",
             )}
           >

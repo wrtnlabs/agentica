@@ -1,0 +1,187 @@
+---
+title: Agentica > Guide Documents > Core Library > Function Controllers > Swagger/OpenAPI
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../../components/RemoteSource";
+
+import OpenApiDiagramSnippet from "../../../snippets/OpenApiDiagramSnippet.mdx";
+
+## Swagger/OpenAPI
+```typescript filename="src/main.ts" showLineNumbers {16-31}
+import {
+  Agentica,
+  IAgenticaController,
+  assertHttpLlmApplication
+} from "@agentica/core";
+import OpenAI from "openai";
+import typia from "typia";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      protocol: "http",
+      name: "shopping",
+      application: assertHttpLlmApplication({
+        model: "chatgpt",
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then((r) => r.json()),
+      }),
+      connection: {
+        host: "https://shopping-be.wrtn.ai",
+        headers: {
+          Authorization: "Bearer ********",
+        },
+      },
+    } satisfies IAgenticaController.IHttp<"chatgpt">,
+  ],
+});
+await agent.conversate("What you can do?");
+```
+
+Swagger/OpenAPI Document for LLM Function Calling.
+
+In `@agentica/core`, there is a concept of controller, a set of LLM (Large Language Model) function calling schemas, and executor for actual function calling. And `@agentica/core` supports three protocol types of the controllers; <u>HTTP Restful API</u>, MCP (Model Context Protocol), and TypeScript class.
+
+When you want to serve functions from a Swagger or OpenAPI document, create an LLM application schema from `assertHttpLlmApplication()` function (or `HttpLlm.application()` function). And provide the connection information to the HTTP server.
+
+If you compose a controller of above shopping mall backend, you can start conversation with the shopping mall backend server like below demonstration video.
+
+<br/>
+<iframe src="https://www.youtube.com/embed/RAzYo02HTXA" 
+        title="Shopping A.I. Chatbot built with Nestia" 
+        width="100%" 
+        height="600" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" 
+        allowFullScreen></iframe>
+
+
+
+
+## LLM Schema Conversion
+<OpenApiDiagramSnippet />
+
+  - Swagger/OpenAPI documents
+    - [Swagger v2.0](https://github.com/samchon/openapi/blob/master/src/SwaggerV2.ts)
+    - [OpenAPI v3.0](https://github.com/samchon/openapi/blob/master/src/OpenApiV3.ts)
+    - [OpenAPI v3.1](https://github.com/samchon/openapi/blob/master/src/OpenApiV3_1.ts)
+    - [**OpenAPI v3.1 emended**](https://github.com/samchon/openapi/blob/master/src/OpenApi.ts)
+  - LLM Function Calling Schemas
+    - [`IChatGptSchema`](/api/types/_samchon_openapi.IChatGptSchema-1.html)
+    - [`IClaudeSchema`](/api/types/_samchon_openapi.IClaudeSchema-1.html)
+    - [`IDeepSeekSchema`](/api/types/_samchon_openapi.IDeepSeekSchema-1.html)
+    - [`IGeminiSchema`](/api/types/_samchon_openapi.IGeminiSchema-1.html)
+    - [`ILlamaSchema`](/api/types/_samchon_openapi.ILlamaSchema-1.html)
+  - Middle Layer Schemas
+    - [`ILlmSchemaV3`](/api/types/_samchon_openapi.ILlmSchemaV3-1.html)
+    - [`ILlmSchemaV3_1`](/api/types/_samchon_openapi.ILlmSchemaV3_1-1.html)
+
+Conversion from Swagger/OpenAPI document to LLM function calling schema.
+
+You know what? There are a lot of versions in the Swagger and OpenAPI documents. And even in the same version, ambiguous and duplicated specifications are a lot. Furthremor, JSON schema models are different between LLM vendors too.
+
+To overcome such confusion, [`@samchon/openapi`](https://github.com/samchon/openapi) is converting the Swagger/OpenAPI documents to an emended 3.1 version of OpenAPI document for clarity and unification. And then convert it to the specific LLM function calling schema of the service vendor bypassing the migration schema.
+
+Also, some LLM schema models like `IChatGptSchema` and `IGeminiSchema` are not fully supporting the standard JSON schema specification, so there're some restrictions in the conversion process. Therefore, if you're converting to those LLM schemas, please read the [#LLM Vendors](/docs/core/vendor) page carefully.
+
+
+
+
+## Authorization
+```typescript filename="src/main.ts" showLineNumbers {25-30}
+import {
+  Agentica,
+  IAgenticaController,
+  assertHttpLlmApplication
+} from "@agentica/core";
+import OpenAI from "openai";
+import typia from "typia";
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [
+    {
+      protocol: "http",
+      name: "shopping",
+      application: assertHttpLlmApplication({
+        model: "chatgpt",
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then((r) => r.json()),
+      }),
+      connection: {
+        host: "https://shopping-be.wrtn.ai",
+        headers: {
+          Authorization: "Bearer ********",
+        },
+      },
+    } satisfies IAgenticaController.IHttp<"chatgpt">,
+  ],
+});
+await agent.conversate("What you can do?");
+```
+
+Authorization information for the HTTP server.
+
+If target HTTP server requires authentication, you can provide the authentication information in the `connection.headers` property of the controller.
+
+
+
+
+## Validation Feedback
+<Tabs items={[
+  <code>IHttpLlmApplication</code>,
+  <code>IHttpLlmFunction</code>,
+]} defaultIndex={1}>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/IHttpLlmApplication.ts"
+      filename="@samchon/openapi/IHttpLlmApplication"
+      showLineNumbers
+      highlight="66-74" />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/openapi/refs/heads/master/src/structures/IHttpLlmFunction.ts"
+      filename="@samchon/openapi/IHttpLlmFunction"
+      showLineNumbers
+      highlight="181-210, 248-273" />
+  </Tabs.Tab>
+</Tabs>
+
+`assertHttpLlmApplication()` embeds [#Validation Feedback Strategy](/docs/concepts/function-calling/#validation-feedback).
+
+You know what? LLM (Large Language Model) like OpenAI takes a lot of mistakes when commposing arguments in the function calling. Even though `number` like simple type is defined in the parameters schema, LLM often fills it just by a `string` typed value.
+
+To correct such LLM function calling mistakes, `@agentica` is running a validation feedback strategy which informs the validation errors to the AI agent, so that induce the AI agent to correct the mistakes at the next trial.
+
+And when you compose LLM function calling schemas from the [`assertHttpLlmApplication()`]()(/api/functions/_agentica_core.assertHttpLlmApplication.html) function, [`IHttpLlmFunction.validate()`](/api/interfaces/_samchon_openapi.IHttpLlmFunction-1.html#validate) functions for each parameters are constructed at the same time, and they are used for the validation feedback correcting mistakes of the LLM function calling.
+
+> Name | Status
+> :----|:-------
+> `ObjectConstraint` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectFunctionSchema` | 2️⃣2️⃣4️⃣2️⃣2️⃣2️⃣2️⃣2️⃣5️⃣2️⃣
+> `ObjectHierarchical` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣2️⃣1️⃣1️⃣2️⃣
+> `ObjectJsonSchema` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectSimple` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectUnionExplicit` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ObjectUnionImplicit` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ShoppingCartCommodity` | 1️⃣2️⃣2️⃣3️⃣1️⃣1️⃣4️⃣2️⃣1️⃣2️⃣
+> `ShoppingOrderCreate` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ShoppingOrderPublish` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣❌1️⃣1️⃣1️⃣
+> `ShoppingSaleDetail` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> `ShoppingSalePage` | 1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣1️⃣
+> 
+> Benchmark on OpenAI's `o3-mini` model.
+>
+> The number 1 means the function calling succeeded at the first trial without validation feedback. And other number means that validation feedback was done to correct the mistakes.

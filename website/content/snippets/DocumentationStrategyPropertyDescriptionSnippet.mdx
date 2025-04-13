@@ -1,0 +1,34 @@
+import { Tabs } from "nextra/components";
+
+import { RemoteSource } from "../../components/RemoteSource";
+
+<Tabs items={[
+  <code>IShoppingCouponRestriction</code>,
+  <code>IShoppingCartCommodityStock</code>,
+  <code>IShoppingSaleUnitStock</code>,
+]}>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/coupons/IShoppingCouponRestriction.ts"
+      filename="@samchon/shopping-backend/IShoppingCouponRestriction"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/orders/IShoppingCartCommodityStock.ts"
+      filename="@samchon/shopping-backend/IShoppingCartCommodityStock"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource 
+      url="https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/src/api/structures/shoppings/sales/IShoppingSaleUnitStock.ts"
+      filename="@samchon/shopping-backend/IShoppingSaleUnitStock"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+Describe what value must be filled in the property.
+
+When documenting DTO properties, concentrate on what value must be filled in the property. In other words, describe the property's purpose and the value's meaning with its domain restrictions. `IShoppingCouponRestriction` is a good example describing the domain restrictions.
+
+Also, if target property is a reference to another entity by foreign key, it would better to utilizing the `{@link target}` tag. Looking at above example type `IShoppingCartCommodityStock`, it has a property `stock_id` which is a foreign key to the `IShoppingSaleUnitStock` entity with `{@link target}` tag.
