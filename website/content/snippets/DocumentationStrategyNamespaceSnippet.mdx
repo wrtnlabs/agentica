@@ -1,0 +1,104 @@
+import { Tabs } from "nextra/components";
+
+import BbsArticleServiceSnippet from "./BbsArticleServiceSnippet.mdx";
+import LlmApplicationExampleSnippet from "./LlmApplicationExampleSnippet.mdx";
+
+<Tabs items={[
+  <code>IBbsArticle</code>,
+  <code>BbArticleService</code>,
+  "TypeScript Source Code",
+  "Console Output",
+]}>
+  <Tabs.Tab>
+```typescript filename="IBbsArticle.ts" showLineNumbers {3-8, 25-28, 55-60}
+import { tags } from "typia";
+ 
+/**
+ * Article entity.
+ *
+ * `IBbsArticle` is an entity representing an article in the BBS (Bulletin Board System).
+ */
+export interface IBbsArticle extends IBbsArticle.ICreate {
+  /**
+   * Primary Key.
+   */
+  id: string & tags.Format<"uuid">;
+ 
+  /**
+   * Creation time of the article.
+   */
+  created_at: string & tags.Format<"date-time">;
+ 
+  /**
+   * Last updated time of the article.
+   */
+  updated_at: string & tags.Format<"date-time">;
+}
+export namespace IBbsArticle {
+  /**
+   * Information of the article to create.
+   */
+  export interface ICreate {
+    /**
+     * Title of the article.
+     *
+     * Representative title of the article.
+     */
+    title: string;
+ 
+    /**
+     * Content body.
+     *
+     * Content body of the article writtn in the markdown format.
+     */
+    body: string;
+ 
+    /**
+     * Thumbnail image URI.
+     *
+     * Thumbnail image URI which can represent the article.
+     *
+     * If configured as `null`, it means that no thumbnail image in the article.
+     */
+    thumbnail:
+      | null
+      | (string & tags.Format<"uri"> & tags.ContentMediaType<"image/*">);
+  }
+ 
+  /**
+   * Information of the article to update.
+   *
+   * Only the filled properties will be updated.
+   */
+  export type IUpdate = Partial<ICreate>;
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <BbsArticleServiceSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <LlmApplicationExampleSnippet />
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash filename="Console Output"
+Information of the article to create.
+ 
+------------------------------
+ 
+Description of the current {@link IBbsArticle.ICreate} type:
+ 
+Information of the article to create.
+ 
+> Description of the parent {@link IBbsArticle} type: Article entity.
+> 
+> `IBbsArticle` is an entity representing an article in the BBS (Bulletin Board System).
+```
+  </Tabs.Tab>
+</Tabs>
+
+[`typia.llm.application<App, Model>()`](https://typia.io/docs/llm/application) and [`HttpLlm.application()`](https://github.com/samchon/openapi) function copy the parent namespaced type description comment to the children types. `@agentica` calls this comment writing strategy as namespace documentation, and it is recommended for the efficient documentation.
+
+As you can see from the above example, `BbsArticleService` has many CRUD functions about the `IBbsArticle` namespaced type. By the way, the above `IBbsArticle.ICreate` and `IBbsArticle.IUpdate` types are not repeating same description comments about the `IBbsArticle` type. Instead, just writing the short description comment about them, and just compose the LLM function calling application schema.
+
+In that case, the `IBbsArticle` type’s description comment would be copied to the `IBbsArticle.ICreate` and `IBbsArticle.IUpdate` types like above “Console Output” case. It’s a good strategy to avoid repeating same description comments, and also to deliver enough information to the LLM function calling.

@@ -26,7 +26,7 @@ export function WelcomeSection() {
           </div>
           <div className="flex flex-col w-full gap-[18px] md:flex-row md:w-auto">
             <Link href="/docs" className="flex-1">
-              <Button variant="secondary" className="w-full md:w-[180px]">
+              <Button variant="secondary" className="w-full md:w-[180px] bg-[#27272A] text-white">
                 Docs
                 <ArrowUpRight />
               </Button>
@@ -36,7 +36,7 @@ export function WelcomeSection() {
               className="flex-1"
               target="_blank"
             >
-              <Button className="w-full md:w-[180px]">
+              <Button className="w-full md:w-[180px] bg-white text-black">
                 Github
                 <GithubIcon width={24} height={24} className="h-6 w-6" />
               </Button>
