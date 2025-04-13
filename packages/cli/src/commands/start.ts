@@ -14,7 +14,7 @@ import * as p from "@clack/prompts";
 import * as picocolors from "picocolors";
 import typia from "typia";
 
-import type { Service, UnwrapTaggedService } from "../connectors";
+import type { EnvInfo, Service, UnwrapTaggedEnvInfo, UnwrapTaggedService } from "../connectors";
 import type { PackageManager } from "../packages";
 
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
@@ -47,14 +47,14 @@ interface Context {
   packageManager: PackageManager;
   template: StarterTemplate;
   services: Service[];
+  envList?: EnvInfo[];
   openAIKey: string | null;
   port?: number;
-
 }
 
 interface SetupProjectOptions {
   projectAbsolutePath: string;
-  context: Pick<Context, "packageManager" | "services" | "openAIKey" | "port">;
+  context: Pick<Context, "packageManager" | "services" | "openAIKey" | "port" | "envList">;
 }
 
 interface InstallDependenciesOptions {
@@ -200,6 +200,60 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       process.exit(0);
     }
     context.services = services;
+
+    // Ask for environment variables
+    const envList = Array.from(new Set(connectors.filter(c => services.includes(c.serviceName)).flatMap((c) => {
+      return c.envList;
+    })));
+
+    const isConfirm = await p.confirm({
+      message: `Do you want to enter environment variables? (Number of environment variables to enter: ${envList.length})
+        ${picocolors.cyan("If you press <ctrl+c>, you can skip this step.")}`,
+      initialValue: false,
+    });
+
+    const envInfos: EnvInfo[] = [];
+
+    if (p.isCancel(isConfirm) || !isConfirm) {
+      envList.forEach((env) => {
+        envInfos.push({
+          key: env,
+          value: "",
+        });
+      });
+
+      p.cancel("Skipping environment variables input.");
+    }
+    else {
+      for (let i = 0; i < envList.length; i++) {
+        const env = envList[i];
+
+        const envValue = await p.text({
+          message: `${env}: `,
+          defaultValue: "",
+        });
+
+        if (p.isCancel(envValue)) {
+          const canceledEnvList = envList.splice(i);
+          canceledEnvList.forEach((env) => {
+            envInfos.push({
+              key: env,
+              value: "",
+            });
+          });
+
+          p.cancel(`Skipping environment variables input: ${canceledEnvList.slice(0, 3).join(", ")}... (count: ${canceledEnvList.length})`);
+          break;
+        }
+
+        envInfos.push({
+          key: env,
+          value: envValue,
+        });
+      }
+    }
+
+    context.envList = envInfos;
   }
 
   // Ask for openAI key
@@ -219,6 +273,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       if (p.isCancel(openAIKey)) {
         process.exit(0);
       }
+
       context.openAIKey = openAIKey;
     }
     else {
@@ -228,9 +283,10 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
 
   try {
     /** create a unwrapped context because typia doesn't support tagged types */
-    type UnwrappedContext = SimplifyDeep<Omit<Context, "services"> & { services: UnwrapTaggedService[] }>;
+    type UnwrappedContext = SimplifyDeep<Omit<Context, "services" | "envList"> & { services: UnwrapTaggedService[]; envList?: UnwrapTaggedEnvInfo[] }>;
     typia.assertGuard<UnwrappedContext>(context);
   }
+
   catch (e) {
     throw new Error(`❌ ${(e as string).toString()}`);
   }
@@ -265,8 +321,9 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     apiKeys: [{
       key: "OPENAI_API_KEY",
       value: context.openAIKey ?? "",
-    }],
+    }, ...(context.envList ?? [])],
   });
+
   p.log.success("✅ .env created");
 
   // install dependencies
@@ -322,7 +379,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "PORT",
       value: context.port?.toString() ?? "3000",
-    }],
+    }, ...(context.envList ?? [])],
   });
   p.log.success("✅ .env created");
 
@@ -381,7 +438,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "API_PORT",
       value: context.port?.toString() ?? "3000",
-    }],
+    }, ...(context.envList ?? [])],
   });
   p.log.success("✅ .env created");
 
@@ -513,6 +570,6 @@ export async function start({ template }: StartOptions) {
 
   p.outro(`
 🎉 Project ${projectAbsolutePath} created
-⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts
+⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in index.ts
 `);
 }
