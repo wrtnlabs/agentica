@@ -18,21 +18,6 @@ const meta: MetaRecord = {
       pagination: false,
     },
   },
-  blog: {
-    title: "Blog",
-    type: "page",
-    display: "hidden",
-    theme: {
-      timestamp: false,
-      layout: "full",
-      toc: false,
-      sidebar: false,
-      footer: false,
-      breadcrumb: false,
-      collapsed: false,
-      pagination: false,
-    },
-  },
   docs: {
     title: "📖 Guide Documents",
     type: "page",

@@ -61,9 +61,9 @@ export default function Landing() {
           </Link>
           <Link href="https://wrtnlabs.io/agentica/tutorial/productivity/slack/">
             <CardShowcase
-              imageSrc="/agentica/connector.svg"
-              title="Connector chatbot"
-              description="Meet an AI chatbot designed to seamlessly integrate APIs and services, simplifying workflows and enhancing productivity by effortlessly connecting data sources and managing complex tasks."
+              imageSrc="/agentica/slack.svg"
+              title="Slack Agent"
+              description="Automate your Slack workspace with an AI agent that does it all — from scheduling messages and replying to threads, to user lookups, interactive voting, and file management, all powered by Slack’s native APIs."
               isNew
               status="active"
             />  
