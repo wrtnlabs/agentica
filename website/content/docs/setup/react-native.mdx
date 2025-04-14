@@ -1,8 +1,6 @@
 ---
 title: Agentica > Guide Documents > Setup > React Native
 ---
-<br/>
-# React Native Setup
 
 ## Prerequisites
 - Node.js (v18.18 or newer)
@@ -38,10 +36,12 @@ Next, set up Repack. For detailed instructions, refer to the [Repack documentati
 npx @callstack/repack-init
 ```
 
-**❓ Why Repack?**  
-Repack is a Webpack/Rspack-based bundler for React Native.  
-Agentica uses [`typia`](https://typia.io/) which works at compile time. However, [`typia` does not support Babel](https://typia.io/docs/setup/#summary), making it incompatible with the default Babel-based Metro bundler.  
-Therefore, this tutorial uses `Repack`, which is based on Rspack or Webpack.
+> **❓ Why Repack?**  
+> Repack is a Webpack/Rspack-based bundler for React Native.  
+>
+> Agentica uses [`typia`](https://typia.io/) which works at compile time. However, [`typia` does not support Babel](https://typia.io/docs/setup/#summary), making it incompatible with the default Babel-based Metro bundler.  
+>
+> Therefore, this tutorial uses `Repack`, which is based on Rspack or Webpack.
 
 ---
 
@@ -88,9 +88,9 @@ npm run ios
 npm run android
 ```
 
-**❓ Why Expo?**  
-Expo is a toolchain that simplifies and speeds up React Native development.  
-In this tutorial, we use Expo to apply polyfills for `fetch` via `expo/fetch` and to utilize various native modules.
+> **❓ Why Expo?**  
+> Expo is a toolchain that simplifies and speeds up React Native development.  
+> In this tutorial, we use Expo to apply polyfills for `fetch` via `expo/fetch` and to utilize various native modules.
 
 ---
 
@@ -191,4 +191,4 @@ import ...
 AppRegistry.registerComponent(appName, () => App);
 ```
 
-🎉 Congrats! You’re now ready to use Agentica in your React Native environment.
+**🎉 Congratulations!** You’re now ready to use Agentica in your React Native environment.
