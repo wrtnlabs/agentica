@@ -2,7 +2,12 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   index: "🚀 Getting Started",
-  setup: "📦 Setup",
+  setup: {
+    title: "📦 Setup",
+    theme: {
+      collapsed: false,
+    },
+  },
   concepts: {
     title: "🔍 Concepts",
     theme: {
