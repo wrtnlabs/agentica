@@ -6,7 +6,7 @@ import Link from "next/link";
 export function PreviewSection() {
   return (
       <section className="flex flex-col-reverse md:flex-row md:justify-between w-full pb-[74px] md:pb-[120px]">
-        <Link href="https://wrtnlabs.io/">
+        <Link href="https://wrtnlabs.io">
           <PreviewCard
             title="Agent OS"
             subtitle="Previous"
