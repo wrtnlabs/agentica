@@ -75,7 +75,7 @@ pnpx agentica start
 bunx agentica start
 ```
 
-### Step 2. Creaste your own AI agent
+### Step 2. Create your own AI agent
 
 Open `src/index.ts` and create your own agent.
 
