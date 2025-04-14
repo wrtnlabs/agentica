@@ -1,0 +1,176 @@
+---
+title: Agentica > Tutorial > React Native
+---
+
+
+## Demo
+
+## Prerequisites
+- Node.js (v18.18 or newer)
+- JDK (v17)
+- Android Studio (for Android Development)
+- Xcode (for iOS Development)
+
+## Project Setting
+먼저 React Native에서 Agentica를 사용하기 위해 다음 단계를 거쳐야 합니다.
+- Bare React Native 프로젝트 세팅
+- Repack 세팅
+- Expo 세팅
+- Typia 세팅
+- Agentica 설치 및 Polyfill 추가
+
+
+
+### 1. Bare React Native Setting
+먼저 Bare React Native 프로젝트를 세팅합니다. 자세한 내용은 [React Native Community](https://github.com/react-native-community/cli) 문서를 확인하세요.
+```bash 
+npx @react-native-community/cli@15.0.0 init
+```
+
+### 2. Repack Setting
+두번쨰로 Repack 세팅을 진행합니다. 자세한 내용은 [Repack](https://re-pack.dev/index) 문서를 확인하세요.
+```bash 
+npx @callstack/repack-init
+```
+
+**❓ 왜 Repack 인가요?**  
+Repack은 Rspack, Webpack 기반의 React Native 번들러입니다.  
+Agentica는 기본적으로 컴파일 타임에 동작하는 [`typia`](https://typia.io/)를 사용하지만 [`typia`에서는 Babel을 지원하지 않기 때문에](https://typia.io/docs/setup/#summary), Babel 기반 번들러인 Metro에서는 사용할 수 없습니다.  
+따라서, 이 튜토리얼에서는 Rspack, Webpack 기반의 `Repack`을 사용합니다.
+
+### 3. Expo Setting
+세번쨰로 Expo 모듈을 사용하기 위한 세팅을 진행합니다. 자세한 내용은 [expo](https://docs.expo.dev/bare/installing-expo-modules/) 문서를 확인하세요.
+```bash 
+npx create-expo-app@latest
+```
+Repack환경에서 Expo를 사용하기 위해서는 `@callstack/repack-plugin-expo-modules` 플러그인이 필요합니다.
+```bash 
+npm install @callstack/repack-plugin-expo-modules
+```
+```js
+// rspack.config.mjs
+import ...
+import {ExpoModulesPlugin} from '@callstack/repack-plugin-expo-modules';
+
+export default {
+  ...
+  plugins: [
+    ...
+    new ExpoModulesPlugin(),
+  ],
+}
+
+```
+
+Expo 까지 모두 세팅이 완료되었으면, 다음 명령어로 앱을 실행할 수 있습니다.
+```bash
+npm run start
+
+# ios
+npx pod-install
+npm run ios
+
+# android
+npm run android
+```
+
+**❓ 왜 Expo 인가요?**  
+Expo는 React Native 앱을 빠르게 개발하기 위한 도구입니다.  본 튜토리얼에서는 expo/fetch를 활용하여 fetch 에 대한 폴리필을 세팅하고, 여러가지 Native 모듈을 사용하기 위해 Expo를 사용합니다.
+
+
+### 4. Typia Setting
+
+네번쨰는 [Typia](https://typia.io/) 에 대한 세팅입니다.  
+먼저 Typia를 사용하는데 필요한 라이브러리를 설치합니다.
+
+```bash
+npm install typia @ryoppippi/unplugin-typia
+```
+
+설치가 완료되었으면 `tsconfig.json`에 `compilerOptions` 필드를 추가해줍니다.
+
+```json
+// tsconfig.json
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {}
+}
+```
+
+그 다음 [Typia](https://typia.io/) CLI 를 이용하여 Typia를 사용하기 위한 세팅을 진행합니다.
+
+```bash
+npx typia setup
+npm install
+```
+
+마지막으로 `rspack.config.js`에 UnpluginTypia를 적용하면 세팅이 완료됩니다.
+
+```js
+// rspack.config.mjs
+import ...
+import UnpluginTypia from '@ryoppippi/unplugin-typia/webpack';
+
+export default {
+  ...
+  plugins: [..., UnpluginTypia()], // Add UnpluginTypia Plugin
+};
+```
+
+Typia 세팅이 완료되었으면, App.tsx를 다음과 같이 변경하고 앱을 스타트해 보세요.
+
+```tsx
+// App.tsx
+import React from 'react';
+import {Text, View} from 'react-native';
+
+import typia from 'typia';
+
+function App(): React.JSX.Element {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text>{typia.random<'Hello World'>()}</Text>
+    </View>
+  );
+}
+
+export default App;
+```
+
+Agentica 세팅이 성공적으로 완료되었으면 앱을 실행할 때, Hello World 문자열이 화면에 출력되는 것을 확인할 수 있습니다.
+
+
+
+### Agentica Setting
+
+다음은 [Agentica](https://wrtnlabs.io/agentica/)를 사용하기 위한 세팅입니다.
+
+먼저, Agentica를 사용하기 위한 라이브러리와 Polyfill을 설치합니다.
+
+```bash
+npm i @agentica/core openai # agentica 관련 라이브러리.
+npm i react-native-polyfill-globals@latest react-native-url-polyfill react-native-get-random-values react-native-fetch-api base-64 web-streams-polyfill@3.3.3 @azure/core-asynciterator-polyfill # polyfill 라이브러리.
+```
+
+그 다음, `shim.ts` 파일을 만들고 다음과 같이 작성합니다.
+
+```ts
+// shim.ts
+import 'react-native-polyfill-globals/auto';
+import '@azure/core-asynciterator-polyfill';
+import {fetch} from 'expo/fetch';
+
+(() => {
+  globalThis.fetch = fetch as any;
+})();
+```
+Polyfill을 적용하기 위해 `index.js` 파일을 다음과 같이 변경합니다.
+```js
+// index.js
+import './shim'; // add shim 
+import ...
+
+AppRegistry.registerComponent(appName, () => App);
+```
+
+축하합니다. 이제 여러분은 React Native 환경에서 Agentica를 사용할 수 있습니다.
