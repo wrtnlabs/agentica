@@ -1,11 +1,11 @@
-import { mkdir, rmdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
 import { config } from "dotenv";
 import OpenAI from "openai";
 
-import { pgVectorSelectorAgentica as pgVectorSelector, plainAgentica as plain } from "./agentica";
+import { pgVectorSelectorAgentica, plainAgentica } from "./agentica";
 import { runShoppingBenchmark } from "./runShoppingBenchmark";
 
 config();
@@ -16,14 +16,14 @@ if (apiKey === undefined || apiKey.length === 0) {
 }
 
 async function main() {
-  const plainAgentica = await plain({
+  const plain = await plainAgentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({ apiKey }),
     },
   });
 
-  const pgVectorSelectorAgentica = await pgVectorSelector({
+  const pgVectorSelector = await pgVectorSelectorAgentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({ apiKey }),
@@ -32,10 +32,10 @@ async function main() {
   });
 
   const reports = await Promise.all([
-    runShoppingBenchmark({ agent: plainAgentica })
+    runShoppingBenchmark({ agent: plain })
       .then(v => ({ result: v, name: "plain" })),
 
-    runShoppingBenchmark({ agent: pgVectorSelectorAgentica })
+    runShoppingBenchmark({ agent: pgVectorSelector })
       .then(v => ({ result: v, name: "pgVectorSelector" })),
   ])
     .then(reportList => reportList.map(v =>
@@ -47,7 +47,7 @@ async function main() {
     const root: string = `./docs/benchmarks/call/${docs.name}`;
 
     // ignore not exists error
-    await rmdir(root).catch(() => {});
+    await rm(root, { recursive: true }).catch(() => {});
 
     for (const [key, value] of Object.entries(docs.result)) {
       await mkdir(path.join(root, key.split("/").slice(0, -1).join("/")), { recursive: true });

@@ -1,8 +1,8 @@
 packages:
   - packages/*
+  - benchmark/*
   - test
   - website
-
 catalogs:
   libs:
     "@modelcontextprotocol/sdk": ^1.9.0

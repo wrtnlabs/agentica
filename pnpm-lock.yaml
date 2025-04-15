@@ -69,6 +69,52 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1(typedoc@0.27.9(typescript@5.8.3))
 
+  benchmark/pg-vector-selector-benchmark:
+    dependencies:
+      '@agentica/benchmark':
+        specifier: workspace:^
+        version: link:../../packages/benchmark
+      '@agentica/core':
+        specifier: workspace:^
+        version: link:../../packages/core
+      '@agentica/pg-vector-selector':
+        specifier: workspace:^
+        version: link:../../packages/pg-vector-selector
+      '@samchon/shopping-api':
+        specifier: ^0.17.0
+        version: 0.17.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      openai:
+        specifier: catalog:libs
+        version: 4.91.1(zod@3.24.2)
+      typia:
+        specifier: catalog:typia
+        version: 9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
+    devDependencies:
+      '@samchon/openapi':
+        specifier: catalog:typia
+        version: 4.0.0
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.13.9
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      rollup:
+        specifier: ^4.29.1
+        version: 4.39.0
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@22.13.9)(typescript@5.8.3)
+      ts-patch:
+        specifier: catalog:typescript
+        version: 3.3.0
+      typescript:
+        specifier: catalog:typescript
+        version: 5.8.3
+
   packages/benchmark:
     dependencies:
       '@agentica/core':
@@ -385,52 +431,6 @@ importers:
       vitest:
         specifier: catalog:vite
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.3))(terser@5.39.0)
-
-  packages/pg-vector-selector-benchmark:
-    dependencies:
-      '@agentica/benchmark':
-        specifier: workspace:^
-        version: link:../benchmark
-      '@agentica/core':
-        specifier: workspace:^
-        version: link:../core
-      '@agentica/pg-vector-selector':
-        specifier: workspace:^
-        version: link:../pg-vector-selector
-      '@samchon/shopping-api':
-        specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.0.0)(typescript@5.8.3)
-      dotenv:
-        specifier: ^16.4.7
-        version: 16.4.7
-      openai:
-        specifier: catalog:libs
-        version: 4.91.1(zod@3.24.2)
-      typia:
-        specifier: catalog:typia
-        version: 9.0.1(@samchon/openapi@4.0.0)(typescript@5.8.3)
-    devDependencies:
-      '@samchon/openapi':
-        specifier: catalog:typia
-        version: 4.0.0
-      '@types/node':
-        specifier: ^22.10.5
-        version: 22.13.9
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
-      rollup:
-        specifier: ^4.29.1
-        version: 4.39.0
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.13.9)(typescript@5.8.3)
-      ts-patch:
-        specifier: catalog:typescript
-        version: 3.3.0
-      typescript:
-        specifier: catalog:typescript
-        version: 5.8.3
 
   packages/rpc:
     dependencies:

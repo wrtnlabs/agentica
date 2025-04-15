@@ -2,9 +2,8 @@ import type { IAgenticaVendor } from "@agentica/core";
 import type { IHttpConnection } from "@samchon/openapi";
 
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { BootAgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import ShoppingApi from "@samchon/shopping-api";
-
-import { AgenticaPgVectorSelector } from "../../../pg-vector-selector/src";
 
 export async function pgVectorSelectorAgentica(props: {
   vendor: IAgenticaVendor;
@@ -41,7 +40,7 @@ export async function pgVectorSelectorAgentica(props: {
     },
   );
 
-  const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">({
+  const selectorExecute = BootAgenticaPgVectorSelector<"chatgpt">({
     connectorHiveConnection: {
       host: props.connectorHiveUrl,
     },

@@ -71,3 +71,35 @@ export function groupByArray<T, TCount extends number>(array: T[], count: Greate
   }
   return grouped;
 }
+
+/**
+ * Removes duplicates from an array.
+ * You can specify which value to compare using a property selector function.
+ *
+ * @param array - Array to remove duplicates from
+ * @param selector - Function that selects the value to compare
+ * @returns New array with duplicates removed
+ *
+ * @example
+ * ```typescript
+ * const users = [
+ *   { id: 1, name: 'John' },
+ *   { id: 2, name: 'Jane' },
+ *   { id: 1, name: 'John' }
+ * ];
+ *
+ * const uniqueUsers = uniqBy(users, user => user.id);
+ * // Result: [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]
+ * ```
+ */
+export function uniqBy<T, K>(array: T[], selector: (item: T) => K): T[] {
+  const seen = new Set<K>();
+  return array.filter((item) => {
+    const key = selector(item);
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
