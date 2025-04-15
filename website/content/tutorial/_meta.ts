@@ -15,6 +15,12 @@ const meta: MetaRecord = {
       collapsed: false,
     },
   },
+  "react-native":{
+    title: "📱 React Native",
+    theme: {
+      collapsed: false,
+    },
+  },
   enterprise: {
     title: "🏢 Enterprise",
     theme: {
