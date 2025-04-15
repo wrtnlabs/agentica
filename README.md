@@ -57,7 +57,7 @@ Built around [Typia's](https://typia.io/) robust JSON Schema validation, Agentic
 
 ### Step 1. Setup Agentica project
 
-_For more details, check out the [Getting Started](https://wrtnlabs.io/agentica/docs/setup/) guide._
+_For more details, check out the [Getting Started](https://wrtnlabs.io/agentica/docs/setup/cli/) guide._
 
 You can create a new Agentica project using the following command:
 
