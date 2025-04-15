@@ -128,9 +128,9 @@ Traditional LLM frameworks struggle with structured outputs:
 
 ## 📚 Documentation & Tutorials & Paper
 
-- [Getting Started](https://wrtnlabs.io/agentica/docs/getting-started)
+- [Getting Started](https://wrtnlabs.io/agentica/docs)
 - [Tutorials](https://wrtnlabs.io/agentica/tutorial/)
-- [API Reference](https://wrtnlabs.io/agentica/docs/api)
+- [API Reference](https://wrtnlabs.io/agentica/api/)
 - [Paper](https://wrtnlabs.io/agentica/docs/paper)
 
 ---
