@@ -9,96 +9,101 @@ import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelec
 import { embedContext, useEmbeddedContext } from "./embed";
 import { selectFunction } from "./select";
 import { Tools } from "./Tools";
-import { deduplicate, getRetry } from "./utils";
+import { getRetry, uniqBy } from "./utils";
 
 const retry = getRetry(3);
 
-export namespace AgenticaPgVectorSelector {
-  export function boot<SchemaModel extends ILlmSchema.Model>(props: IAgenticaPgVectorSelectorBootProps) {
-    const [isEmbeddedContext, setEmbeddedContext, getFilterFromContext]
-      = useEmbeddedContext<SchemaModel>();
-    const connection = props.connectorHiveConnection;
+export function BootAgenticaPgVectorSelector<SchemaModel extends ILlmSchema.Model>(props: IAgenticaPgVectorSelectorBootProps) {
+  const [isEmbeddedContext, setEmbeddedContext, getFilterFromContext]
+    = useEmbeddedContext<SchemaModel>();
+  const connection = props.connectorHiveConnection;
 
-    const selectorExecute = async (
-      ctx: AgenticaContext<SchemaModel>,
-    ): Promise<AgenticaHistory<SchemaModel>[]> => {
-      if (!isEmbeddedContext(ctx)) {
-        await embedContext(connection)(ctx, setEmbeddedContext);
-      }
+  const selectorExecute = async (
+    ctx: AgenticaContext<SchemaModel>,
+  ): Promise<AgenticaHistory<SchemaModel>[]> => {
+    if (!isEmbeddedContext(ctx)) {
+      await embedContext(connection)(ctx, setEmbeddedContext);
+    }
 
-      const filter = getFilterFromContext(ctx);
+    const filter = getFilterFromContext(ctx);
 
-      const completionStream = await ctx.request("select", {
-        messages: [
-          {
-            role: "developer",
-            content: [
-              "you are a function searcher, you will extract search query from user message",
-              "the query like vector search query and query result is function name",
-              "so the extracted query must be for function search",
-            ].join("\n"),
-          },
-          ...ctx.histories
-            .map(factory.decodeHistory<SchemaModel>)
-            .flat(),
-          {
-            role: "user",
-            content: ctx.prompt.text,
-          },
-        ],
-        tool_choice: "required",
+    const completionStream = await ctx.request("select", {
+      messages: [
+        {
+          role: "developer",
+          content: [
+            "you are a function searcher, you will extract search query from user message",
+            "the query like vector search query and query result is function name",
+            "so the extracted query must be for function search",
+          ].join("\n"),
+        },
+        ...ctx.histories
+          .map(factory.decodeHistory<SchemaModel>)
+          .flat(),
+        {
+          role: "user",
+          content: ctx.prompt.text,
+        },
+      ],
+      tool_choice: "required",
 
-        tools: [Tools.extract_query],
-      });
+      tools: [Tools.extract_query],
+    });
 
-      const chunks = await utils.StreamUtil.readAll(completionStream);
-      const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
-      const toolList = await Promise.all(
-        completion.choices[0]?.message.tool_calls?.flatMap(async (v) => {
-          const arg = JSON.parse(v.function.arguments) as { query?: string };
-          const query = arg.query;
-          if (typeof query !== "string") {
-            return [];
-          }
-          return retry(async () =>
-            functional.connector_retrievals.createRetrievalRequest(connection, {
-              query,
-              limit: 10,
-              filter,
-            }),
-          );
-        }) ?? [],
-      ).then(res =>
-        res.flatMap(output =>
-          output.map(v => ({
-            name: v.name,
-            description: v.description,
-          })),
-        ).map((v) => {
-          const op = ctx.operations.flat.get(v.name);
-          if (op === undefined || op.protocol !== "http") {
-            return v;
-          }
+    const chunks = await utils.StreamUtil.readAll(completionStream);
+    const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
+    const toolList = await Promise.all(
+      completion.choices[0]?.message.tool_calls?.flatMap(async (v) => {
+        const arg = JSON.parse(v.function.arguments) as { query?: string };
+        const query = arg.query;
+        if (typeof query !== "string") {
+          return [];
+        }
+        return retry(async () =>
+          functional.connector_retrievals.createRetrievalRequest(connection, {
+            query,
+            limit: 10,
+            filter,
+          }),
+        );
+      }) ?? [],
+    ).then(res =>
+      res.flatMap(output =>
+        output.map(v => ({
+          name: v.name,
+          description: v.description,
+        })),
+      ).map((v) => {
+        const op = ctx.operations.flat.get(v.name);
+        if (op === undefined || op.protocol !== "http") {
+          return v;
+        }
 
-          return {
-            ...v,
-            method: op.function.method,
-            path: op.function.path,
-            tags: op.function.tags,
-          };
-        }),
-      ).then(arr => deduplicate(arr, v => v.name));
+        return {
+          ...v,
+          method: op.function.method,
+          path: op.function.path,
+          tags: op.function.tags,
+        };
+      }),
+    ).then(arr => uniqBy(arr, v => v.name));
 
-      console.log("Tool List: ", toolList.map(v => v.name), "Total: ", toolList.length);
-      if (toolList.length === 0) {
-        return [];
-      }
+    console.log("Tool List: ", toolList.map(v => v.name), "Total: ", toolList.length);
+    if (toolList.length === 0) {
+      return [];
+    }
 
-      const prompts = await selectFunction({ ctx, toolList });
+    const prompts = await selectFunction({ ctx, toolList });
 
-      return prompts;
-    };
+    return prompts;
+  };
 
-    return selectorExecute;
-  }
+  return selectorExecute;
 }
+
+/**
+ * @deprecated Use `BootAgenticaPgVectorSelector` instead.
+ */
+export const AgenticaPgVectorSelector = {
+  boot: BootAgenticaPgVectorSelector,
+};

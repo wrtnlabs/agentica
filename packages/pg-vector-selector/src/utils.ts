@@ -88,11 +88,11 @@ export function groupByArray<T, TCount extends number>(array: T[], count: Greate
  *   { id: 1, name: 'John' }
  * ];
  *
- * const uniqueUsers = deduplicate(users, user => user.id);
+ * const uniqueUsers = uniqBy(users, user => user.id);
  * // Result: [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]
  * ```
  */
-export function deduplicate<T, K>(array: T[], selector: (item: T) => K): T[] {
+export function uniqBy<T, K>(array: T[], selector: (item: T) => K): T[] {
   const seen = new Set<K>();
   return array.filter((item) => {
     const key = selector(item);
