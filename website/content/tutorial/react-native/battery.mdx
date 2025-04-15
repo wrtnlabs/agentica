@@ -1,29 +1,24 @@
 ---
-title: Agentica > Tutorial > React Native
+title: Agentica > Tutorial > React Native > Battery
 ---
 import { YoutubeRenderer } from "../../../components/YoutubeRenderer";
 
-# Agentica + React Native + Expo 
+## Introduction
 
-This tutorial guides you through integrating and using the Agentica library in a React Native project.
+This tutorial explains how to create an Agent using Agentica in React Native to check battery status.
 
-## 0. Examples
-<br/>
-
-
-<YoutubeRenderer src="https://www.youtube.com/embed/cxekMLNjdVI" type="shorts"/>
+## Examples
 <br/>
 <YoutubeRenderer src="https://www.youtube.com/embed/18TyKUl7Tok" type="shorts"/>
-<br/>
-<YoutubeRenderer src="https://www.youtube.com/embed/QIDYNSXA6Hc" type="shorts"/>
+  <br/>
 
-## 1. Prerequisites
 
+## Prerequisites
 - Node.js (>=18)
 - iOS/Android development environment setup (Simulator)
   - JDK Version (= 17)
 
-## 2. Project Setup
+## Project Setup
 
 First, create a React Native project. We'll use the Agentica CLI to get started.
 
@@ -38,50 +33,52 @@ During the project creation process, you'll need to configure the following:
 - Project Type: Select React Native
 - OpenAI API key setup
 
-## 3. Running the Application
 
-```bash
-npm run start
+## Generated Code Overview
 
-### ios
-npx pod-install
-npm run ios
+The generated code is as follows:
 
-### android
-npm run android
-```
-
-## 4. Generated Code
-
-### 4.1 App.tsx
+### App.tsx
 
 `App.tsx` is the main file containing Agentica configuration.
 
-### 4.2 shim.ts
+### shim.ts
 
 The `shim.ts` file is a polyfill file required for using OpenAI and Agentica. It must always be imported first.
 
-### 4.3 controller/*
-The Controller folder contains functions that will be passed to the LLM. The template project includes the following example controllers:
+### controller/battery.ts
+```tsx
+import {IAgenticaController} from '@agentica/core';
+import * as Battery from 'expo-battery';
+import typia from 'typia';
 
-#### SMS Controller (`src/controller/sms.ts`)
-
-- Provides SMS message sending functionality
-- Implemented using the `expo-sms` package
-- Supports sending messages to single or multiple recipients
-
-#### Battery Controller (`src/controller/battery.ts`)
-
+export const BatteryController: IAgenticaController<'chatgpt'> = {
+  protocol: 'class',
+  name: 'battery',
+  execute: async props =>
+    (Battery as any)[props.function.name](props.arguments),
+  application: typia.llm.application<
+    Pick<
+      typeof Battery,
+      'getBatteryLevelAsync' | 'getBatteryStateAsync' | 'getPowerStateAsync'
+    >,
+    'chatgpt'
+  >(),
+};
+```
 - Provides battery-related information retrieval functionality
 - Implemented using the `expo-battery` package
 - Can retrieve battery level, status, power state, and other information
 
-#### Calendar Controller (`src/controller/calendar.ts`)
+## Use Case Example
 
-- Provides calendar-related functionality
-- Supports adding, viewing, modifying, and deleting events
+Imagine asking the agent:
 
-## 5. Controller Development Guide
+> "What is the battery level of my phone?"
+
+The agent will process your query by retrieving the battery level of your phone.
+
+## Controller Development Guide
 
 With Agentica, you can easily add any functionality you can think of! (Even if it's only available in Native). To add your own functionality to Agentica, follow these steps:
 
