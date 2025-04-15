@@ -5,6 +5,8 @@ const meta: MetaRecord = {
   github: "Github",
   swagger: "Swagger",
   "vector-store": "Vector Store",
-  "react-native": "React Native",
+  "react-native-sms": "React Native SMS",
+  "react-native-calendar": "React Native Calendar",
+  "react-native-battery": "React Native Battery",
 };
 export default meta;
