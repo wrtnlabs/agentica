@@ -1,32 +1,19 @@
-import type { AgenticaContext, AgenticaHistory, AgenticaOperation, AgenticaOperationSelection, AgenticaSelectHistory } from "@agentica/core";
+import type { AgenticaContext, AgenticaHistory, AgenticaOperationSelection, AgenticaSelectHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
-import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
+
 
 import { factory, utils } from "@agentica/core";
 import { AgenticaDefaultPrompt } from "@agentica/core/src/constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "@agentica/core/src/constants/AgenticaSystemPrompt";
-import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
+import { functional } from "@wrtnlabs/connector-hive-api";
 
 import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
 
 import { Tools } from "./Tools";
-import { getRetry, groupByArray } from "./utils";
+import { getRetry } from "./utils";
+import { embedContext, useEmbeddedContext } from "./embed";
 
-function useEmbeddedContext<SchemaModel extends ILlmSchema.Model>() {
-  const set = new Map<string, IApplicationConnectorRetrieval.IFilter>();
-  return [
-    (ctx: AgenticaContext<SchemaModel>) =>
-      set.has(JSON.stringify(ctx.operations.array)),
-    (
-      ctx: AgenticaContext<SchemaModel>,
-      filter: IApplicationConnectorRetrieval.IFilter,
-    ) => {
-      set.set(JSON.stringify(ctx.operations.array), filter);
-    },
-    (ctx: AgenticaContext<SchemaModel>) =>
-      set.get(JSON.stringify(ctx.operations.array)),
-  ] as const;
-}
+
 
 const retry = getRetry(3);
 
@@ -35,90 +22,13 @@ export namespace AgenticaPgVectorSelector {
     const [isEmbeddedContext, setEmbeddedContext, getFilterFromContext]
       = useEmbeddedContext<SchemaModel>();
     const connection = props.connectorHiveConnection;
-    const embedOperation = async (
-      controllerName: string,
-      opList: AgenticaOperation<SchemaModel>[],
-    ) => {
-      const application = await retry(async () =>
-        functional.applications.create(connection, {
-          name: controllerName,
-          description: undefined,
-        }),
-      ).catch(async (e) => {
-        if (!(e instanceof HttpError)) {
-          throw e;
-        }
-        if (e.status !== 409) {
-          throw e;
-        }
-
-        return retry(async () =>
-          functional.applications.by_names.getByName(
-            connection,
-            controllerName,
-          ),
-        );
-      });
-
-      const version = await retry(async () =>
-        functional.applications.by_ids.versions.create(
-          connection,
-          application.id,
-          {},
-        ),
-      );
-
-      // concurrency request count
-      await groupByArray(opList, 10).reduce(async (accPromise, cur) => {
-        await accPromise;
-        await Promise.all(
-          cur.map(async v =>
-            retry(async () =>
-              functional.application_versions.by_ids.connectors.create(
-                connection,
-                version.id,
-                { name: v.name, description: v.function.description ?? "" },
-              ),
-            ),
-          ),
-        );
-        return Promise.resolve();
-      }, Promise.resolve());
-
-      return { version, applicationId: application.id };
-    };
-
-    const embedContext = async (ctx: AgenticaContext<SchemaModel>) => {
-      const filter = await Promise.all(
-        Array.from(ctx.operations.group.entries()).map(
-          async ([key, value]: [
-            string,
-            Map<string, AgenticaOperation<SchemaModel>>,
-          ]) => {
-            const result = await embedOperation(
-              key,
-              Array.from(value.values()),
-            );
-
-            return {
-              id: result.applicationId,
-              version: result.version.version,
-              type: "byId",
-            } satisfies IApplicationConnectorRetrieval.IFilterApplicationById;
-          },
-        ),
-      );
-
-      setEmbeddedContext(ctx, {
-        applications: filter,
-      });
-    };
+    
 
     const selectorExecute = async (
       ctx: AgenticaContext<SchemaModel>,
     ): Promise<AgenticaHistory<SchemaModel>[]> => {
       if (!isEmbeddedContext(ctx)) {
-        await embedContext(ctx);
+        await embedContext(connection)(ctx, setEmbeddedContext);
       }
 
       const prompts: AgenticaHistory<SchemaModel>[] = [];
@@ -236,12 +146,13 @@ export namespace AgenticaPgVectorSelector {
         })
         .then(async v => utils.StreamUtil.readAll(v))
         .then(utils.ChatGptCompletionMessageUtil.merge);
-      console.log(selectCompletion.choices);
+
+
       selectCompletion.choices
         .filter(v => v.message.tool_calls != null)
         .forEach((v) => {
           v.message
-            .tool_calls!.filter(tc => tc.function.name === "execute_function").forEach((tc) => {
+            .tool_calls!.filter(tc => tc.function.name === "select_function").forEach((tc) => {
             const collection: AgenticaSelectHistory<SchemaModel> = {
               type: "select",
               id: tc.id,
@@ -283,7 +194,9 @@ export namespace AgenticaPgVectorSelector {
 
       if (prompts.length === 0) {
         selectCompletion.choices.forEach((v) => {
-          prompts.push(factory.createTextHistory({ role: "assistant", text: v.message.content ?? "" }));
+          if(v.message.content != null && v.message.content !== "") {
+            prompts.push(factory.createTextHistory({ role: "assistant", text: v.message.content }));
+          }
         });
       }
 
