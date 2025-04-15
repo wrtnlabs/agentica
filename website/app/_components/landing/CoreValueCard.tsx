@@ -17,7 +17,7 @@ export function CoreValueCard({
   description,
 }: CoreValueCardProps) {
   return (
-    <Card className="relative flex flex-1 h-[440px] flex-col justify-between overflow-hidden rounded-[36px] border-zinc-700 bg-[#030303]/70 p-5">
+    <Card className="relative flex flex-1 gap-28 md:gap-36 flex-col overflow-hidden rounded-[36px] border-zinc-700 bg-[#030303]/70 p-5">
       {/* TODO: icon */}
       {<IconElement width={80} />}
 
@@ -26,7 +26,7 @@ export function CoreValueCard({
           {title}
         </CardTitle>
         <hr className="border-t-2 border-zinc-600" />
-        <CardDescription className="text-base md:h-30 text-zinc-400">
+        <CardDescription className="text-base md:min-h-30 text-zinc-400">
           {description}
         </CardDescription>
       </div>
