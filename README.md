@@ -34,7 +34,7 @@
 
 <h3 align="center">
 
-[Homepage](https://wrtnlabs.io/agentica) // [Documentation](https://wrtnlabs.io/agentica/docs) // [Tutorials](https://youtube.com) // [Playground](https://wrtnlabs.io/agentica/playground)
+[Homepage](https://wrtnlabs.io/agentica) // [Documentation](https://wrtnlabs.io/agentica/docs) // [Tutorials](https://www.youtube.com/@wrtnlabs) // [Playground](https://wrtnlabs.io/agentica/playground)
 
 </h3>
 
@@ -57,7 +57,7 @@ Built around [Typia's](https://typia.io/) robust JSON Schema validation, Agentic
 
 ### Step 1. Setup Agentica project
 
-_For more details, check out the [Getting Started](https://wrtnlabs.io/agentica/docs/setup/) guide._
+_For more details, check out the [Getting Started](https://wrtnlabs.io/agentica/docs/setup/cli/) guide._
 
 You can create a new Agentica project using the following command:
 
@@ -128,9 +128,9 @@ Traditional LLM frameworks struggle with structured outputs:
 
 ## 📚 Documentation & Tutorials & Paper
 
-- [Getting Started](https://wrtnlabs.io/agentica/docs/getting-started)
+- [Getting Started](https://wrtnlabs.io/agentica/docs)
 - [Tutorials](https://wrtnlabs.io/agentica/tutorial/)
-- [API Reference](https://wrtnlabs.io/agentica/docs/api)
+- [API Reference](https://wrtnlabs.io/agentica/api/)
 - [Paper](https://wrtnlabs.io/agentica/docs/paper)
 
 ---
