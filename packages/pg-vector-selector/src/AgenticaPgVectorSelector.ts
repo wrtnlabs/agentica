@@ -88,7 +88,6 @@ export function BootAgenticaPgVectorSelector<SchemaModel extends ILlmSchema.Mode
       }),
     ).then(arr => uniqBy(arr, v => v.name));
 
-    console.log("Tool List: ", toolList.map(v => v.name), "Total: ", toolList.length);
     if (toolList.length === 0) {
       return [];
     }
