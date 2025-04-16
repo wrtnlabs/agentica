@@ -1,14 +1,13 @@
 import type { AgenticaContext, AgenticaHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
-import { factory, utils } from "@agentica/core";
 import { functional } from "@wrtnlabs/connector-hive-api";
 
 import type { IAgenticaPgVectorSelectorBootProps } from "./AgenticaPgVectorSelectorBootProps";
 
 import { embedContext, useEmbeddedContext } from "./embed";
+import { extractQuery } from "./extract_query";
 import { selectFunction } from "./select";
-import { Tools } from "./Tools";
 import { getRetry, uniqBy } from "./utils";
 
 const retry = getRetry(3);
@@ -27,46 +26,16 @@ export function BootAgenticaPgVectorSelector<SchemaModel extends ILlmSchema.Mode
 
     const filter = getFilterFromContext(ctx);
 
-    const completionStream = await ctx.request("select", {
-      messages: [
-        {
-          role: "developer",
-          content: [
-            "you are a function searcher, you will extract search query from user message",
-            "the query like vector search query and query result is function name",
-            "so the extracted query must be for function search",
-          ].join("\n"),
-        },
-        ...ctx.histories
-          .map(factory.decodeHistory<SchemaModel>)
-          .flat(),
-        {
-          role: "user",
-          content: ctx.prompt.text,
-        },
-      ],
-      tool_choice: "required",
+    const queries = await extractQuery(ctx);
 
-      tools: [Tools.extract_query],
-    });
-
-    const chunks = await utils.StreamUtil.readAll(completionStream);
-    const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
     const toolList = await Promise.all(
-      completion.choices[0]?.message.tool_calls?.flatMap(async (v) => {
-        const arg = JSON.parse(v.function.arguments) as { query?: string };
-        const query = arg.query;
-        if (typeof query !== "string") {
-          return [];
-        }
-        return retry(async () =>
-          functional.connector_retrievals.createRetrievalRequest(connection, {
-            query,
-            limit: 10,
-            filter,
-          }),
-        );
-      }) ?? [],
+      queries.map(async query => retry(async () =>
+        functional.connector_retrievals.createRetrievalRequest(connection, {
+          query,
+          limit: 10,
+          filter,
+        }),
+      )),
     ).then(res =>
       res.flatMap(output =>
         output.map(v => ({
@@ -93,7 +62,6 @@ export function BootAgenticaPgVectorSelector<SchemaModel extends ILlmSchema.Mode
     }
 
     const prompts = await selectFunction({ ctx, toolList });
-
     return prompts;
   };
 
