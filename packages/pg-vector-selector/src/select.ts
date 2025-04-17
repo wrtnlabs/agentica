@@ -54,13 +54,21 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
       },
       {
         role: "system",
-        content: ctx.config?.systemPrompt?.select?.(ctx.histories)
-          ?? AgenticaSystemPrompt.SELECT,
+        content: `${ctx.config?.systemPrompt?.select?.(ctx.histories)
+        ?? AgenticaSystemPrompt.SELECT}
+          
+        When selecting functions, choose all the ones necessary to accomplish what the user wants to do.
+          `,
       },
       ...emendMessages(prevFailures),
     ],
-    tool_choice: "required",
-    tools: [Tools.select_function],
+    tool_choice: {
+      type: "function",
+      function: {
+        name: "select_functions",
+      },
+    },
+    tools: [Tools.select_functions],
   })
     .then(async v => utils.StreamUtil.readAll(v))
     .then(utils.ChatGptCompletionMessageUtil.merge);
@@ -80,27 +88,32 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   const failures = toolCalls.reduce<IFailure[]>((acc, cur) => {
     cur.message.tool_calls?.forEach((tc) => {
       const errors: string[] = [];
-
-      if (tc.function.name !== "select_function") {
-        errors.push(`We have only \`select_function\` function, but you called \`${tc.function.name}\`, please use \`select_function\``);
-      }
-
-      const arg = JSON.parse(tc.function.arguments) as Partial<{ reason: string; function_name: string }>;
-      if (arg.reason == null || typeof arg.reason !== "string") {
+      const arg = JSON.parse(tc.function.arguments) as Partial<{ reason: string; function_name: string }>[];
+      if (!Array.isArray(arg)) {
         errors.push(JSON.stringify({
-          path: "$input.reason",
-          expected: "string",
-          value: arg.reason,
+          path: "$input",
+          expected: "array",
+          value: arg,
         }));
+        return;
       }
+      arg.forEach((v, idx) => {
+        if (v.reason == null || typeof v.reason !== "string") {
+          errors.push(JSON.stringify({
+            path: `$$input[${idx}].reason`,
+            expected: "string",
+            value: v.reason,
+          }));
+        }
 
-      if (arg.function_name == null || typeof arg.function_name !== "string") {
-        errors.push(JSON.stringify({
-          path: "$input.function_name",
-          expected: "string",
-          value: arg.function_name,
-        }));
-      }
+        if (v.function_name == null || typeof v.function_name !== "string") {
+          errors.push(JSON.stringify({
+            path: `$$input[${idx}].function_name`,
+            expected: "string",
+            value: v.function_name,
+          }));
+        }
+      });
 
       if (errors.length !== 0) {
         acc.push({
@@ -118,6 +131,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
     if (restRetry === 0) {
       throw new Error(`Failed to select function after ${restRetry} retries\n${JSON.stringify(feedback)}`);
     }
+
     return selectFunction({
       ctx,
       toolList,
@@ -140,24 +154,28 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         }),
       };
       const arg = JSON.parse(tc.function.arguments) as {
-        reason: string;
-        function_name: string;
+        function_list: {
+          reason: string;
+          function_name: string;
+        }[];
       };
+      arg.function_list.forEach((v) => {
+        const operation = ctx.operations.flat.get(v.function_name);
 
-      const operation = ctx.operations.flat.get(arg.function_name);
-      if (operation === undefined) {
-        return;
-      }
-      // @todo core has to export event/operation factories
-      const selection: AgenticaOperationSelection<SchemaModel>
-        = factory.createOperationSelection({
-          reason: arg.reason,
-          operation,
-        });
-      ctx.stack.push(selection);
-      ctx.dispatch(factory.createSelectEvent({ selection })).catch(() => {});
-      collection.selections.push(selection);
-      prompts.push(collection);
+        if (operation === undefined) {
+          return;
+        }
+        // @todo core has to export event/operation factories
+        const selection: AgenticaOperationSelection<SchemaModel>
+          = factory.createOperationSelection({
+            reason: v.reason,
+            operation,
+          });
+        ctx.stack.push(selection);
+        ctx.dispatch(factory.createSelectEvent({ selection })).catch(() => {});
+        collection.selections.push(selection);
+        prompts.push(collection);
+      });
     });
   });
 

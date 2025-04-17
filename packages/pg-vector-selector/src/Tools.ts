@@ -19,10 +19,10 @@ export const Tools = {
     },
   },
 
-  select_function: {
+  select_functions: {
     type: "function",
     function: {
-      name: "select_function",
+      name: "select_functions",
       description: `Select proper API functions to call.
 
 If you A.I. agent has found some proper API functions to call
@@ -41,25 +41,40 @@ a specific function to call, the others would be eliminated.
 
 @example
 \`\`\`json
-{
-  "reason": "The user wants to call the function multiply.",
-  "function_name": "get_user_info"
-}
+[
+  {
+    "reason": "The user wants to call the function multiply.",
+    "function_name": "get_user_info"
+  },
+  {
+    "reason": "The user wants to modify the user info.",
+    "function_name": "modify_user_info"
+  }
+]
 \`\`\`
 `,
       parameters: {
         type: "object",
         properties: {
-          reason: {
-            type: "string",
-            description: "The reason of the function selection.\n\nJust write the reason why you've determined to select this function.",
-          },
-          function_name: {
-            type: "string",
-            description: "Name of the target function to call.",
+          function_list: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                reason: {
+                  type: "string",
+                  description: "The reason of the function selection.\n\nJust write the reason why you've determined to select this function.",
+                },
+                function_name: {
+                  type: "string",
+                  description: "Name of the target function to call.",
+                },
+              },
+              required: ["reason", "function_name"],
+            },
           },
         },
-        required: ["reason", "function_name"],
+        required: ["function_list"],
       },
     },
   },
