@@ -1,11 +1,11 @@
 import process from "node:process";
 
 import * as p from "@clack/prompts";
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import * as picocolors from "picocolors";
 import typia from "typia";
 
-import type { StarterTemplate } from "./commands/start";
+import { START_TEMPLATES, type StarterTemplate } from "./commands/start";
 
 import { start } from "./commands";
 
@@ -28,9 +28,12 @@ program
 program
   .command("start")
   .description("Start a new project")
-  .option(
-    "-p, --project [nodejs|nestjs|react|nestjs+react|standalone]",
-    "The project type",
+  .addOption(
+    new Option(
+      "-p, --project",
+      "The project type",
+    )
+      .choices(START_TEMPLATES)
   )
   .action(async (options: CliOptions) => {
     if ((options.project as any) === true) {
