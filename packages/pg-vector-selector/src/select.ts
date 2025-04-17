@@ -131,7 +131,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
     if (restRetry === 0) {
       throw new Error(`Failed to select function after ${restRetry} retries\n${JSON.stringify(feedback)}`);
     }
-    
+
     return selectFunction({
       ctx,
       toolList,
@@ -157,11 +157,11 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         function_list: {
           reason: string;
           function_name: string;
-        }[]
+        }[];
       };
       arg.function_list.forEach((v) => {
         const operation = ctx.operations.flat.get(v.function_name);
-        
+
         if (operation === undefined) {
           return;
         }
