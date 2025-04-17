@@ -22,15 +22,18 @@ import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand, runCommand } from "../packages";
 import { execAsync, formatWithPrettier } from "../utils";
 
+export const START_TEMPLATES = [
+  "nodejs",
+  "nestjs",
+  "react",
+  "react-native",
+  "standalone",
+  "nestjs+react",
+  "nodejs+react",
+] as const satisfies readonly string[];
+
 /** supported starter templates */
-export type StarterTemplate =
-  | "nodejs"
-  | "nestjs"
-  | "react"
-  | "react-native"
-  | "standalone"
-  | "nestjs+react"
-  | "nodejs+react";
+export type StarterTemplate = typeof START_TEMPLATES[number];
 
 /**
  * Start command options
