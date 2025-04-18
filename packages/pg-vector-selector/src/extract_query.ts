@@ -1,5 +1,6 @@
 import type { AgenticaContext } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
+import type { FromSchema } from "json-schema-to-ts";
 
 import { factory, utils } from "@agentica/core";
 
@@ -14,7 +15,7 @@ export async function extractQuery<SchemaModel extends ILlmSchema.Model>(ctx: Ag
           "You are a function searcher. You will extract search queries from the user's message, and the query results will be function names.",
           "A query is a 2–3 sentence description of the action the user needs to perform.",
           "Therefore, the extracted queries must be suitable for function search.",
-          "You should extract at least 7 queries.",
+          "You need to identify the actions required to achieve what the user wants and extract queries that can be used to search for those actions.",
         ].join("\n"),
       },
       ...ctx.histories
@@ -33,13 +34,12 @@ export async function extractQuery<SchemaModel extends ILlmSchema.Model>(ctx: Ag
   const chunks = await utils.StreamUtil.readAll(completionStream);
   const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
   const queries = completion.choices[0]?.message.tool_calls?.flatMap((v) => {
-    const arg = JSON.parse(v.function.arguments) as { query?: string };
-    const query = arg.query;
-    if (typeof query !== "string") {
+    const arg = JSON.parse(v.function.arguments) as Partial<FromSchema<typeof Tools.extract_query.function.parameters>>;
+    if (!Array.isArray(arg.query_list)) {
       return [];
     }
-    return [query];
-  }) ?? [];
 
+    return arg.query_list.map(v => v.query);
+  }) ?? [];
   return queries;
 }
