@@ -68,6 +68,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         name: "select_functions",
       },
     },
+    parallel_tool_calls: false,
     tools: [Tools.select_functions],
   })
     .then(async v => utils.StreamUtil.readAll(v))
@@ -165,7 +166,6 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         if (operation === undefined) {
           return;
         }
-        // @todo core has to export event/operation factories
         const selection: AgenticaOperationSelection<SchemaModel>
           = factory.createOperationSelection({
             reason: v.reason,
@@ -174,8 +174,8 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         ctx.stack.push(selection);
         ctx.dispatch(factory.createSelectEvent({ selection })).catch(() => {});
         collection.selections.push(selection);
-        prompts.push(collection);
       });
+      prompts.push(collection);
     });
   });
 
