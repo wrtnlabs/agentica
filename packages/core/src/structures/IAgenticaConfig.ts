@@ -5,6 +5,7 @@ import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
 import type { IAgenticaExecutor } from "./IAgenticaExecutor";
 import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
+import type { Agentica } from "../Agentica";
 
 /**
  * Configuration for Agentic Agent.

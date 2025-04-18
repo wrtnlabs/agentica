@@ -153,16 +153,21 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     const started_at: Date = new Date();
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
+      const context = this.agent_.getContext({
+        // @todo core has to export `AgenticaPromptFactory`
+        prompt: factory.createTextHistory({
+          role: "user",
+          text: scenario.text,
+        }),
+        usage,
+      });
+      if (typeof context.config?.executor === "function") {
+        throw new Error("select function is not found");
+      }
+
       const histories: AgenticaHistory<Model>[]
-        = await orchestrate.select({
-          ...this.agent_.getContext({
-            // @todo core has to export `AgenticaPromptFactory`
-            prompt: factory.createTextHistory({
-              role: "user",
-              text: scenario.text,
-            }),
-            usage,
-          }),
+        = await (context.config?.executor?.select ?? orchestrate.select)({
+          ...context,
           histories: this.histories_.slice(),
           stack: [],
           ready: () => true,
