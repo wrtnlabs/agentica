@@ -162,7 +162,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         usage,
       });
       if (typeof context.config?.executor === "function") {
-        throw new Error("select function is not found");
+        throw new TypeError("select function is not found");
       }
 
       const histories: AgenticaHistory<Model>[]
