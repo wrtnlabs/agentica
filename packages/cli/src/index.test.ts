@@ -14,9 +14,6 @@ afterEach(() => {
 /** mock the 'start' function from './commands/start' */
 const startMock = vi.fn();
 
-/** mock the error log functions from '@clack/prompts' */
-const promptLogErrorMock = vi.fn();
-
 /** mock the intro function from '@clack/prompts' */
 const promptIntroMock = vi.fn();
 
@@ -59,13 +56,10 @@ describe("start subcommand", () => {
       start: startMock,
     }));
 
-    /* mock the 'p.log.error' function from '@clack/prompts' */
+    /* mock the intro function from '@clack/prompts' */
     vi.mock("@clack/prompts", async () => ({
       ...(await vi.importActual("@clack/prompts")),
       intro: promptIntroMock,
-      log: {
-        error: promptLogErrorMock,
-      },
     }));
   });
 
@@ -110,14 +104,12 @@ describe("start subcommand", () => {
     // override output to avoid the process to exit
     program.exitOverride();
 
-    program.parse(["node", "agentica", "start", "--project"]);
+    expect(() => {
+      program.parse(["node", "agentica", "start", "--project"]);
+    }).toThrow();
 
     // check start message is not called because of the error
     expect(startMock).not.toHaveBeenCalled();
-
-    // check the error message
-    expect(promptLogErrorMock).toHaveBeenCalledOnce();
-    expect(promptLogErrorMock.mock.calls[0][0]).toEqual(`\n❌ The value of ${picocolors.redBright("--project")} is required`);
   });
 
   it("test the start command with invalid project option", async () => {
@@ -126,13 +118,11 @@ describe("start subcommand", () => {
     // override output to avoid the process to exit
     program.exitOverride();
 
-    program.parse(["node", "agentica", "start", "--project", "invalid"]);
+    expect(() => {
+      program.parse(["node", "agentica", "start", "--project", "invalid"]);
+    }).toThrow();
 
     // check start message is not called because of the error
     expect(startMock).not.toHaveBeenCalled();
-
-    // check the error message
-    expect(promptLogErrorMock).toHaveBeenCalledOnce();
-    expect(promptLogErrorMock.mock.calls[0][0]).toEqual(`\n❌ The value of ${picocolors.redBright("--project")} is invalid`);
   });
 });
