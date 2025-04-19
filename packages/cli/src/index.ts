@@ -3,7 +3,6 @@ import process from "node:process";
 import * as p from "@clack/prompts";
 import { Command, Option } from "commander";
 import * as picocolors from "picocolors";
-import typia from "typia";
 
 import type { StarterTemplate } from "./commands/start";
 
@@ -31,7 +30,7 @@ program
   .description("Start a new project")
   .addOption(
     new Option(
-      "-p, --project",
+      "-p, --project <project>",
       "The project type",
     )
       .choices(START_TEMPLATES),
