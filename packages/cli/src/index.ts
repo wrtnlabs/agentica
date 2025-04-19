@@ -37,21 +37,6 @@ program
       .choices(START_TEMPLATES),
   )
   .action(async (options: CliOptions) => {
-    if ((options.project as any) === true) {
-      p.log.error(
-        `\n❌ The value of ${picocolors.redBright("--project")} is required`,
-      );
-      return;
-    }
-
-    /** check valid project type */
-    if (!typia.is<StarterTemplate | undefined>(options.project)) {
-      p.log.error(
-        `\n❌ The value of ${picocolors.redBright("--project")} is invalid`,
-      );
-      return;
-    }
-
     p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
 
     await start({ template: options.project });
