@@ -104,7 +104,6 @@ describe("start subcommand", () => {
     // override output to avoid the process to exit
     program.exitOverride();
 
-    // Use try...catch to assert the error thrown by exitOverride
     expect(() => {
       program.parse(["node", "agentica", "start", "--project"]);
     }).toThrow();
