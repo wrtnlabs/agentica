@@ -5,9 +5,10 @@ import { Command, Option } from "commander";
 import * as picocolors from "picocolors";
 import typia from "typia";
 
-import { START_TEMPLATES, type StarterTemplate } from "./commands/start";
+import type { StarterTemplate } from "./commands/start";
 
 import { start } from "./commands";
+import { START_TEMPLATES } from "./commands/start";
 
 interface CliOptions {
   project?: StarterTemplate;
@@ -33,7 +34,7 @@ program
       "-p, --project",
       "The project type",
     )
-      .choices(START_TEMPLATES)
+      .choices(START_TEMPLATES),
   )
   .action(async (options: CliOptions) => {
     if ((options.project as any) === true) {
