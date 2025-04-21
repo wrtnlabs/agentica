@@ -1,3 +1,4 @@
+import type { Client } from "@modelcontextprotocol/sdk/client/index.d.ts";
 import type {
   IHttpConnection,
   IHttpLlmApplication,
@@ -6,9 +7,8 @@ import type {
   ILlmApplication,
   ILlmFunction,
   ILlmSchema,
+  IMcpLlmApplication,
 } from "@samchon/openapi";
-
-import type { IMcpLlmApplication } from "./mcp/IMcpLlmApplication";
 
 /**
  * Controller of the Agentica Agent.
@@ -29,7 +29,7 @@ import type { IMcpLlmApplication } from "./mcp/IMcpLlmApplication";
 export type IAgenticaController<Model extends ILlmSchema.Model> =
   | IAgenticaController.IHttp<Model>
   | IAgenticaController.IClass<Model>
-  | IAgenticaController.IMcp;
+  | IAgenticaController.IMcp<Model>;
 
 export namespace IAgenticaController {
   /**
@@ -122,7 +122,12 @@ export namespace IAgenticaController {
   /**
    * MCP Server controller.
    */
-  export interface IMcp extends IBase<"mcp", IMcpLlmApplication> { }
+  export interface IMcp<Model extends ILlmSchema.Model> extends IBase<"mcp", IMcpLlmApplication<Model>> {
+    /**
+     * MCP client for connection.
+     */
+    client: Client;
+  }
 
   interface IBase<Protocol, Application> {
     /**

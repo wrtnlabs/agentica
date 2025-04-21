@@ -7,7 +7,7 @@ import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
 import type { IMcpLlmFunction } from "../../structures/mcp/IMcpLlmFunction";
 
-import { assertMcpLlmApplication } from "../../functional/assertMcpLlmApplication";
+import { assertMcpController } from "../../functional/assertMcpController";
 
 import { compose, divide, getOperations, toClassOperations, toHttpOperations, toMcpOperations } from "./AgenticaOperationComposer";
 
@@ -74,7 +74,7 @@ async function createMockMcpController(name: string, functions: IMcpLlmFunction[
   return {
     name,
     protocol: "mcp",
-    application: await assertMcpLlmApplication({
+    application: await assertMcpController({
       client,
     }).then(v => ({
       ...v,
