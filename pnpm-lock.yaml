@@ -12,9 +12,6 @@ catalogs:
     openai:
       specifier: ^4.80.0
       version: 4.91.1
-    type-fest:
-      specifier: ^4.37.0
-      version: 4.39.1
   typescript:
     ts-patch:
       specifier: ^3.3.0
@@ -59,9 +56,6 @@ importers:
       eslint-plugin-format:
         specifier: ^1.0.1
         version: 1.0.1(eslint@9.24.0(jiti@2.4.2))
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       typedoc:
         specifier: ^0.27.7
         version: 0.27.9(typescript@5.8.3)
@@ -142,9 +136,6 @@ importers:
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.34.8
         version: 4.39.0
@@ -254,9 +245,6 @@ importers:
       react-mui-fileuploader:
         specifier: ^0.5.2
         version: 0.5.2(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@mui/icons-material@6.4.10(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@mui/material@6.4.10(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@19.0.0)(prop-types@15.8.1)
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.24.2
         version: 4.39.0
@@ -367,9 +355,6 @@ importers:
       openai:
         specifier: catalog:libs
         version: 4.91.1(zod@3.24.2)
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.34.8
         version: 4.39.0
@@ -419,9 +404,6 @@ importers:
       json-schema-to-ts:
         specifier: ^3.1.1
         version: 3.1.1
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.29.1
         version: 4.39.0
@@ -459,9 +441,6 @@ importers:
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.34.8
         version: 4.39.0

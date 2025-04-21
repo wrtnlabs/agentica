@@ -39,8 +39,8 @@
   ],
   "scripts": {
     "prepare": "ts-patch install",
-    "build": "rimraf lib && tsc && rollup -c",
-    "dev": "rimraf lib && tsc --watch",
+    "build": "rm -rf lib && tsc && rollup -c",
+    "dev": "rm -rf lib && tsc --watch",
     "prepack": "pnpm run build",
     "lint": "eslint .",
     "format": "eslint --fix ."
@@ -58,7 +58,6 @@
     "@rollup/plugin-typescript": "^12.1.2",
     "@samchon/shopping-api": "^0.17.0",
     "@types/node": "^22.13.4",
-    "rimraf": "^6.0.1",
     "rollup": "^4.34.8",
     "ts-patch": "catalog:typescript",
     "typedoc": "^0.27.7",
