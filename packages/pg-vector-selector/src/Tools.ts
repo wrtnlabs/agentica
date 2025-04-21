@@ -5,16 +5,29 @@ export const Tools = {
     type: "function",
     function: {
       name: "extract_search_query",
-      description: "extract search query from user message",
+      description: "extract search query from user message\n",
       parameters: {
         type: "object",
         properties: {
-          query: {
-            type: "string",
-            description: "the search query",
+          query_list: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                reason: {
+                  type: "string",
+                  description: "The reason of the query selection.\n\nJust write the reason why you've determined to select this query.",
+                },
+                query: {
+                  type: "string",
+                  description: "the search query",
+                },
+              },
+              required: ["reason", "query"],
+            },
           },
         },
-        required: ["query"],
+        required: ["query_list"],
       },
     },
   },
@@ -78,7 +91,7 @@ a specific function to call, the others would be eliminated.
       },
     },
   },
-} satisfies Record<
+} as const satisfies Record<
   string,
   NonNullable<
     Parameters<AgenticaContext<"chatgpt">["request"]>[1]["tools"]
