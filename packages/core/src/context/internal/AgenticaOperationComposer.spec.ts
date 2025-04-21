@@ -1,11 +1,10 @@
-import type { IHttpLlmFunction, ILlmFunction, IValidation } from "@samchon/openapi";
+import type { IChatGptSchema, IHttpLlmFunction, ILlmFunction, IMcpLlmFunction, IValidation } from "@samchon/openapi";
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
-import type { IMcpLlmFunction } from "../../structures/mcp/IMcpLlmFunction";
 
 import { assertMcpController } from "../../functional/assertMcpController";
 
@@ -70,17 +69,15 @@ function createMockClassController(name: string, functions: ILlmFunction<any>[])
   };
 }
 
-async function createMockMcpController(name: string, functions: IMcpLlmFunction[]): Promise<IAgenticaController.IMcp> {
-  return {
+async function createMockMcpController(name: string, functions: IMcpLlmFunction<"chatgpt">[]): Promise<IAgenticaController.IMcp<"chatgpt">> {
+  return assertMcpController({
+    model: "chatgpt",
     name,
-    protocol: "mcp",
-    application: await assertMcpController({
-      client,
-    }).then(v => ({
-      ...v,
-      functions,
-    })),
-  };
+    client,
+  }).then(v => ({
+    ...v,
+    functions,
+  }));
 }
 
 describe("a AgenticaOperationComposer", () => {
@@ -110,7 +107,17 @@ describe("a AgenticaOperationComposer", () => {
       const mockMcpController = await createMockMcpController("mcpController", [
         {
           name: "function4",
-          parameters: {},
+          parameters: {
+            type: "object",
+            properties: {},
+            additionalProperties: false,
+            required: [],
+            $defs: {},
+          } satisfies IChatGptSchema.IParameters,
+          validate: (data: unknown) => ({
+            success: true,
+            data,
+          }),
         },
       ]);
 
@@ -182,7 +189,17 @@ describe("a AgenticaOperationComposer", () => {
       const mockController = await createMockMcpController("mcpController", [
         {
           name: "function1",
-          parameters: {},
+          parameters: {
+            type: "object",
+            properties: {},
+            additionalProperties: false,
+            required: [],
+            $defs: {},
+          },
+          validate: (data: unknown) => ({
+            success: true,
+            data,
+          }),
         },
       ]);
 
@@ -245,7 +262,17 @@ describe("a AgenticaOperationComposer", () => {
       const mockController = await createMockMcpController("mcpController", [
         {
           name: "function1",
-          parameters: {},
+          parameters: {
+            type: "object",
+            properties: {},
+            additionalProperties: false,
+            required: [],
+            $defs: {},
+          },
+          validate: (data: unknown) => ({
+            success: true,
+            data,
+          }),
         },
       ]);
 
