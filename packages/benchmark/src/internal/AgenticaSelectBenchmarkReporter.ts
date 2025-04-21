@@ -55,6 +55,7 @@ function writeIndex<Model extends ILlmSchema.Model>(result: IAgenticaSelectBench
     `    - Trial: ${events.length}`,
     `    - Success: ${events.filter(e => e.type === "success").length}`,
     `    - Failure: ${events.filter(e => e.type === "failure").length}`,
+    `    - Error: ${events.filter(e => e.type === "error").length}`,
     `    - Average Time: ${MathUtil.round(average).toLocaleString()} ms`,
     `  - Token Usage`,
     `    - Total: ${aggregate.total.toLocaleString()}`,
@@ -106,6 +107,7 @@ function writeExperimentIndex<Model extends ILlmSchema.Model>(exp: IAgenticaSele
     `    - Trial: ${exp.events.length}`,
     `    - Success: ${exp.events.filter(e => e.type === "success").length}`,
     `    - Failure: ${exp.events.filter(e => e.type === "failure").length}`,
+    `    - Error: ${exp.events.filter(e => e.type === "error").length}`,
     `    - Average Time: ${MathUtil.round(
       exp.events
         .map(
@@ -162,7 +164,7 @@ function writeExperimentEvent<Model extends ILlmSchema.Model>(event: IAgenticaSe
     ...(event.type !== "error"
       ? [
           "  - Token Usage",
-          `    - Total: ${event.usage.aggregate.toLocaleString()}`,
+          `    - Total: ${event.usage.aggregate.total.toLocaleString()}`,
           `    - Prompt`,
           `      - Total: ${event.usage.aggregate.input.total.toLocaleString()}`,
           `      - Cached: ${event.usage.aggregate.input.cached.toLocaleString()}`,
