@@ -1,6 +1,6 @@
 import type { AgenticaEvent, IAgenticaController } from "@agentica/core";
 
-import { Agentica, assertMcpLlmApplication } from "@agentica/core";
+import { Agentica, assertMcpController } from "@agentica/core";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import OpenAI from "openai";
@@ -28,11 +28,11 @@ export async function test_base_mcp_work_describe(): Promise<void | false> {
     args: ["-y", "@wrtnlabs/calculator-mcp"],
   }));
 
-  const calculatorController: IAgenticaController<"chatgpt"> = {
-    protocol: "mcp",
+  const calculatorController: IAgenticaController<"chatgpt"> = await assertMcpController({
     name: "calculator",
-    application: await assertMcpLlmApplication({ client }),
-  };
+    model: "chatgpt",
+    client,
+  });
 
   // Agentica instance
   const agent: Agentica<"chatgpt"> = new Agentica({

@@ -13,7 +13,7 @@ catalogs:
     typescript: ~5.8.3
   typia:
     "@ryoppippi/unplugin-typia": ^2.1.4
-    "@samchon/openapi": ^4.0.0
+    "@samchon/openapi": ^4.2.0
     typia: ^9.0.1
   vite:
     vitest: ^3.0.9
