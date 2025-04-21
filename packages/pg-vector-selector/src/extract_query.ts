@@ -5,7 +5,6 @@ import type { FromSchema } from "json-schema-to-ts";
 import { factory, utils } from "@agentica/core";
 
 import { Tools } from "./Tools";
-import { reportStorage } from "./tracking";
 
 export async function extractQuery<SchemaModel extends ILlmSchema.Model>(ctx: AgenticaContext<SchemaModel>) {
   const completionStream = await ctx.request("select", {
