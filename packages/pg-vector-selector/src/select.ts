@@ -57,8 +57,10 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         content: `${ctx.config?.systemPrompt?.select?.(ctx.histories)
         ?? AgenticaSystemPrompt.SELECT}
           
-        When selecting functions, choose all the ones necessary to accomplish what the user wants to do.
-          `,
+        
+        When selecting functions, consider what the user can call from their perspective, and choose all the functions necessary to accomplish the task.
+        Select them in a logical sequence, taking into account the relationships between each function.
+        `,
       },
       ...emendMessages(prevFailures),
     ],
