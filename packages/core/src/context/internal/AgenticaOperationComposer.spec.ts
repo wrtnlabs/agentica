@@ -70,14 +70,18 @@ function createMockClassController(name: string, functions: ILlmFunction<any>[])
 }
 
 async function createMockMcpController(name: string, functions: IMcpLlmFunction<"chatgpt">[]): Promise<IAgenticaController.IMcp<"chatgpt">> {
-  return assertMcpController({
+  const controller = await assertMcpController({
     model: "chatgpt",
     name,
     client,
-  }).then(v => ({
-    ...v,
-    functions,
-  }));
+  });
+  return {
+    ...controller,
+    application: {
+      ...controller.application,
+      functions,
+    },
+  };
 }
 
 describe("a AgenticaOperationComposer", () => {
