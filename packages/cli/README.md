@@ -19,7 +19,7 @@ Agentica CLI Tool cloning boilerplate project.
 
 ## Introduction
 
-![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
+![agentica-conceptual-diagram](https://wrtnlabs.io/agentica/logo.png)
 
 ```typescript
 import { Agentica } from "@agentica/core";
