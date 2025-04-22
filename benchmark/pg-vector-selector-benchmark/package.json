@@ -21,7 +21,7 @@
   "dependencies": {
     "@agentica/benchmark": "workspace:^",
     "@agentica/core": "workspace:^",
-    "@agentica/pg-vector-selector": "workspace:^",
+    "@agentica/vector-selector": "workspace:^",
     "@samchon/shopping-api": "^0.17.0",
     "dotenv": "^16.4.7",
     "openai": "catalog:libs",
