@@ -22,7 +22,7 @@ export function compose<Model extends ILlmSchema.Model>(props: {
 }): AgenticaOperationCollection<Model> {
   const unique: boolean = (props.controllers.length === 1 || (() => {
     const names = props.controllers.map(
-      // eslint-disable-next-line ts/no-unsafe-return, ts/no-unsafe-call, ts/no-unsafe-member-access
+
       controllers => controllers.application.functions.map((func: { name: string }) => func.name),
     ).flat();
     return new Set(names).size === names.length;
@@ -133,20 +133,19 @@ export function toMcpOperations<Model extends ILlmSchema.Model>(props: {
   index: number;
   naming: (func: string, controllerIndex: number) => string;
 }): AgenticaOperation<Model>[] {
-  // eslint-disable-next-line ts/no-unsafe-call, ts/no-unsafe-member-access, ts/no-unsafe-return
   return props.controller.application.functions.map(func => ({
     protocol: "mcp",
     controller: props.controller,
-    // eslint-disable-next-line ts/no-unsafe-assignment
+
     function: func,
-    // eslint-disable-next-line ts/no-unsafe-argument, ts/no-unsafe-member-access
+
     name: props.naming(func.name, props.index),
     toJSON: () => ({
       protocol: "mcp",
       controller: props.controller.name,
-      // eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-member-access
+
       function: func.name,
-      // eslint-disable-next-line ts/no-unsafe-argument, ts/no-unsafe-member-access
+
       name: props.naming(func.name, props.index),
     }),
   }));

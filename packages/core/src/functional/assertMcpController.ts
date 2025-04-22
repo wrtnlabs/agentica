@@ -33,7 +33,6 @@ export async function assertMcpController<Model extends ILlmSchema.Model>(props:
   // get list of tools
   const { tools } = await props.client.request({ method: "tools/list" }, ListToolsResultSchema);
 
-  // eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-call, ts/no-unsafe-member-access
   const application: IMcpLlmApplication<Model> = McpLlm.application<Model>({
     model: props.model,
     tools: typia.assert<Array<IMcpTool>>(tools),
@@ -43,7 +42,7 @@ export async function assertMcpController<Model extends ILlmSchema.Model>(props:
     protocol: "mcp",
     name: props.name,
     client: props.client,
-    // eslint-disable-next-line ts/no-unsafe-assignment
+
     application,
   };
 }
