@@ -230,12 +230,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.3
         version: 4.3.4(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
-      eslint-plugin-react-hooks:
-        specifier: ^5.0.0
-        version: 5.2.0(eslint@9.24.0(jiti@2.4.2))
-      eslint-plugin-react-refresh:
-        specifier: ^0.4.13
-        version: 0.4.19(eslint@9.24.0(jiti@2.4.2))
       gh-pages:
         specifier: ^6.3.0
         version: 6.3.0
@@ -11250,6 +11244,7 @@ snapshots:
   eslint-plugin-react-refresh@0.4.19(eslint@9.24.0(jiti@2.4.2)):
     dependencies:
       eslint: 9.24.0(jiti@2.4.2)
+    optional: true
 
   eslint-plugin-react@7.37.5(eslint@9.24.0(jiti@2.4.2)):
     dependencies:
