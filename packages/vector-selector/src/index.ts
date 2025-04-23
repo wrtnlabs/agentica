@@ -34,25 +34,19 @@ export function BootAgenticaVectorSelector<SchemaModel extends ILlmSchema.Model>
     const queries = await extractQuery(ctx);
     const toolList = await Promise.all(
       queries.map(async query => searchTool(ctx, query)),
-    ).then(res =>
-      res.flatMap(output =>
-        output.map(v => ({
-          name: v.name,
-          description: v.description,
-        })),
-      ).map((v) => {
-        const op = ctx.operations.flat.get(v.name);
-        if (op === undefined || op.protocol !== "http") {
-          return v;
-        }
+    ).then(res => res.flat().map((v) => {
+      const op = ctx.operations.flat.get(v.name);
+      if (op === undefined || op.protocol !== "http") {
+        return v;
+      }
 
-        return {
-          ...v,
-          method: op.function.method,
-          path: op.function.path,
-          tags: op.function.tags,
-        };
-      }),
+      return {
+        ...v,
+        method: op.function.method,
+        path: op.function.path,
+        tags: op.function.tags,
+      };
+    }),
     ).then(arr => uniqBy(arr, v => v.name));
 
     if (toolList.length === 0) {
