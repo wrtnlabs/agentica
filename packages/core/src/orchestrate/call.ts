@@ -72,13 +72,13 @@ export async function call<Model extends ILlmSchema.Model>(
           type: "function",
           function: {
             name: s.name,
-            // eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-member-access
+
             description: s.function.description,
             parameters: (
               "separated" in s.function
-              // eslint-disable-next-line ts/no-unsafe-member-access
+
               && s.function.separated !== undefined
-                // eslint-disable-next-line ts/no-unsafe-member-access
+
                 ? (s.function.separated.llm
                   ?? ({
                     type: "object",
@@ -87,7 +87,7 @@ export async function call<Model extends ILlmSchema.Model>(
                     additionalProperties: false,
                     $defs: {},
                   } satisfies IChatGptSchema.IParameters))
-                // eslint-disable-next-line ts/no-unsafe-member-access
+
                 : s.function.parameters) as Record<string, any>,
           },
         }) as OpenAI.ChatCompletionTool,
@@ -444,9 +444,9 @@ async function executeMcpOperation<Model extends ILlmSchema.Model>(
   operationArguments: Record<string, unknown>,
 ): Promise<unknown> {
   return operation.controller.client.callTool({
-    // eslint-disable-next-line ts/no-unsafe-member-access
+
     method: operation.function.name,
-    // eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-member-access
+
     name: operation.function.name,
     arguments: operationArguments,
   }).then(v => v.content);
@@ -518,7 +518,7 @@ async function correct<Model extends ILlmSchema.Model>(
         type: "function",
         function: {
           name: call.operation.name,
-          // eslint-disable-next-line ts/no-unsafe-assignment, ts/no-unsafe-member-access
+
           description: call.operation.function.description,
           /**
            * @TODO fix it
@@ -526,9 +526,9 @@ async function correct<Model extends ILlmSchema.Model>(
            */
           parameters: (
             "separated" in call.operation.function
-            // eslint-disable-next-line ts/no-unsafe-member-access
+
             && call.operation.function.separated !== undefined
-            // eslint-disable-next-line ts/no-unsafe-member-access
+
               ? (call.operation.function.separated?.llm
                 ?? ({
                   $defs: {},
@@ -537,7 +537,7 @@ async function correct<Model extends ILlmSchema.Model>(
                   additionalProperties: false,
                   required: [],
                 } satisfies IChatGptSchema.IParameters))
-              // eslint-disable-next-line ts/no-unsafe-member-access
+
               : call.operation.function.parameters) as unknown as Record<string, unknown>,
         },
       },

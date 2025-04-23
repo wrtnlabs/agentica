@@ -5,7 +5,7 @@ import { factory, utils } from "@agentica/core";
 import { AgenticaDefaultPrompt } from "@agentica/core/src/constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "@agentica/core/src/constants/AgenticaSystemPrompt";
 
-import { Tools } from "./Tools";
+import { Tools } from "./tools";
 
 interface IFailure {
   id: string;

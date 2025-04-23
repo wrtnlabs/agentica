@@ -16,8 +16,8 @@
   "dependencies": {
     "@agentica/benchmark": "workspace:^",
     "@agentica/core": "workspace:^",
-    "@agentica/pg-vector-selector": "workspace:^",
     "@agentica/rpc": "workspace:^",
+    "@agentica/vector-selector": "workspace:^",
     "@modelcontextprotocol/sdk": "^1.9.0",
     "@nestia/e2e": "^6.0.1",
     "@samchon/openapi": "catalog:typia",

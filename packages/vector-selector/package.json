@@ -1,5 +1,5 @@
 {
-  "name": "@agentica/pg-vector-selector",
+  "name": "@agentica/vector-selector",
   "version": "0.20.0",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -22,12 +22,28 @@
     "swagger",
     "openapi"
   ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./strategy": "./src/strategy/index.ts"
+  },
   "main": "src/index.ts",
   "publishConfig": {
     "main": "lib/index.js",
     "module": "lib/index.mjs",
     "typings": "lib/index.d.ts",
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./lib/index.d.ts",
+        "require": "./lib/index.js",
+        "default": "./lib/index.mjs"
+      },
+      "./strategy": {
+        "types": "./lib/strategy/index.d.ts",
+        "require": "./lib/strategy/index.js",
+        "default": "./lib/strategy/index.mjs"
+      }
+    }
   },
   "files": [
     "LICENSE",

@@ -1,23 +1,26 @@
-# pg-vector-selector
+# vector-selector
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/pg-vector-selector/blob/master/LICENSE)
-[![npm version](https://img.shields.io/npm/v/pg-vector-selector.svg)](https://www.npmjs.com/package/pg-vector-selector)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/@wrtnlabs/vector-selector.svg)](https://www.npmjs.com/package/@wrtnlabs/vector-selector)
 
 A library that significantly accelerates AI function selection through vector embeddings.
 
 ## Overview
 
-`@agentica/pg-vector-selector` drastically improves function selection speed compared to traditional LLM-based methods. By leveraging vector embeddings and semantic similarity, it can identify the most appropriate functions for a given context multiple times faster than conventional approaches.
+`@agentica/vector-selector` drastically improves function selection speed compared to traditional LLM-based methods. By leveraging vector embeddings and semantic similarity, it can identify the most appropriate functions for a given context multiple times faster than conventional approaches.
 
 ```typescript
 import { Agentica } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
 import typia from "typia";
 
-// Initialize with connector-hive server
-const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
-  "https://your-connector-hive-server.com"
-);
+// initialize select plugin with postgres
+const selectorExecute = BootAgenticaVectorSelector({
+  strategy: configurePostgresStrategy<"chatgpt">({
+    host: props.connectorHiveUrl,
+  }),
+});
 
 const agent = new Agentica({
   model: "chatgpt",
@@ -49,11 +52,11 @@ await agent.conversate("I wanna buy MacBook Pro");
 ### Setup
 
 ```bash
-npm install @agentica/core @agentica/pg-vector-selector typia
+npm install @agentica/core @agentica/vector-selector typia
 npx typia setup
 ```
 
-To use pg-vector-selector, you need:
+To use vector-selector with postgreSQL, you need:
 
 1. A running [connector-hive](https://github.com/wrtnlabs/connector-hive) server
 2. `PostgreSQL` database connected to the `connector-hive` server
@@ -64,11 +67,14 @@ To use pg-vector-selector, you need:
 First, initialize the library with your connector-hive server:
 
 ```typescript
-import { AgenticaPgVectorSelector } from "pg-vector-selector";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
 
-const selectorExecute = AgenticaPgVectorSelector.boot<YourSchemaModel>(
-  "https://your-connector-hive-server.com"
-);
+const selectorExecute = BootAgenticaVectorSelector({
+  strategy: configurePostgresStrategy<"chatgpt">({
+    host: props.connectorHiveUrl,
+  }),
+});
 ```
 
 ### Just apply Selector and Start conversation

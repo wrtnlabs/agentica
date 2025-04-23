@@ -1,30 +1,29 @@
-import type { AgenticaContext } from "@agentica/core/src/context/AgenticaContext";
-import type { AgenticaOperation } from "@agentica/core/src/context/AgenticaOperation";
+import type { AgenticaContext, AgenticaOperation } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { IConnection } from "@wrtnlabs/connector-hive-api";
 import type { IApplicationConnectorRetrieval } from "@wrtnlabs/connector-hive-api/lib/structures/connector/IApplicationConnectorRetrieval";
 
 import { functional, HttpError } from "@wrtnlabs/connector-hive-api";
 
-import { getRetry, groupByArray } from "./utils";
+import type { IAgenticaVectorSelectorStrategy } from "..";
 
-export function useEmbeddedContext<SchemaModel extends ILlmSchema.Model>() {
-  const set = new Map<string, IApplicationConnectorRetrieval.IFilter>();
-  return [
-    (ctx: AgenticaContext<SchemaModel>) =>
-      set.has(JSON.stringify(ctx.operations.array)),
-    (
-      ctx: AgenticaContext<SchemaModel>,
-      filter: IApplicationConnectorRetrieval.IFilter,
-    ) => {
-      set.set(JSON.stringify(ctx.operations.array), filter);
-    },
-    (ctx: AgenticaContext<SchemaModel>) =>
-      set.get(JSON.stringify(ctx.operations.array)),
-  ] as const;
-}
+import { getRetry, groupByArray } from "../utils";
 
 const retry = getRetry(3);
+
+const filterMap = new Map<string, IApplicationConnectorRetrieval.IFilter>();
+function searchTool<SchemaModel extends ILlmSchema.Model>(connection: IConnection<object | undefined>): IAgenticaVectorSelectorStrategy<SchemaModel>["searchTool"] {
+  return async (ctx: AgenticaContext<SchemaModel>, query: string) => {
+    const filter = filterMap.get(JSON.stringify(ctx.operations.array));
+    return retry(async () =>
+      functional.connector_retrievals.createRetrievalRequest(connection, {
+        query,
+        limit: 10,
+        filter,
+      }),
+    );
+  };
+}
 
 function embedOperation(connection: IConnection<object | undefined>) {
   return async <SchemaModel extends ILlmSchema.Model>(
@@ -81,8 +80,9 @@ function embedOperation(connection: IConnection<object | undefined>) {
   };
 }
 
-export function embedContext(connection: IConnection<object | undefined>) {
-  return async <SchemaModel extends ILlmSchema.Model>(ctx: AgenticaContext<SchemaModel>, setEmbeddedContext: (ctx: AgenticaContext<SchemaModel>, filter: IApplicationConnectorRetrieval.IFilter) => void) => {
+function embedContext<SchemaModel extends ILlmSchema.Model>(connection: IConnection<object | undefined>): IAgenticaVectorSelectorStrategy<SchemaModel>["embedContext"] {
+  return async (props: { ctx: AgenticaContext<SchemaModel>; setEmbedded: () => void }) => {
+    const { ctx, setEmbedded } = props;
     const filter = await Promise.all(
       Array.from(ctx.operations.group.entries()).map(
         async ([key, value]: [
@@ -102,9 +102,16 @@ export function embedContext(connection: IConnection<object | undefined>) {
         },
       ),
     );
-
-    setEmbeddedContext(ctx, {
+    filterMap.set(JSON.stringify(ctx.operations.array), {
       applications: filter,
     });
+    setEmbedded();
+  };
+}
+
+export function configurePostgresStrategy<SchemaModel extends ILlmSchema.Model>(connection: IConnection<object | undefined>): IAgenticaVectorSelectorStrategy<SchemaModel> {
+  return {
+    searchTool: searchTool(connection),
+    embedContext: embedContext(connection),
   };
 }

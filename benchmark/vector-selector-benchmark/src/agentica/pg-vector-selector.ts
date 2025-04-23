@@ -2,7 +2,8 @@ import type { IAgenticaVendor } from "@agentica/core";
 import type { IHttpConnection } from "@samchon/openapi";
 
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
-import { BootAgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
 import ShoppingApi from "@samchon/shopping-api";
 
 export async function pgVectorSelectorAgentica(props: {
@@ -40,11 +41,12 @@ export async function pgVectorSelectorAgentica(props: {
     },
   );
 
-  const selectorExecute = BootAgenticaPgVectorSelector<"chatgpt">({
-    connectorHiveConnection: {
+  const selectorExecute = BootAgenticaVectorSelector({
+    strategy: configurePostgresStrategy<"chatgpt">({
       host: props.connectorHiveUrl,
-    },
+    }),
   });
+
   // CREATE AI AGENT
   const document = await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(async res => res.json() as Promise<unknown>);
   const agent = new Agentica({

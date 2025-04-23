@@ -6,7 +6,8 @@ import type { IHttpConnection, OpenApi } from "@samchon/openapi";
 
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
 import { Agentica } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
 import { HttpLlm } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import OpenAI from "openai";
@@ -50,13 +51,13 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
   );
 
   // CREATE AI AGENT
-  const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">({
-    connectorHiveConnection: {
+  const selectorExecute = BootAgenticaVectorSelector({
+    strategy: configurePostgresStrategy<"chatgpt">({
       host: `http://localhost:${TestGlobal.connectorHivePort}`,
-    },
+    }),
   });
   const newAgentica = async () =>
-    new Agentica({
+    new Agentica<"chatgpt">({
       model: "chatgpt",
       vendor: {
         model: "gpt-4o-mini",
@@ -88,7 +89,7 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
     await newAgentica().then(async v => v.conversate("What can you do?"));
   };
   await warming();
-  const agent: Agentica<"chatgpt"> = await newAgentica();
+  const agent = await newAgentica();
 
   // DO BENCHMARK
   const find = (
@@ -108,7 +109,7 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
     }
     return found;
   };
-  const benchmark: AgenticaCallBenchmark<"chatgpt"> = new AgenticaCallBenchmark(
+  const benchmark = new AgenticaCallBenchmark(
     {
       agent,
       config: {
