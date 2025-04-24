@@ -1,6 +1,6 @@
 # Agentica, AI Function Calling Framework
 
-https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488
+<!-- https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488 -->
 
 ![Logo](https://wrtnlabs.io/agentica/logo.png)
 
