@@ -149,7 +149,7 @@ Agentica enhances AI function calling by below strategies.
 - [Validation Feedback](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): correct AI's mistakes on arguments composition
 - [Selector Agent](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to reduce context
 
-Thanks to this strategy, AI function calling becomes easier, safer, and more accurate than ever. When developing an AI agent, development becomes clearer because you only need to prepare functions that match the agent you want to create, and adding or removing agent functions is also very simple.
+Thanks to these strategies, AI function calling becomes easier, safer, and more accurate than ever. When developing an AI agent, development becomes clearer because you only need to prepare functions that match the agent you want to create, and adding or removing agent functions is also very simple.
 
 Such function calling driven AI development method was invented in 2023 when function calling was first announced by OpenAI. However, function calling was difficult and unstable, so it was abandoned, and the inflexible workflow driven AI development method became popular instead.
 
