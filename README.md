@@ -1,6 +1,6 @@
 # Agentica
 
-https://github.com/user-attachments/assets/d417c38e-085d-43d3-9937-5d49434dc904
+https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
 [![npm version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
