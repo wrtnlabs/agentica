@@ -13,15 +13,15 @@
 
 Agentic AI framework specialized in AI Function Calling.
 
-Don't be afraid of AI agent development. Just list functions from three protocols below. This is the everything you should do for AI agent development.
+Don't be afraid of AI agent development. Just list functions from three protocols below. This is everything you should do for AI agent development.
 
 - TypeScript Class
 - Swagger/OpenAPI Document
 - MCP (Model Context Protocol) Server
 
-Want to make an e-commerce agent? Bring in e-commerce functions. Want to make a newsletter agent? Just get functions from a newspaper company. Just prepare any functions what yo need, then it becomes AI agent.
+Wanna make an e-commerce agent? Bring in e-commerce functions. Need a newsletter agent? Get API functions from the newspaper company. Just prepare any functions that you need, then it becomes an AI agent.
 
-You're a TypeScript developer? Then you're already an AI developer. You know how to do backend development? Then you're well-prepared AI developer. Anyone who can make function, they can make AI agent.
+Are you a TypeScript developer? Then you're already an AI developer. Familiar with backend development? You're already well-versed in AI development. Anyone who can make functions can make AI agents.
 
 ```typescript
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
@@ -88,29 +88,29 @@ $ npx agentica start <directory>
     ...
 ```
 
-You can create a new Agentica project using the above command.
+The setup wizard helps you create a new project tailored to your needs.
 
-In the CLI setup wizard, you can choose the type of project. If you don't choose Standalone Application but others, it will utilize the [WebSocket Protocol](https://wrtnlabs.io/agentica/docs/websocket/) for network interaction between server and client.
+For reference, when selecting a project type, any option other than "Standalone Application" will implement the [WebSocket Protocol](https://wrtnlabs.io/agentica/docs/websocket/) for client-server communication.
 
-For more details, check out the [Getting Started](https://wrtnlabs.io/agentica/docs/) guide.
+For comprehensive setup instructions, visit our [Getting Started](https://wrtnlabs.io/agentica/docs/) guide.
 
 ## 💻 Playground
 
-You can experience Agentia by [playground website](https://wrtnlabs.io/agentica/playground).
+Experience Agentica firsthand through our [interactive playground](https://wrtnlabs.io/agentica/playground) before installing.
 
-Feel how Agentica's function calling is strong by demonstration. And if you satisfy, install Agentica and start AI development. Agentica must be easier than any other AI frameworks.
+Our demonstrations showcase the power and simplicity of Agentica's function calling capabilities across different integration methods
 
 - [TypeScript Class](https://wrtnlabs.io/agentica/playground/bbs)
 - [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/swagger)
-- [Enterprise e-commerce agent](https://wrtnlabs.io/agentica/playground/shopping)
+- [Enterprise E-commerce Agent](https://wrtnlabs.io/agentica/playground/shopping)
 
 <!--
 @todo this section would be changed after making tutorial playground
 -->
 
-## 📚 Documentation
+## 📚 Documentation Resources
 
-Check out the document in the [website](https://wrtnlabs.io/agentica).
+Find comprehensive resources at our [official website](https://wrtnlabs.io/agentica).
 
 - [Home](https://wrtnlabs.io/agentica)
 - [Guide Documents](https://wrtnlabs.io/agentica/docs)
@@ -145,12 +145,19 @@ flowchart
 
 Agentica enhances AI function calling by below strategies.
 
-- [JSON schema conversion](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): specs are different across LLM vendors
-- [Validation Feedback](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): correct AI's mistakes on arguments composition
-- [Selector Agent](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to reduce context
+- [JSON schema conversion](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): Automatically handles specification differences between LLM vendor, ensuring seamless integration regardless of your chosen AI model.
+- [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): Dete,cts and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
+- [Selector Agent](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
 
-Thanks to these strategies, AI function calling becomes easier, safer, and more accurate than ever. When developing an AI agent, development becomes clearer because you only need to prepare functions that match the agent you want to create, and adding or removing agent functions is also very simple.
+Thanks to these innovations, Agentica makes AI function calling easier, safer, and more accurate than before. Development becomes more intuitive since you only need to prepare functions relevant to your specific use case, and scaling your agent's capabilities is as simple as adding or removing functions.
 
-Such function calling driven AI development method was invented in 2023 when function calling was first announced by OpenAI. However, function calling was difficult and unstable, so it was abandoned, and the inflexible workflow driven AI development method became popular instead.
+In 2023, when OpenAI announced function calling, many predicted that function calling-driven AI development would become the mainstream. However, in reality, due to the difficulty and instability of function calling, the trend in AI development became agent workflow. Agent workflow, which is inflexible and must be created for specific purposes, has conquered the AI ​​agent ecosystem.
 
-However, now that Agentica has made function calling easy, safe, scalable, and mass productive, it is time to start function calling driven AI development again.
+By the way, as Agentica has resolved the difficulty and unstability problems of function calling, the time has come to embrace function-driven AI development once again.
+
+| Type        | Workflow   | Vanilla Function Calling | Agentica Function Calling |
+| ----------- | ---------- | ------------------------ | ------------------------- |
+| Purpose     | Specific   | General                  | General                   |
+| Difficulty  | Difficult  | Difficult                | Easy                      |
+| Stabliity   | Stable     | Unstable                 | Stable                    |
+| Flexibility | Inflexible | Flesible                 | Flesible                  |
