@@ -19,7 +19,7 @@ Don't be afraid of AI agent development. Just list functions from three protocol
 - Swagger/OpenAPI Document
 - MCP (Model Context Protocol) Server
 
-Wanna make an e-commerce agent? Bring in e-commerce functions. Need a newsletter agent? Get API functions from the newspaper company. Just prepare any functions that you need, then it becomes an AI agent.
+Wanna make an e-commerce agent? Bring in e-commerce functions. Need a newspaper agent? Get API functions from the newspaper company. Just prepare any functions that you need, then it becomes an AI agent.
 
 Are you a TypeScript developer? Then you're already an AI developer. Familiar with backend development? You're already well-versed in AI development. Anyone who can make functions can make AI agents.
 
@@ -98,7 +98,7 @@ For comprehensive setup instructions, visit our [Getting Started](https://wrtnla
 
 Experience Agentica firsthand through our [interactive playground](https://wrtnlabs.io/agentica/playground) before installing.
 
-Our demonstrations showcase the power and simplicity of Agentica's function calling capabilities across different integration methods
+Our demonstrations showcase the power and simplicity of Agentica's function calling capabilities across different integration methods.
 
 - [TypeScript Class](https://wrtnlabs.io/agentica/playground/bbs)
 - [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/swagger)
@@ -143,21 +143,21 @@ flowchart
   end
 ```
 
-Agentica enhances AI function calling by below strategies.
+Agentica enhances AI function calling by the following strategies:
 
-- [JSON schema conversion](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): Automatically handles specification differences between LLM vendor, ensuring seamless integration regardless of your chosen AI model.
-- [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): Dete,cts and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
-- [Selector Agent](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
+- [**JSON schema conversion**](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): Automatically handles specification differences between LLM vendors, ensuring seamless integration regardless of your chosen AI model.
+- [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): Detects and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
+- [**Selector Agent**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): Filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
 
 Thanks to these innovations, Agentica makes AI function calling easier, safer, and more accurate than before. Development becomes more intuitive since you only need to prepare functions relevant to your specific use case, and scaling your agent's capabilities is as simple as adding or removing functions.
 
 In 2023, when OpenAI announced function calling, many predicted that function calling-driven AI development would become the mainstream. However, in reality, due to the difficulty and instability of function calling, the trend in AI development became agent workflow. Agent workflow, which is inflexible and must be created for specific purposes, has conquered the AI ​​agent ecosystem.
 
-By the way, as Agentica has resolved the difficulty and unstability problems of function calling, the time has come to embrace function-driven AI development once again.
+By the way, as Agentica has resolved the difficulty and instability problems of function calling, the time has come to embrace function-driven AI development once again.
 
-| Type        | Workflow   | Vanilla Function Calling | Agentica Function Calling |
-| ----------- | ---------- | ------------------------ | ------------------------- |
-| Purpose     | Specific   | General                  | General                   |
-| Difficulty  | Difficult  | Difficult                | Easy                      |
-| Stabliity   | Stable     | Unstable                 | Stable                    |
-| Flexibility | Inflexible | Flesible                 | Flesible                  |
+| Type        | Workflow      | Vanilla Function Calling | Agentica Function Calling |
+| ----------- | ------------- | ------------------------ | ------------------------- |
+| Purpose     | ❌ Specific   | 🟢 General               | 🟢 General                |
+| Difficulty  | ❌ Difficult  | ❌ Difficult             | 🟢 Easy                   |
+| Stability   | 🟢 Stable     | ❌ Unstable              | 🟢 Stable                 |
+| Flexibility | ❌ Inflexible | 🟢 Flexible              | 🟢 Flexible               |
