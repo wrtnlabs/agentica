@@ -1,18 +1,17 @@
 import type { IAgenticaVendor } from "@agentica/core";
 import type { IHttpConnection } from "@samchon/openapi";
+import type Database from "better-sqlite3";
 
 import { Agentica, AgenticaTokenUsage, assertHttpLlmApplication } from "@agentica/core";
 import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
 import { configureSqliteStrategy } from "@agentica/vector-selector/strategy";
 import ShoppingApi from "@samchon/shopping-api";
-import Database from "better-sqlite3";
 
 export async function sqliteVectorSelectorAgentica(props: {
   vendor: IAgenticaVendor;
   cohereApiKey: string;
   db: Database.Database;
 }) {
-
   // HANDLESHAKE WITH SHOPPING BACKEND
   const connection: IHttpConnection = {
     host: "https://shopping-be.wrtn.ai",
@@ -65,17 +64,17 @@ export async function sqliteVectorSelectorAgentica(props: {
   });
 
   const ctxForWarmming = agent.getContext({
-    "prompt": {
-      "role": "user",
-      "text": "warmming",
-      "type": "text",
-      "toJSON": () => ({
-        "role": "user",
-        "text": "warmming",
-        "type": "text",
-      })
+    prompt: {
+      role: "user",
+      text: "warmming",
+      type: "text",
+      toJSON: () => ({
+        role: "user",
+        text: "warmming",
+        type: "text",
+      }),
     },
-    "usage": AgenticaTokenUsage.zero(),
+    usage: AgenticaTokenUsage.zero(),
   });
   // warmming
   await selectorExecute(ctxForWarmming);
