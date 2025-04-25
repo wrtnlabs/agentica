@@ -2,12 +2,12 @@ import type { AgenticaContext, AgenticaOperation } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { Database } from "better-sqlite3";
 import type { Cohere } from "cohere-ai";
-
 import { CohereClientV2 } from "cohere-ai";
 
 import type { IAgenticaVectorSelectorStrategy } from "..";
 
 import { generateHashFromCtx, getRetry, groupByArray } from "../utils";
+import { load } from "sqlite-vec";
 
 export interface IAgenticaSqliteVectorSelectorStrategyProps {
   db: Database;
@@ -19,6 +19,8 @@ const hashMemo = new Map<object, string>();
 export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(props: IAgenticaSqliteVectorSelectorStrategyProps): IAgenticaVectorSelectorStrategy<SchemaModel> {
   // eslint-disable-next-line ts/no-unsafe-assignment
   const { db, cohereApiKey } = props;
+  load(db);
+
   const cohere = new CohereClientV2({
     token: cohereApiKey,
   });
@@ -45,7 +47,8 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
     if ((result.embeddings.float == null) || result.embeddings.float.length === 0) {
       throw new Error("no float embeddings returned");
     }
-    return result;
+    const vector = result.embeddings.float![0]!;
+    return vector;
   }
   // it's memoized to avoid generating the same hash for the same context
   // if you know react, it's like useMemo
@@ -67,14 +70,12 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
 
     const embedding = await retry(async () => embed(props.operation.function.description ?? name, "search_document"));
 
-    const vector = embedding.embeddings.float![0];
-
     // eslint-disable-next-line ts/no-unsafe-call
     db
       // eslint-disable-next-line ts/no-unsafe-member-access
-      .prepare("INSERT INTO _agentica_vector_selector_embeddings (hash, name, description, vector) VALUES (?, ?, ?, ?)")
+      .prepare("INSERT INTO _agentica_vector_selector_embeddings (hash, name, description, vector) VALUES (?, ?, ?, vec_f32(?))")
       // eslint-disable-next-line ts/no-unsafe-member-access
-      .run(props.hash, name, props.operation.function.description, vector);
+      .run(props.hash, name, props.operation.function.description, JSON.stringify(embedding));
   }
 
   async function embedContext(props: {
@@ -83,13 +84,18 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
   }): Promise<void> {
     const hash = getHash(props.ctx);
 
+    const prepared = db.prepare(`SELECT name FROM _agentica_vector_selector_embeddings WHERE hash = ?`).all(hash);
+    if(prepared.length > 0) {
+      props.setEmbedded();
+      return;
+    }
+
     await groupByArray(props.ctx.operations.array, 10).reduce(async (accPromise, cur) => {
       await accPromise;
       await Promise.all(cur.map(async v => embedOperation({ hash, operation: v })));
       return Promise.resolve();
     }, Promise.resolve());
-
-    return Promise.resolve();
+    props.setEmbedded();
   }
 
   async function searchTool(ctx: AgenticaContext<SchemaModel>, query: string): Promise<{
@@ -98,13 +104,18 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
   }[]> {
     const hash = getHash(ctx);
     const vector = await embed(query, "search_query");
-    // eslint-disable-next-line ts/no-unsafe-call
-    const result = await db
-      // eslint-disable-next-line ts/no-unsafe-member-access
-      .prepare("SELECT name, description FROM _agentica_vector_selector_embeddings WHERE hash = ? ORDER BY vector <-> ? LIMIT 10")
-      // eslint-disable-next-line ts/no-unsafe-member-access
-      .get(hash, vector) as Promise<{ name: string; description: string }[]>;
 
+    const result = db.prepare(`
+        SELECT name, description, vec_distance_L2(vector, ?) as distance
+        FROM _agentica_vector_selector_embeddings
+        WHERE hash = ?
+        ORDER BY distance
+        LIMIT 10
+    `).all(JSON.stringify(vector), hash) as {
+      name: string;
+      description: string;
+      distance: number;
+    }[];
     return result;
   }
 

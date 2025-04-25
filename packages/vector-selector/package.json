@@ -67,7 +67,8 @@
     "@noble/hashes": "^1.8.0",
     "@wrtnlabs/connector-hive-api": "^1.5.0",
     "better-sqlite3": "^11.9.1",
-    "cohere-ai": "^7.17.1"
+    "cohere-ai": "^7.17.1",
+    "sqlite-vec": "0.1.7-alpha.2"
   },
   "devDependencies": {
     "@agentica/core": "workspace:^",

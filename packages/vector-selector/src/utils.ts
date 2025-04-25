@@ -122,3 +122,26 @@ export function generateHashFromCtx<SchemaModel extends ILlmSchema.Model>(ctx: A
   const binary = String.fromCharCode(...hash);
   return btoa(binary);
 }
+
+/**
+ * Calculates the cosine similarity between two vectors.
+ *
+ * @param a - The first vector
+ * @param b - The second vector
+ * @returns The cosine similarity between the two vectors
+ */
+export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
+  if (a.length !== b.length) {
+    throw new Error("Vectors must have the same length");
+  }
+  
+  const [dot, normA, normB] = a.reduce<[number, number, number]>((acc, ai, i) => {
+    const bi = b[i]!;
+    return [
+      acc[0] + ai * bi,
+      acc[1] + ai * ai,
+      acc[2] + bi * bi,
+    ];
+  }, [0, 0, 0]);
+  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+}

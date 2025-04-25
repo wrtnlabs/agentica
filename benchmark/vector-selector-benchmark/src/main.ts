@@ -5,8 +5,10 @@ import process from "node:process";
 import { config } from "dotenv";
 import OpenAI from "openai";
 
-import { pgVectorSelectorAgentica, plainAgentica } from "./agentica";
+import { sqliteVectorSelectorAgentica } from "./agentica";
 import { runShoppingBenchmark } from "./runShoppingBenchmark";
+import Database from "better-sqlite3";
+
 
 config();
 
@@ -16,32 +18,38 @@ if (apiKey === undefined || apiKey.length === 0) {
 }
 
 async function main() {
-  const plain = await plainAgentica({
-    vendor: {
-      model: "gpt-4o-mini",
-      api: new OpenAI({ apiKey }),
-    },
-  });
-
-  const pgVectorSelector = await pgVectorSelectorAgentica({
-    vendor: {
-      model: "gpt-4o-mini",
-      api: new OpenAI({ apiKey }),
-    },
-    connectorHiveUrl: process.env.CONNECTOR_HIVE_URL!,
-  });
-
+  const db = new Database(":memory:");
   const reports = await Promise.all([
-    runShoppingBenchmark({ agent: plain })
-      .then(v => ({ result: v, name: "plain" })),
-
-    runShoppingBenchmark({ agent: pgVectorSelector })
-      .then(v => ({ result: v, name: "pgVectorSelector" })),
+    // runShoppingBenchmark({ agent: await plainAgentica({
+    //   vendor: {
+    //     model: "gpt-4o-mini",
+    //     api: new OpenAI({ apiKey }),
+    //   },
+    // }) })
+    //   .then(v => ({ result: v, name: "plain" })),
+    // runShoppingBenchmark({ agent: await pgVectorSelectorAgentica({
+    //   vendor: {
+    //     model: "gpt-4o-mini",
+    //     api: new OpenAI({ apiKey }),
+    //   },
+    //   connectorHiveUrl: process.env.CONNECTOR_HIVE_URL!,
+    // }) })
+    //   .then(v => ({ result: v, name: "pgVectorSelector" })),
+    runShoppingBenchmark({ agent: await sqliteVectorSelectorAgentica({
+      vendor: {
+        model: "gpt-4o-mini",
+        api: new OpenAI({ apiKey }),
+      },
+      cohereApiKey: process.env.COHERE_API_KEY!,
+      db,
+    }) })
+      .then(v => ({ result: v, name: "sqliteVectorSelector" })),
   ])
     .then(reportList => reportList.map(v =>
       ({ name: v.name, result: v.result.report() }),
     ));
 
+  db.close();
   await reports.reduce(async (awiater, docs) => {
     await awiater;
     const root: string = `./docs/benchmarks/call/${docs.name}`;

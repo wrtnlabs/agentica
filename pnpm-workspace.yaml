@@ -5,22 +5,18 @@ packages:
   - website
 catalogs:
   libs:
-    "@modelcontextprotocol/sdk": ^1.9.0
+    '@modelcontextprotocol/sdk': ^1.9.0
     openai: ^4.80.0
     type-fest: ^4.37.0
   typescript:
     ts-patch: ^3.3.0
     typescript: ~5.8.3
   typia:
-    "@ryoppippi/unplugin-typia": ^2.1.4
-    "@samchon/openapi": ^4.2.0
+    '@ryoppippi/unplugin-typia': ^2.1.4
+    '@samchon/openapi': ^4.2.0
     typia: ^9.0.1
   vite:
     vitest: ^3.0.9
-
 onlyBuiltDependencies:
-  - core-js
-  - esbuild
-  - sharp
-  - typia
-  - msw
+  - better-sqlite3
+  - sqlite3

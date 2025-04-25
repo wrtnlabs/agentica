@@ -52,6 +52,7 @@ export function BootAgenticaVectorSelector<SchemaModel extends ILlmSchema.Model>
     if (toolList.length === 0) {
       return [];
     }
+    console.log(JSON.stringify(toolList, null, 2));
 
     const prompts = await selectFunction({ ctx, toolList });
     return prompts;
