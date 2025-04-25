@@ -23,6 +23,8 @@ Wanna make an e-commerce agent? Bring in e-commerce functions. Need a newspaper 
 
 Are you a TypeScript developer? Then you're already an AI developer. Familiar with backend development? You're already well-versed in AI development. Anyone who can make functions can make AI agents.
 
+<!-- eslint-skip -->
+
 ```typescript
 import { Agentica, assertHttpLlmApplication } from "@agentica/core";
 import OpenAI from "openai";
