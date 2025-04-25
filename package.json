@@ -42,7 +42,7 @@
     "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
-    "release": "bumpp",
+    "release": "node deploy/sync_readme.js && bumpp --no-push",
     "lint": "pnpm --no-bail --aggregate-output /^lint:/",
     "lint:root": "eslint .",
     "lint:submodules": "pnpm --parallel -r --no-bail --aggregate-output /^lint/",
