@@ -90,7 +90,7 @@ const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
 
 ### Vector Store Setup
 
-<Tabs items={["PostgreSQL", "SQLite"]}>
+<Tabs items={["PostgreSQL", "SQLite", "Custom"]}>
   <Tabs.Tab>
     To use PostgreSQL with vector extension for enhanced performance, you'll need to set up both PostgreSQL and the connector-hive server:
 
@@ -204,6 +204,62 @@ const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
     });
     await selectorExecute(ctxForWarming);
     ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    You can implement your own vector selector strategy by implementing the `IAgenticaVectorSelectorStrategy` interface:
+
+    ```typescript copy
+    import { IAgenticaVectorSelectorStrategy } from "@agentica/vector-selector";
+    import type { AgenticaContext } from "@agentica/core";
+
+    class CustomVectorSelector implements IAgenticaVectorSelectorStrategy<"chatgpt"> {
+      async searchTool(
+        ctx: AgenticaContext<"chatgpt">,
+        query: string
+      ): Promise<{
+        name: string;
+        description: string | undefined;
+      }[]> {
+        // Implement your custom tool search logic here
+        // This should return a list of tools that match the query
+        return [];
+      }
+
+      async embedContext(props: {
+        ctx: AgenticaContext<"chatgpt">;
+        setEmbedded: () => void;
+      }): Promise<void> {
+        // Implement your custom context embedding logic here
+        // This is called when the context needs to be embedded into vector space
+      }
+    }
+
+    // Use your custom strategy
+    const selectorExecute = BootAgenticaVectorSelector({
+      strategy: new CustomVectorSelector(),
+    });
+
+    const agent = new Agentica({
+      // ... other configurations
+      config: {
+        executor: {
+          select: selectorExecute,
+        }
+      }
+    });
+    ```
+
+    The `IAgenticaVectorSelectorStrategy` interface requires two methods:
+
+    1. `searchTool`: Searches for tools based on a query string
+       - Takes a context and query string as input
+       - Returns a promise of tool list with name and description
+
+    2. `embedContext`: Embeds the context into vector space
+       - Takes context and a callback to mark context as embedded
+       - Returns a promise that resolves when embedding is complete
+
+    You can implement these methods to use any vector database or search engine of your choice.
   </Tabs.Tab>
 </Tabs>
 
