@@ -17,10 +17,10 @@ catalogs:
     typia: ^9.0.1
   vite:
     vitest: ^3.0.9
-
 onlyBuiltDependencies:
   - core-js
   - esbuild
   - sharp
   - typia
   - msw
+  - better-sqlite3

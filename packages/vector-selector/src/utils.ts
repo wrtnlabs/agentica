@@ -1,4 +1,9 @@
+import type { AgenticaContext } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
 import type { GreaterThan, Integer } from "type-fest";
+
+import { sha256 } from "@noble/hashes/sha2";
+import { utf8ToBytes } from "@noble/hashes/utils";
 
 /** type function to check if a number is greater than 0 */
 type GreaterThanZeroInteger<T extends number> = GreaterThan<Integer<T>, 0> extends true ? T : never;
@@ -102,4 +107,18 @@ export function uniqBy<T, K>(array: T[], selector: (item: T) => K): T[] {
     seen.add(key);
     return true;
   });
+}
+
+/**
+ * Generates a hash from an Agentica ctx.operations.array.
+ *
+ * @param ctx - The Agentica context to generate a hash from
+ * @returns A hash of the Agentica context
+ */
+export function generateHashFromCtx<SchemaModel extends ILlmSchema.Model>(ctx: AgenticaContext<SchemaModel>): string {
+  const target = JSON.stringify(ctx.operations.array);
+  const bytes = utf8ToBytes(target);
+  const hash = sha256(bytes);
+  const binary = String.fromCharCode(...hash);
+  return btoa(binary);
 }

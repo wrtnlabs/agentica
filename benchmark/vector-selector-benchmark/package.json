@@ -23,12 +23,15 @@
     "@agentica/core": "workspace:^",
     "@agentica/vector-selector": "workspace:^",
     "@samchon/shopping-api": "^0.17.0",
+    "better-sqlite3": "^11.9.1",
     "dotenv": "^16.4.7",
     "openai": "catalog:libs",
+    "sqlite-vec": "0.1.7-alpha.2",
     "typia": "catalog:typia"
   },
   "devDependencies": {
     "@samchon/openapi": "catalog:typia",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.10.5",
     "dotenv": "^16.4.7",
     "openai": "catalog:libs",
