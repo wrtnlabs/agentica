@@ -40,7 +40,7 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
     const result = await retry(async () => cohere.embed({
       texts: [text],
       inputType,
-      model: "embed-multilingual-v3.0",
+      model: "embed-multilingual-light-v3.0",
       embeddingTypes: ["float"],
     }));
 
@@ -69,7 +69,6 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
     const name = props.operation.function.name;
 
     const embedding = await retry(async () => embed(props.operation.function.description ?? name, "search_document"));
-
     // eslint-disable-next-line ts/no-unsafe-call
     db
       // eslint-disable-next-line ts/no-unsafe-member-access

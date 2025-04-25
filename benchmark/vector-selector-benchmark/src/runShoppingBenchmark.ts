@@ -31,7 +31,7 @@ export async function runShoppingBenchmark<Model extends ILlmSchema.Model>({ age
     {
       agent,
       config: {
-        repeat: 10,
+        repeat: 100,
       },
       scenarios: [
         {

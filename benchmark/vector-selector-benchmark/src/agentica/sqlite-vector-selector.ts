@@ -1,7 +1,7 @@
 import type { IAgenticaVendor } from "@agentica/core";
 import type { IHttpConnection } from "@samchon/openapi";
 
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { Agentica, AgenticaTokenUsage, assertHttpLlmApplication } from "@agentica/core";
 import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
 import { configureSqliteStrategy } from "@agentica/vector-selector/strategy";
 import ShoppingApi from "@samchon/shopping-api";
@@ -63,6 +63,22 @@ export async function sqliteVectorSelectorAgentica(props: {
       },
     },
   });
+
+  const ctxForWarmming = agent.getContext({
+    "prompt": {
+      "role": "user",
+      "text": "warmming",
+      "type": "text",
+      "toJSON": () => ({
+        "role": "user",
+        "text": "warmming",
+        "type": "text",
+      })
+    },
+    "usage": AgenticaTokenUsage.zero(),
+  });
+  // warmming
+  await selectorExecute(ctxForWarmming);
 
   return agent;
 }

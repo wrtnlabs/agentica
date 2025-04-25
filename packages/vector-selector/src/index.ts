@@ -46,13 +46,11 @@ export function BootAgenticaVectorSelector<SchemaModel extends ILlmSchema.Model>
         path: op.function.path,
         tags: op.function.tags,
       };
-    }),
-    ).then(arr => uniqBy(arr, v => v.name));
+    })).then(arr => uniqBy(arr, v => v.name));
 
     if (toolList.length === 0) {
       return [];
     }
-    console.log(JSON.stringify(toolList, null, 2));
 
     const prompts = await selectFunction({ ctx, toolList });
     return prompts;
