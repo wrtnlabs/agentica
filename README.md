@@ -147,7 +147,7 @@ flowchart
 
 Agentica enhances AI function calling by the following strategies:
 
-- [**Compiler Driven Development**](https://wrtnlabs.io/agentica/docs/core/concepts/compiler-driven-development): constructs function calling schema automatically by compiler skills without hand-writing.
+- [**Compiler Driven Development**](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development): constructs function calling schema automatically by compiler skills without hand-writing.
 - [**JSON Schema Conversion**](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): automatically handles specification differences between LLM vendors, ensuring seamless integration regardless of your chosen AI model.
 - [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): detects and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
 - [**Selector Agent**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
