@@ -12,3 +12,5 @@ mise.toml
 .idea
 
 .DS_Store
+
+*storybook.log
