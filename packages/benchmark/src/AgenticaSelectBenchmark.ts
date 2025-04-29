@@ -3,7 +3,6 @@ import type {
   AgenticaContext,
   AgenticaHistory,
   AgenticaOperationSelection,
-  AgenticaTextHistory,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
