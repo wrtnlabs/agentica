@@ -8,6 +8,7 @@ import type { AgenticaEventBase } from "./AgenticaEventBase";
 export interface AgenticaUserInputEvent extends AgenticaEventBase<"user_input"> {
   role: "user";
   contents: Array<ChatCompletionContentPart>;
+  join: () => Promise<Array<ChatCompletionContentPart>>;
   toJSON: () => IAgenticaEventJson.IUserInput;
   toHistory: () => AgenticaUserInputHistory;
 }

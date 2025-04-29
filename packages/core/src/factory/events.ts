@@ -43,6 +43,7 @@ export function createUserInputEvent(props: {
     type: "user_input",
     role: "user",
     contents: props.contents,
+    join: async () => props.contents,
     toJSON: () => ({
       type: "user_input",
       contents: props.contents,
