@@ -84,8 +84,13 @@ implements IAgenticaRpcService<Model> {
   /**
    * @inheritDoc
    */
-  public async conversate(content: string): Promise<void> {
-    await this.props.agent.conversate(content);
+  public async conversate(content: string | Parameters<typeof MicroAgentica.prototype.conversate>[0]): Promise<void> {
+    await this.props.agent.conversate(typeof content === "string"
+      ? {
+          type: "text",
+          text: content,
+        }
+      : content);
   }
 
   /**

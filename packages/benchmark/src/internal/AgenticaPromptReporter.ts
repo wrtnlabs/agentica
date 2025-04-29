@@ -12,11 +12,14 @@ export const AgenticaPromptReporter = {
 };
 
 function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): string {
-  // @TODO use switch statement
+  if (p.type === "user_input") {
+    return [`### User Input`, p.contents, ""].join("\n");
+  }
   if (p.type === "text") {
     return [`### Text (${p.role})`, p.text, ""].join("\n");
   }
-  else if (p.type === "select" || p.type === "cancel") {
+
+  if (p.type === "select" || p.type === "cancel") {
     return [
       `### ${p.type === "select" ? "Select" : "Cancel"}`,
       ...p.selections
@@ -36,7 +39,8 @@ function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): st
         }),
     ].join("\n");
   }
-  else if (p.type === "describe") {
+
+  if (p.type === "describe") {
     return [
       "### Describe",
       ...p.executes.map(e => `  - ${e.operation.name}`),
@@ -45,15 +49,21 @@ function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): st
       "",
     ].join("\n");
   }
-  return [
-    "### Execute",
-    `  - name: ${p.operation.name}`,
-    `  - controller: ${p.operation.controller.name}`,
-    `  - function: ${p.operation.function.name}`,
-    "",
-    "```json",
-    JSON.stringify(p.arguments, null, 2),
-    "```",
-    "",
-  ].join("\n");
+
+  if (p.type === "execute") {
+    return [
+      "### Execute",
+      `  - name: ${p.operation.name}`,
+      `  - controller: ${p.operation.controller.name}`,
+      `  - function: ${p.operation.function.name}`,
+      "",
+      "```json",
+      JSON.stringify(p.arguments, null, 2),
+      "```",
+      "",
+    ].join("\n");
+  }
+
+  p satisfies never;
+  throw new Error("Invalid history type");
 }

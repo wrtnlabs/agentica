@@ -108,13 +108,20 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * @param content The content to talk
    * @returns List of newly created histories
    */
-  public async conversate(content: ChatCompletionContentPart | Array<ChatCompletionContentPart>): Promise<MicroAgenticaHistory<Model>[]> {
+  public async conversate(content: string | ChatCompletionContentPart | Array<ChatCompletionContentPart>): Promise<MicroAgenticaHistory<Model>[]> {
     const talk = createUserInputHistory({
-      contents: Array.isArray(content) ? content : [content],
+      contents: Array.isArray(content)
+        ? content
+        : typeof content === "string"
+          ? [{
+              type: "text",
+              text: content,
+            }]
+          : [content],
     });
     this.dispatch(
       createUserInputEvent({
-        contents: Array.isArray(content) ? content : [content],
+        contents: talk.contents,
       }),
     ).catch(() => {});
 
