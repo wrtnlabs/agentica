@@ -3,10 +3,8 @@ import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 
-export interface AgenticaTextEvent<
-  Role extends "assistant" | "user" = "assistant" | "user",
-> extends AgenticaEventBase<"text"> {
-  role: Role;
+export interface AgenticaTextEvent extends AgenticaEventBase<"text"> {
+  role: "assistant";
   stream: AsyncGenerator<string, undefined, undefined>;
   join: () => Promise<string>;
   toJSON: () => IAgenticaEventJson.IText;

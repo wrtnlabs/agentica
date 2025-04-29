@@ -1,3 +1,5 @@
+import type { ChatCompletionContentPart } from "openai/resources/chat/completions/completions";
+
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
 
@@ -18,12 +20,24 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
  * @author Samchon
  */
 export type IAgenticaHistoryJson =
+  | IAgenticaHistoryJson.IUserInput
   | IAgenticaHistoryJson.IText
   | IAgenticaHistoryJson.ISelect
   | IAgenticaHistoryJson.ICancel
   | IAgenticaHistoryJson.IExecute
   | IAgenticaHistoryJson.IDescribe;
 export namespace IAgenticaHistoryJson {
+  /**
+   * User input prompt.
+   *
+   * User input prompt about the user's input.
+   */
+  export interface IUserInput extends IBase<"user_input"> {
+    /**
+     * User input.
+     */
+    contents: Array<ChatCompletionContentPart>;
+  }
   /**
    * Select prompt.
    *
@@ -107,13 +121,11 @@ export namespace IAgenticaHistoryJson {
   /**
    * Text prompt.
    */
-  export interface IText<
-    Role extends "assistant" | "user" = "assistant" | "user",
-  > extends IBase<"text"> {
+  export interface IText extends IBase<"text"> {
     /**
      * Role of the orator.
      */
-    role: Role;
+    role: "assistant";
 
     /**
      * The text content.

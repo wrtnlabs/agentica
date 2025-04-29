@@ -1,5 +1,6 @@
 import type { ILlmSchema, IValidation } from "@samchon/openapi";
 import type OpenAI from "openai";
+import type { ChatCompletionContentPart } from "openai/resources";
 
 import { v4 } from "uuid";
 
@@ -15,11 +16,12 @@ import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "../events/AgenticaResponseEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+import type { AgenticaUserInputEvent } from "../events/AgenticaUserInputEvent";
 import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { createExecuteHistory, createSelectHistory } from "./histories";
+import { createExecuteHistory, createSelectHistory, createUserInputHistory } from "./histories";
 
 /* -----------------------------------------------------------
   FUNCTION SELECTS
@@ -34,6 +36,22 @@ export function createInitializeEvent(): AgenticaInitializeEvent {
   };
 }
 
+export function createUserInputEvent(props: {
+  contents: Array<ChatCompletionContentPart>;
+}): AgenticaUserInputEvent {
+  return {
+    type: "user_input",
+    role: "user",
+    contents: props.contents,
+    toJSON: () => ({
+      type: "user_input",
+      contents: props.contents,
+    }),
+    toHistory: () => createUserInputHistory({
+      contents: props.contents,
+    }),
+  };
+}
 export function createSelectEvent<Model extends ILlmSchema.Model>(props: {
   selection: AgenticaOperationSelection<Model>;
 }): AgenticaSelectEvent<Model> {
@@ -134,31 +152,30 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
 /* -----------------------------------------------------------
   TEXT STEAMING
 ----------------------------------------------------------- */
-export function createTextEvent<Role extends "user" | "assistant">(props: {
-  role: Role;
+export function createTextEvent(props: {
   stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
-}): AgenticaTextEvent<Role> {
+}): AgenticaTextEvent {
   return {
     type: "text",
-    role: props.role,
+    role: "assistant",
     stream: props.stream,
     join: props.join,
     toJSON: () => ({
       type: "text",
-      role: props.role,
+      role: "assistant",
       done: props.done(),
       text: props.get(),
     }),
     toHistory: () => ({
       type: "text",
-      role: props.role,
+      role: "assistant",
       text: props.get(),
       toJSON: () => ({
         type: "text",
-        role: props.role,
+        role: "assistant",
         text: props.get(),
       }),
     }),

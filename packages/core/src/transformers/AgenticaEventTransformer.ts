@@ -175,7 +175,6 @@ function transformText(props: {
   event: IAgenticaEventJson.IText;
 }): AgenticaTextEvent {
   return createTextEvent({
-    role: props.event.role,
     stream: toAsyncGenerator(props.event.text),
     done: () => true,
     get: () => props.event.text,

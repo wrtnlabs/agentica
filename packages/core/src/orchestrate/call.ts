@@ -54,7 +54,7 @@ export async function call<Model extends ILlmSchema.Model>(
       // USER INPUT
       {
         role: "user",
-        content: ctx.prompt.text,
+        content: ctx.prompt.contents,
       },
       // SYSTEM PROMPT
       ...(ctx.config?.systemPrompt?.execute === null
@@ -181,13 +181,11 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextHistory = createTextHistory({
-          role: "assistant",
-          text: choice.message.content!,
-        });
+        const value: AgenticaTextHistory = createTextHistory(
+          { text: choice.message.content! },
+        );
         ctx.dispatch(
           createTextEvent({
-            role: "assistant",
             get: () => value.text,
             done: () => true,
             stream: toAsyncGenerator(value.text),
@@ -473,7 +471,7 @@ async function correct<Model extends ILlmSchema.Model>(
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.text,
+          content: ctx.prompt.contents,
         },
         // TYPE CORRECTION
         ...(ctx.config?.systemPrompt?.execute === null

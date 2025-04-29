@@ -1,4 +1,5 @@
 import type OpenAI from "openai";
+import type { ChatCompletionContentPart } from "openai/resources";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 
@@ -37,6 +38,13 @@ export namespace IAgenticaEventJson {
     describe: IDescribe;
     text: IText;
     request: IRequest;
+  }
+
+  /**
+   * Event of user input.
+   */
+  export interface IUserInput extends IBase<"user_input"> {
+    contents: Array<ChatCompletionContentPart>;
   }
 
   /**
@@ -140,7 +148,7 @@ export namespace IAgenticaEventJson {
     /**
      * Role of the orator.
      */
-    role: "assistant" | "user";
+    role: "assistant";
 
     /**
      * Conversation text.

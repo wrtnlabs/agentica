@@ -9,6 +9,7 @@ import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
 import type { AgenticaSelectEvent } from "./AgenticaSelectEvent";
 import type { AgenticaTextEvent } from "./AgenticaTextEvent";
+import type { AgenticaUserInputEvent } from "./AgenticaUserInputEvent";
 import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
 
 /**
@@ -31,7 +32,8 @@ export type AgenticaEvent<Model extends ILlmSchema.Model> =
   | AgenticaResponseEvent
   | AgenticaSelectEvent<Model>
   | AgenticaTextEvent
-  | AgenticaValidateEvent<Model>;
+  | AgenticaValidateEvent<Model>
+  | AgenticaUserInputEvent;
 export namespace AgenticaEvent {
   export type Type = AgenticaEvent<any>["type"];
   export interface Mapper<Model extends ILlmSchema.Model> {
@@ -45,6 +47,7 @@ export namespace AgenticaEvent {
     select: AgenticaSelectEvent<Model>;
     text: AgenticaTextEvent;
     validate: AgenticaValidateEvent<Model>;
+    user_input: AgenticaUserInputEvent;
   }
   export type Source =
     | "initialize"
