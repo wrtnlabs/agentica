@@ -126,7 +126,7 @@ export interface IAgenticaExecutor<Model extends ILlmSchema.Model> {
    * to the user as markdown content.
    *
    * If you configure this property as `false` or `null`, the describer
-   * agent never be used.
+   * agent will never be used.
    *
    * @param ctx Context of the agent
    * @param executes List of function calling results
