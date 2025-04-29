@@ -189,10 +189,8 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         selected,
         usage,
         assistantPrompts: histories
-          .filter(p => p.type === "text")
-          .filter(
-            (p): p is AgenticaTextHistory => p.role === "assistant",
-          ),
+          // Only the assistant is allowed to emit text events.
+          .filter(p => p.type === "text"),
         started_at,
         completed_at: new Date(),
       } satisfies

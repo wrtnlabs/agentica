@@ -1,4 +1,5 @@
 import type { Agentica, AgenticaDescribeEvent, AgenticaHistory, AgenticaOperationSelection, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
+import type { AgenticaUserInputEvent } from "@agentica/core/src/events/AgenticaUserInputEvent";
 import type {
   Theme,
 } from "@mui/material";
@@ -62,22 +63,21 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // EVENT INTERACTIONS
   // ----
   // EVENT LISTENERS
+  const handleUserInput = async (event: AgenticaUserInputEvent) => {
+    await event.join(); // @todo Jaxtyn: streaming
+    setHistories(prev => [...prev, event.toHistory()]);
+  };
   const handleText = async (event: AgenticaTextEvent) => {
     await event.join(); // @todo Jaxtyn: streaming
-    histories.push(event.toHistory());
-    setHistories(histories);
+    setHistories(prev => [...prev, event.toHistory()]);
   };
   const handleDescribe = async (event: AgenticaDescribeEvent<Model>) => {
     await event.join(); // @todo Jaxtyn: streaming
-    histories.push(event.toHistory());
-    setHistories(histories);
+    setHistories(prev => [...prev, event.toHistory()]);
   };
   const handleSelect = (evevnt: AgenticaSelectEvent<Model>) => {
-    histories.push(evevnt.toHistory());
-    setHistories(histories);
-
-    selections.push(evevnt.selection);
-    setSelections(selections);
+    setHistories(prev => [...prev, evevnt.toHistory()]);
+    setSelections(prev => [...prev, evevnt.selection]);
   };
   const handleValidate = (event: AgenticaValidateEvent<Model>) => {
     console.error(event);
@@ -89,12 +89,14 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
       inputRef.current.select();
     }
     agent.on("text", handleText);
+    agent.on("user_input", handleUserInput);
     agent.on("describe", handleDescribe);
     agent.on("select", handleSelect);
     agent.on("validate", handleValidate);
     setTokenUsage(agent.getTokenUsage());
     return () => {
       agent.off("text", handleText);
+      agent.off("user_input", handleUserInput);
       agent.off("describe", handleDescribe);
       agent.off("select", handleSelect);
       agent.off("validate", handleValidate);
