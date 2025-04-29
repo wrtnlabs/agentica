@@ -131,7 +131,9 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       this.operations_.array,
     ) as MicroAgenticaHistory<Model>[];
     const executes: AgenticaExecuteHistory<Model>[] = histories.filter(p => p.type === "execute");
-    if (executes.length) {
+    if (executes.length
+      && ctx.config?.executor?.describe !== null
+      && ctx.config?.executor?.describe !== false) {
       histories.push(...await describe(ctx, executes));
     }
 
