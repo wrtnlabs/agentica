@@ -24,7 +24,7 @@ export async function extractQuery<SchemaModel extends ILlmSchema.Model>(ctx: Ag
         .flat(),
       {
         role: "user",
-        content: ctx.prompt.text,
+        content: ctx.prompt.contents,
       },
     ],
     tool_choice: "required",

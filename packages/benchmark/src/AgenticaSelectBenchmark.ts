@@ -154,10 +154,11 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
       const context = this.agent_.getContext({
-        // @todo core has to export `AgenticaPromptFactory`
-        prompt: factory.createTextHistory({
-          role: "user",
-          text: scenario.text,
+        prompt: factory.createUserInputHistory({
+          contents: [{
+            type: "text",
+            text: scenario.text,
+          }],
         }),
         usage,
       });
@@ -190,7 +191,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         assistantPrompts: histories
           .filter(p => p.type === "text")
           .filter(
-            (p): p is AgenticaTextHistory<"assistant"> => p.role === "assistant",
+            (p): p is AgenticaTextHistory => p.role === "assistant",
           ),
         started_at,
         completed_at: new Date(),

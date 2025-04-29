@@ -50,7 +50,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
       ...ctx.histories.flatMap(factory.decodeHistory<SchemaModel>),
       {
         role: "user",
-        content: ctx.prompt.text,
+        content: ctx.prompt.contents,
       },
       {
         role: "system",
@@ -82,7 +82,9 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   if (toolCalls.length === 0) {
     return selectCompletion.choices.flatMap((v) => {
       if (v.message.content != null && v.message.content !== "") {
-        return [factory.createTextHistory({ role: "assistant", text: v.message.content })];
+        return [
+          factory.createTextHistory({ text: v.message.content }),
+        ];
       }
       return [];
     });
