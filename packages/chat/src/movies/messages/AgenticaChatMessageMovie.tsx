@@ -9,7 +9,6 @@ import { AgenticaChatUserInput } from "./AgenticaChatUserInput";
 export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
   prompt,
 }: AgenticaChatMessageMovie.IProps<Model>) {
-  console.log(prompt);
   if (prompt.type === "text") {
     return <AgenticaChatTextMessageMovie prompt={prompt} />;
   }
