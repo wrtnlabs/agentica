@@ -10,5 +10,8 @@ const workspaceConfig = yaml.load(readFileSync("pnpm-workspace.yaml", "utf8")) a
 export default defineConfig({
   preid: "dev",
   recursive: true,
-  files: workspaceConfig.packages.map((pack) => `${pack}/README.md`),
+  files: [
+    ...workspaceConfig.packages.map((pack) => `${pack}/README.md`),
+    "**/package.json",
+  ]
 });
