@@ -209,11 +209,13 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       return c.envList;
     })));
 
-    const isConfirm = await p.confirm({
-      message: `Do you want to enter environment variables? (Number of environment variables to enter: ${envList.length})
+    const isConfirm = envList.length === 0
+      ? false
+      : await p.confirm({
+        message: `Do you want to enter environment variables? (Number of environment variables to enter: ${envList.length})
         ${picocolors.cyan("If you press <ctrl+c>, you can skip this step.")}`,
-      initialValue: false,
-    });
+        initialValue: false,
+      });
 
     const envInfos: EnvInfo[] = [];
 
