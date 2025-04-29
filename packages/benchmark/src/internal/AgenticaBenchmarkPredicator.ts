@@ -5,12 +5,13 @@
  * @author Wrtn Technologies
  */
 
-import type { Agentica, AgenticaOperation, AgenticaPrompt } from "@agentica/core";
+import type { Agentica, AgenticaHistory, AgenticaOperation } from "@agentica/core";
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
 import typia from "typia";
+
+import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
 export const AgenticaBenchmarkPredicator = {
   isNext,
@@ -50,8 +51,8 @@ interface IConsentProps {
 }
 
 async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): Promise<string | null> {
-  const last: AgenticaPrompt<Model> | undefined = agent
-    .getPromptHistories()
+  const last: AgenticaHistory<Model> | undefined = agent
+    .getHistories()
     .at(-1);
 
   /**

@@ -1,3 +1,7 @@
+import type { Agentica } from "@agentica/core";
+import type { ILlmSchema } from "@samchon/openapi";
+import type { tags } from "typia";
+
 /**
  * @module
  * This file contains the implementation of the AgenticaCallBenchmark class.
@@ -7,9 +11,6 @@
 import { AgenticaTokenUsage } from "@agentica/core";
 import { Semaphore } from "tstl";
 
-import type { Agentica } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
-import type { tags } from "typia";
 import type { IAgenticaCallBenchmarkEvent } from "./structures/IAgenticaCallBenchmarkEvent";
 import type { IAgenticaCallBenchmarkResult } from "./structures/IAgenticaCallBenchmarkResult";
 import type { IAgenticaCallBenchmarkScenario } from "./structures/IAgenticaCallBenchmarkScenario";
@@ -151,7 +152,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       AgenticaBenchmarkPredicator.success({
         expected: scenario.expected,
         operations: agent
-          .getPromptHistories()
+          .getHistories()
           .filter(p => p.type === "execute")
           .map(p => p.operation),
         strict: false,
@@ -160,7 +161,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       const select = AgenticaBenchmarkPredicator.success({
         expected: scenario.expected,
         operations: agent
-          .getPromptHistories()
+          .getHistories()
           .filter(p => p.type === "select")
           .map(p => p.selections)
           .flat()
@@ -173,7 +174,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         scenario,
         select,
         call,
-        prompts: agent.getPromptHistories(),
+        prompts: agent.getHistories(),
         usage: agent.getTokenUsage(),
         started_at,
         completed_at: new Date(),
@@ -204,7 +205,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
       return {
         type: "error",
         scenario,
-        prompts: agent.getPromptHistories(),
+        prompts: agent.getHistories(),
         usage: agent.getTokenUsage(),
         error,
         started_at,

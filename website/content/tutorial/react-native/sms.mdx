@@ -1,0 +1,221 @@
+---
+title: Agentica > Tutorial > React Native > SMS
+---
+import { YoutubeRenderer } from "../../../components/YoutubeRenderer";
+
+## Introduction
+
+This tutorial explains how to create an Agent that sends SMS messages using Agentica in React Native.
+
+<br/>
+<YoutubeRenderer src="https://www.youtube.com/embed/QIDYNSXA6Hc" type="shorts"/>
+
+## Prerequisites
+- Node.js (>=18)
+- iOS/Android development environment setup (Simulator)
+  - JDK Version (= 17)
+
+## Project Setup
+
+First, create a React Native project. We'll use the Agentica CLI to get started.
+
+```bash
+npx agentica@latest start
+```
+
+During the project creation process, you'll need to configure the following:
+
+- Project name
+- Package Manager selection (npm, yarn, or pnpm)
+- Project Type: Select React Native
+- OpenAI API key setup
+
+
+## Generated Code Overview
+
+The generated code is as follows:
+
+### App.tsx
+
+`App.tsx` is the main file containing Agentica configuration.
+
+### shim.ts
+
+The `shim.ts` file is a polyfill file required for using OpenAI and Agentica. It must always be imported first.
+
+### controller/sms.ts
+```tsx
+import {IAgenticaController} from '@agentica/core';
+import typia from 'typia';
+import * as SMS from 'expo-sms';
+
+export const SMSController: IAgenticaController<'chatgpt'> = {
+  protocol: 'class',
+  name: 'sms',
+  execute: async props =>
+    (WRAPPED_SMS as any)[props.function.name](props.arguments),
+  application: typia.llm.application<typeof WRAPPED_SMS, 'chatgpt'>(),
+};
+
+namespace WRAPPED_SMS {
+  interface WrappedSendSMSAsyncProps {
+    address: string | string[];
+    message: string;
+    options?: SMS.SMSOptions;
+  }
+
+  /**
+   * Opens the default UI/app for sending SMS messages with prefilled addresses and message.
+   *
+   * @param addresses An array of addresses (phone numbers) or single address passed as strings. Those
+   * would appear as recipients of the prepared message.
+   * @param message Message to be sent.
+   * @param options A `SMSOptions` object defining additional SMS configuration options.
+   *
+   * @return Returns a Promise that fulfills with the SMS action is invoked by the user, with corresponding result:
+   * - If the user cancelled the SMS sending process: `{ result: 'cancelled' }`.
+   * - If the user has sent/scheduled message for sending: `{ result: 'sent' }`.
+   * - If the status of the SMS message cannot be determined: `{ result: 'unknown' }`.
+   *
+   * Android does not provide information about the status of the SMS message, so on Android devices
+   * the Promise will always resolve with `{ result: 'unknown' }`.
+   *
+   * > Note: The only feedback collected by this module is whether any message has been sent. That
+   * means we do not check actual content of message nor recipients list.
+   *
+   * @example
+   * ```ts
+   * const { result } = await SMS.sendSMSAsync({
+   *   addresses: ['0123456789', '9876543210'],
+   *   message: 'My sample HelloWorld message',
+   *   options: {
+   *     attachments: {
+   *       uri: 'path/myfile.png',
+   *       mimeType: 'image/png',
+   *       filename: 'myfile.png',
+   *     },
+   *   }
+   * });
+   * ```
+   */
+  export function wrappedSendSMSAsync(props: WrappedSendSMSAsyncProps) {
+    return SMS.sendSMSAsync(props.address, props.message, props.options);
+  }
+}
+```
+- Provides SMS message sending functionality
+- Implemented using the `expo-sms` package
+- Supports sending messages to single or multiple recipients
+
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Send a text message to my friend about the weather. recipient: 01012345678"
+
+The agent will process your query by sending a text message to your friend.
+
+
+
+## Controller Development Guide
+
+With Agentica, you can easily add any functionality you can think of! (Even if it's only available in Native). To add your own functionality to Agentica, follow these steps:
+
+1. First, define the function for the functionality you want to implement.
+When writing functions, they must follow this format:
+
+  - Functions must have exactly one parameter
+  - The parameter must be an Object type
+  - Detailed JS Doc must be written. This JS Doc is used by the AI to select and execute functions
+  - Function parameters can only use basic JSON types (Native Classes like Date, Error are not supported)
+  - Using [`typia.tag`](https://typia.io/docs/validators/tags/) to structure Parameter Types can provide more detailed information to the LLM
+
+Here's an example code. You can include any code that can run in a React Native environment.
+
+```tsx
+/**
+ * A basic calculator that performs addition and subtraction operations.
+ */
+namespace Calculator {
+  /**
+   * Parameters for addition operation
+   */
+  interface AddProps {
+    /**
+     * First number to add
+     */
+    a: number;
+    /**
+     * Second number to add
+     */
+    b: number;
+  }
+
+  /**
+   * Parameters for subtraction operation
+   */
+  interface SubProps {
+    /**
+     * Number to subtract from
+     */
+    a: number;
+    /**
+     * Number to subtract
+     */
+    b: number;
+  }
+
+  /**
+   * Adds two numbers together.
+   * @returns The sum of two numbers
+   */
+  export function add(props: AddProps): number {
+    return props.a + props.b;
+  }
+
+  /**
+   * Subtracts the second number from the first number.
+   * @returns The result of subtracting the second number from the first number
+   */
+  export function sub(props: SubProps): number {
+    return props.a - props.b;
+  }
+}
+```
+
+2. You need to declare the Controller to apply it to Agentica.
+
+```tsx
+export const CalculatorController: IAgenticaController<'chatgpt'> = {
+  protocol: 'class',
+  name: 'calculator',
+  execute: async props =>
+    (Calculator as any)[props.function.name](props.arguments),
+  application: typia.llm.application<typeof Calculator, 'chatgpt'>(),
+};
+```
+
+3. Finally, go to App.tsx and apply your created Controller. That's it!
+
+```tsx
+new MicroAgentica({
+  model: 'chatgpt',
+  vendor: {
+    /**
+     * @warning
+     * This template is a proof-of-concept template created to demonstrate whether Agentica can call native features.
+     * To use this in a production environment, architectural modifications are required to properly secure the OpenAI Key.
+     */
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    }),
+    model: 'gpt-4o',
+  },
+  controllers: [CalculatorController], // Insert CalculatorController. 
+});
+```
+
+4. Start the development server and try chatting with Agentica! Agentica will call your created Controller based on the situation.
+

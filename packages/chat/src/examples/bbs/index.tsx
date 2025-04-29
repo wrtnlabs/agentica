@@ -2,22 +2,22 @@ import {
   Button,
   Divider,
   FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
+import OpenAI from "openai";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
+
+import { VendorConfigurationMovie } from "../common/VendorConfigurationMovie";
 
 import { BbsChatApplication } from "./BbsChatApplication";
 
 function Application() {
-  const [apiKey, setApiKey] = useState("");
-  const [model, setModel] = useState<"gpt-4o" | "gpt-4o-mini">("gpt-4o-mini");
+  const [config, setConfig] = useState<VendorConfigurationMovie.IConfig>(
+    VendorConfigurationMovie.defaultConfig(),
+  );
   const [locale, setLocale] = useState(window.navigator.language);
-
   const [start, setStart] = useState(false);
 
   return (
@@ -25,77 +25,73 @@ function Application() {
       style={{
         width: "100%",
         height: "100%",
+        overflow: start === true ? undefined : "auto",
       }}
     >
-      {start === true ? (
-        <BbsChatApplication apiKey={apiKey} model={model} locale={locale} />
-      ) : (
-        <FormControl
-          style={{
-            width: "calc(100% - 60px)",
-            padding: 15,
-            margin: 15,
-          }}
-        >
-          <Typography variant="h6">BBS AI Chatbot</Typography>
-          <br />
-          <Divider />
-          <br />
-          Demonstration of Agentica with TypeScript Controller
-          Class.
-          <br />
-          <br />
-          <Typography variant="h6"> OpenAI Configuration </Typography>
-          <TextField
-            onChange={(e) => setApiKey(e.target.value)}
-            defaultValue={apiKey}
-            label="OpenAI API Key"
-            variant="outlined"
-            placeholder="Your OpenAI API Key"
-            error={apiKey.length === 0}
-          />
-          <br />
-          <RadioGroup
-            defaultValue={model}
-            onChange={(_e, value) => setModel(value as "gpt-4o-mini")}
-            style={{ paddingLeft: 15 }}
-          >
-            <FormControlLabel
-              control={<Radio />}
-              label="GPT-4o Mini"
-              value="gpt-4o-mini"
+      {start === true
+        ? (
+            <BbsChatApplication
+              api={
+                new OpenAI({
+                  apiKey: config.apiKey,
+                  baseURL: config.baseURL,
+                  dangerouslyAllowBrowser: true,
+                })
+              }
+              vendorModel={config.vendorModel}
+              schemaModel={config.schemaModel}
+              locale={locale}
             />
-            <FormControlLabel
-              control={<Radio />}
-              label="GPT-4o"
-              value="gpt-4o"
-            />
-          </RadioGroup>
-          <br />
-          <Typography variant="h6"> Membership Information </Typography>
-          <br />
-          <TextField
-            onChange={(e) => setLocale(e.target.value)}
-            defaultValue={locale}
-            label="Locale"
-            variant="outlined"
-            error={locale.length === 0}
-          />
-          <br />
-          <br />
-          <Button
-            component="a"
-            fullWidth
-            variant="contained"
-            color={"info"}
-            size="large"
-            disabled={apiKey.length === 0 || locale.length === 0}
-            onClick={() => setStart(true)}
-          >
-            Start AI Chatbot
-          </Button>
-        </FormControl>
-      )}
+          )
+        : (
+            <FormControl
+              style={{
+                width: "calc(100% - 60px)",
+                padding: 15,
+                margin: 15,
+              }}
+            >
+              <Typography variant="h6">BBS AI Chatbot</Typography>
+              <br />
+              <Divider />
+              <br />
+              Demonstration of Agentica with TypeScript Controller
+              Class.
+              <br />
+              <br />
+              <Typography variant="h6"> OpenAI Configuration </Typography>
+              <br />
+              <VendorConfigurationMovie config={config} onChange={setConfig} />
+              <br />
+              <Typography variant="h6"> Membership Information </Typography>
+              <br />
+              <TextField
+                onChange={e => setLocale(e.target.value)}
+                defaultValue={locale}
+                label="Locale"
+                variant="outlined"
+                error={locale.length === 0}
+              />
+              <br />
+              <br />
+              <Button
+                component="a"
+                fullWidth
+                variant="contained"
+                color="info"
+                size="large"
+                disabled={
+                  config.apiKey.length === 0
+                  || config.vendorModel.length === 0
+                  || config.schemaModel.length === 0
+                  || locale.length === 0
+                }
+                onClick={() => setStart(true)}
+              >
+                Start AI Chatbot
+              </Button>
+            </FormControl>
+          )}
     </div>
   );
 }

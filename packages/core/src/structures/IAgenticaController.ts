@@ -1,3 +1,4 @@
+import type { Client } from "@modelcontextprotocol/sdk/client/index.d.ts";
 import type {
   IHttpConnection,
   IHttpLlmApplication,
@@ -6,10 +7,11 @@ import type {
   ILlmApplication,
   ILlmFunction,
   ILlmSchema,
+  IMcpLlmApplication,
 } from "@samchon/openapi";
 
 /**
- * Controller of the Nestia Agent.
+ * Controller of the Agentica Agent.
  *
  * `IAgenticaController` is a type represents a controller of the
  * {@link Agentica}, which serves a set of functions to be called
@@ -18,14 +20,17 @@ import type {
  * Also, `IAgenticaController` is an union type which can specify
  * a subtype by checking the {@link protocol} property.
  *
- * - HTTP server: {@link IAgenticaController..IHttp}
+ * - HTTP server: {@link IAgenticaController.IHttp}
  * - TypeScript class: {@link IAgenticaController.IClass}
+ * - MCP Server: {@link IAgenticaController.IMcp}
  *
  * @author Samchon
  */
 export type IAgenticaController<Model extends ILlmSchema.Model> =
   | IAgenticaController.IHttp<Model>
-  | IAgenticaController.IClass<Model>;
+  | IAgenticaController.IClass<Model>
+  | IAgenticaController.IMcp<Model>;
+
 export namespace IAgenticaController {
   /**
    * HTTP controller.
@@ -112,6 +117,16 @@ export namespace IAgenticaController {
          */
         arguments: object;
       }) => Promise<unknown>);
+  }
+
+  /**
+   * MCP Server controller.
+   */
+  export interface IMcp<Model extends ILlmSchema.Model> extends IBase<"mcp", IMcpLlmApplication<Model>> {
+    /**
+     * MCP client for connection.
+     */
+    client: Client;
   }
 
   interface IBase<Protocol, Application> {

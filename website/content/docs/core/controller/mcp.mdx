@@ -1,0 +1,95 @@
+---
+title: Agentica > Guide Documents > Core Library > Function Controllers > MCP Protocol
+---
+
+## Overview
+
+```typescript filename="src/main.ts" showLineNumbers copy
+import { Agentica, assertMcpController } from "@wrtnlabs/agentica";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+
+const client = new Client({
+  name: "calculator",
+  version: "1.0.0",
+});
+
+await client.connect(new StdioClientTransport({
+  command: "npx",
+  args: ["-y", "@modelcontextprotocol/server-github"],
+  env: {
+    GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
+    // Add other environment variables as needed
+  }
+}));
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    api: new OpenAI({ apiKey: "*****"})
+    model: "gpt-4o-mini"
+  },
+  controllers: [
+    await assertMcpController({
+      name: "calculator",
+      model: "chatgpt",
+      client,
+    }),
+  ],
+});
+await agent.conversate("What can you do?");
+```
+
+MCP (Model Context Protocol) is a protocol for connecting LLM applications with various transports. Currently, MCP only supports tools functionality, while prompts and resources are not yet supported.
+
+To use MCP, you need to install the MCP SDK package separately:
+
+```bash
+npm install @modelcontextprotocol/sdk
+```
+
+## Transport Options
+
+### Stdio Transport
+The example above uses `StdioClientTransport` which is suitable for Node.js environments.
+
+### SSE Transport
+For Server-Sent Events (SSE) connections, you should use the `SseClientTransport` instead. This is particularly useful for web-based applications.
+
+```typescript
+import { SseClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
+
+await client.connect(new SseClientTransport({
+  url: "your-sse-endpoint"
+}));
+```
+
+## Authentication
+
+### Transport Authentication
+For Stdio transport, you can pass environment variables to the child process:
+
+```typescript
+await client.connect(new StdioClientTransport({
+  command: "npx",
+  args: ["-y", "@modelcontextprotocol/server-github"],
+  env: {
+    GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
+    // Add other environment variables as needed
+  }
+}));
+```
+
+## Important Notes
+
+### Connection Requirements
+The `await client.connect()` call is mandatory. If you omit this step, the application will throw an error as the client needs to establish a connection before it can be used.
+
+### Browser Compatibility
+Note that `StdioClientTransport` uses Node.js's `child_process` module internally, which means it will not work in browser environments. For browser-based applications, you should use `SseClientTransport` instead.
+
+### Feature Support
+Currently, MCP only supports tools functionality. Prompts and resources are not yet supported in the current version.
+
+### LLM Model Compatibility
+The compatibility of custom MCP servers with different LLM models may vary. This is because each LLM model supports different JSON schemas for function calling. If an MCP server provides a schema that doesn't match the LLM's expected format, the model may not be able to understand or properly use the provided tools. Always verify that your MCP server's schema is compatible with your chosen LLM model.

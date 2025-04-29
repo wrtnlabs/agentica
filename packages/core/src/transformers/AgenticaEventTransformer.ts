@@ -1,19 +1,20 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaEvent } from "../events/AgenticaEvent";
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
+import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent";
 import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
+import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { StreamUtil } from "../utils/StreamUtil";
 import { createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createTextEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
+import { toAsyncGenerator } from "../utils/StreamUtil";
 
 function findOperation<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
@@ -123,7 +124,7 @@ function transformDescribe<Model extends ILlmSchema.Model>(props: {
         event: next,
       }),
     ),
-    stream: StreamUtil.to(props.event.text),
+    stream: toAsyncGenerator(props.event.text),
     done: () => true,
     get: () => props.event.text,
     join: async () => props.event.text,
@@ -175,7 +176,7 @@ function transformText(props: {
 }): AgenticaTextEvent {
   return createTextEvent({
     role: props.event.role,
-    stream: StreamUtil.to(props.event.text),
+    stream: toAsyncGenerator(props.event.text),
     done: () => true,
     get: () => props.event.text,
     join: async () => props.event.text,

@@ -1,81 +1,99 @@
-import { Agentica, IAgenticaVendor } from "@agentica/core";
+import type { IAgenticaVendor } from "@agentica/core";
+import type { IHttpConnection, ILlmSchema, OpenApi } from "@samchon/openapi";
+import type { ReactElement } from "react";
+
+import { Agentica } from "@agentica/core";
 import {
   Button,
   FormControl,
-  FormControlLabel,
   FormLabel,
-  Radio,
-  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
-import { IHttpLlmApplication } from "@samchon/openapi";
+import { HttpLlm } from "@samchon/openapi";
 import OpenAI from "openai";
-import React, { ReactElement, useState } from "react";
-import JsonInput from "react-json-editor-ajrm";
-// @ts-ignore
-import locale from "react-json-editor-ajrm/locale/en.js";
+import React, { useState } from "react";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
+import { VendorConfigurationMovie } from "../common/VendorConfigurationMovie";
+
 import { AgenticaChatUploaderMovie } from "./AgenticaChatUploaderMovie";
 
-export const AgenticaChatUploaderApplication = (
-  props: AgenticaChatUploaderApplication.IProps,
-) => {
+export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderApplication.IProps) {
   // PARAMETERS
   const [host, setHost] = useState("http://localhost:37001");
-  const [headers, setHeaders] = useState<Record<string, string>>({
+  const [headersText, setHeadersText] = useState<string>(JSON.stringify({
     Authorization: "YOUR_SERVER_API_KEY",
-  });
-  const [model, setModel] = useState("gpt-4o-mini");
-  const [apiKey, setApiKey] = useState("");
+  }, null, 2));
+  const [config, setConfig] = useState<VendorConfigurationMovie.IConfig>(
+    VendorConfigurationMovie.defaultConfig(),
+  );
 
   // RESULT
-  const [application, setApplication] =
-    useState<IHttpLlmApplication<"chatgpt"> | null>(null);
+  const [document, setDocument] = useState<OpenApi.IDocument | null>(null);
   const [progress, setProgress] = useState(false);
 
+  const headers: Record<string, IHttpConnection.HeaderValue> | null = parseHeaders(headersText);
+  const disabled: boolean = progress === true
+    || headers === null
+    || document === null
+    || host.length === 0
+    || config.apiKey.length === 0
+    || config.vendorModel.length === 0
+    || config.schemaModel.length === 0;
+
   // HANDLERS
-  const handleApplication = (
-    application: IHttpLlmApplication<"chatgpt"> | null,
+  const handleError = (error: string) => {
+    if (props.onError != null) {
+      props.onError(error);
+    }
+    else { alert(error); }
+  };
+  const handleDocument = (
+    document: OpenApi.IDocument | null,
     error: string | null,
   ) => {
-    setApplication(application);
-    if (error !== null) handleError(error);
-  };
-  const handleError = (error: string) => {
-    if (props.onError) props.onError(error);
-    else alert(error);
+    setDocument(document);
+    if (error !== null) {
+      handleError(error);
+    }
   };
 
   const open = async () => {
-    if (application === null) return;
+    if (document === null) {
+      return;
+    }
     setProgress(true);
     try {
       const vendor: IAgenticaVendor = {
         api: new OpenAI({
-          apiKey,
+          apiKey: config.apiKey,
+          baseURL: config.baseURL,
           dangerouslyAllowBrowser: true,
         }),
-        model: model as "gpt-4o",
+        model: config.vendorModel,
       };
-      const agent: Agentica<"chatgpt"> = new Agentica({
-        model: "chatgpt",
+      const agent: Agentica<ILlmSchema.Model> = new Agentica({
+        model: config.schemaModel,
         vendor,
         controllers: [
           {
             protocol: "http",
             name: "main",
-            application,
+            application: HttpLlm.application({
+              model: config.schemaModel,
+              document,
+            }),
             connection: {
               host,
-              headers,
+              headers: headers!,
             },
           },
         ],
       });
       props.onSuccess(<AgenticaChatApplication agent={agent} />);
-    } catch (error) {
+    }
+    catch (error) {
       handleError(error instanceof Error ? error.message : "unknown error");
       setProgress(false);
     }
@@ -83,13 +101,13 @@ export const AgenticaChatUploaderApplication = (
 
   return (
     <div style={props.style}>
-      <AgenticaChatUploaderMovie onChange={handleApplication} />
+      <AgenticaChatUploaderMovie onChange={handleDocument} />
       <br />
       <FormControl fullWidth>
         <Typography variant="h6">HTTP Connection</Typography>
         <br />
         <TextField
-          onChange={(e) => setHost(e.target.value)}
+          onChange={e => setHost(e.target.value)}
           defaultValue={host}
           label="Host URL"
           variant="outlined"
@@ -98,47 +116,21 @@ export const AgenticaChatUploaderApplication = (
         />
         <br />
         <FormLabel> Headers </FormLabel>
-        <JsonInput
-          locale={locale}
-          theme="dark_vscode_tribute"
-          placeholder={headers}
-          onChange={setHeaders}
-          height="100px"
-        />
-        <br />
-        <br />
-        <Typography variant="h6">LLM Arguments</Typography>
-        <br />
-        <FormLabel> LLM Provider </FormLabel>
-        <RadioGroup defaultValue={"chatgpt"} style={{ paddingLeft: 15 }}>
-          <FormControlLabel
-            value="chatgpt"
-            control={<Radio />}
-            label="OpenAI (ChatGPT)"
-          />
-        </RadioGroup>
-        <FormLabel style={{ paddingTop: 20 }}> OpenAI Model </FormLabel>
-        <RadioGroup
-          defaultValue={model}
-          onChange={(_e, value) => setModel(value)}
-          style={{ paddingLeft: 15 }}
-        >
-          <FormControlLabel
-            value="gpt-4o-mini"
-            control={<Radio />}
-            label="GPT-4o Mini"
-          />
-          <FormControlLabel value="gpt-4o" control={<Radio />} label="GPT-4o" />
-        </RadioGroup>
-        <br />
         <TextField
-          onChange={(e) => setApiKey(e.target.value)}
-          defaultValue={apiKey}
-          label="OpenAI API Key"
-          variant="outlined"
-          placeholder="Your OpenAI API Key"
-          error={apiKey.length === 0}
+          fullWidth
+          multiline
+          defaultValue={headersText}
+          onChange={e => setHeadersText(e.target.value)}
+          maxRows={10}
+          error={headers === null}
+          helperText={headers === null ? "Invalid JSON format" : undefined}
         />
+        <br />
+        <br />
+        <Typography variant="h6">OpenAI Configuration</Typography>
+        <br />
+        <VendorConfigurationMovie config={config} onChange={setConfig} />
+        <br />
       </FormControl>
       <br />
       <br />
@@ -146,26 +138,29 @@ export const AgenticaChatUploaderApplication = (
         component="a"
         fullWidth
         variant="contained"
-        color={"info"}
+        color="info"
         size="large"
-        disabled={
-          progress === true ||
-          document === null ||
-          application === null ||
-          host.length === 0 ||
-          apiKey.length === 0
-        }
-        onClick={() => open()}
+        disabled={disabled}
+        onClick={() => void open().catch(() => {})}
       >
         {progress ? "Generating..." : "Generate AI Chatbot"}
       </Button>
     </div>
   );
-};
+}
 export namespace AgenticaChatUploaderApplication {
   export interface IProps {
     style?: React.CSSProperties;
     onError?: (error: string) => void;
     onSuccess: (element: ReactElement) => void;
+  }
+}
+
+function parseHeaders(text: string): Record<string, IHttpConnection.HeaderValue> | null {
+  try {
+    return JSON.parse(text) as Record<string, IHttpConnection.HeaderValue>;
+  }
+  catch {
+    return null;
   }
 }

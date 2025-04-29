@@ -1,4 +1,5 @@
-import type { IHttpLlmFunction, ILlmFunction, ILlmSchema } from "@samchon/openapi";
+import type { IHttpLlmFunction, ILlmFunction, ILlmSchema, IMcpLlmFunction } from "@samchon/openapi";
+
 import type { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
 import type { IAgenticaController } from "../structures/IAgenticaController";
 
@@ -19,7 +20,8 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
  */
 export type AgenticaOperation<Model extends ILlmSchema.Model> =
   | AgenticaOperation.Class<Model>
-  | AgenticaOperation.Http<Model>;
+  | AgenticaOperation.Http<Model>
+  | AgenticaOperation.Mcp<Model>;
 export namespace AgenticaOperation {
   export type Class<Model extends ILlmSchema.Model> = Base<
     "class",
@@ -31,9 +33,14 @@ export namespace AgenticaOperation {
     IAgenticaController.IHttp<Model>,
     IHttpLlmFunction<Model>
   >;
+  export type Mcp<Model extends ILlmSchema.Model> = Base<
+    "mcp",
+    IAgenticaController.IMcp<Model>,
+    IMcpLlmFunction<Model>
+  >;
 
   interface Base<
-    Protocol extends "http" | "class",
+    Protocol extends "http" | "class" | "mcp",
     Controller extends object,
     Function extends object,
   > {

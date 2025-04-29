@@ -1,17 +1,20 @@
-import type { AgenticaOperation } from "@agentica/core";
-import type { IHttpConnection, OpenApi } from "@samchon/openapi";
 import fs from "node:fs";
 import path from "node:path";
+
+import type { AgenticaOperation } from "@agentica/core";
+import type { IHttpConnection, OpenApi } from "@samchon/openapi";
+
 import { AgenticaCallBenchmark } from "@agentica/benchmark";
 import { Agentica } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
 import { HttpLlm } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import OpenAI from "openai";
 
 import { TestGlobal } from "../TestGlobal";
 
-export async function test_benchmark_calls_pg_vector_selector(): Promise<
+export async function test_benchmark_call_pg_vector_selector(): Promise<
   void | false
 > {
   if (TestGlobal.chatgptApiKey.length === 0) {
@@ -35,7 +38,7 @@ export async function test_benchmark_calls_pg_vector_selector(): Promise<
     {
       channel_code: "samchon",
       external_user: null,
-      href: "http://localhost:3000/@agentica/core/test_benchmark_call",
+      href: "http://localhost:3000/@agentica/core/test_benchmark_call_pg_vector_selector",
       referrer: "http://localhost:3000/NodeJS",
     },
   );
@@ -48,13 +51,13 @@ export async function test_benchmark_calls_pg_vector_selector(): Promise<
   );
 
   // CREATE AI AGENT
-  const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">({
-    connectorHiveConnection: {
+  const selectorExecute = BootAgenticaVectorSelector({
+    strategy: configurePostgresStrategy<"chatgpt">({
       host: `http://localhost:${TestGlobal.connectorHivePort}`,
-    },
+    }),
   });
   const newAgentica = async () =>
-    new Agentica({
+    new Agentica<"chatgpt">({
       model: "chatgpt",
       vendor: {
         model: "gpt-4o-mini",
@@ -86,7 +89,7 @@ export async function test_benchmark_calls_pg_vector_selector(): Promise<
     await newAgentica().then(async v => v.conversate("What can you do?"));
   };
   await warming();
-  const agent: Agentica<"chatgpt"> = await newAgentica();
+  const agent = await newAgentica();
 
   // DO BENCHMARK
   const find = (
@@ -106,7 +109,7 @@ export async function test_benchmark_calls_pg_vector_selector(): Promise<
     }
     return found;
   };
-  const benchmark: AgenticaCallBenchmark<"chatgpt"> = new AgenticaCallBenchmark(
+  const benchmark = new AgenticaCallBenchmark(
     {
       agent,
       config: {

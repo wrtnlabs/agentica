@@ -1,464 +1,165 @@
-# `@agentica/core`
+# Agentica, AI Function Calling Framework
 
-![agentica-conceptual-diagram](https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57)
+<!-- https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488 -->
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
-[![npm version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
-[![Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
+![Logo](https://wrtnlabs.io/agentica/og.jpg?refresh)
+
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
+[![NPM Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
 [![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
+[![Guide Documents](https://img.shields.io/badge/Guide-Documents-forestgreen)](https://wrtnlabs.io/agentica/)
+[![Discord Badge](https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx?style=flat)](https://discord.gg/aMhRmzkqCx)
 
-The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
+Agentic AI framework specialized in AI Function Calling.
 
-Don't compose complicate agent graph or workflow, but just deliver **Swagger/OpenAPI** documents or **TypeScript class** types linearly to the `@agentica/core`. Then `@agentica/core` will do everything with the function calling.
+Don't be afraid of AI agent development. Just list functions from three protocols below. This is everything you should do for AI agent development.
 
-Look at the below demonstration, and feel how `@agentica/core` is easy and powerful.
+- TypeScript Class
+- Swagger/OpenAPI Document
+- MCP (Model Context Protocol) Server
+
+Wanna make an e-commerce agent? Bring in e-commerce functions. Need a newspaper agent? Get API functions from the newspaper company. Just prepare any functions that you need, then it becomes an AI agent.
+
+Are you a TypeScript developer? Then you're already an AI developer. Familiar with backend development? You're already well-versed in AI development. Anyone who can make functions can make AI agents.
+
+<!-- eslint-skip -->
 
 ```typescript
-import { Agentica } from "@agentica/core";
+import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import OpenAI from "openai";
 import typia from "typia";
+
+import { MobileFileSystem } from "./services/MobileFileSystem";
 
 const agent = new Agentica({
-  controllers: [
-    await fetch(
-      "https://shopping-be.wrtn.ai/editor/swagger.json",
-    ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
-    typia.llm.application<ShoppingPolicy>(),
-    typia.llm.application<ShoppingSearchRag>(),
-  ],
-});
-await agent.conversate("I wanna buy MacBook Pro");
-```
-
-> https://github.com/user-attachments/assets/01604b53-aca4-41cb-91aa-3faf63549ea6
->
-> Demonstration video of Shopping AI Chatbot
-
-## How to Use
-
-### Setup
-
-```bash
-npm install @agentica/core @samchon/openapi typia
-npx typia setup
-```
-
-Install not only `@agentica/core`, but also [`@samchon/openapi`](https://github.com/samchon/openapi) and [`typia`](https://github.com/samchon/typia).
-
-`@samchon/openapi` is an OpenAPI specification library which can convert Swagger/OpenAPI document to LLM function calling schema. And `typia` is a transformer (compiler) library which can compose LLM function calling schema from a TypeScript class type.
-
-By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`. Also, if you're not using non-standard TypeScript compiler (not `tsc`) or developing the agent in the frontend environment, you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) too.
-
-### Chat with Backend Server
-
-```typescript
-import { Agentica, validateHttpLlmApplication } from "@agentica/core";
-import { IHttpLlmApplication } from "@samchon/openapi";
-import OpenAI from "openai";
-import { IValidation } from "typia";
-
-async function main(): Promise<void> {
-  // LOAD SWAGGER DOCUMENT, AND CONVERT TO LLM APPLICATION SCHEMA
-  const application: IValidation<IHttpLlmApplication<"chatgpt">>
-    = validateHttpLlmApplication({
-      model: "chatgpt",
-      document: await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(
-        r => r.json()
-      ),
-    });
-  if (application.success === false) {
-    console.error(application.errors);
-    throw new Error("Type error on the target swagger document");
-  }
-
-  // CREATE AN AGENT WITH THE APPLICATION
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
-    vendor: {
-      api: new OpenAI({
-        apiKey: "YOUR_OPENAI_API_KEY",
-      }),
-      model: "gpt-4o-mini",
-    },
-    controllers: [
-      {
-        protocol: "http",
-        name: "shopping",
-        application: application.data,
-        connection: {
-          host: "https://shopping-be.wrtn.ai",
-        },
-      },
-    ],
-    config: {
-      locale: "en-US",
-    },
-  });
-
-  // ADD EVENT LISTENERS
-  agent.on("select", async (select) => {
-    console.log("selected function", select.operation.function.name);
-  });
-  agent.on("execute", async (execute) => {
-    consoe.log("execute function", {
-      function: execute.operation.function.name,
-      arguments: execute.arguments,
-      value: execute.value,
-    });
-  });
-
-  // CONVERSATE TO AI CHATBOT
-  await agent.conversate("What you can do?");
-}
-main().catch(console.error);
-```
-
-Just load your swagger document, and put it into the `@agentica/core`.
-
-Then you can start conversation with your backend server, and the API functions of the backend server would be automatically called. AI chatbot will analyze your conversation texts, and executes proper API functions by the LLM (Large Language Model) function calling feature.
-
-From now on, every backend developer is also an AI developer.
-
-### Chat with TypeScript Class
-
-```typescript
-import { Agentica } from "@agentica/core";
-import OpenAI from "openai";
-import typia, { tags } from "typia";
-
-class BbsArticleService {
-  /**
-   * Create a new article.
-   *
-   * Writes a new article and archives it into the DB.
-   *
-   * @param props Properties of create function
-   * @returns Newly created article
-   */
-  public async create(props: {
-    /**
-     * Information of the article to create
-     */
-    input: IBbsArticle.ICreate;
-  }): Promise<IBbsArticle>;
-
-  /**
-   * Update an article.
-   *
-   * Updates an article with new content.
-   *
-   * @param props Properties of update function
-   * @param input New content to update
-   */
-  public async update(props: {
-    /**
-     * Target article's {@link IBbsArticle.id}.
-     */
-    id: string & tags.Format<"uuid">;
-
-    /**
-     * New content to update.
-     */
-    input: IBbsArticle.IUpdate;
-  }): Promise<void>;
-}
-
-async function main(): Promise<void> {
-  const api: OpenAI = new OpenAI({
-    apiKey: "YOUR_OPENAI_API_KEY",
-  });
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
-    vendor: {
-      api: new OpenAI({
-        apiKey: "YOUR_OPENAI_API_KEY",
-      }),
-      model: "gpt-4o-mini",
-    },
-    controllers: [
-      {
-        protocol: "class",
-        name: "vectorStore",
-        application: typia.llm.application<
-          BbsArticleService,
-          "chatgpt"
-        >(),
-        execute: new BbsArticleService(),
-      },
-    ],
-  });
-  await agent.conversate("I wanna write an article.");
-}
-main().catch(console.error);
-```
-
-You also can chat with a TypeScript class.
-
-Just deliver the TypeScript type to the `@agentica/core`, and start conversation. Then `@agentica/core` will call the proper class functions by analyzing your conversation texts with LLM function calling feature.
-
-From now on, every TypeScript classes you've developed can be the AI chatbot.
-
-### Multi Agent Orchestration
-
-```typescript
-import { Agentica } from "@agentica/core";
-import OpenAI from "openai";
-import typia from "typia";
-
-class OpenAIVectorStoreAgent {
-  /**
-   * Retrieve Vector DB with RAG.
-   *
-   * @param props Properties of Vector DB retrievelance
-   */
-  public query(props: {
-    /**
-     * Keywords to look up.
-     *
-     * Put all the keywords you want to look up. However, keywords
-     * should only be included in the core, and all ambiguous things
-     * should be excluded to achieve accurate results.
-     */
-    keywords: string;
-  }): Promise<IVectorStoreQueryResult>;
-}
-
-async function main(): Promise<void> {
-  const api: OpenAI = new OpenAI({
-    apiKey: "YOUR_OPENAI_API_KEY",
-  });
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
-    context: {
-      api: new OpenAI({
-        apiKey: "YOUR_OPENAI_API_KEY",
-      }),
-      model: "gpt-4o-mini",
-    },
-    controllers: [
-      {
-        protocol: "class",
-        name: "vectorStore",
-        application: typia.llm.application<
-          OpenAIVectorStoreAgent,
-          "chatgpt"
-        >(),
-        execute: new OpenAIVectorStoreAgent({
-          api,
-          id: "YOUR_OPENAI_VECTOR_STORE_ID",
-        }),
-      },
-    ],
-  });
-  await agent.conversate("I wanna research economic articles");
-}
-main().catch(console.error);
-```
-
-In the `@agentica/core`, you can implement multi-agent orchestration super easily.
-
-Just develop a TypeScript class which contains agent feature like Vector Store, and just deliver the TypeScript class type to the `@agentica/core` like above. The `@agentica/core` will centralize and realize the multi-agent orchestration by LLM function calling strategy to the TypeScript class.
-
-### If you want drastically improves function selection speed
-
-Use the [@agentica/pg-vector-selector](../pg-vector-selector/README.md)
-
-Just initialize and set the config
-when use this adapter, you should run the [connector-hive](https://github.com/wrtnlabs/connector-hive)
-
-```typescript
-import { Agentica } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
-
-import typia from "typia";
-
-// Initialize with connector-hive server
-const selectorExecute = AgenticaPgVectorSelector.boot<"chatgpt">(
-  "https://your-connector-hive-server.com"
-);
-
-const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
+    api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
-    api: new OpenAI({
-      apiKey: process.env.CHATGPT_API_KEY,
-    }),
   },
   controllers: [
-    await fetch(
-      "https://shopping-be.wrtn.ai/editor/swagger.json",
-    ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
-    typia.llm.application<ShoppingPolicy>(),
-    typia.llm.application<ShoppingSearchRag>(),
+    // functions from TypeScript class
+    {
+      protocol: "http",
+      application: typia.llm.application<MobileFileSystem, "chatgpt">(),
+      execute: new MobileFileSystem(),
+    },
+    // functions from Swagger/OpenAPI
+    {
+      protocol: "http",
+      application: assertHttpLlmApplication({
+        model: "chatgpt",
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then(r => r.json()),
+      }),
+      connection: {
+        host: "https://shopping-be.wrtn.ai",
+        headers: { Authorization: "Bearer ********" },
+      },
+    },
   ],
-  config: {
-    executor: {
-      select: selectorExecute,
-    }
-  }
 });
 await agent.conversate("I wanna buy MacBook Pro");
 ```
 
-## Principles
+## 📦 Setup
 
-### Agent Strategy
+```bash
+$ npx agentica start <directory>
 
-```mermaid
-sequenceDiagram
-actor User
-actor Agent
-participant Selector
-participant Caller
-participant Describer
-activate User
-User-->>Agent: Conversate:<br/>user says
-activate Agent
-Agent->>Selector: Deliver conversation text
-activate Selector
-deactivate User
-Note over Selector: Select or remove candidate functions
-alt No candidate
-  Selector->>Agent: Talk like plain ChatGPT
-  deactivate Selector
-  Agent->>User: Conversate:<br/>agent says
-  activate User
-  deactivate User
-end
-deactivate Agent
-loop Candidate functions exist
-  activate Agent
-  Agent->>Caller: Deliver conversation text
-  activate Caller
-  alt Contexts are enough
-    Note over Caller: Call fulfilled functions
-    Caller->>Describer: Function call histories
-    deactivate Caller
-    activate Describer
-    Describer->>Agent: Describe function calls
-    deactivate Describer
-    Agent->>User: Conversate:<br/>agent describes
-    activate User
-    deactivate User
-  else Contexts are not enough
-    break
-      Caller->>Agent: Request more information
-    end
-    Agent->>User: Conversate:<br/>agent requests
-    activate User
-    deactivate User
-  end
-  deactivate Agent
-end
+----------------------------------------
+ Agentica Setup Wizard
+----------------------------------------
+? Package Manager (use arrow keys)
+  > npm
+    pnpm
+    yarn (berry is not supported)
+? Project Type
+    NodeJS Agent Server
+  > NestJS Agent Server
+    React Client Application
+    Standalone Application
+? Embedded Controllers (multi-selectable)
+    (none)
+    Google Calendar
+    Google News
+  > Github
+    Reddit
+    Slack
+    ...
 ```
 
-When user says, `@agentica/core` delivers the conversation text to the `selector` agent, and let the `selector` agent to find (or cancel) candidate functions from the context. If the `selector` agent could not find any candidate function to call and there is not any candidate function previously selected either, the `selector` agent will work just like a plain ChatGPT.
+The setup wizard helps you create a new project tailored to your needs.
 
-And `@agentica/core` enters to a loop statement until the candidate functions to be empty. In the loop statement, `caller` agent tries to LLM function calling by analyzing the user's conversation text. If context is enough to compose arguments of candidate functions, the `caller` agent actually calls the target functions, and let `decriber` agent to explain the function calling results. Otherwise the context is not enough to compose arguments, `caller` agent requests more information to user.
+For reference, when selecting a project type, any option other than "Standalone Application" will implement the [WebSocket Protocol](https://wrtnlabs.io/agentica/docs/websocket/) for client-server communication.
 
-Such LLM (Large Language Model) function calling strategy separating `selector`, `caller`, and `describer` is the key logic of `@agentica/core`.
+For comprehensive setup instructions, visit our [Getting Started](https://wrtnlabs.io/agentica/docs/) guide.
 
-### Validation Feedback
+## 💻 Playground
 
-```typescript
-import { FunctionCall } from "pseudo";
-import { ILlmFunction, IValidation } from "typia";
+Experience Agentica firsthand through our [interactive playground](https://wrtnlabs.io/agentica/playground) before installing.
 
-export function correctFunctionCall(p: {
-  call: FunctionCall;
-  functions: Array<ILlmFunction<"chatgpt">>;
-  retry: (reason: string, errors?: IValidation.IError[]) => Promise<unknown>;
-}): Promise<unknown> {
-  // FIND FUNCTION
-  const func: ILlmFunction<"chatgpt"> | undefined
-    = p.functions.find(f => f.name === p.call.name);
-  if (func === undefined) {
-    // never happened in my experience
-    return p.retry(
-      "Unable to find the matched function name. Try it again.",
-    );
-  }
+Our demonstrations showcase the power and simplicity of Agentica's function calling capabilities across different integration methods.
 
-  // VALIDATE
-  const result: IValidation<unknown> = func.validate(p.call.arguments);
-  if (result.success === false) {
-    // 1st trial: 50% (gpt-4o-mini in shopping mall chatbot)
-    // 2nd trial with validation feedback: 99%
-    // 3nd trial with validation feedback again: never have failed
-    return p.retry(
-      "Type errors are detected. Correct it through validation errors",
-      {
-        errors: result.errors,
-      },
-    );
-  }
-  return result.data;
-}
-```
+- [TypeScript Class](https://wrtnlabs.io/agentica/playground/bbs)
+- [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/swagger)
+- [Enterprise E-commerce Agent](https://wrtnlabs.io/agentica/playground/shopping)
 
-Is LLM function calling perfect?
+<!--
+@todo this section would be changed after making tutorial playground
+-->
 
-The answer is not, and LLM (Large Language Model) vendors like OpenAI take a lot of type level mistakes when composing the arguments of the target function to call. Even though an LLM function calling schema has defined an `Array<string>` type, LLM often fills it just by a `string` typed value.
+## 📚 Documentation Resources
 
-Therefore, when developing an LLM function calling agent, the validation feedback process is essentially required. If LLM takes a type level mistake on arguments composition, the agent must feedback the most detailed validation errors, and let the LLM to retry the function calling referencing the validation errors.
+Find comprehensive resources at our [official website](https://wrtnlabs.io/agentica).
 
-About the validation feedback, `@agentica/core` is utilizing [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application/#application) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.
+- [Home](https://wrtnlabs.io/agentica)
+- [Guide Documents](https://wrtnlabs.io/agentica/docs)
+- [Tutorial](https://wrtnlabs.io/agentica/tutorial)
+- [API Documents](https://wrtnlabs.io/agentica/api)
+- [Youtube](https://www.youtube.com/@wrtnlabs)
+- [Paper](https://wrtnlabs.io/agentica/paper)
 
-Such validation feedback strategy and combination with `typia` runtime validator, `@agentica/core` has achieved the most ideal LLM function calling. In my experience, when using OpenAI's `gpt-4o-mini` model, it tends to construct invalid function calling arguments at the first trial about 50% of the time. By the way, if correct it through validation feedback with `typia`, success rate soars to 99%. And I've never had a failure when trying validation feedback twice.
-
-| Components                                                                                                                  | `typia` | `TypeBox` | `ajv` | `io-ts` | `zod` | `C.V.` |
-| --------------------------------------------------------------------------------------------------------------------------- | ------- | --------- | ----- | ------- | ----- | ------ | --- |
-| **Easy to use**                                                                                                             | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
-| [Object (simple)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectSimple.ts)                         | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
-| [Object (hierarchical)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectHierarchical.ts)             | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
-| [Object (recursive)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectRecursive.ts)                   | ✔      | ❌        | ✔    | ✔      | ✔    | ✔     | ✔  |
-| [Object (union, implicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectUnionImplicit.ts)         | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
-| [Object (union, explicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ObjectUnionExplicit.ts)         | ✔      | ✔        | ✔    | ✔      | ✔    | ❌     |
-| [Object (additional tags)](https://github.com/samchon/typia/#comment-tags)                                                  | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
-| [Object (template literal types)](https://github.com/samchon/typia/blob/master/test/src/structures/TemplateUnion.ts)        | ✔      | ✔        | ✔    | ❌      | ❌    | ❌     |
-| [Object (dynamic properties)](https://github.com/samchon/typia/blob/master/test/src/structures/DynamicTemplate.ts)          | ✔      | ✔        | ✔    | ❌      | ❌    | ❌     |
-| [Array (rest tuple)](https://github.com/samchon/typia/blob/master/test/src/structures/TupleRestAtomic.ts)                   | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
-| [Array (hierarchical)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayHierarchical.ts)               | ✔      | ✔        | ✔    | ✔      | ✔    | ✔     |
-| [Array (recursive)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursive.ts)                     | ✔      | ✔        | ✔    | ✔      | ✔    | ❌     |
-| [Array (recursive, union)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursiveUnionExplicit.ts) | ✔      | ✔        | ❌    | ✔      | ✔    | ❌     |
-| [Array (R+U, implicit)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRecursiveUnionImplicit.ts)    | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
-| [Array (repeated)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRepeatedNullable.ts)               | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
-| [Array (repeated, union)](https://github.com/samchon/typia/blob/master/test/src/structures/ArrayRepeatedUnionWithTuple.ts)  | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
-| [**Ultimate Union Type**](https://github.com/samchon/typia/blob/master/test/src/structures/UltimateUnion.ts)                | ✅      | ❌        | ❌    | ❌      | ❌    | ❌     |
-
-> `C.V.` means `class-validator`
-
-### OpenAPI Specification
+## 🌟 Why Agentica?
 
 ```mermaid
 flowchart
-  subgraph "OpenAPI Specification"
-    v20("Swagger v2.0") --upgrades--> emended[["OpenAPI v3.1 (emended)"]]
-    v30("OpenAPI v3.0") --upgrades--> emended
-    v31("OpenAPI v3.1") --emends--> emended
+  subgraph "JSON Schema Specification"
+    schemav4("JSON Schema v4 ~ v7") --upgrades--> emended[["OpenAPI v3.1 (emended)"]]
+    schema2910("JSON Schema 2019-03") --upgrades--> emended
+    schema2020("JSON Schema 2020-12") --emends--> emended
   end
-  subgraph "OpenAPI Generator"
-    emended --normalizes--> migration[["Migration Schema"]]
-    migration --"Artificial Intelligence"--> lfc{{"LLM Function Calling"}}
-    lfc --"OpenAI"--> chatgpt("ChatGPT")
-    lfc --"Anthropic"--> claude("Claude")
-    lfc --"Google"--> gemini("Gemini")
-    lfc --"Meta"--> llama("Llama")
+  subgraph "Agentica"
+    emended --"Artificial Intelligence"--> fc{{"AI Function Calling"}}
+    fc --"OpenAI"--> chatgpt("ChatGPT")
+    fc --"Google"--> gemini("Gemini")
+    fc --"Anthropic"--> claude("Claude")
+    fc --"High-Flyer"--> deepseek("DeepSeek")
+    fc --"Meta"--> llama("Llama")
+    chatgpt --"3.1"--> custom(["Custom JSON Schema"])
+    gemini --"3.0"--> custom(["Custom JSON Schema"])
+    claude --"3.1"--> standard(["Standard JSON Schema"])
+    deepseek --"3.1"--> standard
+    llama --"3.1"--> standard
   end
 ```
 
-`@agentica/core` obtains LLM function calling schemas from both Swagger/OpenAPI documents and TypeScript class types. The TypeScript class type can be converted to LLM function calling schema by [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application#application) function. Then how about OpenAPI document? How Swagger document can be LLM function calling schema.
+Agentica enhances AI function calling by the following strategies:
 
-The secret is on the above diagram.
+- [**Compiler Driven Development**](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development): constructs function calling schema automatically by compiler skills without hand-writing.
+- [**JSON Schema Conversion**](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): automatically handles specification differences between LLM vendors, ensuring seamless integration regardless of your chosen AI model.
+- [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): detects and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
+- [**Selector Agent**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
 
-In the OpenAPI specification, there are three versions with different definitions. And even in the same version, there are too much ambiguous and duplicated expressions. To resolve these problems, [`@samchon/openapi`](https://github.com/samchon/openapi) is transforming every OpenAPI documents to v3.1 emended specification. The `@samchon/openapi`'s emended v3.1 specification has removed every ambiguous and duplicated expressions for clarity.
+Thanks to these innovations, Agentica makes AI function calling easier, safer, and more accurate than before. Development becomes more intuitive since you only need to prepare functions relevant to your specific use case, and scaling your agent's capabilities is as simple as adding or removing functions.
 
-With the v3.1 emended OpenAPI document, `@samchon/openapi` converts it to a migration schema that is near to the function structure. And as the last step, the migration schema will be transformed to a specific LLM vendor's function calling schema. LLM function calling schemas are composed like this way.
+In 2023, when OpenAI announced function calling, many predicted that function calling-driven AI development would become the mainstream. However, in reality, due to the difficulty and instability of function calling, the trend in AI development became agent workflow. Agent workflow, which is inflexible and must be created for specific purposes, has conquered the AI agent ecosystem.
+By the way, as Agentica has resolved the difficulty and instability problems of function calling, the time has come to embrace function-driven AI development once again.
 
-> **Why do not directly convert, but intermediate?**
->
-> If directly convert from each version of OpenAPI specification to specific LLM's function calling schema, I have to make much more converters increased by cartesian product. In current models, number of converters would be 12 = 3 x 4.
->
-> However, if define intermediate schema, number of converters are shrunk to plus operation. In current models, I just need to develop only (7 = 3 + 4) converters, and this is the reason why I've defined intermediate specification. This way is economic.
+| Type        | Workflow      | Vanilla Function Calling | Agentica Function Calling |
+| ----------- | ------------- | ------------------------ | ------------------------- |
+| Purpose     | ❌ Specific   | 🟢 General               | 🟢 General                |
+| Difficulty  | ❌ Difficult  | ❌ Difficult             | 🟢 Easy                   |
+| Stability   | 🟢 Stable     | ❌ Unstable              | 🟢 Stable                 |
+| Flexibility | ❌ Inflexible | 🟢 Flexible              | 🟢 Flexible               |

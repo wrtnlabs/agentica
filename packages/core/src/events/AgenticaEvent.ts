@@ -1,4 +1,5 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaCallEvent } from "./AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "./AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
@@ -45,4 +46,10 @@ export namespace AgenticaEvent {
     text: AgenticaTextEvent;
     validate: AgenticaValidateEvent<Model>;
   }
+  export type Source =
+    | "initialize"
+    | "select"
+    | "cancel"
+    | "call"
+    | "describe";
 }

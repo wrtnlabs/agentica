@@ -1,18 +1,23 @@
 import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
+
 import type { AgenticaContext } from "../context/AgenticaContext";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaDescribePrompt } from "../prompts/AgenticaDescribePrompt";
+import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
+import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { MPSC } from "../utils/MPSC";
-import { StreamUtil } from "../utils/StreamUtil";
-import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { createDescribeEvent } from "../factory/events";
-import { createDescribePrompt, decodePrompt } from "../factory/prompts";
+import { createDescribeHistory, decodeHistory } from "../factory/histories";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
+import { MPSC } from "../utils/MPSC";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
 
-export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, histories: AgenticaExecutePrompt<Model>[]): Promise<AgenticaDescribePrompt<Model>[]> {
+export async function describe<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  histories: AgenticaExecuteHistory<Model>[],
+): Promise<AgenticaDescribeHistory<Model>[]> {
   if (histories.length === 0) {
     return [];
   }
@@ -25,7 +30,7 @@ export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaCont
         content: AgenticaDefaultPrompt.write(ctx.config),
       } satisfies OpenAI.ChatCompletionSystemMessageParam,
       // FUNCTION CALLING HISTORIES
-      ...histories.map(decodePrompt).flat(),
+      ...histories.map(decodeHistory).flat(),
       // SYSTEM PROMPT
       {
         role: "system",
@@ -77,10 +82,10 @@ export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaCont
         };
         mpsc.produce(choice.delta.content);
 
-        void ctx.dispatch(
+        ctx.dispatch(
           createDescribeEvent({
             executes: histories,
-            stream: mpsc.consumer,
+            stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
             done: () => mpsc.done(),
             get: () => describeContext[choice.index]?.content ?? "",
             join: async () => {
@@ -88,7 +93,7 @@ export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaCont
               return describeContext[choice.index]!.content;
             },
           }),
-        );
+        ).catch(() => {});
       }
     };
 
@@ -104,7 +109,7 @@ export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaCont
   if (completion == null) {
     throw new Error("No completion received");
   }
-  const descriptions: AgenticaDescribePrompt<Model>[] = completion.choices
+  const descriptions: AgenticaDescribeHistory<Model>[] = completion.choices
     .map(choice =>
       choice.message.role === "assistant"
         ? choice.message.content
@@ -113,7 +118,7 @@ export async function describe<Model extends ILlmSchema.Model>(ctx: AgenticaCont
     .filter(str => str !== null)
     .map(
       content =>
-        createDescribePrompt({
+        createDescribeHistory({
           executes: histories,
           text: content,
         }),

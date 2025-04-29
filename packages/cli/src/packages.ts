@@ -3,15 +3,19 @@
  * This file contains functions to work with packages.
  */
 
-import type { PackageJson } from "type-fest";
 import process from "node:process";
 
+import type { PackageJson } from "type-fest";
+
+export const PACKAGE_MANAGERS = [
+  "npm",
+  "yarn",
+  "pnpm",
+  "bun",
+] as const;
+
 /** supported package managers */
-export type PackageManager =
-  | "npm"
-  | "yarn"
-  | "pnpm"
-  | "bun";
+export type PackageManager = typeof PACKAGE_MANAGERS[number];
 
 export const basePackageJson = {
   version: "0.0.1",
@@ -26,7 +30,7 @@ export const basePackageJson = {
 
 interface InstallProps {
   packageManager: PackageManager;
-  pkg: string;
+  pkg?: string;
 }
 
 /**
@@ -35,13 +39,13 @@ interface InstallProps {
 export function installCommand({ packageManager, pkg }: InstallProps) {
   switch (packageManager) {
     case "npm":
-      return `npm install ${pkg}`;
+      return `npm install ${pkg ?? ""}`;
     case "yarn":
-      return `yarn add ${pkg}`;
+      return pkg != null ? `yarn add ${pkg}` : "yarn";
     case "pnpm":
-      return `pnpm add ${pkg}`;
+      return `pnpm install ${pkg ?? ""}`;
     case "bun":
-      return `bun add ${pkg}`;
+      return `bun install ${pkg ?? ""}`;
     default:
       /** exhaustive check */
       packageManager satisfies never;

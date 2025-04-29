@@ -19,14 +19,10 @@ async function readAll<T>(stream: ReadableStream<T>): Promise<T[]> {
 
 async function reduce<T, R = T>(stream: ReadableStream<T>, reducer: (acc: T | R, cur: T) => R, initial?: R): Promise<R | null> {
   const reader = stream.getReader();
-
+  const iterator = streamDefaultReaderToAsyncGenerator(reader);
   let acc = (initial ?? null) as R | null | T;
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
-    }
+  for await (const value of iterator) {
     if (acc === null) {
       acc = value;
       continue;
@@ -38,7 +34,7 @@ async function reduce<T, R = T>(stream: ReadableStream<T>, reducer: (acc: T | R,
   return acc as R;
 }
 
-function to<T>(value: T): ReadableStream<T> {
+function from<T>(value: T): ReadableStream<T> {
   const stream = new ReadableStream<T>({
     start: (controller) => {
       controller.enqueue(value);
@@ -47,6 +43,20 @@ function to<T>(value: T): ReadableStream<T> {
   });
 
   return stream;
+}
+
+export async function* toAsyncGenerator<T>(value: T): AsyncGenerator<T, undefined, undefined> {
+  yield value;
+}
+
+export async function* streamDefaultReaderToAsyncGenerator<T>(reader: ReadableStreamDefaultReader<T>): AsyncGenerator<Awaited<T>, undefined, undefined> {
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+    yield value;
+  }
 }
 
 function transform<T, R>(stream: ReadableStream<T>, transformer: (value: T) => R): ReadableStream<R> {
@@ -68,6 +78,6 @@ function transform<T, R>(stream: ReadableStream<T>, transformer: (value: T) => R
 export const StreamUtil = {
   readAll,
   reduce,
-  to,
+  from,
   transform,
 };

@@ -1,29 +1,31 @@
 import type { ILlmSchema } from "@samchon/openapi";
+
 import type { AgenticaContext } from "../context/AgenticaContext";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { IAgenticaExecutor } from "../structures/IAgenticaExecutor";
 
-import { describe } from "./describe";
-import { cancel } from "./cancel";
 import { call } from "./call";
-import { cancelFunction } from "./internal/cancelFunction";
+import { cancel } from "./cancel";
+import { describe } from "./describe";
 import { initialize } from "./initialize";
 import { select } from "./select";
 
 export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgenticaExecutor<Model>> | null) {
-  return async (ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> => {
-    const histories: AgenticaPrompt<Model>[] = [];
+  return async (ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> => {
+    const histories: AgenticaHistory<Model>[] = [];
 
     // FUNCTIONS ARE NOT LISTED YET
     if (ctx.ready() === false) {
-      if (executor?.initialize === null) {
+      if (executor?.initialize !== true && typeof executor?.initialize !== "function") {
         await ctx.initialize();
       }
       else {
         histories.push(
           ...(await (
-            executor?.initialize ?? initialize
+            typeof executor?.initialize === "function"
+              ? executor.initialize
+              : initialize
           )(ctx)),
         );
         if (ctx.ready() === false) {
@@ -54,26 +56,24 @@ export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgent
     // FUNCTION CALLING LOOP
     while (true) {
       // EXECUTE FUNCTIONS
-      const prompts: AgenticaPrompt<Model>[] = await (
+      const prompts: AgenticaHistory<Model>[] = await (
         executor?.call ?? call
-      )(ctx);
+      )(ctx, ctx.stack.map(s => s.operation));
       histories.push(...prompts);
 
       // EXPLAIN RETURN VALUES
-      const executes: AgenticaExecutePrompt<Model>[] = prompts.filter(
+      const executes: AgenticaExecuteHistory<Model>[] = prompts.filter(
         prompt => prompt.type === "execute",
       );
-      for (const e of executes) {
-        await cancelFunction(ctx, {
-          reason: "completed",
-          name: e.operation.name,
-        });
+      if (executor?.describe !== null && executor?.describe !== false) {
+        histories.push(
+          ...(await (
+            typeof executor?.describe === "function"
+              ? executor.describe
+              : describe
+          )(ctx, executes)),
+        );
       }
-      histories.push(
-        ...(await (
-          executor?.describe ?? describe
-        )(ctx, executes)),
-      );
       if (executes.length === 0 || ctx.stack.length === 0) {
         break;
       }

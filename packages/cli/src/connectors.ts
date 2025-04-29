@@ -4,7 +4,9 @@
  */
 
 import type { Tagged, UnwrapTagged } from "type-fest";
+
 import typia from "typia";
+
 import { capitalize } from "./utils";
 
 const CONNECTORS_LIST_URL = "https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json";
@@ -19,17 +21,40 @@ export type Service = Tagged<string, "Service">;
 /** Connector name. String literal type. */
 export type Connector = `${typeof CONNECTOR_PREFIX}${Service}`;
 
+/** Environment variable name. String literal type. */
+export type Env = Tagged<string, "Env">;
+
+export interface EnvInfo {
+  key: Env;
+  value: string;
+}
+
+/** Connector info. */
+export interface ConnectorInfo {
+  name: Connector;
+  envList: Env[];
+}
+
 /** Unwrap tagged service type because typia doesn't support tagged types */
 export type UnwrapTaggedService = UnwrapTagged<Service>;
 export type UnwrapTaggedConnector = `${typeof CONNECTOR_PREFIX}${UnwrapTaggedService}`;
+export type UnwrapTaggedEnv = UnwrapTagged<Env>;
+export interface UnwrapTaggedEnvInfo {
+  key: UnwrapTaggedEnv;
+  value: string;
+}
+export interface UnwrapTaggedConnectorInfo {
+  name: UnwrapTaggedConnector;
+  envList: string[];
+}
 
 interface Connectors {
-  connectors: Connector[];
+  connectors: ConnectorInfo[];
   version: string;
 }
 
 interface UnwrapTaggedConnectors {
-  connectors: UnwrapTaggedConnector[];
+  connectors: UnwrapTaggedConnectorInfo[];
   version: string;
 }
 
@@ -60,6 +85,9 @@ interface GetConnectorsReturn {
 
   /** capitalized service name with spaces */
   displayName: string;
+
+  /** environment variables */
+  envList: Env[];
 };
 
 /**
@@ -74,13 +102,14 @@ interface GetConnectorsReturn {
 export async function getConnectors(): Promise<GetConnectorsReturn[]> {
   const data = await getConnectorsList();
   return data.connectors
-    .map((name) => {
+    .map(({ name, envList }) => {
       const serviceName = connectorToService(name);
       const displayName = serviceName.replace("-", " ").toUpperCase();
       return {
         packageName: name,
         serviceName,
         displayName,
+        envList,
       };
     });
 }

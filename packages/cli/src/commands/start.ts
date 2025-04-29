@@ -3,29 +3,37 @@
  * Start command
  */
 
-import type { SimplifyDeep } from "type-fest";
-import type { Service, UnwrapTaggedService } from "../connectors";
-import type { PackageManager } from "../packages";
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import process from "node:process";
+
+import type { SimplifyDeep } from "type-fest";
+
 import * as p from "@clack/prompts";
 import * as picocolors from "picocolors";
 import typia from "typia";
+
+import type { EnvInfo, Service, UnwrapTaggedEnvInfo, UnwrapTaggedService } from "../connectors";
+import type { PackageManager } from "../packages";
+
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand, runCommand } from "../packages";
 import { execAsync, formatWithPrettier } from "../utils";
 
+export const START_TEMPLATES = [
+  "nodejs",
+  "nestjs",
+  "react",
+  "react-native",
+  "standalone",
+  "nestjs+react",
+  "nodejs+react",
+] as const satisfies readonly string[];
+
 /** supported starter templates */
-export type StarterTemplate =
-  | "nodejs"
-  | "nestjs"
-  | "react"
-  | "standalone"
-  | "nestjs+react"
-  | "nodejs+react";
+export type StarterTemplate = typeof START_TEMPLATES[number];
 
 /**
  * Start command options
@@ -42,14 +50,14 @@ interface Context {
   packageManager: PackageManager;
   template: StarterTemplate;
   services: Service[];
+  envList?: EnvInfo[];
   openAIKey: string | null;
   port?: number;
-
 }
 
 interface SetupProjectOptions {
   projectAbsolutePath: string;
-  context: Pick<Context, "packageManager" | "services" | "openAIKey" | "port">;
+  context: Pick<Context, "packageManager" | "services" | "openAIKey" | "port" | "envList">;
 }
 
 interface InstallDependenciesOptions {
@@ -60,10 +68,9 @@ interface InstallDependenciesOptions {
 
 /** dependencies for the project */
 async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
-  // in case service is empty we add dummy package. we use typescript for sure, so we use it.
-  const pkg = ([...services.map(service => serviceToConnector(service))]).join(" ");
+  /* if no services are selected, undefined is passed to the package manager */
+  const pkg = services.length > 0 ? ([...services.map(service => serviceToConnector(service))]).join(" ") : undefined;
   const command = installCommand({ packageManager, pkg });
-  const prepareCommand = runCommand({ packageManager, command: "prepare" });
 
   const s = p.spinner();
 
@@ -72,6 +79,16 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
   await execAsync(command, {
     cwd: projectAbsolutePath,
   });
+
+  s.stop("✅ Package installation completed");
+}
+
+async function runPrepareCommand({ packageManager, projectAbsolutePath }: Pick<InstallDependenciesOptions, "packageManager" | "projectAbsolutePath">): Promise<void> {
+  const prepareCommand = runCommand({ packageManager, command: "prepare" });
+
+  const s = p.spinner();
+
+  s.start("📦 Package installation in progress...");
 
   await execAsync(prepareCommand, {
     cwd: projectAbsolutePath,
@@ -85,7 +102,7 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
  */
 async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "template">): Promise<Context> {
   /** store context for the start command */
-  const context: Partial<Context> = { template: defaultTemplate };
+  const context: Partial<Context> = { template: defaultTemplate, services: [] };
 
   // Ask for project directory
   {
@@ -140,6 +157,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
         { value: "nodejs", label: `NodeJS ${picocolors.blueBright("Agent Server")}` },
         { value: "nestjs", label: `NestJS ${picocolors.blueBright("Agent Server")}` },
         { value: "react", label: `React ${picocolors.blueBright("Application")}` },
+        { value: "react-native", label: `React Native ${picocolors.blueBright("Application")}` },
         { value: "nestjs+react", label: `NestJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
         { value: "nodejs+react", label: `NodeJS + React ${picocolors.blueBright("Agent Server + Client Application")}` },
       ] as const satisfies { value: StarterTemplate; label: string }[],
@@ -185,6 +203,60 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       process.exit(0);
     }
     context.services = services;
+
+    // Ask for environment variables
+    const envList = Array.from(new Set(connectors.filter(c => services.includes(c.serviceName)).flatMap((c) => {
+      return c.envList;
+    })));
+
+    const isConfirm = await p.confirm({
+      message: `Do you want to enter environment variables? (Number of environment variables to enter: ${envList.length})
+        ${picocolors.cyan("If you press <ctrl+c>, you can skip this step.")}`,
+      initialValue: false,
+    });
+
+    const envInfos: EnvInfo[] = [];
+
+    if (p.isCancel(isConfirm) || !isConfirm) {
+      envList.forEach((env) => {
+        envInfos.push({
+          key: env,
+          value: "",
+        });
+      });
+
+      p.cancel("Skipping environment variables input.");
+    }
+    else {
+      for (let i = 0; i < envList.length; i++) {
+        const env = envList[i];
+
+        const envValue = await p.text({
+          message: `${env}: `,
+          defaultValue: "",
+        });
+
+        if (p.isCancel(envValue)) {
+          const canceledEnvList = envList.splice(i);
+          canceledEnvList.forEach((env) => {
+            envInfos.push({
+              key: env,
+              value: "",
+            });
+          });
+
+          p.cancel(`Skipping environment variables input: ${canceledEnvList.slice(0, 3).join(", ")}... (count: ${canceledEnvList.length})`);
+          break;
+        }
+
+        envInfos.push({
+          key: env,
+          value: envValue,
+        });
+      }
+    }
+
+    context.envList = envInfos;
   }
 
   // Ask for openAI key
@@ -204,6 +276,7 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
       if (p.isCancel(openAIKey)) {
         process.exit(0);
       }
+
       context.openAIKey = openAIKey;
     }
     else {
@@ -213,9 +286,10 @@ async function askQuestions({ template: defaultTemplate }: Pick<StartOptions, "t
 
   try {
     /** create a unwrapped context because typia doesn't support tagged types */
-    type UnwrappedContext = SimplifyDeep<Omit<Context, "services"> & { services: UnwrapTaggedService[] }>;
+    type UnwrappedContext = SimplifyDeep<Omit<Context, "services" | "envList"> & { services: UnwrapTaggedService[]; envList?: UnwrapTaggedEnvInfo[] }>;
     typia.assertGuard<UnwrappedContext>(context);
   }
+
   catch (e) {
     throw new Error(`❌ ${(e as string).toString()}`);
   }
@@ -250,8 +324,9 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     apiKeys: [{
       key: "OPENAI_API_KEY",
       value: context.openAIKey ?? "",
-    }],
+    }, ...(context.envList ?? [])],
   });
+
   p.log.success("✅ .env created");
 
   // install dependencies
@@ -259,6 +334,12 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
+  });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
   });
 }
 
@@ -301,7 +382,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "PORT",
       value: context.port?.toString() ?? "3000",
-    }],
+    }, ...(context.envList ?? [])],
   });
   p.log.success("✅ .env created");
 
@@ -310,6 +391,12 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
+  });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
   });
 }
 
@@ -354,7 +441,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     }, {
       key: "API_PORT",
       value: context.port?.toString() ?? "3000",
-    }],
+    }, ...(context.envList ?? [])],
   });
   p.log.success("✅ .env created");
 
@@ -363,6 +450,12 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     packageManager: context.packageManager,
     projectAbsolutePath,
     services: context.services,
+  });
+
+  // run prepare command
+  await runPrepareCommand({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
   });
 }
 
@@ -383,6 +476,31 @@ export async function setupReactProject({ projectAbsolutePath, context }: SetupP
     }, {
       key: "VITE_AGENTICA_WS_URL",
       value: `ws://localhost:${context.port}/chat`,
+    }],
+  });
+  p.log.success("✅ .env created");
+
+  // install dependencies
+  await installServicesAsDependencies({
+    packageManager: context.packageManager,
+    projectAbsolutePath,
+    services: context.services,
+  });
+}
+export async function setupReactNativeProject({ projectAbsolutePath, context }: SetupProjectOptions): Promise<void> {
+  // download and place template in project
+  await downloadTemplateAndPlaceInProject({
+    template: "react-native",
+    project: projectAbsolutePath,
+  });
+  p.log.success("✅ Template downloaded");
+
+  // write .env file
+  await writeEnvKeysToDotEnv({
+    projectPath: projectAbsolutePath,
+    apiKeys: [{
+      key: "OPENAI_API_KEY",
+      value: context.openAIKey ?? "",
     }],
   });
   p.log.success("✅ .env created");
@@ -419,6 +537,12 @@ export async function start({ template }: StartOptions) {
     case "react":
       await setupReactProject({ projectAbsolutePath, context });
       break;
+    case "react-native":
+      await setupReactNativeProject({
+        projectAbsolutePath,
+        context,
+      });
+      break;
     case "nestjs+react":
       // nestjs+rect project is a combination of nestjs and react projects
       await setupNestJSProject({
@@ -449,6 +573,6 @@ export async function start({ template }: StartOptions) {
 
   p.outro(`
 🎉 Project ${projectAbsolutePath} created
-⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in agent.ts or index.ts
+⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in index.ts
 `);
 }

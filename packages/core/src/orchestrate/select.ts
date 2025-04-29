@@ -1,27 +1,29 @@
-import typia from "typia";
-import { v4 } from "uuid";
-
 import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
+
+import typia from "typia";
+import { v4 } from "uuid";
+
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
 import type { __IChatSelectFunctionsApplication } from "../context/internal/__IChatSelectFunctionsApplication";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
-import type { AgenticaPrompt } from "../prompts/AgenticaPrompt";
-import type { AgenticaSelectPrompt } from "../prompts/AgenticaSelectPrompt";
-import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import type { AgenticaTextPrompt } from "../prompts/AgenticaTextPrompt";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
+import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { StreamUtil } from "../utils/StreamUtil";
-import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { createSelectPrompt, createTextPrompt, decodePrompt } from "../factory/prompts";
-import { createOperationSelection } from "../factory/operations";
 import { createTextEvent } from "../factory/events";
+import { createSelectHistory, createTextHistory, decodeHistory } from "../factory/histories";
+import { createOperationSelection } from "../factory/operations";
+import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
+import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
+
 import { selectFunction } from "./internal/selectFunction";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
@@ -35,7 +37,7 @@ interface IFailure {
   validation: IValidation.IFailure;
 }
 
-export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaPrompt<Model>[]> {
+export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
@@ -43,7 +45,7 @@ export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   const stacks: AgenticaOperationSelection<Model>[][]
       = ctx.operations.divided.map(() => []);
   const events: AgenticaEvent<Model>[] = [];
-  const prompts: AgenticaPrompt<Model>[][] = await Promise.all(
+  const prompts: AgenticaHistory<Model>[][] = await Promise.all(
     ctx.operations.divided.map(async (operations, i) =>
       step(
         {
@@ -80,7 +82,7 @@ export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   }
 
   // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaSelectPrompt<Model> = createSelectPrompt({
+  const collection: AgenticaSelectHistory<Model> = createSelectHistory({
     id: v4(),
     selections: [],
   });
@@ -96,7 +98,7 @@ export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   return [collection];
 }
 
-async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, operations: AgenticaOperation<Model>[], retry: number, failures?: IFailure[]): Promise<AgenticaPrompt<Model>[]> {
+async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, operations: AgenticaOperation<Model>[], retry: number, failures?: IFailure[]): Promise<AgenticaHistory<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -139,7 +141,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           ),
         },
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodePrompt).flat(),
+        ...ctx.histories.map(decodeHistory).flat(),
         // USER INPUT
         {
           role: "user",
@@ -207,7 +209,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
   // ----
   // PROCESS COMPLETION
   // ----
-  const prompts: AgenticaPrompt<Model>[] = [];
+  const prompts: AgenticaHistory<Model>[] = [];
   for (const choice of completion.choices) {
     // TOOL CALLING HANDLER
     if (choice.message.tool_calls != null) {
@@ -225,8 +227,8 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
           continue;
         }
 
-        const collection: AgenticaSelectPrompt<Model>
-              = createSelectPrompt({
+        const collection: AgenticaSelectHistory<Model>
+              = createSelectHistory({
                 id: tc.id,
                 selections: [],
               });
@@ -256,22 +258,23 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
+      && choice.message.content.length !== 0
     ) {
-      const text: AgenticaTextPrompt = createTextPrompt({
+      const text: AgenticaTextHistory = createTextHistory({
         role: "assistant",
         text: choice.message.content,
       });
       prompts.push(text);
 
-      await ctx.dispatch(
+      ctx.dispatch(
         createTextEvent({
           role: "assistant",
-          stream: StreamUtil.to(text.text),
+          stream: toAsyncGenerator(text.text),
           join: async () => Promise.resolve(text.text),
           done: () => true,
           get: () => text.text,
         }),
-      );
+      ).catch(() => {});
     }
   }
 

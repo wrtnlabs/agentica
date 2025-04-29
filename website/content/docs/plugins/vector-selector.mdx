@@ -1,0 +1,274 @@
+---
+title: Agentica > Guide Documents > Plugin Modules > Vector Selector
+---
+import { Tabs } from "nextra/components";
+
+# Vector Selector
+
+## Introduction
+
+The Vector Selector is a powerful tool designed to optimize function selection in Agentica by significantly reducing token consumption. By leveraging Vector Semantic Search technology, it embeds text into a high-dimensional vector space, enabling efficient semantic similarity-based searches.
+
+Key benefits (based on 100 trials from [vector-selector-benchmark](https://github.com/wrtnlabs/agentica/tree/main/benchmark/vector-selector-benchmark)):
+- **Token Efficiency**: Reduces token consumption by approximately 70% compared to plain function calling (2.9M → 0.9M tokens)
+- **Improved Accuracy**: Increases success rate from 75% to 91-93% compared to plain function calling
+- **Performance**: 
+  - PostgreSQL: ~19.4s average response time
+  - SQLite: ~14.3s average response time (faster than PostgreSQL)
+  - Both options are slightly slower than plain function calling (~10s) but provide better accuracy and token efficiency
+
+## Installation
+
+```bash copy
+npm install @agentica/vector-selector
+```
+
+## Usage
+
+Simply replace the existing `executor.select` with the `selectorExecute` function.
+
+```typescript copy
+import { Agentica } from "@agentica/core";
+import { AgenticaVectorSelector } from "@agentica/vector-selector";
+import typia from "typia";
+
+// Initialize the vector selector
+const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
+  // Configuration options
+});
+
+const agent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: process.env.CHATGPT_API_KEY,
+    }),
+  },
+  controllers: [
+    await fetch(
+      "https://shopping-be.wrtn.ai/editor/swagger.json",
+    ).then(r => r.json()),
+    typia.llm.application<ShoppingCounselor>(),
+    typia.llm.application<ShoppingPolicy>(),
+    typia.llm.application<ShoppingSearchRag>(),
+  ],
+  config: {
+    executor: {
+      select: selectorExecute, // Replace the existing selector
+    }
+  }
+});
+await agent.conversate("I wanna buy MacBook Pro");
+```
+
+## Setup
+
+### Basic Setup
+
+For basic usage, you can initialize the vector selector with minimal configuration:
+
+```typescript copy
+const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
+  // Basic configuration options
+});
+```
+
+### Advanced Setup
+
+For more advanced use cases, you can configure additional options:
+
+```typescript copy
+const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
+  // Advanced configuration options
+  experimental: {
+    select_prompt: "Custom prompt for function selection",
+    // Additional experimental features
+  }
+});
+```
+
+### Vector Store Setup
+
+<Tabs items={["PostgreSQL", "SQLite", "Custom"]}>
+  <Tabs.Tab>
+    To use PostgreSQL with vector extension for enhanced performance, you'll need to set up both PostgreSQL and the connector-hive server:
+
+    1. First, set up PostgreSQL with vector extension:
+
+    ```bash copy
+    docker run -d \
+      --name postgres-vector \
+      -e POSTGRES_USER=your_user \
+      -e POSTGRES_PASSWORD=your_password \
+      -e POSTGRES_DB=your_database \
+      -p 5432:5432 \
+      pgvector/pgvector
+    ```
+
+    2. Set up the environment variables for connector-hive:
+
+    ```env copy
+    PROJECT_API_PORT=37001
+    DATABASE_URL=postgresql://your_user:your_password@host.docker.internal:5432/your_database
+    COHERE_API_KEY=your_cohere_api_key
+    API_KEY=your_optional_api_key  # Optional: If set, all requests except GET /health must include this key
+    ```
+
+    3. Run the connector-hive server:
+
+    ```bash copy
+    docker pull ghcr.io/wrtnlabs/connector-hive:latest && \
+    docker run -d \
+      --name connector-hive \
+      --env-file .env \
+      -p 37001:37001 \
+      ghcr.io/wrtnlabs/connector-hive:latest
+    ```
+
+    4. Configure the vector selector with PostgreSQL:
+
+    ```typescript copy
+    import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+    import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
+
+    // Check if connector-hive is running
+    if (!(await fetch(`${connectorHiveUrl}/health`).catch(() => ({ ok: false }))).ok) {
+      throw new Error("Connector Hive is not running");
+    }
+
+    const selectorExecute = BootAgenticaVectorSelector({
+      strategy: configurePostgresStrategy<"chatgpt">({
+        host: connectorHiveUrl,
+      }),
+    });
+
+    const agent = new Agentica({
+      // ... other configurations
+      config: {
+        executor: {
+          select: selectorExecute,
+        }
+      }
+    });
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    For a lightweight alternative, you can use SQLite with vector support:
+
+    1. Install the required dependencies:
+
+    ```bash copy
+    npm install better-sqlite3
+    ```
+
+    2. Configure the vector selector with SQLite:
+
+    ```typescript copy
+    import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+    import { configureSqliteStrategy } from "@agentica/vector-selector/strategy";
+    import Database from "better-sqlite3";
+
+    // Initialize SQLite database
+    const db = new Database("vector-store.sqlite");
+
+    const selectorExecute = BootAgenticaVectorSelector({
+      strategy: configureSqliteStrategy<"chatgpt">({
+        db: db,
+        cohereApiKey: process.env.COHERE_API_KEY,
+      }),
+    });
+
+    const agent = new Agentica({
+      // ... other configurations
+      config: {
+        executor: {
+          select: selectorExecute,
+        }
+      }
+    });
+
+    // Optional: Warm up the vector selector
+    const ctxForWarming = agent.getContext({
+      prompt: {
+        role: "user",
+        text: "warming",
+        type: "text",
+        toJSON: () => ({
+          role: "user",
+          text: "warming",
+          type: "text",
+        }),
+      },
+      usage: AgenticaTokenUsage.zero(),
+    });
+    await selectorExecute(ctxForWarming);
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    You can implement your own vector selector strategy by implementing the `IAgenticaVectorSelectorStrategy` interface:
+
+    ```typescript copy
+    import { IAgenticaVectorSelectorStrategy } from "@agentica/vector-selector";
+    import type { AgenticaContext } from "@agentica/core";
+
+    class CustomVectorSelector implements IAgenticaVectorSelectorStrategy<"chatgpt"> {
+      async searchTool(
+        ctx: AgenticaContext<"chatgpt">,
+        query: string
+      ): Promise<{
+        name: string;
+        description: string | undefined;
+      }[]> {
+        // Implement your custom tool search logic here
+        // This should return a list of tools that match the query
+        return [];
+      }
+
+      async embedContext(props: {
+        ctx: AgenticaContext<"chatgpt">;
+        setEmbedded: () => void;
+      }): Promise<void> {
+        // Implement your custom context embedding logic here
+        // This is called when the context needs to be embedded into vector space
+      }
+    }
+
+    // Use your custom strategy
+    const selectorExecute = BootAgenticaVectorSelector({
+      strategy: new CustomVectorSelector(),
+    });
+
+    const agent = new Agentica({
+      // ... other configurations
+      config: {
+        executor: {
+          select: selectorExecute,
+        }
+      }
+    });
+    ```
+
+    The `IAgenticaVectorSelectorStrategy` interface requires two methods:
+
+    1. `searchTool`: Searches for tools based on a query string
+       - Takes a context and query string as input
+       - Returns a promise of tool list with name and description
+
+    2. `embedContext`: Embeds the context into vector space
+       - Takes context and a callback to mark context as embedded
+       - Returns a promise that resolves when embedding is complete
+
+    You can implement these methods to use any vector database or search engine of your choice.
+  </Tabs.Tab>
+</Tabs>
+
+## How It Works
+
+The Vector Selector operates through the following process:
+
+1. Converts input text into high-dimensional vectors
+2. Performs semantic similarity search in the vector space
+3. Selects and executes the most appropriate function based on similarity scores
+
+

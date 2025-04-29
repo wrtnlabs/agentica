@@ -1,0 +1,87 @@
+{
+  "name": "@agentica/vector-selector",
+  "version": "0.21.0",
+  "author": "Wrtn Technologies",
+  "license": "MIT",
+  "homepage": "https://wrtnlabs.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wrtnlabs/agentica"
+  },
+  "bugs": {
+    "url": "https://github.com/wrtnlabs/agent/issues"
+  },
+  "keywords": [
+    "openai",
+    "chatgpt",
+    "anthropic",
+    "claude",
+    "ai",
+    "chatbot",
+    "nestia",
+    "swagger",
+    "openapi"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./strategy": "./src/strategy/index.ts"
+  },
+  "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js",
+    "module": "lib/index.mjs",
+    "typings": "lib/index.d.ts",
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./lib/index.d.ts",
+        "require": "./lib/index.js",
+        "default": "./lib/index.mjs"
+      },
+      "./strategy": {
+        "types": "./lib/strategy/index.d.ts",
+        "require": "./lib/strategy/index.js",
+        "default": "./lib/strategy/index.mjs"
+      }
+    }
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "lib",
+    "package.json",
+    "prompts",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p ./tsconfig.build.json && rollup -c",
+    "prepack": "pnpm run build",
+    "lint": "eslint .",
+    "format": "eslint --fix .",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "@agentica/core": "workspace:^"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.8.0",
+    "@wrtnlabs/connector-hive-api": "^1.5.0",
+    "better-sqlite3": "^11.9.1",
+    "cohere-ai": "^7.17.1",
+    "sqlite-vec": "0.1.7-alpha.2"
+  },
+  "devDependencies": {
+    "@agentica/core": "workspace:^",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@samchon/openapi": "catalog:typia",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.10.5",
+    "json-schema-to-ts": "^3.1.1",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.29.1",
+    "type-fest": "catalog:libs",
+    "typescript": "catalog:typescript",
+    "vitest": "catalog:vite"
+  }
+}

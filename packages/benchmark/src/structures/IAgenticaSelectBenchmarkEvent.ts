@@ -6,7 +6,7 @@
  */
 import type {
   AgenticaOperationSelection,
-  AgenticaTextPrompt,
+  AgenticaTextHistory,
   AgenticaTokenUsage,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
@@ -61,7 +61,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaTextPrompt<"assistant">[];
+    assistantPrompts: AgenticaTextHistory<"assistant">[];
   }
 
   /**
@@ -85,7 +85,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaTextPrompt<"assistant">[];
+    assistantPrompts: AgenticaTextHistory<"assistant">[];
   }
 
   /**

@@ -1,0 +1,31 @@
+```typescript filename="src/main.claude.ts" showLineNumbers {13-19, 24}
+import { 
+  Agentica,
+  IAgenticaController,
+  IAgenticaProps,
+  IAgenticaVendor
+} from "@agentica/core";
+import OpenAI from "openai";
+ 
+import { BbsArticleService } from "./services/BbsArticleService";
+ 
+const agent: Agentica<"3.1"> = new Agentica({
+  model: "3.1",
+  vendor: {
+    model: "mistralai/mistral-small-3.1-24b-instruct",
+    api: new OpenAI({
+      apiKey: "********",
+      baseURL: "https://openrouter.ai/api/v1",
+    }),
+  } satisfies IAgenticaVendor,
+  controllers: [
+    {
+      protocol: "http",
+      name: "class",
+      application: typia.llm.application<BbsArticleService, "3.1">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController<"3.1">,
+  ]
+} satisfies IAgenticaProps<"3.1">);
+await agent.conversate("I wanna buy MacBook Pro");
+```

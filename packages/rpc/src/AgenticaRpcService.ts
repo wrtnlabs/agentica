@@ -1,6 +1,5 @@
 import type { Agentica, IAgenticaController } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
-import type { Primitive } from "typia";
 
 import type { IAgenticaRpcListener } from "./IAgenticaRpcListener";
 import type { IAgenticaRpcService } from "./IAgenticaRpcService";
@@ -59,26 +58,36 @@ implements IAgenticaRpcService<Model> {
     const { agent, listener } = props;
 
     // ESSENTIAL LISTENERS
-    agent.on("text", async evt =>
-      listener.text(Object.assign(primitive(evt), { text: await evt.join() })));
-    agent.on("describe", async evt =>
-      listener.describe(
-        Object.assign(primitive(evt), { text: await evt.join() }),
-      ));
+    agent.on("text", async (evt) => {
+      await evt.join();
+      listener.text(evt.toJSON()).catch(() => {});
+    });
+    agent.on("describe", async (evt) => {
+      await evt.join();
+      listener.describe(evt.toJSON()).catch(() => {});
+    });
 
     // OPTIONAL LISTENERS
-    agent.on("initialize", async evt => listener.initialize!(primitive(evt)));
-    agent.on("select", async evt => listener.select!(primitive(evt)));
-    agent.on("cancel", async evt => listener.cancel!(primitive(evt)));
+    agent.on("initialize", async (evt) => {
+      listener.initialize!(evt.toJSON()).catch(() => {});
+    });
+    agent.on("select", async (evt) => {
+      listener.select!(evt.toJSON()).catch(() => {});
+    });
+    agent.on("cancel", async (evt) => {
+      listener.cancel!(evt.toJSON()).catch(() => {});
+    });
     agent.on("call", async (evt) => {
-      const args: object | null | undefined = await listener.call!(
-        primitive(evt),
+      const args: object | null | undefined | void = await listener.call!(
+        evt.toJSON(),
       );
       if (args != null) {
         evt.arguments = args;
       }
     });
-    agent.on("execute", async evt => listener.execute!(primitive(evt)));
+    agent.on("execute", async (evt) => {
+      listener.execute!(evt.toJSON()).catch(() => {});
+    });
   }
 
   /**
@@ -110,11 +119,4 @@ export namespace AgenticaRpcService {
      */
     listener: IAgenticaRpcListener;
   }
-}
-
-/**
- * @internal
- */
-function primitive<T>(obj: T): Primitive<T> {
-  return JSON.parse(JSON.stringify(obj)) as Primitive<T>;
 }

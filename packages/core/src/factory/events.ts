@@ -1,24 +1,25 @@
-import { v4 } from "uuid";
-
 import type { ILlmSchema, IValidation } from "@samchon/openapi";
 import type OpenAI from "openai";
+
+import { v4 } from "uuid";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
+import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent";
 import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "../events/AgenticaResponseEvent";
-import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
-import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
-import type { AgenticaExecutePrompt } from "../prompts/AgenticaExecutePrompt";
-import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
+import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
+import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { createExecutePrompt, createSelectPrompt } from "./prompts";
+import { createExecuteHistory, createSelectHistory } from "./histories";
 
 /* -----------------------------------------------------------
   FUNCTION SELECTS
@@ -43,7 +44,7 @@ export function createSelectEvent<Model extends ILlmSchema.Model>(props: {
       type: "select",
       selection: props.selection.toJSON(),
     }),
-    toPrompt: () => createSelectPrompt({
+    toHistory: () => createSelectHistory({
       id: v4(),
       selections: [props.selection],
     }),
@@ -125,8 +126,8 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
       arguments: props.arguments,
       value: props.value,
     }),
-    toPrompt: () =>
-      createExecutePrompt(props) as AgenticaExecutePrompt.Class<Model>,
+    toHistory: () =>
+      createExecuteHistory(props) as AgenticaExecuteHistory.Class<Model>,
   };
 }
 
@@ -135,7 +136,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
 ----------------------------------------------------------- */
 export function createTextEvent<Role extends "user" | "assistant">(props: {
   role: Role;
-  stream: ReadableStream<string>;
+  stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
@@ -151,7 +152,7 @@ export function createTextEvent<Role extends "user" | "assistant">(props: {
       done: props.done(),
       text: props.get(),
     }),
-    toPrompt: () => ({
+    toHistory: () => ({
       type: "text",
       role: props.role,
       text: props.get(),
@@ -165,8 +166,8 @@ export function createTextEvent<Role extends "user" | "assistant">(props: {
 }
 
 export function createDescribeEvent<Model extends ILlmSchema.Model>(props: {
-  executes: AgenticaExecutePrompt<Model>[];
-  stream: ReadableStream<string>;
+  executes: AgenticaExecuteHistory<Model>[];
+  stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
@@ -182,7 +183,7 @@ export function createDescribeEvent<Model extends ILlmSchema.Model>(props: {
       done: props.done(),
       text: props.get(),
     }),
-    toPrompt: () => ({
+    toHistory: () => ({
       type: "describe",
       executes: props.executes,
       text: props.get(),
@@ -215,7 +216,7 @@ export function createResponseEvent(props: {
   source: AgenticaEventSource;
   body: OpenAI.ChatCompletionCreateParamsStreaming;
   options?: OpenAI.RequestOptions | undefined;
-  stream: ReadableStream<OpenAI.ChatCompletionChunk>;
+  stream: AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>;
   join: () => Promise<OpenAI.ChatCompletion>;
 }): AgenticaResponseEvent {
   return {

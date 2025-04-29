@@ -1,11 +1,13 @@
+import process from "node:process";
+
+import * as p from "@clack/prompts";
+import { Command, Option } from "commander";
+import * as picocolors from "picocolors";
+
 import type { StarterTemplate } from "./commands/start";
 
-import process from "node:process";
-import * as p from "@clack/prompts";
-import { Command } from "commander";
-import * as picocolors from "picocolors";
-import typia from "typia";
 import { start } from "./commands";
+import { START_TEMPLATES } from "./commands/start";
 
 interface CliOptions {
   project?: StarterTemplate;
@@ -26,26 +28,14 @@ program
 program
   .command("start")
   .description("Start a new project")
-  .option(
-    "-p, --project [nodejs|nestjs|react|nestjs+react|standalone]",
-    "The project type",
+  .addOption(
+    new Option(
+      "-p, --project <project>",
+      "The project type",
+    )
+      .choices(START_TEMPLATES),
   )
   .action(async (options: CliOptions) => {
-    if ((options.project as any) === true) {
-      p.log.error(
-        `\n❌ The value of ${picocolors.redBright("--project")} is required`,
-      );
-      return;
-    }
-
-    /** check valid project type */
-    if (!typia.is<StarterTemplate | undefined>(options.project)) {
-      p.log.error(
-        `\n❌ The value of ${picocolors.redBright("--project")} is invalid`,
-      );
-      return;
-    }
-
     p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
 
     await start({ template: options.project });

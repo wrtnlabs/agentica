@@ -1,6 +1,6 @@
 {
   "name": "@agentica/station",
-  "version": "0.15.3",
+  "version": "0.21.0",
   "private": true,
   "packageManager": "pnpm@10.6.4",
   "description": "Agentic AI library specialized in LLM Function Calling",
@@ -42,7 +42,7 @@
     "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
     "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
     "preinstall": "npx only-allow pnpm",
-    "release": "bumpp",
+    "release": "node deploy/sync_readme.js && bumpp",
     "lint": "pnpm --no-bail --aggregate-output /^lint:/",
     "lint:root": "eslint .",
     "lint:submodules": "pnpm --parallel -r --no-bail --aggregate-output /^lint/",
@@ -55,10 +55,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
-    "@wrtnlabs/eslint-config": "^0.4.2",
+    "@wrtnlabs/eslint-config": "^0.4.3",
     "bumpp": "^10.1.0",
     "eslint": "^9.23.0",
     "eslint-plugin-format": "^1.0.1",
+    "js-yaml": "^4.1.0",
     "rimraf": "^6.0.1",
     "typedoc": "^0.27.7",
     "typedoc-github-theme": "^0.2.1"

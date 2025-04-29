@@ -1,13 +1,14 @@
-import { AgenticaTextPrompt } from "@agentica/core";
+import type { AgenticaTextHistory } from "@agentica/core";
+
 import FaceIcon from "@mui/icons-material/Face";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export const AgenticaChatTextMessageMovie = ({
+export function AgenticaChatTextMessageMovie({
   prompt,
-}: AgenticaChatTextMessageMovie.IProps) => {
+}: AgenticaChatTextMessageMovie.IProps) {
   return (
     <div
       style={{
@@ -38,9 +39,9 @@ export const AgenticaChatTextMessageMovie = ({
       </Card>
     </div>
   );
-};
+}
 export namespace AgenticaChatTextMessageMovie {
   export interface IProps {
-    prompt: AgenticaTextPrompt;
+    prompt: AgenticaTextHistory;
   }
 }

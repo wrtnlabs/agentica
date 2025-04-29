@@ -17,7 +17,7 @@ export interface AgenticaResponseEvent extends AgenticaEventBase<"response"> {
   /**
    * The text content stream.
    */
-  stream: ReadableStream<OpenAI.ChatCompletionChunk>;
+  stream: AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>;
 
   /**
    * Options for the request.
