@@ -212,7 +212,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
         ref={bodyContainerRef}
       >
         {histories
-          .map(prompt => <AgenticaChatMessageMovie prompt={prompt} />)
+          .map((prompt, index) => <AgenticaChatMessageMovie key={index} prompt={prompt} />)
           .filter(elem => elem !== null)}
       </Container>
     </div>

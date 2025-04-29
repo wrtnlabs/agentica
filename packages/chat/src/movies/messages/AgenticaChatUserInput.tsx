@@ -1,6 +1,6 @@
 import type { AgenticaUserInputHistory } from "@agentica/core/src/histories/AgenticaUserInputHistory";
 
-import SmartToyIcon from "@mui/icons-material/SmartToy";
+import FaceIcon from "@mui/icons-material/Face";
 import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
@@ -12,7 +12,7 @@ export function AgenticaChatUserInput({
     <div
       style={{
         display: "flex",
-        justifyContent: "flex-start",
+        justifyContent: "flex-end",
       }}
     >
       {
@@ -25,17 +25,18 @@ export function AgenticaChatUserInput({
                   style={{
                     marginTop: 15,
                     marginBottom: 15,
-                    marginRight: "15%",
-                    textAlign: "left",
+                    marginLeft: "15%",
+                    textAlign: "right",
+                    backgroundColor: "lightyellow",
                   }}
                 >
 
                   <CardContent>
                     <Chip
-                      icon={<SmartToyIcon />}
-                      label="Assistant"
+                      icon={<FaceIcon />}
+                      label="User"
                       variant="outlined"
-                      color="success"
+                      color="primary"
                     />
                     <MarkdownViewer>{content.text}</MarkdownViewer>
                   </CardContent>
