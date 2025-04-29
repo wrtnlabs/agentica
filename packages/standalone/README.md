@@ -2,7 +2,7 @@
 
 <!-- https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488 -->
 
-![Logo](https://wrtnlabs.io/agentica/logo.png)
+![Logo](https://wrtnlabs.io/agentica/og.jpg?refresh)
 
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
@@ -147,9 +147,10 @@ flowchart
 
 Agentica enhances AI function calling by the following strategies:
 
-- [**JSON schema conversion**](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): Automatically handles specification differences between LLM vendors, ensuring seamless integration regardless of your chosen AI model.
-- [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): Detects and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
-- [**Selector Agent**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): Filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
+- [**Compiler Driven Development**](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development): constructs function calling schema automatically by compiler skills without hand-writing.
+- [**JSON Schema Conversion**](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): automatically handles specification differences between LLM vendors, ensuring seamless integration regardless of your chosen AI model.
+- [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): detects and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
+- [**Selector Agent**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
 
 Thanks to these innovations, Agentica makes AI function calling easier, safer, and more accurate than before. Development becomes more intuitive since you only need to prepare functions relevant to your specific use case, and scaling your agent's capabilities is as simple as adding or removing functions.
 
