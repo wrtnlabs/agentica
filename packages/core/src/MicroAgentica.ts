@@ -1,5 +1,4 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type { ChatCompletionContentPart } from "openai/resources";
 
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
@@ -108,7 +107,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * @param content The content to talk
    * @returns List of newly created histories
    */
-  public async conversate(content: string | ChatCompletionContentPart | Array<ChatCompletionContentPart>): Promise<MicroAgenticaHistory<Model>[]> {
+  public async conversate(content: string | AgenticaUserInputHistory.Contents | Array<AgenticaUserInputHistory.Contents>): Promise<MicroAgenticaHistory<Model>[]> {
     const talk = createUserInputHistory({
       contents: Array.isArray(content)
         ? content

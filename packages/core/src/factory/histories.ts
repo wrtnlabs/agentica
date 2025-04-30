@@ -1,6 +1,5 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { ChatCompletionContentPart } from "openai/resources";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
@@ -117,7 +116,7 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
   USER INPUT PROMPTS
 ----------------------------------------------------------- */
 export function createUserInputHistory(props: {
-  contents: Array<ChatCompletionContentPart>;
+  contents: Array<AgenticaUserInputHistory.Contents>;
 }): AgenticaUserInputHistory {
   return {
     type: "user_input",

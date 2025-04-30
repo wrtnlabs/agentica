@@ -1,6 +1,5 @@
 import type { ILlmSchema, IValidation } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { ChatCompletionContentPart } from "openai/resources";
 
 import { v4 } from "uuid";
 
@@ -19,6 +18,7 @@ import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 import type { AgenticaUserInputEvent } from "../events/AgenticaUserInputEvent";
 import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
 import { createExecuteHistory, createSelectHistory, createUserInputHistory } from "./histories";
@@ -37,7 +37,7 @@ export function createInitializeEvent(): AgenticaInitializeEvent {
 }
 
 export function createUserInputEvent(props: {
-  contents: Array<ChatCompletionContentPart>;
+  contents: Array<AgenticaUserInputHistory.Contents>;
 }): AgenticaUserInputEvent {
   return {
     type: "user_input",

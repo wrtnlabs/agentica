@@ -1,7 +1,7 @@
 import type OpenAI from "openai";
-import type { ChatCompletionContentPart } from "openai/resources";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
+import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 
 import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
@@ -44,7 +44,7 @@ export namespace IAgenticaEventJson {
    * Event of user input.
    */
   export interface IUserInput extends IBase<"user_input"> {
-    contents: Array<ChatCompletionContentPart>;
+    contents: Array<AgenticaUserInputHistory.Contents>;
   }
 
   /**

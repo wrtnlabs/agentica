@@ -1,4 +1,4 @@
-import type { ChatCompletionContentPart } from "openai/resources/chat/completions/completions";
+import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
@@ -36,7 +36,7 @@ export namespace IAgenticaHistoryJson {
     /**
      * User input.
      */
-    contents: Array<ChatCompletionContentPart>;
+    contents: Array<AgenticaUserInputHistory.Contents>;
   }
   /**
    * Select prompt.

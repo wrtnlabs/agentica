@@ -1,5 +1,4 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type { ChatCompletionContentPart } from "openai/resources/chat/completions";
 
 import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
@@ -127,7 +126,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @param content The content to talk
    * @returns List of newly created chat prompts
    */
-  public async conversate(content: string | ChatCompletionContentPart | Array<ChatCompletionContentPart>): Promise<AgenticaHistory<Model>[]> {
+  public async conversate(content: string | AgenticaUserInputHistory.Contents | Array<AgenticaUserInputHistory.Contents>): Promise<AgenticaHistory<Model>[]> {
     const prompt: AgenticaUserInputHistory = createUserInputHistory({
       contents: Array.isArray(content)
         ? content
