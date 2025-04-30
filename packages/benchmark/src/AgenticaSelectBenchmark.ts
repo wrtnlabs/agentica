@@ -3,7 +3,6 @@ import type {
   AgenticaContext,
   AgenticaHistory,
   AgenticaOperationSelection,
-  AgenticaTextHistory,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
@@ -154,10 +153,11 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
       const context = this.agent_.getContext({
-        // @todo core has to export `AgenticaPromptFactory`
-        prompt: factory.createTextHistory({
-          role: "user",
-          text: scenario.text,
+        prompt: factory.createUserInputHistory({
+          contents: [{
+            type: "text",
+            text: scenario.text,
+          }],
         }),
         usage,
       });
@@ -188,10 +188,8 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         selected,
         usage,
         assistantPrompts: histories
-          .filter(p => p.type === "text")
-          .filter(
-            (p): p is AgenticaTextHistory<"assistant"> => p.role === "assistant",
-          ),
+          // Only the assistant is allowed to emit text events.
+          .filter(p => p.type === "text"),
         started_at,
         completed_at: new Date(),
       } satisfies

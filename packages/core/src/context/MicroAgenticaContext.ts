@@ -2,7 +2,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import type { MicroAgenticaEvent } from "../events/MicroAgenticaEvent";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
 
@@ -66,7 +66,7 @@ export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
    * Text conversation written the by user through the
    * {@link Agentica.conversate} function.
    */
-  prompt: AgenticaTextHistory<"user">;
+  prompt: AgenticaUserInputHistory;
 
   // ----
   // HANDLERS

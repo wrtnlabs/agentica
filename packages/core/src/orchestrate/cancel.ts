@@ -141,7 +141,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.text,
+          content: ctx.prompt.contents,
         },
         // SYSTEM PROMPT
         {

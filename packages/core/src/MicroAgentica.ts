@@ -5,7 +5,7 @@ import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { MicroAgenticaEvent } from "./events/MicroAgenticaEvent";
 import type { AgenticaExecuteHistory } from "./histories/AgenticaExecuteHistory";
-import type { AgenticaTextHistory } from "./histories/AgenticaTextHistory";
+import type { AgenticaUserInputHistory } from "./histories/AgenticaUserInputHistory";
 import type { MicroAgenticaHistory } from "./histories/MicroAgenticaHistory";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
@@ -15,13 +15,13 @@ import type { IMicroAgenticaProps } from "./structures/IMicroAgenticaProps";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createRequestEvent, createTextEvent } from "./factory/events";
-import { createTextHistory } from "./factory/histories";
+import { createUserInputHistory } from "./factory";
+import { createRequestEvent, createUserInputEvent } from "./factory/events";
 import { call, describe } from "./orchestrate";
 import { AgenticaHistoryTransformer } from "./transformers/AgenticaHistoryTransformer";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
-import { streamDefaultReaderToAsyncGenerator, StreamUtil, toAsyncGenerator } from "./utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
 
 /**
  * Micro AI chatbot.
@@ -107,18 +107,20 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * @param content The content to talk
    * @returns List of newly created histories
    */
-  public async conversate(content: string): Promise<MicroAgenticaHistory<Model>[]> {
-    const talk: AgenticaTextHistory<"user"> = createTextHistory<"user">({
-      role: "user",
-      text: content,
+  public async conversate(content: string | AgenticaUserInputHistory.Contents | Array<AgenticaUserInputHistory.Contents>): Promise<MicroAgenticaHistory<Model>[]> {
+    const talk = createUserInputHistory({
+      contents: Array.isArray(content)
+        ? content
+        : typeof content === "string"
+          ? [{
+              type: "text",
+              text: content,
+            }]
+          : [content],
     });
     this.dispatch(
-      createTextEvent({
-        role: "user",
-        stream: toAsyncGenerator(content),
-        done: () => true,
-        get: () => content,
-        join: async () => Promise.resolve(content),
+      createUserInputEvent({
+        contents: talk.contents,
       }),
     ).catch(() => {});
 
@@ -192,7 +194,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * @internal
    */
   public getContext(props: {
-    prompt: AgenticaTextHistory<"user">;
+    prompt: AgenticaUserInputHistory;
     usage: AgenticaTokenUsage;
   }): MicroAgenticaContext<Model> {
     const dispatch = this.dispatch.bind(this);

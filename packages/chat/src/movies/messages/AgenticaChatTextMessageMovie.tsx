@@ -1,6 +1,5 @@
 import type { AgenticaTextHistory } from "@agentica/core";
 
-import FaceIcon from "@mui/icons-material/Face";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
 
@@ -13,7 +12,7 @@ export function AgenticaChatTextMessageMovie({
     <div
       style={{
         display: "flex",
-        justifyContent: prompt.role === "user" ? "flex-end" : "flex-start",
+        justifyContent: "flex-start",
       }}
     >
       <Card
@@ -21,18 +20,16 @@ export function AgenticaChatTextMessageMovie({
         style={{
           marginTop: 15,
           marginBottom: 15,
-          marginLeft: prompt.role === "user" ? "15%" : undefined,
-          marginRight: prompt.role === "assistant" ? "15%" : undefined,
-          textAlign: prompt.role === "user" ? "right" : "left",
-          backgroundColor: prompt.role === "user" ? "lightyellow" : undefined,
+          marginRight: "15%",
+          textAlign: "left",
         }}
       >
         <CardContent>
           <Chip
-            icon={prompt.role === "user" ? <FaceIcon /> : <SmartToyIcon />}
-            label={prompt.role === "user" ? "User" : "Assistant"}
+            icon={<SmartToyIcon />}
+            label="Assistant"
             variant="outlined"
-            color={prompt.role === "user" ? "primary" : "success"}
+            color="success"
           />
           <MarkdownViewer>{prompt.text}</MarkdownViewer>
         </CardContent>

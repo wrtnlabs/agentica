@@ -61,7 +61,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaTextHistory<"assistant">[];
+    assistantPrompts: AgenticaTextHistory[];
   }
 
   /**
@@ -85,7 +85,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaTextHistory<"assistant">[];
+    assistantPrompts: AgenticaTextHistory[];
   }
 
   /**

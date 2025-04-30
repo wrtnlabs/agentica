@@ -7,7 +7,7 @@ import type { AgenticaOperationSelection } from "./context/AgenticaOperationSele
 import type { AgenticaEvent } from "./events/AgenticaEvent";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { AgenticaHistory } from "./histories/AgenticaHistory";
-import type { AgenticaTextHistory } from "./histories/AgenticaTextHistory";
+import type { AgenticaUserInputHistory } from "./histories/AgenticaUserInputHistory";
 import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaProps } from "./structures/IAgenticaProps";
@@ -16,13 +16,13 @@ import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createInitializeEvent, createRequestEvent, createTextEvent } from "./factory/events";
-import { createTextHistory } from "./factory/histories";
+import { createUserInputHistory } from "./factory";
+import { createInitializeEvent, createRequestEvent, createUserInputEvent } from "./factory/events";
 import { execute } from "./orchestrate/execute";
 import { AgenticaHistoryTransformer } from "./transformers/AgenticaHistoryTransformer";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
-import { streamDefaultReaderToAsyncGenerator, StreamUtil, toAsyncGenerator } from "./utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
 
 /**
  * Agentica AI chatbot agent.
@@ -126,29 +126,32 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @param content The content to talk
    * @returns List of newly created chat prompts
    */
-  public async conversate(content: string): Promise<AgenticaHistory<Model>[]> {
-    const text: AgenticaTextHistory<"user"> = createTextHistory<"user">({
-      role: "user",
-      text: content,
+  public async conversate(content: string | AgenticaUserInputHistory.Contents | Array<AgenticaUserInputHistory.Contents>): Promise<AgenticaHistory<Model>[]> {
+    const prompt: AgenticaUserInputHistory = createUserInputHistory({
+      contents: Array.isArray(content)
+        ? content
+        : typeof content === "string"
+          ? [{
+              type: "text",
+              text: content,
+            }]
+          : [content],
     });
+
     this.dispatch(
-      createTextEvent({
-        role: "user",
-        stream: toAsyncGenerator(content),
-        done: () => true,
-        get: () => content,
-        join: async () => Promise.resolve(content),
+      createUserInputEvent({
+        contents: prompt.contents,
       }),
     ).catch(() => {});
 
     const newbie: AgenticaHistory<Model>[] = await this.executor_(
       this.getContext({
-        prompt: text,
+        prompt,
         usage: this.token_usage_,
       }),
     );
-    this.histories_.push(text, ...newbie);
-    return [text, ...newbie];
+    this.histories_.push(prompt, ...newbie);
+    return [prompt, ...newbie];
   }
 
   /**
@@ -214,7 +217,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @internal
    */
   public getContext(props: {
-    prompt: AgenticaTextHistory<"user">;
+    prompt: AgenticaUserInputHistory;
     usage: AgenticaTokenUsage;
   }): AgenticaContext<Model> {
     const dispatch = async (event: AgenticaEvent<Model>) => this.dispatch(event);

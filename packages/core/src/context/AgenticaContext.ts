@@ -4,7 +4,7 @@ import type OpenAI from "openai";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
@@ -80,12 +80,12 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
   stack: AgenticaOperationSelection<Model>[];
 
   /**
-   * Text prompt of the user.
+   * The user input history.
    *
-   * Text conversation written the by user through the
+   * The user input history written by the user through the
    * {@link Agentica.conversate} function.
    */
-  prompt: AgenticaTextHistory<"user">;
+  prompt: AgenticaUserInputHistory;
 
   /**
    * Whether the agent is ready.
