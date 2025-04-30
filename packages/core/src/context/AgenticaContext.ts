@@ -82,7 +82,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
   /**
    * The user input history.
    *
-   * The user input history written the by user through the
+   * The user input history written by the user through the
    * {@link Agentica.conversate} function.
    */
   prompt: AgenticaUserInputHistory;
