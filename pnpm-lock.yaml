@@ -62,9 +62,6 @@ importers:
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       typedoc:
         specifier: ^0.27.7
         version: 0.27.9(typescript@5.8.3)
@@ -111,9 +108,6 @@ importers:
       '@types/node':
         specifier: ^22.10.5
         version: 22.13.9
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.29.1
         version: 4.39.0
@@ -154,9 +148,6 @@ importers:
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.34.8
         version: 4.39.0
@@ -373,9 +364,6 @@ importers:
       openai:
         specifier: catalog:libs
         version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.34.8
         version: 4.39.0
@@ -425,9 +413,6 @@ importers:
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.34.8
         version: 4.39.0
@@ -480,9 +465,6 @@ importers:
       json-schema-to-ts:
         specifier: ^3.1.1
         version: 3.1.1
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.0.1
       rollup:
         specifier: ^4.29.1
         version: 4.39.0
