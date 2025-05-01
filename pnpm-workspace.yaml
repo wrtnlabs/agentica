@@ -3,6 +3,9 @@ packages:
   - benchmark/*
   - test
   - website
+useNodeVersion: 22.14.0
+shellEmulator: true
+engineStrict: true
 catalogs:
   libs:
     "@modelcontextprotocol/sdk": ^1.9.0
