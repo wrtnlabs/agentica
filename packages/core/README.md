@@ -40,13 +40,15 @@ const agent = new Agentica({
   controllers: [
     // functions from TypeScript class
     {
-      protocol: "http",
+      protocol: "class",
+      name: "filesystem",
       application: typia.llm.application<MobileFileSystem, "chatgpt">(),
       execute: new MobileFileSystem(),
     },
     // functions from Swagger/OpenAPI
     {
       protocol: "http",
+      name: "shopping",
       application: assertHttpLlmApplication({
         model: "chatgpt",
         document: await fetch(
