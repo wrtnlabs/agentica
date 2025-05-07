@@ -1,9 +1,8 @@
 {
   "name": "create-agentica",
+  "type": "module",
   "version": "0.23.0",
   "description": "alias of agentica cli",
-  "type": "module",
-  "bin": "./index.js",
   "author": "Wrtn Technologies",
   "license": "MIT",
   "repository": {
@@ -13,10 +12,44 @@
   "bugs": {
     "url": "https://github.com/wrtnlabs/agentica/issues"
   },
-  "dependencies": {
-    "agentica": "workspace:*"
-  },
+  "bin": "./index.js",
   "files": [
-    "index.js"
-  ]
+    "LICENSE",
+    "README.md",
+    "bin",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "prepare": "ts-patch install",
+    "build": "unbuild && publint",
+    "dev": "unbuild --watch",
+    "typecheck": "tsc --noEmit",
+    "prepack": "pnpm run build && npx clean-pkg-json",
+    "lint": "eslint .",
+    "format": "eslint --fix .",
+    "test": "vitest"
+  },
+  "optionalDependencies": {
+    "prettier": ">=2.4.0"
+  },
+  "devDependencies": {
+    "@bluwy/giget-core": "^0.1.2",
+    "@clack/prompts": "^0.10.0",
+    "@ryoppippi/unplugin-typia": "catalog:typia",
+    "@types/node": "^20.14.8",
+    "commander": "^10.0.0",
+    "memfs": "^4.17.0",
+    "msw": "^2.7.3",
+    "picocolors": "^1.1.1",
+    "publint": "^0.3.9",
+    "std-env": "^3.8.1",
+    "ts-node": "^10.9.2",
+    "ts-patch": "catalog:typescript",
+    "type-fest": "catalog:libs",
+    "typescript": "catalog:typescript",
+    "typia": "catalog:typia",
+    "unbuild": "^3.5.0",
+    "vitest": "catalog:vite"
+  }
 }

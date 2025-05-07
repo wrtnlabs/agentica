@@ -36,9 +36,6 @@
     "dist",
     "package.json"
   ],
-  "engines": {
-    "node": ">=18.18.0"
-  },
   "scripts": {
     "prepare": "ts-patch install",
     "build": "unbuild && publint",

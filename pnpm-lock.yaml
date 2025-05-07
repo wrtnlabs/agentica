@@ -396,10 +396,62 @@ importers:
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.13.9)(lightningcss@1.29.2)(msw@2.7.3(@types/node@22.13.9)(typescript@5.8.3))(terser@5.39.0)
 
   packages/create-agentica:
-    dependencies:
-      agentica:
-        specifier: workspace:*
-        version: link:../cli
+    devDependencies:
+      '@bluwy/giget-core':
+        specifier: ^0.1.2
+        version: 0.1.2
+      '@clack/prompts':
+        specifier: ^0.10.0
+        version: 0.10.0
+      '@ryoppippi/unplugin-typia':
+        specifier: catalog:typia
+        version: 2.2.1(rollup@4.39.0)(typescript@5.8.3)(typia@9.0.1(@samchon/openapi@4.2.0)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))
+      '@types/node':
+        specifier: ^20.14.8
+        version: 20.17.30
+      commander:
+        specifier: ^10.0.0
+        version: 10.0.1
+      memfs:
+        specifier: ^4.17.0
+        version: 4.17.0
+      msw:
+        specifier: ^2.7.3
+        version: 2.7.3(@types/node@20.17.30)(typescript@5.8.3)
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      publint:
+        specifier: ^0.3.9
+        version: 0.3.10
+      std-env:
+        specifier: ^3.8.1
+        version: 3.9.0
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.17.30)(typescript@5.8.3)
+      ts-patch:
+        specifier: catalog:typescript
+        version: 3.3.0
+      type-fest:
+        specifier: catalog:libs
+        version: 4.39.1
+      typescript:
+        specifier: catalog:typescript
+        version: 5.8.3
+      typia:
+        specifier: catalog:typia
+        version: 9.0.1(@samchon/openapi@4.2.0)(typescript@5.8.3)
+      unbuild:
+        specifier: ^3.5.0
+        version: 3.5.0(typescript@5.8.3)
+      vitest:
+        specifier: catalog:vite
+        version: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(lightningcss@1.29.2)(msw@2.7.3(@types/node@20.17.30)(typescript@5.8.3))(terser@5.39.0)
+    optionalDependencies:
+      prettier:
+        specifier: '>=2.4.0'
+        version: 3.5.3
 
   packages/rpc:
     dependencies:
