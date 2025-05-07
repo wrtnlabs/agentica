@@ -5,7 +5,7 @@
  * @author Wrtn Technologies
  */
 
-import type { Agentica, AgenticaHistory, AgenticaOperation } from "@agentica/core";
+import type { Agentica, AgenticaHistory, AgenticaOperation, MicroAgentica } from "@agentica/core";
 import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
@@ -50,7 +50,7 @@ interface IConsentProps {
   reply: string;
 }
 
-async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model>): Promise<string | null> {
+async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | MicroAgentica<Model>): Promise<string | null> {
   const last: AgenticaHistory<Model> | undefined = agent
     .getHistories()
     .at(-1);
