@@ -22,6 +22,7 @@ import { AgenticaHistoryTransformer } from "./transformers/AgenticaHistoryTransf
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
+import { AgenticaOperation } from "./context/AgenticaOperation";
 
 /**
  * Micro AI chatbot.
@@ -155,6 +156,18 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    */
   public getVendor(): IAgenticaVendor {
     return this.props.vendor;
+  }
+
+   /**
+   * Get operations.
+   *
+   * Get list of operations, which has capsuled the pair of controller
+   * and function from the {@link getControllers controllers}.
+   *
+   * @returns List of operations
+   */
+   public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
+    return this.operations_.array;
   }
 
   /**
