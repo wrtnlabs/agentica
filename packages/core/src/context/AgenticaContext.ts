@@ -88,6 +88,11 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
   prompt: AgenticaUserInputHistory;
 
   /**
+   * Abort signal.
+   */
+  abortSignal?: AbortSignal;
+
+  /**
    * Whether the agent is ready.
    *
    * Returns a boolean value indicates whether the agent is ready to

@@ -124,9 +124,17 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * function calling information like {@link AgenticaExecuteHistory}.
    *
    * @param content The content to talk
+   * @param options Options
+   * @param options.abortSignal Abort signal
+   * @throws AbortError
    * @returns List of newly created chat prompts
    */
-  public async conversate(content: string | AgenticaUserInputHistory.Contents | Array<AgenticaUserInputHistory.Contents>): Promise<AgenticaHistory<Model>[]> {
+  public async conversate(
+    content: string | AgenticaUserInputHistory.Contents | Array<AgenticaUserInputHistory.Contents>,
+    options: {
+      abortSignal?: AbortSignal;
+    } = {},
+  ): Promise<AgenticaHistory<Model>[]> {
     const prompt: AgenticaUserInputHistory = createUserInputHistory({
       contents: Array.isArray(content)
         ? content
@@ -147,6 +155,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     const newbie: AgenticaHistory<Model>[] = await this.executor_(
       this.getContext({
         prompt,
+        abortSignal: options.abortSignal,
         usage: this.token_usage_,
       }),
     );
@@ -219,6 +228,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   public getContext(props: {
     prompt: AgenticaUserInputHistory;
     usage: AgenticaTokenUsage;
+    abortSignal?: AbortSignal;
   }): AgenticaContext<Model> {
     const dispatch = async (event: AgenticaEvent<Model>) => this.dispatch(event);
     return {
@@ -231,6 +241,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       stack: this.stack_,
       ready: () => this.ready_,
       prompt: props.prompt,
+      abortSignal: props.abortSignal,
 
       // HANDLERS
       dispatch: async event => this.dispatch(event),
@@ -246,7 +257,10 @@ export class Agentica<Model extends ILlmSchema.Model> {
               include_usage: true,
             },
           },
-          options: this.props.vendor.options,
+          options: {
+            ...this.props.vendor.options,
+            signal: props.abortSignal,
+          },
         });
         await dispatch(event);
 
