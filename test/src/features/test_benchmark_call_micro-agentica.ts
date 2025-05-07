@@ -4,8 +4,8 @@ import path from "node:path";
 import type { AgenticaOperation } from "@agentica/core";
 import type { IHttpConnection, OpenApi } from "@samchon/openapi";
 
-import { AgenticaCallBenchmark, MicroAgenticaCallBenchmark } from "@agentica/benchmark";
-import { Agentica, MicroAgentica } from "@agentica/core";
+import { MicroAgenticaCallBenchmark } from "@agentica/benchmark";
+import { MicroAgentica } from "@agentica/core";
 import { HttpLlm } from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
 import OpenAI from "openai";
