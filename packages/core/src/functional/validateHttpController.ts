@@ -1,26 +1,29 @@
-import { HttpLlm, IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmSchema, IValidation, OpenApi, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
-import { IAgenticaController } from "../structures/IAgenticaController";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmSchema, IValidation, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
+
+import { HttpLlm, OpenApi } from "@samchon/openapi";
 import typia from "typia";
+
+import type { IAgenticaController } from "../structures/IAgenticaController";
 
 /**
  * Create an HTTP controller with type validation.
- * 
+ *
  * Create an {@link IAgenticaController.IHttp} instance which represents
  * the HTTP controller from the given Swagger/OpenAPI document and the
  * target LLM model with connection information.
- * 
+ *
  * By the way, even though this `validateHttpController` function
  * supports every version of Swagger/OpenAPI specification, there can
  * be a type error in the given document. In that case, the function
  * will return {@link IValidation.IFailure} instance with detailed
  * type error tracing information.
- * 
+ *
  * @param props Properties to create the HTTP controller instance
  * @returns Validation result of the HTTP controller composition
  * @author Samchon
  */
 export function validateHttpController<
-  Model extends ILlmSchema.Model
+  Model extends ILlmSchema.Model,
 >(props: {
   /**
    * Name of the controller.

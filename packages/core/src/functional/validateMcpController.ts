@@ -8,11 +8,11 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
 
 /**
  * Create an MCP controller with type validation.
- * 
+ *
  * Create an {@link IAgenticaController.IMcp} instance which represents
  * an MCP (Model Context Protocol) controller with LLM function calling
  * schemas and client connection.
- * 
+ *
  * @param props Properties to create the MCP controller
  * @param props.name Name of the MCP implementation.
  * @param props.client Client connection to the MCP implementation.
@@ -22,7 +22,7 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
  * @author SunRabbit
  */
 export async function validateMcpController<
-  Model extends ILlmSchema.Model
+  Model extends ILlmSchema.Model,
 >(props: {
   name: string;
   client: Client;
@@ -34,7 +34,7 @@ export async function validateMcpController<
 
   // get list of tools
   const { tools } = await props.client.request({ method: "tools/list" }, ListToolsResultSchema);
-  const inspect = typia.validate<Array<IMcpTool>>(tools)
+  const inspect = typia.validate<Array<IMcpTool>>(tools);
   if (inspect.success === false) {
     return inspect;
   }

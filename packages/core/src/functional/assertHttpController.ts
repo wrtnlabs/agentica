@@ -1,26 +1,29 @@
-import { HttpLlm, IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmSchema, OpenApi, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
-import { IAgenticaController } from "../structures/IAgenticaController";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmSchema, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
+
+import { HttpLlm, OpenApi } from "@samchon/openapi";
 import typia from "typia";
+
+import type { IAgenticaController } from "../structures/IAgenticaController";
 
 /**
  * Create an HTTP controller with type assertion.
- * 
+ *
  * Create an {@link IAgenticaController.IHttp} instance which represents
- * the HTTP controller from the given Swagger/OpenAPI document and the 
+ * the HTTP controller from the given Swagger/OpenAPI document and the
  * target LLM model with connection information.
- * 
+ *
  * By the way, even though this `assertHttpController` function
  * supports every version of Swagger/OpenAPI specification, there can
  * be a type error in the given document. In that case, the function
  * will throw an error with detailed type error tracing information.
- * 
+ *
  * @param props Properties to create the HTTP controller instance
  * @returns HTTP controller instance
  * @throws {@link TypeGuardError} when the given document is invalid
  * @author Samchon
  */
 export function assertHttpController<
-  Model extends ILlmSchema.Model
+  Model extends ILlmSchema.Model,
 >(props: {
   /**
    * Name of the controller.
@@ -100,7 +103,7 @@ export function assertHttpController<
     name: props.name,
     application: HttpLlm.application({
       model: props.model,
-      document: document,
+      document,
       options: props.options,
     }),
     execute: props.execute,
