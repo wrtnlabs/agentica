@@ -34,5 +34,4 @@ workspacePatterns.forEach((pattern) => {
   }
 });
 
-execSync(`git add ${workspaceConfig.packages.map(pack => `${pack}/README.md`).join(" ")}`);
 console.warn("README.md sync completed!");
