@@ -1,6 +1,6 @@
 {
   "name": "@agentica/station",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "private": true,
   "packageManager": "pnpm@10.6.4",
   "description": "Agentic AI library specialized in LLM Function Calling",
@@ -51,7 +51,8 @@
     "format:submodules": "pnpm --parallel -r --aggregate-output /^format/",
     "test": "pnpm --aggregate-output /^test:/",
     "test:e2e": "pnpm --filter='./test' -r start",
-    "test:packages": "pnpm --filter='./packages/**' --parallel -r --aggregate-output /^test/"
+    "test:packages": "pnpm --filter='./packages/**' --parallel -r --aggregate-output /^test/",
+    "sync-readme": "node deploy/sync_readme.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
