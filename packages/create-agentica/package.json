@@ -13,10 +13,33 @@
   "bugs": {
     "url": "https://github.com/wrtnlabs/agentica/issues"
   },
-  "dependencies": {
-    "agentica": "workspace:*"
+  "optionalDependencies": {
+    "prettier": ">=2.4.0"
+  },
+  "devDependencies": {
+    "@bluwy/giget-core": "^0.1.2",
+    "@clack/prompts": "^0.10.0",
+    "@ryoppippi/unplugin-typia": "catalog:typia",
+    "@types/node": "^20.14.8",
+    "commander": "^10.0.0",
+    "memfs": "^4.17.0",
+    "msw": "^2.7.3",
+    "picocolors": "^1.1.1",
+    "publint": "^0.3.9",
+    "std-env": "^3.8.1",
+    "ts-node": "^10.9.2",
+    "ts-patch": "catalog:typescript",
+    "type-fest": "catalog:libs",
+    "typescript": "catalog:typescript",
+    "typia": "catalog:typia",
+    "unbuild": "^3.5.0",
+    "vitest": "catalog:vite"
   },
   "files": [
-    "index.js"
+    "LICENSE",
+    "README.md",
+    "bin",
+    "dist",
+    "package.json"
   ]
 }
