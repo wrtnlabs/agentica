@@ -1,5 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
@@ -155,6 +156,18 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    */
   public getVendor(): IAgenticaVendor {
     return this.props.vendor;
+  }
+
+  /**
+   * Get operations.
+   *
+   * Get list of operations, which has capsuled the pair of controller
+   * and function from the {@link getControllers controllers}.
+   *
+   * @returns List of operations
+   */
+  public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
+    return this.operations_.array;
   }
 
   /**
