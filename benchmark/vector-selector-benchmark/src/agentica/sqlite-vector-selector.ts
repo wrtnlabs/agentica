@@ -2,7 +2,7 @@ import type { IAgenticaVendor } from "@agentica/core";
 import type { IHttpConnection } from "@samchon/openapi";
 import type Database from "better-sqlite3";
 
-import { Agentica, AgenticaTokenUsage, assertHttpLlmApplication } from "@agentica/core";
+import { Agentica, AgenticaTokenUsage, assertHttpController } from "@agentica/core";
 import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
 import { configureSqliteStrategy } from "@agentica/vector-selector/strategy";
 import ShoppingApi from "@samchon/shopping-api";
@@ -46,15 +46,12 @@ export async function sqliteVectorSelectorAgentica(props: {
     model: "chatgpt",
     vendor: props.vendor,
     controllers: [
-      {
-        protocol: "http",
+      assertHttpController({
         name: "shopping",
-        application: assertHttpLlmApplication({
-          model: "chatgpt",
-          document,
-        }),
+        model: "chatgpt",
+        document,
         connection,
-      },
+      }),
     ],
     config: {
       executor: {

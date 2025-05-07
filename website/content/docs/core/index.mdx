@@ -20,7 +20,7 @@ With these strategies, you can build Agentic AI chatbot only with Swagger docume
 Look at the below demonstration, and feel how `@agentica/core` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
 
 ```typescript filename="src/main.ts" showLineNumbers {15-22, 33-34, 40-41, 47-48}
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { Agentica, assertHttpController } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import typia from "typia";
 
@@ -32,22 +32,19 @@ const main = async (): Promise<void> => {
       model: "gpt-4o-mini",
     },
     controllers: [
-      {
-        protocol: "http",
+      assertHttpController({
+        model: "chatgpt",
         name: "shopping",
-        application: assertHttpLlmApplication({
-          model: "chatgpt",
-          document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
-          ).then((r) => r.json()),
-        }),
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then((r) => r.json()),
         connection: {
           host: "https://shopping-be.wrtn.ai",
           headers: {
             Authorization: "Bearer *****",
           },
         },
-      },
+      }),
       {
         protocol: "class",
         name: "counselor",
@@ -183,8 +180,8 @@ const agent: Agentica<"chatgpt"> = new Agentica({
   } satisfies IAgenticaVendor,
   controllers: [
     {
-      protocol: "http",
-      name: "class",
+      protocol: "class",
+      name: "bbs",
       application: typia.llm.application<BbsArticleService, "chatgpt">(),
       execute: new BbsArticleService(),
     } satisfies IAgenticaController<"chatgpt">,
@@ -216,8 +213,8 @@ const agent: Agentica<"llama"> = new Agentica({
   } satisfies IAgenticaVendor,
   controllers: [
     {
-      protocol: "http",
-      name: "class",
+      protocol: "class",
+      name: "bbs",
       application: typia.llm.application<BbsArticleService, "llama">(),
       execute: new BbsArticleService(),
     } satisfies IAgenticaController<"llama">,
@@ -231,14 +228,14 @@ await agent.conversate("I wanna buy MacBook Pro");
 ### Function Controller
 In `@agentica/core`, there is a concept of controller, a set LLM function calling schemas (application schema) and execute functions for actual function calling. And `@agentica/core` supports two protocol types of controllers; HTTP server and TypeScript class.
 
-When you're using HTTP server controller, create LLM application schema from `assertHttpLlmApplication()` or `validateHttpLlmApplication()` function. These functions will validate whether the target Swagger/OpenAPI document is correct or not. And then, configure connection information to the HTTP server with destination URL and headers. 
+When you're using HTTP server controller, create LLM application schema from `assertHttpController()` or `validateHttpController()` function. These functions will validate whether the target Swagger/OpenAPI document is correct or not. And then, configure connection information to the HTTP server with destination URL and headers. 
 
 Otherwise you want to serve the function calling from a TypeScript class, create LLM application schema from `typia.llm.application<Class, Model>()` function. And provide the class instance for the actual function calling.
 
 For reference, `IAgenticaController.name` must be unique, because it is used to identify the controller in the agent. Also, if number of your controller functions are too many, it would better to configure `executor.selector` as vector selector of plugin. If you don't do it, too much LLM token costs would be consumed.
 
-```typescript filename="src/main.ts" showLineNumbers {12-50}
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+```typescript filename="src/main.ts" showLineNumbers {11-47}
+import { Agentica, assertHttpController } from "@agentica/core";
 import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
 import typia from "typia";
 
@@ -250,22 +247,19 @@ const main = async (): Promise<void> => {
       model: "gpt-4o-mini",
     },
     controllers: [
-      {
-        protocol: "http",
+      assertHttpController({
         name: "shopping",
-        application: assertHttpLlmApplication({
-          model: "chatgpt",
-          document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
-          ).then((r) => r.json()),
-        }),
+        model: "chatgpt",
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then((r) => r.json()),
         connection: {
           host: "https://shopping-be.wrtn.ai",
           headers: {
             Authorization: "Bearer *****",
           },
         },
-      },
+      }),
       {
         protocol: "class",
         name: "counselor",

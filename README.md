@@ -26,7 +26,7 @@ Are you a TypeScript developer? Then you're already an AI developer. Familiar wi
 <!-- eslint-skip -->
 
 ```typescript
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { Agentica, assertHttpController } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -46,20 +46,17 @@ const agent = new Agentica({
       execute: new MobileFileSystem(),
     },
     // functions from Swagger/OpenAPI
-    {
-      protocol: "http",
+    assertHttpController({
       name: "shopping",
-      application: assertHttpLlmApplication({
-        model: "chatgpt",
-        document: await fetch(
-          "https://shopping-be.wrtn.ai/editor/swagger.json",
-        ).then(r => r.json()),
-      }),
+      model: "chatgpt",
+      document: await fetch(
+        "https://shopping-be.wrtn.ai/editor/swagger.json",
+      ).then(r => r.json()),
       connection: {
         host: "https://shopping-be.wrtn.ai",
         headers: { Authorization: "Bearer ********" },
       },
-    },
+    }),
   ],
 });
 await agent.conversate("I wanna buy MacBook Pro");

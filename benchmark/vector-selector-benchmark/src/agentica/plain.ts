@@ -1,7 +1,7 @@
 import type { IAgenticaVendor } from "@agentica/core";
 import type { IHttpConnection } from "@samchon/openapi";
 
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { Agentica, assertHttpController } from "@agentica/core";
 import ShoppingApi from "@samchon/shopping-api";
 
 export async function plainAgentica(props: {
@@ -34,15 +34,12 @@ export async function plainAgentica(props: {
     model: "chatgpt",
     vendor: props.vendor,
     controllers: [
-      {
-        protocol: "http",
+      assertHttpController({
         name: "shopping",
-        application: assertHttpLlmApplication({
-          model: "chatgpt",
-          document,
-        }),
+        model: "chatgpt",
+        document,
         connection,
-      },
+      }),
     ],
   });
 

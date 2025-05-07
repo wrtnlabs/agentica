@@ -1,10 +1,10 @@
 ```typescript showLineNumbers
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { Agentica, assertHttpController } from "@agentica/core";
 import typia from "typia";
 
 const agent = new Agentica({
   controllers: [
-    assertHttpLlmApplication(
+    assertHttpController(
       await fetch(
         "https://shopping-be.wrtn.ai/editor/swagger.json",
       ).then(r => r.json())

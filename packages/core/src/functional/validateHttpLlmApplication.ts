@@ -29,6 +29,7 @@ import typia from "typia";
  * @param props Properties to create the HTTP LLM application instance
  * @returns Validation result of the HTTP LLM application composition
  * @author Samchon
+ * @deprecated Use {@link validateHttpController} instead.
  */
 export function validateHttpLlmApplication<
   Model extends ILlmSchema.Model,
@@ -67,7 +68,6 @@ export function validateHttpLlmApplication<
   if (inspect.success === false) {
     return inspect;
   }
-
   return {
     success: true,
     data: HttpLlm.application({
