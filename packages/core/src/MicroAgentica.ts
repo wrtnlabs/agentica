@@ -1,5 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
@@ -22,7 +23,6 @@ import { AgenticaHistoryTransformer } from "./transformers/AgenticaHistoryTransf
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
-import { AgenticaOperation } from "./context/AgenticaOperation";
 
 /**
  * Micro AI chatbot.
@@ -158,7 +158,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     return this.props.vendor;
   }
 
-   /**
+  /**
    * Get operations.
    *
    * Get list of operations, which has capsuled the pair of controller
@@ -166,7 +166,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    *
    * @returns List of operations
    */
-   public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
+  public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
     return this.operations_.array;
   }
 
