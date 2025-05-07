@@ -1,5 +1,5 @@
 ```typescript showLineNumbers
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+import { Agentica, assertHttpController } from "@agentica/core";
 import typia from "typia";
 
 const main = async (): Promise<void> => {
@@ -10,22 +10,19 @@ const main = async (): Promise<void> => {
       model: "gpt-4o-mini",
     },
     controllers: [
-      {
-        protocol: "http",
+      assertHttpController({
         name: "shopping",
-        application: assertHttpLlmApplication({
-          model: "chatgpt",
-          document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
-          ).then(r => r.json()),
-        }),
+        model: "chatgpt",
+        document: await fetch(
+          "https://shopping-be.wrtn.ai/editor/swagger.json",
+        ).then(r => r.json()),
         connection: {
           host: "https://shopping-be.wrtn.ai",
           headers: {
             Authorization: "Bearer *****",
           },
         },
-      },
+      }),
       {
         protocol: "class",
         name: "counselor",

@@ -12,12 +12,8 @@ import { YoutubeRenderer } from "../../../../components/YoutubeRenderer";
 <YoutubeRenderer src="https://www.youtube.com/embed/AGZ9hlaln7E" />
 
 ## Swagger/OpenAPI
-```typescript filename="src/main.ts" showLineNumbers {16-31}
-import {
-  Agentica,
-  IAgenticaController,
-  assertHttpLlmApplication
-} from "@agentica/core";
+```typescript filename="src/main.ts" showLineNumbers {12-25}
+import { Agentica, assertHttpController } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -28,22 +24,19 @@ const agent = new Agentica({
     model: "gpt-4o-mini",
   },
   controllers: [
-    {
-      protocol: "http",
+    assertHttpController({
       name: "shopping",
-      application: assertHttpLlmApplication({
-        model: "chatgpt",
-        document: await fetch(
-          "https://shopping-be.wrtn.ai/editor/swagger.json",
-        ).then((r) => r.json()),
-      }),
+      model: "chatgpt",
+      document: await fetch(
+        "https://shopping-be.wrtn.ai/editor/swagger.json",
+      ).then((r) => r.json()),
       connection: {
         host: "https://shopping-be.wrtn.ai",
         headers: {
           Authorization: "Bearer ********",
         },
       },
-    } satisfies IAgenticaController.IHttp<"chatgpt">,
+    }),
   ],
 });
 await agent.conversate("What you can do?");
@@ -53,7 +46,7 @@ Swagger/OpenAPI Document for LLM Function Calling.
 
 In `@agentica/core`, there is a concept of controller, a set of LLM (Large Language Model) function calling schemas, and executor for actual function calling. And `@agentica/core` supports three protocol types of the controllers; <u>HTTP Restful API</u>, MCP (Model Context Protocol), and TypeScript class.
 
-When you want to serve functions from a Swagger or OpenAPI document, create an LLM application schema from `assertHttpLlmApplication()` function (or `HttpLlm.application()` function). And provide the connection information to the HTTP server.
+When you want to serve functions from a Swagger or OpenAPI document, create an LLM application schema from `assertHttpController()` function (or `HttpLlm.application()` function). And provide the connection information to the HTTP server.
 
 If you compose a controller of above shopping mall backend, you can start conversation with the shopping mall backend server like below demonstration video.
 
@@ -94,12 +87,8 @@ Also, some LLM schema models like `IChatGptSchema` and `IGeminiSchema` are not f
 
 
 ## Authorization
-```typescript filename="src/main.ts" showLineNumbers {25-30}
-import {
-  Agentica,
-  IAgenticaController,
-  assertHttpLlmApplication
-} from "@agentica/core";
+```typescript filename="src/main.ts" showLineNumbers {20-25}
+import { Agentica, assertHttpController } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -110,22 +99,19 @@ const agent = new Agentica({
     model: "gpt-4o-mini",
   },
   controllers: [
-    {
-      protocol: "http",
+    assertHttpController({
       name: "shopping",
-      application: assertHttpLlmApplication({
-        model: "chatgpt",
-        document: await fetch(
-          "https://shopping-be.wrtn.ai/editor/swagger.json",
-        ).then((r) => r.json()),
-      }),
+      model: "chatgpt",
+      document: await fetch(
+        "https://shopping-be.wrtn.ai/editor/swagger.json",
+      ).then((r) => r.json()),
       connection: {
         host: "https://shopping-be.wrtn.ai",
         headers: {
           Authorization: "Bearer ********",
         },
       },
-    } satisfies IAgenticaController.IHttp<"chatgpt">,
+    }),
   ],
 });
 await agent.conversate("What you can do?");
@@ -159,13 +145,13 @@ If target HTTP server requires authentication, you can provide the authenticatio
   </Tabs.Tab>
 </Tabs>
 
-`assertHttpLlmApplication()` embeds [#Validation Feedback Strategy](/docs/concepts/function-calling/#validation-feedback).
+`assertHttpController()` embeds [#Validation Feedback Strategy](/docs/concepts/function-calling/#validation-feedback).
 
 You know what? LLM (Large Language Model) like OpenAI takes a lot of mistakes when commposing arguments in the function calling. Even though `number` like simple type is defined in the parameters schema, LLM often fills it just by a `string` typed value.
 
 To correct such LLM function calling mistakes, `@agentica` is running a validation feedback strategy which informs the validation errors to the AI agent, so that induce the AI agent to correct the mistakes at the next trial.
 
-And when you compose LLM function calling schemas from the [`assertHttpLlmApplication()`]()(/api/functions/_agentica_core.assertHttpLlmApplication.html) function, [`IHttpLlmFunction.validate()`](/api/interfaces/_samchon_openapi.IHttpLlmFunction-1.html#validate) functions for each parameters are constructed at the same time, and they are used for the validation feedback correcting mistakes of the LLM function calling.
+And when you compose LLM function calling schemas from the [`assertHttpController()`]()(/api/functions/_agentica_core.assertHttpController.html) function, [`IHttpLlmFunction.validate()`](/api/interfaces/_samchon_openapi.IHttpLlmFunction-1.html#validate) functions for each parameters are constructed at the same time, and they are used for the validation feedback correcting mistakes of the LLM function calling.
 
 > Name | Status
 > :----|:-------

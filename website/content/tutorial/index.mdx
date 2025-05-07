@@ -112,22 +112,19 @@ export class MyChatController {
         model: "gpt-4o-mini",
       },
       controllers: [
-        {
-          protocol: "http",
+        assertHttpController({
           name: "bbs",
-          application: assertHttpLlmApplication({
-            model: "chatgpt",
-            document: await fetch(
-              `http://localhost:${MyConfiguration.API_PORT()}/editor/swagger.json`
-            ).then((r) => r.json()),
-          }),
+          model: "chatgpt",
+          document: await fetch(
+            `http://localhost:${MyConfiguration.API_PORT()}/editor/swagger.json`
+          ).then((r) => r.json()),
           connection: {
             host: `http://localhost:${MyConfiguration.API_PORT()}`,
             headers: {
               Authorization: "Bearer *****",
             },
           },
-        },
+        }),
       ],
     });
     const service: AgenticaRpcService<"chatgpt"> = new AgenticaRpcService({
