@@ -19,7 +19,7 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
  * @param props.model Model schema of the LLM function calling.
  * @param props.options Options to create the MCP controller.
  * @returns MCP LLM application instance
- * @author SunRabbit
+ * @author sunrabbit123
  */
 export async function assertMcpController<Model extends ILlmSchema.Model>(props: {
   name: string;
