@@ -39,22 +39,24 @@ export async function formatWithPrettier(content: string) {
 
 /**
  * Format the given content with indent-string.
- * If indent-string & detect-indent is not installed, 
+ * If indent-string & detect-indent is not installed,
  * it returns the content as is.
- * 
- * [Code Formatting Step]
- * 1. detect-indent를 통해 들여쓰기 확인하기
- * 2. 줄 끝이 `{`나 `}`로 끝나는지 확인하여 deeps 변환하기
- * 3. indent-string을 통해 deeps 만큼의 들여쓰기 적용하기
  */
-export async function formatWithIndent(content: string) {
+export async function insertWithIndent(
+  content: string,
+  placeholder: string,
+  code: string
+) {
   try {
     const [detectIndent, indentString] = await Promise.all([
       import("detect-indent"),
       import("indent-string"),
     ]);
-    const intend = detectIndent.default(content);
-    return indentString.default(content, intend.amount, { indent: intend.type });
+
+    const indent = detectIndent.default(placeholder).amount;
+    const indentedCode = indentString.default(code, indent);
+
+    return content.replace(placeholder, indentedCode);
   }
   catch {
     return content;
