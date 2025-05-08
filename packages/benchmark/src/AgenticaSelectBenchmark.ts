@@ -3,7 +3,6 @@ import type {
   AgenticaContext,
   AgenticaHistory,
   AgenticaOperationSelection,
-  AgenticaTextHistory,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
@@ -153,16 +152,22 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     const started_at: Date = new Date();
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
+      const context = this.agent_.getContext({
+        prompt: factory.createUserInputHistory({
+          contents: [{
+            type: "text",
+            text: scenario.text,
+          }],
+        }),
+        usage,
+      });
+      if (typeof context.config?.executor === "function") {
+        throw new TypeError("select function is not found");
+      }
+
       const histories: AgenticaHistory<Model>[]
-        = await orchestrate.select({
-          ...this.agent_.getContext({
-            // @todo core has to export `AgenticaPromptFactory`
-            prompt: factory.createTextHistory({
-              role: "user",
-              text: scenario.text,
-            }),
-            usage,
-          }),
+        = await (context.config?.executor?.select ?? orchestrate.select)({
+          ...context,
           histories: this.histories_.slice(),
           stack: [],
           ready: () => true,
@@ -183,10 +188,8 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         selected,
         usage,
         assistantPrompts: histories
-          .filter(p => p.type === "text")
-          .filter(
-            (p): p is AgenticaTextHistory<"assistant"> => p.role === "assistant",
-          ),
+          // Only the assistant is allowed to emit text events.
+          .filter(p => p.type === "text"),
         started_at,
         completed_at: new Date(),
       } satisfies

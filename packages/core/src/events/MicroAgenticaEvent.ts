@@ -6,6 +6,7 @@ import type { AgenticaExecuteEvent } from "./AgenticaExecuteEvent";
 import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
 import type { AgenticaTextEvent } from "./AgenticaTextEvent";
+import type { AgenticaUserInputEvent } from "./AgenticaUserInputEvent";
 import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
 
 /**
@@ -25,7 +26,8 @@ export type MicroAgenticaEvent<Model extends ILlmSchema.Model> =
   | AgenticaRequestEvent
   | AgenticaResponseEvent
   | AgenticaTextEvent
-  | AgenticaValidateEvent<Model>;
+  | AgenticaValidateEvent<Model>
+  | AgenticaUserInputEvent;
 export namespace MicroAgenticaEvent {
   export type Type = MicroAgenticaEvent<any>["type"];
   export interface Mapper<Model extends ILlmSchema.Model> {
@@ -36,6 +38,7 @@ export namespace MicroAgenticaEvent {
     response: AgenticaResponseEvent;
     text: AgenticaTextEvent;
     validate: AgenticaValidateEvent<Model>;
+    user_input: AgenticaUserInputEvent;
   }
   export type Source = "call" | "describe";
 }

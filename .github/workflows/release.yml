@@ -18,6 +18,10 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
       - run: pnpm install --frozen-lockfile
+
+      - name: Sync README.md
+        run: pnpm sync-readme
+
       - name: Publish to NPM
         # we need -no-git-checks to avoid git errors https://github.com/pnpm/pnpm/issues/5894
         run: pnpm package:latest --no-git-checks --provenance --access public

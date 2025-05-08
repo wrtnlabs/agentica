@@ -1,0 +1,31 @@
+```typescript filename="src/main.gemini.ts" showLineNumbers {13-19, 24}
+import { 
+  Agentica,
+  IAgenticaController,
+  IAgenticaProps,
+  IAgenticaVendor
+} from "@agentica/core";
+import OpenAI from "openai";
+ 
+import { BbsArticleService } from "./services/BbsArticleService";
+ 
+const agent: Agentica<"gemini"> = new Agentica({
+  model: "gemini",
+  vendor: {
+    model: "google/gemini-pro-1.5",
+    api: new OpenAI({
+      apiKey: "********",
+      baseURL: "https://openrouter.ai/api/v1",
+    }),
+  } satisfies IAgenticaVendor,
+  controllers: [
+    {
+      protocol: "http",
+      name: "class",
+      application: typia.llm.application<BbsArticleService, "gemini">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController<"gemini">,
+  ]
+} satisfies IAgenticaProps<"gemini">);
+await agent.conversate("I wanna buy MacBook Pro");
+```

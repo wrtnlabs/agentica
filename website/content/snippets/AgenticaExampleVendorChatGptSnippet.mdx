@@ -1,0 +1,30 @@
+```typescript filename="src/main.openai.ts" showLineNumbers {13-18, 23}
+import { 
+  Agentica,
+  IAgenticaController,
+  IAgenticaProps,
+  IAgenticaVendor
+} from "@agentica/core";
+import OpenAI from "openai";
+ 
+import { BbsArticleService } from "./services/BbsArticleService";
+ 
+const agent: Agentica<"chatgpt"> = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: "********",
+    }),
+  } satisfies IAgenticaVendor,
+  controllers: [
+    {
+      protocol: "http",
+      name: "class",
+      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      execute: new BbsArticleService(),
+    } satisfies IAgenticaController<"chatgpt">,
+  ]
+} satisfies IAgenticaProps<"chatgpt">);
+await agent.conversate("I wanna buy MacBook Pro");
+```

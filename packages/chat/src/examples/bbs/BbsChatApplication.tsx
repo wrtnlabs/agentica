@@ -11,6 +11,7 @@ import { BbsArticleService } from "./BbsArticleService";
 const applications = {
   "chatgpt": typia.llm.application<BbsArticleService, "chatgpt">(),
   "claude": typia.llm.application<BbsArticleService, "claude">(),
+  "deepseek": typia.llm.application<BbsArticleService, "deepseek">(),
   "gemini": typia.llm.application<BbsArticleService, "gemini">(),
   "llama": typia.llm.application<BbsArticleService, "llama">(),
   "3.0": typia.llm.application<BbsArticleService, "3.0">(),

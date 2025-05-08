@@ -13,7 +13,6 @@ import type { __IChatSelectFunctionsApplication } from "../context/internal/__IC
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
@@ -145,7 +144,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.text,
+          content: ctx.prompt.contents,
         },
         // SYSTEM PROMPT
         {
@@ -260,15 +259,11 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       && choice.message.content != null
       && choice.message.content.length !== 0
     ) {
-      const text: AgenticaTextHistory = createTextHistory({
-        role: "assistant",
-        text: choice.message.content,
-      });
+      const text = createTextHistory({ text: choice.message.content });
       prompts.push(text);
 
       ctx.dispatch(
         createTextEvent({
-          role: "assistant",
           stream: toAsyncGenerator(text.text),
           join: async () => Promise.resolve(text.text),
           done: () => true,

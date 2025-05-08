@@ -1,16 +1,13 @@
 import { Tabs } from "nextra/components";
 
 import RemoteSource from "../../../components/RemoteSource";
+import { YoutubeRenderer } from "../../../components/YoutubeRenderer";
+
 
 ## Shopping AI Chatbot
 
 <br/>
-<iframe src="https://www.youtube.com/embed/RAzYo02HTXA" 
-        title="Shopping A.I. Chatbot built with Nestia" 
-        width="100%" 
-        height="600" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" 
-        allowFullScreen></iframe>
+<YoutubeRenderer src="https://www.youtube.com/embed/RAzYo02HTXA" type="shorts"/>
 
   - Github Repository: https://github.com/samchon/shopping-backend
   - Architecture: [Entity Relationship Diagram](https://github.com/samchon/shopping-backend/blob/master/docs/ERD.md)
@@ -31,8 +28,8 @@ If you're considering to develop an enterprise level chatbot, `@samchon/shopping
 ## Authentication
 <Tabs items={["Conceptual Code", "Actual Code"]}>
 <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {20-24}
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+```typescript filename="src/main.ts" showLineNumbers {18-22}
+import { Agentica, assertHttpController } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
@@ -42,30 +39,27 @@ const agent = new Agentica({
     api: new OpenAI({ apiKey: "********" }),
   },
   controllers: [
-    {
-      protocol: "http",
+    assertHttpController({
       name: "shopping",
-      application: assertHttpLlmApplication({
-        model: "chatgpt",
-        document: await fetch(
-          "https://shopping-be.wrtn.ai/editor/swagger.json",
-        ).then((res) => res.json()),
-      }),
+      model: "chatgpt",
+      document: await fetch(
+        "https://shopping-be.wrtn.ai/editor/swagger.json",
+      ).then((res) => res.json()),
       connection: {
         host: "https://shopping-be.wrtn.ai",
         headers: {
           Authorization: "Bearer ********",
         },
       },
-    }
+    }),
   ],
 });
 await agent.convert("I wanna buy a Macbook.");
 ```
   </Tabs.Tab>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {2, 5-28, 47}
-import { Agentica, assertHttpLlmApplication } from "@agentica/core";
+```typescript filename="src/main.ts" showLineNumbers {2, 5-28, 45}
+import { Agentica, assertHttpController } from "@agentica/core";
 import ShoppingApi from "@samchon/shopping-api";
 import OpenAI from "openai";
 
@@ -102,17 +96,14 @@ const agent = new Agentica({
     api: new OpenAI({ apiKey: "********" }),
   },
   controllers: [
-    {
-      protocol: "http",
+    assertHttpController({
       name: "shopping",
-      application: assertHttpLlmApplication({
-        model: "chatgpt",
-        document: await fetch(
-          "https://shopping-be.wrtn.ai/editor/swagger.json",
-        ).then((res) => res.json()),
-      }),
+      model: "chatgpt",
+      document: await fetch(
+        "https://shopping-be.wrtn.ai/editor/swagger.json",
+      ).then((res) => res.json()),
       connection,
-    }
+    }),
   ],
 });
 await agent.convert("I wanna buy a Macbook.");

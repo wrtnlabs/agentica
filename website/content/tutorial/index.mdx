@@ -2,21 +2,15 @@
 title: Agentica > Tutorial > Getting Started
 ---
 
+import { YoutubeRenderer } from "../../components/YoutubeRenderer";
+
 ## Preface
 
 This tutorial guides you through setting up the foundation for developing multiple agents using **Agentica**. Regardless of whether an agent is designed for email processing, workflow automation, or data handling, there are common tasks that all agents must perform. This guide walks you through the essential setup process to establish a **consistent** and **scalable** development environment.
 
 <br />
 <br />
-<iframe
-  src="https://www.youtube.com/embed/UR4JIpQc7rw"
-  title="Agentica Tutorial Getting Started"
-  width="100%"
-  height="600"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerPolicy="strict-origin-when-cross-origin"
-  allowFullScreen
-></iframe>
+<YoutubeRenderer src="https://www.youtube.com/embed/UR4JIpQc7rw"/>
 <br />
 <br />
 
@@ -51,6 +45,7 @@ Choose package manager and Project Type.
   NodeJS Agent Server
   NestJS Agent Server
   React Client Application
+  React Native Client Application
 ❯ NestJS + React Agent Server + Client Application
 ```
 
@@ -117,22 +112,19 @@ export class MyChatController {
         model: "gpt-4o-mini",
       },
       controllers: [
-        {
-          protocol: "http",
+        assertHttpController({
           name: "bbs",
-          application: assertHttpLlmApplication({
-            model: "chatgpt",
-            document: await fetch(
-              `http://localhost:${MyConfiguration.API_PORT()}/editor/swagger.json`
-            ).then((r) => r.json()),
-          }),
+          model: "chatgpt",
+          document: await fetch(
+            `http://localhost:${MyConfiguration.API_PORT()}/editor/swagger.json`
+          ).then((r) => r.json()),
           connection: {
             host: `http://localhost:${MyConfiguration.API_PORT()}`,
             headers: {
               Authorization: "Bearer *****",
             },
           },
-        },
+        }),
       ],
     });
     const service: AgenticaRpcService<"chatgpt"> = new AgenticaRpcService({

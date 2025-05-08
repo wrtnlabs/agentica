@@ -4,6 +4,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 import { AgenticaChatDescribeMessageMovie } from "./AgenticaChatDescribeMessageMovie";
 import { AgenticaChatSelectMessageMovie } from "./AgenticaChatSelectMessageMovie";
 import { AgenticaChatTextMessageMovie } from "./AgenticaChatTextMessageMovie";
+import { AgenticaChatUserInput } from "./AgenticaChatUserInput";
 
 export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
   prompt,
@@ -11,14 +12,27 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
   if (prompt.type === "text") {
     return <AgenticaChatTextMessageMovie prompt={prompt} />;
   }
-  else if (prompt.type === "select") {
+
+  if (prompt.type === "select") {
     return prompt.selections.map(selection => (
       <AgenticaChatSelectMessageMovie selection={selection} />
     ));
   }
-  else if (prompt.type === "describe") {
+
+  if (prompt.type === "describe") {
     return <AgenticaChatDescribeMessageMovie history={prompt} />;
   }
+
+  if (prompt.type === "cancel" || prompt.type === "execute") {
+    return null;
+  }
+
+  if (prompt.type === "user_input") {
+    return <AgenticaChatUserInput prompt={prompt} />;
+  }
+
+  prompt satisfies never;
+
   return null;
 }
 export namespace AgenticaChatMessageMovie {

@@ -9,6 +9,7 @@ import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
 import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
 export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaHistory<Model>): OpenAI.ChatCompletionMessageParam[] {
@@ -16,7 +17,8 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
   if (history.type === "describe") {
     return [];
   }
-  else if (history.type === "text") {
+
+  if (history.type === "text") {
     return [
       {
         role: history.role,
@@ -24,7 +26,8 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
       },
     ];
   }
-  else if (history.type === "select" || history.type === "cancel") {
+
+  if (history.type === "select" || history.type === "cancel") {
     return [
       {
         role: "assistant",
@@ -52,59 +55,89 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
     ];
   }
 
-  return [
-    {
-      role: "assistant",
-      tool_calls: [
-        {
-          type: "function",
-          id: history.id,
-          function: {
-            name: history.operation.name,
-            arguments: JSON.stringify(history.arguments),
+  if (history.type === "execute") {
+    return [
+      {
+        role: "assistant",
+        tool_calls: [
+          {
+            type: "function",
+            id: history.id,
+            function: {
+              name: history.operation.name,
+              arguments: JSON.stringify(history.arguments),
+            },
           },
-        },
-      ],
-    },
-    {
-      role: "tool",
-      tool_call_id: history.id,
-      content: JSON.stringify({
-        function: {
-          protocol: history.operation.protocol,
-          description: history.operation.function.description,
-          parameters: history.operation.function.parameters,
-          output: history.operation.function.output,
+        ],
+      },
+      {
+        role: "tool",
+        tool_call_id: history.id,
+        content: JSON.stringify({
+          function: {
+            protocol: history.operation.protocol,
+            description: history.operation.function.description,
+            parameters: history.operation.function.parameters,
+            output: history.operation.function.output,
+            ...(history.operation.protocol === "http"
+              ? {
+                  method: history.operation.function.method,
+                  path: history.operation.function.path,
+                }
+              : {}),
+          },
           ...(history.operation.protocol === "http"
             ? {
-                method: history.operation.function.method,
-                path: history.operation.function.path,
+                status: (history.value as IHttpResponse).status,
+                data: (history.value as IHttpResponse).body,
               }
-            : {}),
-        },
-        ...(history.operation.protocol === "http"
-          ? {
-              status: (history.value as IHttpResponse).status,
-              data: (history.value as IHttpResponse).body,
-            }
-          : {
-              value: history.value,
-            }),
-      }),
-    },
-  ];
+            : {
+                value: history.value,
+              }),
+        }),
+      },
+    ];
+  }
+
+  if (history.type === "user_input") {
+    return [
+      {
+        role: "user",
+        content: history.contents,
+      },
+    ];
+  }
+
+  history satisfies never;
+  throw new Error("Invalid history type");
+}
+
+/* -----------------------------------------------------------
+  USER INPUT PROMPTS
+----------------------------------------------------------- */
+export function createUserInputHistory(props: {
+  contents: Array<AgenticaUserInputHistory.Contents>;
+}): AgenticaUserInputHistory {
+  return {
+    type: "user_input",
+    role: "user",
+    contents: props.contents,
+    toJSON: () => ({
+      type: "user_input",
+      contents: props.contents,
+    }),
+  };
 }
 
 /* -----------------------------------------------------------
   TEXT PROMPTS
 ----------------------------------------------------------- */
-export function createTextHistory<Role extends "assistant" | "user" = "assistant" | "user">(props: {
-  role: Role;
+export function createTextHistory(props: {
   text: string;
-}): AgenticaTextHistory<Role> {
-  const prompt: IAgenticaHistoryJson.IText<Role> = {
+}): AgenticaTextHistory {
+  const prompt: IAgenticaHistoryJson.IText = {
     type: "text",
-    role: props.role,
+    role: "assistant",
     text: props.text,
   };
   return {

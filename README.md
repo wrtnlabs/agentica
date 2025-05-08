@@ -1,165 +1,164 @@
-<p align="center" >
-    <img src="./docs/AgenticaFN.png" width="300" height="300" alt="Agentica Logo" />
-</p>
-<h1 align="center">Agentica</h1>
-<p align="center">
-<a href="https://www.npmjs.com/package/@agentica/core">
-  <img src="https://img.shields.io/npm/v/@agentica/core?style=for-the-badge" alt="npm version">
-</a>
-<a href="https://www.npmjs.com/package/@agentica/core">
-  <img src="https://img.shields.io/npm/dm/@agentica/core?style=for-the-badge" alt="Downloads">
-</a>
-<a href="https://github.com/samchon/typia">
-    <img src="https://img.shields.io/badge/poweredby-Typia-blue?style=for-the-badge" alt="Badge">
-</a>
-<!-- [![](https://dcbadge.limes.pink/api/server/INVITE)](https://discord.gg/INVITE) -->
-<a href="https://discord.gg/aMhRmzkqCx">
-  <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx" alt="Discord">
-</a>
-</p>
+# Agentica, AI Function Calling Framework
 
-<p align="center">
-    <strong>Agentic AI Framework specialized in LLM Function Calling</strong>
-    <br>
-    <strong>enhanced by TypeScript compiler skills</strong>
-</p>
+<!-- https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488 -->
 
-<p align="center">
-    <img src="https://github.com/user-attachments/assets/d7ebbd1f-04d3-4b0d-9e2a-234e29dd6c57" alt="agentica-conceptual-diagram">
-</p>
+![Logo](https://wrtnlabs.io/agentica/og.jpg?refresh)
 
----
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
+[![NPM Version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
+[![NPM Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
+[![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
+[![Guide Documents](https://img.shields.io/badge/Guide-Documents-forestgreen)](https://wrtnlabs.io/agentica/)
+[![Discord Badge](https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx?style=flat)](https://discord.gg/aMhRmzkqCx)
 
-<h3 align="center">
+Agentic AI framework specialized in AI Function Calling.
 
-[Homepage](https://wrtnlabs.io/agentica) // [Documentation](https://wrtnlabs.io/agentica/docs) // [Tutorials](https://youtube.com) // [Playgound](https://wrtnlabs.io/agentica/playground)
+Don't be afraid of AI agent development. Just list functions from three protocols below. This is everything you should do for AI agent development.
 
-</h3>
+- TypeScript Class
+- Swagger/OpenAPI Document
+- MCP (Model Context Protocol) Server
 
----
+Wanna make an e-commerce agent? Bring in e-commerce functions. Need a newspaper agent? Get API functions from the newspaper company. Just prepare any functions that you need, then it becomes an AI agent.
 
-_Agentica_ is an open-source framework that makes working with AI agents simple and reliable. It helps you integrate structured function calls with Large Language Models (LLMs) without the usual headaches.
-
-Built around [Typia's](https://typia.io/) robust JSON Schema validation, Agentica eliminates the common frustrations of building agent systems - no more dealing with unpredictable outputs or complex integration challenges.
-
-## 🚀 Key Features
-
-- **✅ Schema-Driven Reliability**: Automatically validates and corrects parameters from LLMs.
-- **🔄 Automatic Error Correction**: Feedback loops to iteratively improve output accuracy.
-- **📐 Complex Parameter Support**: Easily handle union types, nested objects, and recursive schemas.
-- **🌐 OpenAPI Integration**: Convert existing APIs into powerful agent capabilities effortlessly.
-- **👨‍💻 Exceptional Developer Experience**: TypeScript-first approach with automatic schema generation.
-- **🛠️Model Context Protocol(MCP) Support**: Seamlessly integrate with various LLMs, including Claude Desktop, Cursor, and more.
-
-## ⚡ Quickstart
-
-### Step 1. Setup Agentica project
-
-_For more details, check out the [Getting Started](https://wrtnlabs.io/agentica/docs/setup/) guide._
-
-You can create a new Agentica project using the following command:
-
-```sh
-# npm
-npx agentica@latest start
-
-# yarn
-yarn agentica start
-
-# pnpm
-pnpx agentica start
-
-# bun
-bunx agentica start
-```
-
-### Step 2. Creaste your own AI agent
-
-Open `src/index.ts` and create your own agent.
-
-Agentica accepts TypeScript types and OpenAPI specifications as input. You can use any of the following:
-
-- **TypeScript Types**: Define your own types and let Agentica generate the OpenAPI spec for you, powered by Typia.
-- **OpenAPI Specification**: Use an existing OpenAPI spec to create an agent. Agentica converts it for tool calling!
-- **Custom Controllers**: Create your own controllers to extend Agentica's functionality.
+Are you a TypeScript developer? Then you're already an AI developer. Familiar with backend development? You're already well-versed in AI development. Anyone who can make functions can make AI agents.
 
 <!-- eslint-skip -->
 
 ```typescript
-import { Agentica } from "@agentica/core";
+import { Agentica, assertHttpController } from "@agentica/core";
+import OpenAI from "openai";
 import typia from "typia";
 
+import { MobileFileSystem } from "./services/MobileFileSystem";
+
 const agent = new Agentica({
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
   controllers: [
-    await fetch(
-      "https://shopping-be.wrtn.ai/editor/swagger.json",
-    ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
-    typia.llm.application<ShoppingPolicy>(),
-    typia.llm.application<ShoppingSearchRag>(),
+    // functions from TypeScript class
+    {
+      protocol: "class",
+      name: "filesystem",
+      application: typia.llm.application<MobileFileSystem, "chatgpt">(),
+      execute: new MobileFileSystem(),
+    },
+    // functions from Swagger/OpenAPI
+    assertHttpController({
+      name: "shopping",
+      model: "chatgpt",
+      document: await fetch(
+        "https://shopping-be.wrtn.ai/editor/swagger.json",
+      ).then(r => r.json()),
+      connection: {
+        host: "https://shopping-be.wrtn.ai",
+        headers: { Authorization: "Bearer ********" },
+      },
+    }),
   ],
 });
-await agent.conversate("I wanna buy a MacBook Pro");
+await agent.conversate("I wanna buy MacBook Pro");
 ```
 
-### Step 3. Run your agent
+## 📦 Setup
 
-Let's play with your agent!
+```bash
+$ npx agentica start <directory>
 
-```sh
-npm run build
-npm run start # 🎉
+----------------------------------------
+ Agentica Setup Wizard
+----------------------------------------
+? Package Manager (use arrow keys)
+  > npm
+    pnpm
+    yarn (berry is not supported)
+? Project Type
+    NodeJS Agent Server
+  > NestJS Agent Server
+    React Client Application
+    Standalone Application
+? Embedded Controllers (multi-selectable)
+    (none)
+    Google Calendar
+    Google News
+  > Github
+    Reddit
+    Slack
+    ...
 ```
 
-## 🌟 Why Choose Agentica?
+The setup wizard helps you create a new project tailored to your needs.
 
-Traditional LLM frameworks struggle with structured outputs:
+For reference, when selecting a project type, any option other than "Standalone Application" will implement the [WebSocket Protocol](https://wrtnlabs.io/agentica/docs/websocket/) for client-server communication.
 
-| Problem Area           | Vanilla LLMs        | ✅ Agentica             |
-| ---------------------- | ------------------- | ----------------------- |
-| Parameter Validation   | ❌ Poor reliability | ✅ JSON Schema-driven   |
-| Complex Data Handling  | ❌ Struggles        | ✅ Robust Typia support |
-| Error Correction       | ❌ Manual           | ✅ Auto-correcting loop |
-| Integration Complexity | ❌ High effort      | ✅ Seamless OpenAPI     |
+For comprehensive setup instructions, visit our [Getting Started](https://wrtnlabs.io/agentica/docs/) guide.
 
----
+## 💻 Playground
 
-## 📚 Documentation & Tutorials & Paper
+Experience Agentica firsthand through our [interactive playground](https://wrtnlabs.io/agentica/playground) before installing.
 
-- [Getting Started](https://wrtnlabs.io/agentica/docs/getting-started)
-- [Tutorials](https://wrtnlabs.io/agentica/tutorial/)
-- [API Reference](https://wrtnlabs.io/agentica/docs/api)
-- [Paper](https://wrtnlabs.io/agentica/docs/paper)
+Our demonstrations showcase the power and simplicity of Agentica's function calling capabilities across different integration methods.
 
----
+- [TypeScript Class](https://wrtnlabs.io/agentica/playground/bbs)
+- [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/swagger)
+- [Enterprise E-commerce Agent](https://wrtnlabs.io/agentica/playground/shopping)
 
-## 💬 Community & Support
+<!--
+@todo this section would be changed after making tutorial playground
+-->
 
-- [Discord](https://discord.gg/aMhRmzkqCx)
+## 📚 Documentation Resources
 
----
+Find comprehensive resources at our [official website](https://wrtnlabs.io/agentica).
 
-## 👐 Contributing
+- [Home](https://wrtnlabs.io/agentica)
+- [Guide Documents](https://wrtnlabs.io/agentica/docs)
+- [Tutorial](https://wrtnlabs.io/agentica/tutorial)
+- [API Documents](https://wrtnlabs.io/agentica/api)
+- [Youtube](https://www.youtube.com/@wrtnlabs)
+- [Paper](https://wrtnlabs.io/agentica/paper)
 
-We welcome contributions from the community! Check out our [CONTRIBUTING.md](./CONTRIBUTING.md) to get started.
+## 🌟 Why Agentica?
 
----
+```mermaid
+flowchart
+  subgraph "JSON Schema Specification"
+    schemav4("JSON Schema v4 ~ v7") --upgrades--> emended[["OpenAPI v3.1 (emended)"]]
+    schema2910("JSON Schema 2019-03") --upgrades--> emended
+    schema2020("JSON Schema 2020-12") --emends--> emended
+  end
+  subgraph "Agentica"
+    emended --"Artificial Intelligence"--> fc{{"AI Function Calling"}}
+    fc --"OpenAI"--> chatgpt("ChatGPT")
+    fc --"Google"--> gemini("Gemini")
+    fc --"Anthropic"--> claude("Claude")
+    fc --"High-Flyer"--> deepseek("DeepSeek")
+    fc --"Meta"--> llama("Llama")
+    chatgpt --"3.1"--> custom(["Custom JSON Schema"])
+    gemini --"3.0"--> custom(["Custom JSON Schema"])
+    claude --"3.1"--> standard(["Standard JSON Schema"])
+    deepseek --"3.1"--> standard
+    llama --"3.1"--> standard
+  end
+```
 
-## ⚖️ License
+Agentica enhances AI function calling by the following strategies:
 
-Agentica is open-source and available under the [MIT License](https://github.com/wrtnlabs/agentica/blob/main/LICENSE).
+- [**Compiler Driven Development**](https://wrtnlabs.io/agentica/docs/concepts/compiler-driven-development): constructs function calling schema automatically by compiler skills without hand-writing.
+- [**JSON Schema Conversion**](https://wrtnlabs.io/agentica/docs/core/vendor/#schema-specification): automatically handles specification differences between LLM vendors, ensuring seamless integration regardless of your chosen AI model.
+- [**Validation Feedback**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#validation-feedback): detects and corrects AI mistakes in argument composition, dramatically reducing errors and improving reliability.
+- [**Selector Agent**](https://wrtnlabs.io/agentica/docs/concepts/function-calling#orchestration-strategy): filtering candidate functions to minimize context usage, optimize performance, and reduce token consumption.
 
----
+Thanks to these innovations, Agentica makes AI function calling easier, safer, and more accurate than before. Development becomes more intuitive since you only need to prepare functions relevant to your specific use case, and scaling your agent's capabilities is as simple as adding or removing functions.
 
----
+In 2023, when OpenAI announced function calling, many predicted that function calling-driven AI development would become the mainstream. However, in reality, due to the difficulty and instability of function calling, the trend in AI development became agent workflow. Agent workflow, which is inflexible and must be created for specific purposes, has conquered the AI agent ecosystem.
+By the way, as Agentica has resolved the difficulty and instability problems of function calling, the time has come to embrace function-driven AI development once again.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/2a143ef8-6a9d-4258-96ce-fb3a59137a5b" alt="Wrtn Technologies Logo"/>
-</p>
-
-<div align="center">
-Agentica is proudly developed and maintained by [Wrtn Technologies](https://wrtnlabs.io).<br>
-Empowering developers to build reliable and structured AI agents effortlessly.
-</div>
-
----
+| Type        | Workflow      | Vanilla Function Calling | Agentica Function Calling |
+| ----------- | ------------- | ------------------------ | ------------------------- |
+| Purpose     | ❌ Specific   | 🟢 General               | 🟢 General                |
+| Difficulty  | ❌ Difficult  | ❌ Difficult             | 🟢 Easy                   |
+| Stability   | 🟢 Stable     | ❌ Unstable              | 🟢 Stable                 |
+| Flexibility | ❌ Inflexible | 🟢 Flexible              | 🟢 Flexible               |

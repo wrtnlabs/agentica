@@ -22,9 +22,12 @@ export * from "./events/MicroAgenticaEvent";
 
 export * as factory from "./factory";
 
+export * from "./functional/assertHttpController";
 export * from "./functional/assertHttpLlmApplication";
-export * from "./functional/assertMcpLlmApplication";
+export * from "./functional/assertMcpController";
+export * from "./functional/validateHttpController";
 export * from "./functional/validateHttpLlmApplication";
+export * from "./functional/validateMcpController";
 // @TODO: implement validateMcpLlmApplication
 
 export * from "./histories/AgenticaCancelHistory";

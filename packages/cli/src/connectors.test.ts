@@ -14,7 +14,10 @@ describe("getConnectorsList", () => {
     const connectors = await getConnectorsList();
     expect(connectors).toEqual({
       connectors: [
-        "@wrtnlabs/connector-google-map",
+        {
+          name: "@wrtnlabs/connector-google-map",
+          envList: ["GOOGLE_API_KEY", "SERP_API_KEY"],
+        },
       ],
       version: "1.0.0",
     });
@@ -29,6 +32,7 @@ describe("getConnectors", () => {
         packageName: "@wrtnlabs/connector-google-map",
         serviceName: "google-map",
         displayName: "GOOGLE MAP",
+        envList: ["GOOGLE_API_KEY", "SERP_API_KEY"],
       },
     ]);
   });

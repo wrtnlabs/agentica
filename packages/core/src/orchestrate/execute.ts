@@ -17,13 +17,15 @@ export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgent
 
     // FUNCTIONS ARE NOT LISTED YET
     if (ctx.ready() === false) {
-      if (executor?.initialize === null) {
+      if (executor?.initialize !== true && typeof executor?.initialize !== "function") {
         await ctx.initialize();
       }
       else {
         histories.push(
           ...(await (
-            executor?.initialize ?? initialize
+            typeof executor?.initialize === "function"
+              ? executor.initialize
+              : initialize
           )(ctx)),
         );
         if (ctx.ready() === false) {
@@ -63,11 +65,15 @@ export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgent
       const executes: AgenticaExecuteHistory<Model>[] = prompts.filter(
         prompt => prompt.type === "execute",
       );
-      histories.push(
-        ...(await (
-          executor?.describe ?? describe
-        )(ctx, executes)),
-      );
+      if (executor?.describe !== null && executor?.describe !== false) {
+        histories.push(
+          ...(await (
+            typeof executor?.describe === "function"
+              ? executor.describe
+              : describe
+          )(ctx, executes)),
+        );
+      }
       if (executes.length === 0 || ctx.stack.length === 0) {
         break;
       }

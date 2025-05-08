@@ -1,0 +1,371 @@
+---
+title: Agentica > Tutorial > React Native > Calendar
+---
+import { YoutubeRenderer } from "../../../components/YoutubeRenderer";
+
+## Introduction
+
+This tutorial explains how to create a schedule management assistant Agent using Agentica in React Native.
+
+<br/>
+<YoutubeRenderer src="https://www.youtube.com/embed/cxekMLNjdVI" type="shorts"/>
+
+## Prerequisites
+- Node.js (>=18)
+- iOS/Android development environment setup (Simulator)
+  - JDK Version (= 17)
+
+## Project Setup
+
+First, create a React Native project. We'll use the Agentica CLI to get started.
+
+```bash
+npx agentica@latest start
+```
+
+During the project creation process, you'll need to configure the following:
+
+- Project name
+- Package Manager selection (npm, yarn, or pnpm)
+- Project Type: Select React Native
+- OpenAI API key setup
+
+
+## Generated Code Overview
+
+The generated code is as follows:
+
+### App.tsx
+
+`App.tsx` is the main file containing Agentica configuration.
+
+### shim.ts
+
+The `shim.ts` file is a polyfill file required for using OpenAI and Agentica. It must always be imported first.
+
+### controller/calendar.ts
+```tsx
+import {IAgenticaController} from '@agentica/core';
+import typia, {Primitive} from 'typia';
+import * as Calendar from 'expo-calendar';
+
+/**
+ * Controller for handling calendar operations.
+ * Implements the IAgenticaController interface for ChatGPT integration.
+ */
+export const CalendarController: IAgenticaController<'chatgpt'> = {
+  protocol: 'class',
+  name: 'calendar',
+  execute: async props => {
+    return (WRAPPED_CALENDAR as any)[props.function.name](props.arguments);
+  },
+  application: typia.llm.application<typeof WRAPPED_CALENDAR, 'chatgpt'>(),
+};
+
+/**
+ * Namespace containing all wrapped calendar operations.
+ * Provides type-safe interfaces for interacting with the Expo Calendar API.
+ */
+export namespace WRAPPED_CALENDAR {
+  /**
+   * Checks if the Calendar API is available on the current device.
+   * Note: This only checks if the API is available, not if the app has permissions to use it.
+   * @returns A promise that resolves to true if the Calendar API is available, false otherwise.
+   */
+  export async function wrappedIsAvailableAsync(): Promise<boolean> {
+    return Calendar.isAvailableAsync();
+  }
+
+  /**
+   * Retrieves a list of calendars from the device.
+   * On iOS, can optionally filter by entity type (events or reminders).
+   * @param props Optional parameters for filtering calendars.
+   * @returns A promise that resolves to an array of calendar objects.
+   */
+  export async function wrappedGetCalendarsAsync(
+    props: WrappedGetCalendarsAsyncProps,
+  ): Promise<Calendar.Calendar[]> {
+    return Calendar.getCalendarsAsync(props.entityType);
+  }
+
+  /**
+   * Creates a new calendar on the device.
+   * @param props The properties for the new calendar.
+   * @returns A promise that resolves to the ID of the newly created calendar.
+   */
+  export async function wrappedCreateCalendarAsync(
+    props: WrappedCreateCalendarAsyncProps,
+  ): Promise<string> {
+    return Calendar.createCalendarAsync(props.details);
+  }
+
+  /**
+   * Updates an existing calendar's properties.
+   * @param props The ID of the calendar to update and the new properties.
+   * @returns A promise that resolves to the ID of the updated calendar.
+   */
+  export async function wrappedUpdateCalendarAsync(
+    props: WrappedUpdateCalendarAsyncProps,
+  ): Promise<string> {
+    return Calendar.updateCalendarAsync(props.id, props.details);
+  }
+
+  /**
+   * Deletes a calendar and all its associated events/reminders.
+   * Warning: This action cannot be undone.
+   * @param props The ID of the calendar to delete.
+   * @returns A promise that resolves when the calendar is deleted.
+   */
+  export async function wrappedDeleteCalendarAsync(
+    props: WrappedDeleteCalendarAsyncProps,
+  ): Promise<void> {
+    return Calendar.deleteCalendarAsync(props.id);
+  }
+
+  /**
+   * Retrieves events from specified calendars within a given time range.
+   * Note: The behavior differs between iOS and Android:
+   * - iOS returns all events that overlap with the time range
+   * - Android returns only events that start and end within the time range
+   * @param props The calendar IDs and time range to search.
+   * @returns A promise that resolves to an array of event objects.
+   */
+  export async function wrappedGetEventsAsync(
+    props: WrappedGetEventsAsyncProps,
+  ): Promise<Calendar.Event[]> {
+    return Calendar.getEventsAsync(
+      props.calendarIds,
+      new Date(props.startDate),
+      new Date(props.endDate),
+    );
+  }
+
+  /**
+   * Retrieves a specific event by its ID.
+   * For recurring events, can optionally specify a particular instance.
+   * @param props The event ID and optional recurring event parameters.
+   * @returns A promise that resolves to the event object.
+   */
+  export async function wrappedGetEventAsync(
+    props: WrappedGetEventAsyncProps,
+  ): Promise<Calendar.Event> {
+    return Calendar.getEventAsync(props.id, {
+      ...props.recurringEventOptions,
+      instanceStartDate: props.recurringEventOptions?.instanceStartDate
+        ? new Date(props.recurringEventOptions.instanceStartDate)
+        : undefined,
+    });
+  }
+
+  /**
+   * Creates a new event in the specified calendar.
+   * @param props The calendar ID and event data.
+   * @returns A promise that resolves to the ID of the newly created event.
+   */
+  export async function wrappedCreateEventAsync(
+    props: WrappedCreateEventAsyncProps,
+  ): Promise<string> {
+    return Calendar.createEventAsync(props.calendarId, {
+      ...props.eventData,
+      startDate: new Date(props.eventData.startDate ?? ''),
+      endDate: new Date(props.eventData.endDate ?? ''),
+      lastModifiedDate: props.eventData.lastModifiedDate
+        ? new Date(props.eventData.lastModifiedDate)
+        : undefined,
+      originalStartDate: props.eventData.originalStartDate
+        ? new Date(props.eventData.originalStartDate)
+        : undefined,
+    });
+  }
+
+  /**
+   * Updates an existing event's properties.
+   * @param props The event ID, new properties, and optional recurring event parameters.
+   * @returns A promise that resolves to the ID of the updated event.
+   */
+  export async function wrappedUpdateEventAsync(
+    props: WrappedUpdateEventAsyncProps,
+  ): Promise<string> {
+    return Calendar.updateEventAsync(
+      props.id,
+      {
+        ...props.details,
+        startDate: props.details.startDate
+          ? new Date(props.details.startDate)
+          : undefined,
+        endDate: props.details.endDate
+          ? new Date(props.details.endDate)
+          : undefined,
+        lastModifiedDate: props.details.lastModifiedDate
+          ? new Date(props.details.lastModifiedDate)
+          : undefined,
+        originalStartDate: props.details.originalStartDate
+          ? new Date(props.details.originalStartDate)
+          : undefined,
+      },
+      {
+        ...props.recurringEventOptions,
+        instanceStartDate: props.recurringEventOptions?.instanceStartDate
+          ? new Date(props.recurringEventOptions.instanceStartDate)
+          : undefined,
+      },
+    );
+  }
+
+  /**
+   * Deletes an event from the calendar.
+   * @param props The event ID and optional recurring event parameters.
+   * @returns A promise that resolves when the event is deleted.
+   */
+  export async function wrappedDeleteEventAsync(
+    props: WrappedDeleteEventAsyncProps,
+  ): Promise<void> {
+    return Calendar.deleteEventAsync(props.id, props.recurringEventOptions);
+  }
+
+  /**
+   * Retrieves all attendees for a specific event.
+   * @param props The event ID and optional recurring event parameters.
+   * @returns A promise that resolves to an array of attendee objects.
+   */
+  export async function wrappedGetAttendeesForEventAsync(
+    props: WrappedGetAttendeesForEventAsyncProps,
+  ): Promise<Calendar.Attendee[]> {
+    return Calendar.getAttendeesForEventAsync(
+      props.id,
+      props.recurringEventOptions,
+    );
+  }
+
+  /**
+   * Checks the current permissions for accessing calendars.
+   * @returns A promise that resolves to the current permission status.
+   */
+  export async function wrappedGetCalendarPermissionsAsync(): Promise<Calendar.PermissionResponse> {
+    return Calendar.getCalendarPermissionsAsync();
+  }
+
+  /**
+   * Requests permission to access calendars.
+   * @returns A promise that resolves to the permission status after the user responds.
+   */
+  export async function wrappedRequestCalendarPermissionsAsync(): Promise<Calendar.PermissionResponse> {
+    return Calendar.requestCalendarPermissionsAsync();
+  }
+}
+```
+- Provides calendar operations functionality
+- Implemented using the `expo-calendar` package
+- Supports calendar operations
+
+
+## Use Case Example
+
+Imagine asking the agent:
+
+> "Create a new calendar event for tomorrow at 10 AM. Title: Meeting with John Doe. Description: Discuss project updates. Location: 123 Main St, Anytown, USA"
+
+The agent will process your query by creating a new calendar event.
+
+
+## Controller Development Guide
+
+With Agentica, you can easily add any functionality you can think of! (Even if it's only available in Native). To add your own functionality to Agentica, follow these steps:
+
+1. First, define the function for the functionality you want to implement.
+When writing functions, they must follow this format:
+
+  - Functions must have exactly one parameter
+  - The parameter must be an Object type
+  - Detailed JS Doc must be written. This JS Doc is used by the AI to select and execute functions
+  - Function parameters can only use basic JSON types (Native Classes like Date, Error are not supported)
+  - Using [`typia.tag`](https://typia.io/docs/validators/tags/) to structure Parameter Types can provide more detailed information to the LLM
+
+Here's an example code. You can include any code that can run in a React Native environment.
+
+```tsx
+/**
+ * A basic calculator that performs addition and subtraction operations.
+ */
+namespace Calculator {
+  /**
+   * Parameters for addition operation
+   */
+  interface AddProps {
+    /**
+     * First number to add
+     */
+    a: number;
+    /**
+     * Second number to add
+     */
+    b: number;
+  }
+
+  /**
+   * Parameters for subtraction operation
+   */
+  interface SubProps {
+    /**
+     * Number to subtract from
+     */
+    a: number;
+    /**
+     * Number to subtract
+     */
+    b: number;
+  }
+
+  /**
+   * Adds two numbers together.
+   * @returns The sum of two numbers
+   */
+  export function add(props: AddProps): number {
+    return props.a + props.b;
+  }
+
+  /**
+   * Subtracts the second number from the first number.
+   * @returns The result of subtracting the second number from the first number
+   */
+  export function sub(props: SubProps): number {
+    return props.a - props.b;
+  }
+}
+```
+
+2. You need to declare the Controller to apply it to Agentica.
+
+```tsx
+export const CalculatorController: IAgenticaController<'chatgpt'> = {
+  protocol: 'class',
+  name: 'calculator',
+  execute: async props =>
+    (Calculator as any)[props.function.name](props.arguments),
+  application: typia.llm.application<typeof Calculator, 'chatgpt'>(),
+};
+```
+
+3. Finally, go to App.tsx and apply your created Controller. That's it!
+
+```tsx
+new MicroAgentica({
+  model: 'chatgpt',
+  vendor: {
+    /**
+     * @warning
+     * This template is a proof-of-concept template created to demonstrate whether Agentica can call native features.
+     * To use this in a production environment, architectural modifications are required to properly secure the OpenAI Key.
+     */
+    api: new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    }),
+    model: 'gpt-4o',
+  },
+  controllers: [CalculatorController], // Insert CalculatorController. 
+});
+```
+
+4. Start the development server and try chatting with Agentica! Agentica will call your created Controller based on the situation.
+

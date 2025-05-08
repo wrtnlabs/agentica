@@ -36,7 +36,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.text,
+          content: ctx.prompt.contents,
         },
         {
           // SYSTEM PROMPT
@@ -108,7 +108,6 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
 
         ctx.dispatch(
           createTextEvent({
-            role: "assistant",
             stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
             done: () => mpsc.done(),
             get: () => textContext[choice.index]!.content,
@@ -145,10 +144,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
       && choice.message.content.length !== 0
     ) {
       prompts.push(
-        createTextHistory({
-          role: "assistant",
-          text: choice.message.content,
-        }),
+        createTextHistory({ text: choice.message.content }),
       );
     }
   }

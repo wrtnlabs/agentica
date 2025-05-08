@@ -21,7 +21,10 @@ export function compose<Model extends ILlmSchema.Model>(props: {
   config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model> | undefined;
 }): AgenticaOperationCollection<Model> {
   const unique: boolean = (props.controllers.length === 1 || (() => {
-    const names = props.controllers.map(controllers => controllers.application.functions.map(func => func.name)).flat();
+    const names = props.controllers.map(
+
+      controllers => controllers.application.functions.map((func: { name: string }) => func.name),
+    ).flat();
     return new Set(names).size === names.length;
   })());
 
@@ -126,19 +129,23 @@ export function toClassOperations<Model extends ILlmSchema.Model>(props: {
  * @internal
  */
 export function toMcpOperations<Model extends ILlmSchema.Model>(props: {
-  controller: IAgenticaController.IMcp;
+  controller: IAgenticaController.IMcp<Model>;
   index: number;
   naming: (func: string, controllerIndex: number) => string;
 }): AgenticaOperation<Model>[] {
   return props.controller.application.functions.map(func => ({
     protocol: "mcp",
     controller: props.controller,
+
     function: func,
+
     name: props.naming(func.name, props.index),
     toJSON: () => ({
       protocol: "mcp",
       controller: props.controller.name,
+
       function: func.name,
+
       name: props.naming(func.name, props.index),
     }),
   }));

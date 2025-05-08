@@ -28,6 +28,7 @@ import typia from "typia";
  * @returns  HTTP LLM application instance
  * @throws {@link TypeGuardError} when the given document is invalid
  * @author Samchon
+ * @deprecated Use {@link assertHttpController} instead.
  */
 export function assertHttpLlmApplication<
   Model extends ILlmSchema.Model,

@@ -1,6 +1,7 @@
 import type OpenAI from "openai";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
+import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 
 import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
@@ -37,6 +38,13 @@ export namespace IAgenticaEventJson {
     describe: IDescribe;
     text: IText;
     request: IRequest;
+  }
+
+  /**
+   * Event of user input.
+   */
+  export interface IUserInput extends IBase<"user_input"> {
+    contents: Array<AgenticaUserInputHistory.Contents>;
   }
 
   /**
@@ -140,7 +148,7 @@ export namespace IAgenticaEventJson {
     /**
      * Role of the orator.
      */
-    role: "assistant" | "user";
+    role: "assistant";
 
     /**
      * Conversation text.

@@ -1,0 +1,194 @@
+---
+title: Agentica > Guide Documents > Setup > React Native
+---
+
+## Prerequisites
+- Node.js (v18.18 or newer)
+- JDK (v17)
+- Android Studio (for Android Development)
+- Xcode (for iOS Development)
+
+## Project Setup
+To use Agentica in React Native, follow these steps:
+- Set up a Bare React Native project  
+- Configure Repack  
+- Configure Expo  
+- Set up Typia  
+- Install Agentica and add necessary polyfills  
+
+---
+
+### 1. Bare React Native Setup
+
+First, set up a Bare React Native project. For detailed instructions, refer to the [React Native Community](https://github.com/react-native-community/cli) documentation.
+
+```bash
+npx @react-native-community/cli@15.0.0 init
+```
+
+---
+
+### 2. Repack Setup
+
+Next, set up Repack. For detailed instructions, refer to the [Repack documentation](https://re-pack.dev/index).
+
+```bash
+npx @callstack/repack-init
+```
+
+> **❓ Why Repack?**  
+> Repack is a Webpack/Rspack-based bundler for React Native.  
+>
+> Agentica uses [`typia`](https://typia.io/) which works at compile time. However, [`typia` does not support Babel](https://typia.io/docs/setup/#summary), making it incompatible with the default Babel-based Metro bundler.  
+>
+> Therefore, this tutorial uses `Repack`, which is based on Rspack or Webpack.
+
+---
+
+### 3. Expo Setup
+
+Next, set up Expo modules. For detailed instructions, refer to the [Expo documentation](https://docs.expo.dev/bare/installing-expo-modules/).
+
+```bash
+npx create-expo-app@latest
+```
+
+To use Expo modules in a Repack environment, install the `@callstack/repack-plugin-expo-modules` plugin:
+
+```bash
+npm install @callstack/repack-plugin-expo-modules
+```
+
+Update your `rspack.config.mjs` file:
+
+```js
+// rspack.config.mjs
+import ...
+import { ExpoModulesPlugin } from '@callstack/repack-plugin-expo-modules';
+
+export default {
+  ...
+  plugins: [
+    ...
+    new ExpoModulesPlugin(),
+  ],
+};
+```
+
+Once Expo is configured, you can run the app using the following commands:
+
+```bash
+npm run start
+
+# For iOS
+npx pod-install
+npm run ios
+
+# For Android
+npm run android
+```
+
+> **❓ Why Expo?**  
+> Expo is a toolchain that simplifies and speeds up React Native development.  
+> In this tutorial, we use Expo to apply polyfills for `fetch` via `expo/fetch` and to utilize various native modules.
+
+---
+
+### 4. Typia Setup
+
+Next, set up [Typia](https://typia.io/).
+
+Install the required libraries:
+
+```bash
+npm install typia @ryoppippi/unplugin-typia
+```
+
+Then, update your `tsconfig.json` to extend the default config and include any required `compilerOptions`:
+
+```json
+// tsconfig.json
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {}
+}
+```
+
+Now, initialize Typia using its CLI:
+
+```bash
+npx typia setup
+npm install
+```
+
+Lastly, add the UnpluginTypia plugin to your `rspack.config.mjs`:
+
+```js
+// rspack.config.mjs
+import ...
+import UnpluginTypia from '@ryoppippi/unplugin-typia/webpack';
+
+export default {
+  ...
+  plugins: [..., UnpluginTypia()], // Add UnpluginTypia Plugin
+};
+```
+
+Once Typia is set up, try running the app with this example:
+
+```tsx
+// App.tsx
+import React from 'react';
+import { Text, View } from 'react-native';
+import typia from 'typia';
+
+function App(): React.JSX.Element {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>{typia.random<'Hello World'>()}</Text>
+    </View>
+  );
+}
+
+export default App;
+```
+
+If everything is configured correctly, the app should display a randomly generated "Hello World" string.
+
+---
+
+### Agentica Setup
+
+Finally, let's configure [Agentica](https://wrtnlabs.io/agentica/).
+
+First, install Agentica and required polyfill libraries:
+
+```bash
+npm i @agentica/core openai
+npm i react-native-polyfill-globals@latest react-native-url-polyfill react-native-get-random-values react-native-fetch-api base-64 web-streams-polyfill@3.3.3 @azure/core-asynciterator-polyfill
+```
+
+Then, create a `shim.ts` file with the following content:
+
+```ts
+// shim.ts
+import 'react-native-polyfill-globals/auto';
+import '@azure/core-asynciterator-polyfill';
+import { fetch } from 'expo/fetch';
+
+(() => {
+  globalThis.fetch = fetch as any;
+})();
+```
+
+To apply the polyfills, update `index.js` like this:
+
+```js
+// index.js
+import './shim'; // Add shim
+import ...
+
+AppRegistry.registerComponent(appName, () => App);
+```
+
+**🎉 Congratulations!** You’re now ready to use Agentica in your React Native environment.

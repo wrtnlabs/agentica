@@ -2,6 +2,11 @@ bin/
 lib/
 node_modules/
 
+packages/*/README.md
+benchmark/*/README.md
+test/README.md
+website/README.md
+
 *.log
 .env
 

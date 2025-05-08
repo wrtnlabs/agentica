@@ -54,7 +54,7 @@ export async function call<Model extends ILlmSchema.Model>(
       // USER INPUT
       {
         role: "user",
-        content: ctx.prompt.text,
+        content: ctx.prompt.contents,
       },
       // SYSTEM PROMPT
       ...(ctx.config?.systemPrompt?.execute === null
@@ -72,10 +72,13 @@ export async function call<Model extends ILlmSchema.Model>(
           type: "function",
           function: {
             name: s.name,
+
             description: s.function.description,
             parameters: (
               "separated" in s.function
+
               && s.function.separated !== undefined
+
                 ? (s.function.separated.llm
                   ?? ({
                     type: "object",
@@ -84,6 +87,7 @@ export async function call<Model extends ILlmSchema.Model>(
                     additionalProperties: false,
                     $defs: {},
                   } satisfies IChatGptSchema.IParameters))
+
                 : s.function.parameters) as Record<string, any>,
           },
         }) as OpenAI.ChatCompletionTool,
@@ -177,13 +181,11 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextHistory = createTextHistory({
-          role: "assistant",
-          text: choice.message.content!,
-        });
+        const value: AgenticaTextHistory = createTextHistory(
+          { text: choice.message.content! },
+        );
         ctx.dispatch(
           createTextEvent({
-            role: "assistant",
             get: () => value.text,
             done: () => true,
             stream: toAsyncGenerator(value.text),
@@ -368,7 +370,7 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
 
 async function propagateMcp<Model extends ILlmSchema.Model>(props: {
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
-  operation: AgenticaOperation.Mcp;
+  operation: AgenticaOperation.Mcp<Model>;
   call: AgenticaCallEvent<Model>;
   retry: number;
 }): Promise<AgenticaExecuteHistory<Model>> {
@@ -435,34 +437,17 @@ async function executeClassOperation<Model extends ILlmSchema.Model>(operation: 
   return ((execute as Record<string, unknown>)[operation.function.name] as (...args: unknown[]) => Promise<unknown>)(operationArguments);
 }
 
-async function executeMcpOperation(operation: AgenticaOperation.Mcp, operationArguments: Record<string, unknown>): Promise<unknown> {
-  // for peerDependencies
-  const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
-  const { SSEClientTransport } = await import("@modelcontextprotocol/sdk/client/sse.js");
-  const { StdioClientTransport } = await import("@modelcontextprotocol/sdk/client/stdio.js");
+async function executeMcpOperation<Model extends ILlmSchema.Model>(
+  operation: AgenticaOperation.Mcp<Model>,
+  operationArguments: Record<string, unknown>,
+): Promise<unknown> {
+  return operation.controller.client.callTool({
 
-  const client = new Client({
-    name: operation.name,
-    version: "1.0.0",
-  });
+    method: operation.function.name,
 
-  const transport = (() => {
-    switch (operation.controller.application.transport.type) {
-      case "sse":
-        return new SSEClientTransport(operation.controller.application.transport.url);
-      case "stdio":
-        // @TODO: implement StdioClientTransport cache
-        // StdioClientTransport and connects a new child process every time it is initialized and connected.
-        // This results in significant latency and resource waste.
-        return new StdioClientTransport(operation.controller.application.transport);
-      default:
-        operation.controller.application.transport satisfies never;
-        throw new Error("Unsupported transport type");
-    }
-  })();
-  await client.connect(transport);
-  const result = await client.callTool({ method: operation.function.name, name: operation.function.name, arguments: operationArguments });
-  return result.content;
+    name: operation.function.name,
+    arguments: operationArguments,
+  }).then(v => v.content);
 }
 
 async function correct<Model extends ILlmSchema.Model>(
@@ -486,7 +471,7 @@ async function correct<Model extends ILlmSchema.Model>(
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.text,
+          content: ctx.prompt.contents,
         },
         // TYPE CORRECTION
         ...(ctx.config?.systemPrompt?.execute === null
@@ -531,6 +516,7 @@ async function correct<Model extends ILlmSchema.Model>(
         type: "function",
         function: {
           name: call.operation.name,
+
           description: call.operation.function.description,
           /**
            * @TODO fix it
@@ -538,7 +524,9 @@ async function correct<Model extends ILlmSchema.Model>(
            */
           parameters: (
             "separated" in call.operation.function
+
             && call.operation.function.separated !== undefined
+
               ? (call.operation.function.separated?.llm
                 ?? ({
                   $defs: {},
@@ -547,6 +535,7 @@ async function correct<Model extends ILlmSchema.Model>(
                   additionalProperties: false,
                   required: [],
                 } satisfies IChatGptSchema.IParameters))
+
               : call.operation.function.parameters) as unknown as Record<string, unknown>,
         },
       },
