@@ -2,7 +2,7 @@
 
 <!-- https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488 -->
 
-![Logo](https://wrtnlabs.io/agentica/og.jpg?refresh)
+![Logo](https://wrtnlabs.io/agentica/og.jpg)
 
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
