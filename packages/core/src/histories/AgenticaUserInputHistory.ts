@@ -1,3 +1,5 @@
+import type typia from "typia";
+
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
 import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
@@ -35,7 +37,7 @@ export namespace AgenticaUserInputHistory {
         /**
          * Either a URL of the image or the base64 encoded image data.
          */
-        url: string;
+        url: string & typia.tags.Format<"url">;
         /**
          * Specifies the detail level of the image. Learn more in the
          * [Vision guide](https://platform.openai.com/docs/guides/vision#low-or-high-fidelity-image-understanding).
@@ -46,6 +48,8 @@ export namespace AgenticaUserInputHistory {
 
     /**
      * Learn about [audio inputs](https://platform.openai.com/docs/guides/audio).
+     *
+     * Note: we not recommend it because audio input data only support base64 so it's too big data.
      */
     export interface InputAudio extends ContentsBase<"input_audio"> {
       input_audio: {
@@ -64,24 +68,26 @@ export namespace AgenticaUserInputHistory {
     /**
      * Learn about [file inputs](https://platform.openai.com/docs/guides/text) for text
      * generation.
+     *
+     * Note: we recommend use `file_id` instead of `file_data` because it's too big data.
      */
     export interface File extends ContentsBase<"file"> {
       file: {
         /**
+         * The ID of an uploaded file to use as input.
+         */
+        file_id: string;
+      } | {
+        /**
          * The base64 encoded file data, used when passing the file to the model as a
          * string.
          */
-        file_data?: string;
-
-        /**
-         * The ID of an uploaded file to use as input.
-         */
-        file_id?: string;
+        file_data: string;
 
         /**
          * The name of the file, used when passing the file to the model as a string.
          */
-        filename?: string;
+        filename: string;
       };
     }
   }
