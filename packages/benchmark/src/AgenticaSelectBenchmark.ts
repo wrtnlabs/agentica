@@ -153,7 +153,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
       const context = this.agent_.getContext({
-        prompt: factory.createUserInputHistory({
+        prompt: factory.createUserHistory({
           contents: [{
             type: "text",
             text: scenario.text,
@@ -189,7 +189,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         usage,
         assistantPrompts: histories
           // Only the assistant is allowed to emit text events.
-          .filter(p => p.type === "text"),
+          .filter(p => p.type === "assistant"),
         started_at,
         completed_at: new Date(),
       } satisfies

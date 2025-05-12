@@ -1,4 +1,4 @@
-import type { IAgenticaController } from "@agentica/core";
+import type { AgenticaUserContent, IAgenticaController } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 /**
@@ -28,7 +28,9 @@ export interface IAgenticaRpcService<Model extends ILlmSchema.Model> {
    * @param content The content to talk
    * @returns Returned when the conversation process is completely done
    */
-  conversate: (content: string) => Promise<void>;
+  conversate: (
+    content: string | AgenticaUserContent | Array<AgenticaUserContent>,
+  ) => Promise<void>;
 
   /**
    * Get controllers.

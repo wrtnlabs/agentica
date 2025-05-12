@@ -62,7 +62,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
    * Please apply any available patches to resolve this issue.
    */
   const llmVendor = agent.getVendor();
-  const isTextPrompt = last?.type === "text" && last.role === "assistant";
+  const isTextPrompt = last?.type === "assistant";
   if (!isTextPrompt) {
     return null;
   }
@@ -124,8 +124,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
  * Check if the called operations match the expected operations.
  *
  * @param props Properties for checking the match of the called operations
- * and the expected operations
- *
+ *              and the expected operations
  * @returns `true` if the called operations match the expected operations,
  * otherwise `false`.
  */

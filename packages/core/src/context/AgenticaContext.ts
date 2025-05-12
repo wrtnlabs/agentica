@@ -4,7 +4,7 @@ import type OpenAI from "openai";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
-import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
+import type { AgenticaUserHistory } from "../histories/AgenticaUserHistory";
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
@@ -85,7 +85,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    * The user input history written by the user through the
    * {@link Agentica.conversate} function.
    */
-  prompt: AgenticaUserInputHistory;
+  prompt: AgenticaUserHistory;
 
   /**
    * Abort signal.

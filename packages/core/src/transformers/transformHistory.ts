@@ -1,24 +1,34 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaUserHistory } from "../histories";
+import type { AgenticaAssistantHistory } from "../histories/AgenticaAssistantHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
-import { createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createTextHistory } from "../factory/histories";
+import { createAssistantHistory, createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createUserHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 
-function transform<Model extends ILlmSchema.Model>(props: {
+/**
+ * @internal
+ */
+export function transformHistory<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   history: IAgenticaHistoryJson;
 }): AgenticaHistory<Model> {
-  // TEXT
-  if (props.history.type === "text") {
-    return transformText({
+  // USER
+  if (props.history.type === "user") {
+    return transformUser({
+      history: props.history,
+    });
+  }
+  // ASSISTANT
+  else if (props.history.type === "assistant") {
+    return transformAssistant({
       history: props.history,
     });
   }
@@ -51,10 +61,16 @@ function transform<Model extends ILlmSchema.Model>(props: {
   throw new Error("Invalid prompt type.");
 }
 
-function transformText(props: {
-  history: IAgenticaHistoryJson.IText;
-}): AgenticaTextHistory {
-  return createTextHistory(props.history);
+function transformAssistant(props: {
+  history: IAgenticaHistoryJson.IAssistant;
+}): AgenticaAssistantHistory {
+  return createAssistantHistory(props.history);
+}
+
+function transformUser(props: {
+  history: IAgenticaHistoryJson.IUser;
+}): AgenticaUserHistory {
+  return createUserHistory(props.history);
 }
 
 function transformSelect<Model extends ILlmSchema.Model>(props: {
@@ -146,12 +162,3 @@ function findOperation<Model extends ILlmSchema.Model>(props: {
   }
   return found;
 }
-
-export const AgenticaHistoryTransformer = {
-  transform,
-  transformText,
-  transformSelect,
-  transformCancel,
-  transformExecute,
-  transformDescribe,
-};

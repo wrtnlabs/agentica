@@ -63,7 +63,7 @@ export async function test_rpc_micro_call(): Promise<void | false> {
     describe: async (evt) => {
       events.push(evt);
     },
-    text: async (evt) => {
+    assistant: async (evt) => {
       events.push(evt);
     },
     call: async (evt) => {
@@ -90,9 +90,9 @@ export async function test_rpc_micro_call(): Promise<void | false> {
   TestValidator.equals("events")(
     events.map(e => e.type),
   )([
-    "text",
-    "text",
-    "text",
+    "user",
+    "assistant",
+    "user",
     "call",
     "execute",
     "describe",

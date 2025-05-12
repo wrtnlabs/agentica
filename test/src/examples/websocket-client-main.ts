@@ -15,8 +15,8 @@ async function main() {
     // and configuring IAgenticaRpcListener instance
     //
     // server will call these functions remotely (Remote Procedure Call)
-    text: async (evt) => {
-      console.log(evt.role, evt.text);
+    assistant: async (evt) => {
+      console.log("assistant", evt.text);
     },
     select: async (evt) => {
       console.log("selector", evt.selection);

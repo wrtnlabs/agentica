@@ -1,4 +1,4 @@
-import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
+import type { AgenticaUserContent } from "../histories";
 
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
@@ -20,24 +20,35 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
  * @author Samchon
  */
 export type IAgenticaHistoryJson =
-  | IAgenticaHistoryJson.IUserInput
-  | IAgenticaHistoryJson.IText
+  | IAgenticaHistoryJson.IUser
+  | IAgenticaHistoryJson.IAssistant
   | IAgenticaHistoryJson.ISelect
   | IAgenticaHistoryJson.ICancel
   | IAgenticaHistoryJson.IExecute
   | IAgenticaHistoryJson.IDescribe;
 export namespace IAgenticaHistoryJson {
   /**
-   * User input prompt.
+   * User prompt.
    *
-   * User input prompt about the user's input.
+   * User prompt about the user's input.
    */
-  export interface IUserInput extends IBase<"user_input"> {
+  export interface IUser extends IBase<"user"> {
     /**
      * User input.
      */
-    contents: Array<AgenticaUserInputHistory.Contents>;
+    contents: Array<AgenticaUserContent>;
   }
+
+  /**
+   * Assistant prompt.
+   */
+  export interface IAssistant extends IBase<"assistant"> {
+    /**
+     * The text content.
+     */
+    text: string;
+  }
+
   /**
    * Select prompt.
    *
@@ -114,21 +125,6 @@ export namespace IAgenticaHistoryJson {
 
     /**
      * Description text.
-     */
-    text: string;
-  }
-
-  /**
-   * Text prompt.
-   */
-  export interface IText extends IBase<"text"> {
-    /**
-     * Role of the orator.
-     */
-    role: "assistant";
-
-    /**
-     * The text content.
      */
     text: string;
   }

@@ -12,11 +12,11 @@ export const AgenticaPromptReporter = {
 };
 
 function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): string {
-  if (p.type === "user_input") {
+  if (p.type === "user") {
     return [`### User Input`, p.contents, ""].join("\n");
   }
-  if (p.type === "text") {
-    return [`### Text (${p.role})`, p.text, ""].join("\n");
+  if (p.type === "assistant") {
+    return [`### Text (assistant)`, p.text, ""].join("\n");
   }
 
   if (p.type === "select" || p.type === "cancel") {

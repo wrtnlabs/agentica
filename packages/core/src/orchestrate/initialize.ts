@@ -9,8 +9,8 @@ import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createTextEvent } from "../factory/events";
-import { createTextHistory, decodeHistory } from "../factory/histories";
+import { creatAssistantEvent } from "../factory/events";
+import { createAssistantHistory, decodeHistory, decodeUserContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
@@ -36,7 +36,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents,
+          content: ctx.prompt.contents.map(decodeUserContent),
         },
         {
           // SYSTEM PROMPT
@@ -107,7 +107,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         mpsc.produce(choice.delta.content);
 
         ctx.dispatch(
-          createTextEvent({
+          creatAssistantEvent({
             stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
             done: () => mpsc.done(),
             get: () => textContext[choice.index]!.content,
@@ -144,7 +144,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
       && choice.message.content.length !== 0
     ) {
       prompts.push(
-        createTextHistory({ text: choice.message.content }),
+        createAssistantHistory({ text: choice.message.content }),
       );
     }
   }

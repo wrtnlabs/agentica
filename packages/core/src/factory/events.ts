@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import type { AgenticaAssistantEvent } from "../events/AgenticaAssistantEvent";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
@@ -14,14 +15,13 @@ import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent"
 import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "../events/AgenticaResponseEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
-import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
-import type { AgenticaUserInputEvent } from "../events/AgenticaUserInputEvent";
+import type { AgenticaUserEvent } from "../events/AgenticaUserEvent";
 import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
+import type { AgenticaUserContent } from "../histories";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
-import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { createExecuteHistory, createSelectHistory, createUserInputHistory } from "./histories";
+import { createExecuteHistory, createSelectHistory, createUserHistory } from "./histories";
 
 /* -----------------------------------------------------------
   FUNCTION SELECTS
@@ -36,23 +36,6 @@ export function createInitializeEvent(): AgenticaInitializeEvent {
   };
 }
 
-export function createUserInputEvent(props: {
-  contents: Array<AgenticaUserInputHistory.Contents>;
-}): AgenticaUserInputEvent {
-  return {
-    type: "user_input",
-    role: "user",
-    contents: props.contents,
-    join: async () => props.contents,
-    toJSON: () => ({
-      type: "user_input",
-      contents: props.contents,
-    }),
-    toHistory: () => createUserInputHistory({
-      contents: props.contents,
-    }),
-  };
-}
 export function createSelectEvent<Model extends ILlmSchema.Model>(props: {
   selection: AgenticaOperationSelection<Model>;
 }): AgenticaSelectEvent<Model> {
@@ -151,32 +134,44 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 /* -----------------------------------------------------------
-  TEXT STEAMING
+  CONTENTS
 ----------------------------------------------------------- */
-export function createTextEvent(props: {
+export function createUserEvent(props: {
+  contents: Array<AgenticaUserContent>;
+}): AgenticaUserEvent {
+  return {
+    type: "user",
+    contents: props.contents,
+    toJSON: () => ({
+      type: "user",
+      contents: props.contents,
+    }),
+    toHistory: () => createUserHistory({
+      contents: props.contents,
+    }),
+  };
+}
+
+export function creatAssistantEvent(props: {
   stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
-}): AgenticaTextEvent {
+}): AgenticaAssistantEvent {
   return {
-    type: "text",
-    role: "assistant",
+    type: "assistant",
     stream: props.stream,
     join: props.join,
     toJSON: () => ({
-      type: "text",
-      role: "assistant",
+      type: "assistant",
       done: props.done(),
       text: props.get(),
     }),
     toHistory: () => ({
-      type: "text",
-      role: "assistant",
+      type: "assistant",
       text: props.get(),
       toJSON: () => ({
-        type: "text",
-        role: "assistant",
+        type: "assistant",
         text: props.get(),
       }),
     }),
@@ -215,8 +210,8 @@ export function createDescribeEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 /* -----------------------------------------------------------
-    API REQUESTS
-  ----------------------------------------------------------- */
+  API REQUESTS
+----------------------------------------------------------- */
 export function createRequestEvent(props: {
   source: AgenticaEventSource;
   body: OpenAI.ChatCompletionCreateParamsStreaming;

@@ -26,7 +26,7 @@ export async function validateMcpController<
   name: string;
   // @ts-ignore Type checking only when `@modelcontextprotocol/sdk` is installed.
   //            This strategy is useful for someone who does not need MCP,
-  //            so that have not installed `@modelcontextprotocol/sdk`.
+  //            for someone who has not installed `@modelcontextprotocol/sdk`.
   client: import("@modelcontextprotocol/sdk/client/index.d.ts").Client;
   model: Model;
   options?: Partial<IMcpLlmApplication.IOptions<Model>>;

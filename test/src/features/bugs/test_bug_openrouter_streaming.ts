@@ -55,7 +55,7 @@ export async function test_bug_openrouter_streaming(): Promise<void | false> {
   TestValidator.predicate("text.length")(
     () =>
       histories
-        .filter(h => h.type === "text")
+        .filter(h => h.type === "assistant")
         .every(h => h.text.length !== 0),
   );
 }

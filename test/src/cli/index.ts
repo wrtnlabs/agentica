@@ -158,8 +158,8 @@ async function main(): Promise<void> {
       const histories: AgenticaHistory<"chatgpt">[]
         = await agent.conversate(content);
       for (const h of histories.slice(1)) {
-        if (h.type === "text") {
-          trace(chalk.yellow("Text"), chalk.blueBright(h.role), "\n\n", h.text);
+        if (h.type === "assistant") {
+          trace(chalk.yellow("Text"), chalk.blueBright("assistant"), "\n\n", h.text);
         }
         else if (h.type === "describe") {
           trace(

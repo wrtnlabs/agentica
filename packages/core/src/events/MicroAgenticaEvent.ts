@@ -1,12 +1,12 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaAssistantEvent } from "./AgenticaAssistantEvent";
 import type { AgenticaCallEvent } from "./AgenticaCallEvent";
 import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
 import type { AgenticaExecuteEvent } from "./AgenticaExecuteEvent";
 import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
-import type { AgenticaTextEvent } from "./AgenticaTextEvent";
-import type { AgenticaUserInputEvent } from "./AgenticaUserInputEvent";
+import type { AgenticaUserEvent } from "./AgenticaUserEvent";
 import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
 
 /**
@@ -20,25 +20,25 @@ import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
  * @author Samchon
  */
 export type MicroAgenticaEvent<Model extends ILlmSchema.Model> =
+  | AgenticaUserEvent
+  | AgenticaAssistantEvent
   | AgenticaCallEvent<Model>
-  | AgenticaDescribeEvent<Model>
   | AgenticaExecuteEvent<Model>
+  | AgenticaDescribeEvent<Model>
   | AgenticaRequestEvent
   | AgenticaResponseEvent
-  | AgenticaTextEvent
-  | AgenticaValidateEvent<Model>
-  | AgenticaUserInputEvent;
+  | AgenticaValidateEvent<Model>;
 export namespace MicroAgenticaEvent {
   export type Type = MicroAgenticaEvent<any>["type"];
   export interface Mapper<Model extends ILlmSchema.Model> {
+    user: AgenticaUserEvent;
+    assistant: AgenticaAssistantEvent;
     call: AgenticaCallEvent<Model>;
-    describe: AgenticaDescribeEvent<Model>;
     execute: AgenticaExecuteEvent<Model>;
+    describe: AgenticaDescribeEvent<Model>;
     request: AgenticaRequestEvent;
     response: AgenticaResponseEvent;
-    text: AgenticaTextEvent;
     validate: AgenticaValidateEvent<Model>;
-    user_input: AgenticaUserInputEvent;
   }
   export type Source = "call" | "describe";
 }

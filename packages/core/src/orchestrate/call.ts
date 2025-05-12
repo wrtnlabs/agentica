@@ -20,15 +20,15 @@ import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { AgenticaAssistantHistory } from "../histories/AgenticaAssistantHistory";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
-import { createCallEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
-import { createCancelHistory, createExecuteHistory, createTextHistory, decodeHistory } from "../factory/histories";
+import { createCallEvent, createExecuteEvent, creatAssistantEvent, createValidateEvent } from "../factory/events";
+import { createCancelHistory, createExecuteHistory, createAssistantHistory, decodeUserContent, decodeHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -54,7 +54,7 @@ export async function call<Model extends ILlmSchema.Model>(
       // USER INPUT
       {
         role: "user",
-        content: ctx.prompt.contents,
+        content: ctx.prompt.contents.map(decodeUserContent),
       },
       // SYSTEM PROMPT
       ...(ctx.config?.systemPrompt?.execute === null
@@ -104,7 +104,7 @@ export async function call<Model extends ILlmSchema.Model>(
       Array<
         | AgenticaExecuteHistory<Model>
         | AgenticaCancelHistory<Model>
-        | AgenticaTextHistory
+        | AgenticaAssistantHistory
       >
     >
   > = [];
@@ -181,11 +181,11 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextHistory = createTextHistory(
+        const value: AgenticaAssistantHistory = createAssistantHistory(
           { text: choice.message.content! },
         );
         ctx.dispatch(
-          createTextEvent({
+          creatAssistantEvent({
             get: () => value.text,
             done: () => true,
             stream: toAsyncGenerator(value.text),
@@ -471,7 +471,7 @@ async function correct<Model extends ILlmSchema.Model>(
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents,
+          content: ctx.prompt.contents.map(decodeUserContent),
         },
         // TYPE CORRECTION
         ...(ctx.config?.systemPrompt?.execute === null

@@ -3,31 +3,25 @@ import type OpenAI from "openai";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import type { AgenticaUserContent } from "../histories";
+import type { AgenticaAssistantHistory } from "../histories/AgenticaAssistantHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
-import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
+import type { AgenticaUserHistory } from "../histories/AgenticaUserHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
+/**
+ * @internal
+ */
 export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaHistory<Model>): OpenAI.ChatCompletionMessageParam[] {
   // NO NEED TO DECODE DESCRIBE
   if (history.type === "describe") {
     return [];
   }
-
-  if (history.type === "text") {
-    return [
-      {
-        role: history.role,
-        content: history.text,
-      },
-    ];
-  }
-
-  if (history.type === "select" || history.type === "cancel") {
+  else if (history.type === "select" || history.type === "cancel") {
     return [
       {
         role: "assistant",
@@ -54,8 +48,7 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
       },
     ];
   }
-
-  if (history.type === "execute") {
+  else if (history.type === "execute") {
     return [
       {
         role: "assistant",
@@ -98,32 +91,74 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
       },
     ];
   }
-
-  if (history.type === "user_input") {
+  else if (history.type === "assistant") {
     return [
       {
-        role: "user",
-        content: history.contents,
+        role: "assistant",
+        content: history.text,
       },
     ];
   }
+  return [
+    {
+      role: "user",
+      content: history.contents.map(decodeUserContent),
+    },
+  ];
+}
 
-  history satisfies never;
-  throw new Error("Invalid history type");
+/**
+ * @internal
+ */
+export function decodeUserContent(content: AgenticaUserContent): OpenAI.ChatCompletionContentPart {
+  if (content.type === "audio") {
+    return {
+      type: "input_audio",
+      input_audio: {
+        data: content.data,
+        format: content.format,
+      },
+    };
+  }
+  else if (content.type === "file") {
+    return {
+      type: "file",
+      file: content.file.type === "data"
+        ? {
+            file_data: content.file.data,
+            filename: content.file.name,
+          }
+        : {
+            file_id: content.file.id,
+          },
+    };
+  }
+  else if (content.type === "image") {
+    return {
+      type: "image_url",
+      image_url: {
+        url: content.url,
+        detail: content.detail,
+      },
+    };
+  }
+  return content;
 }
 
 /* -----------------------------------------------------------
   USER INPUT PROMPTS
 ----------------------------------------------------------- */
-export function createUserInputHistory(props: {
-  contents: Array<AgenticaUserInputHistory.Contents>;
-}): AgenticaUserInputHistory {
+/**
+ * @internal
+ */
+export function createUserHistory(props: {
+  contents: Array<AgenticaUserContent>;
+}): AgenticaUserHistory {
   return {
-    type: "user_input",
-    role: "user",
+    type: "user",
     contents: props.contents,
     toJSON: () => ({
-      type: "user_input",
+      type: "user",
       contents: props.contents,
     }),
   };
@@ -132,12 +167,14 @@ export function createUserInputHistory(props: {
 /* -----------------------------------------------------------
   TEXT PROMPTS
 ----------------------------------------------------------- */
-export function createTextHistory(props: {
+/**
+ * @internal
+ */
+export function createAssistantHistory(props: {
   text: string;
-}): AgenticaTextHistory {
-  const prompt: IAgenticaHistoryJson.IText = {
-    type: "text",
-    role: "assistant",
+}): AgenticaAssistantHistory {
+  const prompt: IAgenticaHistoryJson.IAssistant = {
+    type: "assistant",
     text: props.text,
   };
   return {
@@ -146,6 +183,9 @@ export function createTextHistory(props: {
   };
 }
 
+/**
+ * @internal
+ */
 export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
   executes: AgenticaExecuteHistory<Model>[];
   text: string;
@@ -165,6 +205,9 @@ export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
 /* -----------------------------------------------------------
   FUNCTION CALLING PROMPTS
 ----------------------------------------------------------- */
+/**
+ * @internal
+ */
 export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
   selections: AgenticaOperationSelection<Model>[];
@@ -181,6 +224,9 @@ export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
   };
 }
 
+/**
+ * @internal
+ */
 export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
   selections: AgenticaOperationSelection<Model>[];
@@ -197,6 +243,9 @@ export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
   };
 }
 
+/**
+ * @internal
+ */
 export function createExecuteHistory<
   Model extends ILlmSchema.Model,
 >(props: {

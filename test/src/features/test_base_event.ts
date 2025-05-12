@@ -34,7 +34,7 @@ export async function test_base_event(): Promise<void | false> {
   };
 
   agent.on("initialize", initializeListener);
-  agent.on("text", textListener);
+  agent.on("assistant", textListener);
 
   // start conversation
   await agent.conversate("What can you do?");
@@ -72,7 +72,7 @@ export async function test_base_event(): Promise<void | false> {
   }
 
   // remove text event listener
-  agent.off("text", textListener);
+  agent.off("assistant", textListener);
 
   // third conversation: do not increase count
   await agent.conversate("Final message");

@@ -1,7 +1,7 @@
 import type OpenAI from "openai";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
-import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
+import type { AgenticaUserContent } from "../histories";
 
 import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
@@ -25,26 +25,28 @@ export type IAgenticaEventJson =
   | IAgenticaEventJson.IInitialize
   | IAgenticaEventJson.IRequest
   | IAgenticaEventJson.ISelect
-  | IAgenticaEventJson.IText
-  | IAgenticaEventJson.IValidate;
+  | IAgenticaEventJson.IValidate
+  | IAgenticaEventJson.IAssistant
+  | IAgenticaEventJson.IUser;
 export namespace IAgenticaEventJson {
   export type Type = IAgenticaEventJson["type"];
   export interface Mapper {
+    user: IUser;
+    assistant: IAssistant;
     initialize: IInitialize;
     select: ISelect;
     cancel: ICancel;
     call: ICall;
     execute: IExecute;
     describe: IDescribe;
-    text: IText;
     request: IRequest;
   }
 
   /**
    * Event of user input.
    */
-  export interface IUserInput extends IBase<"user_input"> {
-    contents: Array<AgenticaUserInputHistory.Contents>;
+  export interface IUser extends IBase<"user"> {
+    contents: Array<AgenticaUserContent>;
   }
 
   /**
@@ -142,23 +144,13 @@ export namespace IAgenticaEventJson {
   }
 
   /**
-   * Event of text message.
+   * Event of assistant message.
    */
-  export interface IText extends IBase<"text"> {
-    /**
-     * Role of the orator.
-     */
-    role: "assistant";
-
+  export interface IAssistant extends IBase<"assistant"> {
     /**
      * Conversation text.
      */
     text: string;
-
-    /**
-     * Whether the streaming is completed or not.
-     */
-    done: boolean;
   }
 
   /**

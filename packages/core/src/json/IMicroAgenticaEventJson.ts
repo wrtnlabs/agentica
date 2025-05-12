@@ -12,10 +12,11 @@ import type { IAgenticaEventJson } from "./IAgenticaEventJson";
  * @author Samchon
  */
 export type IMicroAgenticaEventJson =
+  | IAgenticaEventJson.IUser
+  | IAgenticaEventJson.IAssistant
   | IAgenticaEventJson.ICall
   | IAgenticaEventJson.IDescribe
   | IAgenticaEventJson.IExecute
   | IAgenticaEventJson.IInitialize
   | IAgenticaEventJson.IRequest
-  | IAgenticaEventJson.IText
   | IAgenticaEventJson.IValidate;
