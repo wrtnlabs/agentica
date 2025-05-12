@@ -62,7 +62,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
    * Please apply any available patches to resolve this issue.
    */
   const llmVendor = agent.getVendor();
-  const isTextPrompt = last?.type === "assistant";
+  const isAssistantHistory = last?.type === "assistant";
   if (!isTextPrompt) {
     return null;
   }
