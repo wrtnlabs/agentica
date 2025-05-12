@@ -1,4 +1,3 @@
-import type { Client } from "@modelcontextprotocol/sdk/client/index.d.ts";
 import type { ILlmSchema, IMcpLlmApplication, IMcpTool, IValidation } from "@samchon/openapi";
 
 import { McpLlm } from "@samchon/openapi";
@@ -25,7 +24,8 @@ export async function validateMcpController<
   Model extends ILlmSchema.Model,
 >(props: {
   name: string;
-  client: Client;
+  // @ts-ignore
+  client: import("@modelcontextprotocol/sdk/client/index.d.ts").Client;
   model: Model;
   options?: Partial<IMcpLlmApplication.IOptions<Model>>;
 }): Promise<IValidation<IAgenticaController.IMcp<Model>>> {

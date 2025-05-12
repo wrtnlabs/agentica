@@ -49,7 +49,6 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@modelcontextprotocol/sdk": "catalog:libs",
     "@samchon/openapi": "catalog:typia",
     "openai": "catalog:libs",
     "typia": "catalog:typia"

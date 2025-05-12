@@ -1,4 +1,3 @@
-import type { Client } from "@modelcontextprotocol/sdk/client/index.d.ts";
 import type {
   IHttpConnection,
   IHttpLlmApplication,
@@ -126,7 +125,8 @@ export namespace IAgenticaController {
     /**
      * MCP client for connection.
      */
-    client: Client;
+    // @ts-ignore
+    client: import("@modelcontextprotocol/sdk/client/index.d.ts").Client;
   }
 
   interface IBase<Protocol, Application> {
