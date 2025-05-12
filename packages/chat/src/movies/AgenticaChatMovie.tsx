@@ -73,11 +73,9 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // ----
   // EVENT LISTENERS
   const handleUser = async (event: AgenticaUserEvent) => {
-    console.log("handleUser()");
     setHistories(prev => [...prev, event.toHistory()]);
   };
   const handleAssistant = async (event: AgenticaAssistantEvent) => {
-    console.log("handleAssistant()");
     await event.join(); // @todo Jaxtyn: streaming
     setHistories(prev => [...prev, event.toHistory()]);
   };
@@ -252,8 +250,6 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
       </Container>
     </div>
   );
-
-  console.log("AgenticaChatMovie()");
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <AppBar ref={upperDivRef} position="relative" component="div">
