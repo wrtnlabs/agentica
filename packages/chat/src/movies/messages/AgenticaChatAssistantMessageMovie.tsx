@@ -1,13 +1,13 @@
-import type { AgenticaTextHistory } from "@agentica/core";
+import type { AgenticaAssistantMessageHistory } from "@agentica/core";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export function AgenticaChatTextMessageMovie({
+export function AgenticaChatAssistantMessageMovie({
   prompt,
-}: AgenticaChatTextMessageMovie.IProps) {
+}: AgenticaChatAssistantMessageMovie.IProps) {
   return (
     <div
       style={{
@@ -37,8 +37,8 @@ export function AgenticaChatTextMessageMovie({
     </div>
   );
 }
-export namespace AgenticaChatTextMessageMovie {
+export namespace AgenticaChatAssistantMessageMovie {
   export interface IProps {
-    prompt: AgenticaTextHistory;
+    prompt: AgenticaAssistantMessageHistory;
   }
 }

@@ -39,21 +39,17 @@ async function main(): Promise<void> {
         : undefined,
     },
     controllers: [
-      {
-        protocol: "class",
-        name: "bbs",
-        application: typia.llm.application<BbsArticleService, "chatgpt">(),
-        execute: new BbsArticleService(),
-      },
+      typia.llm.controller<BbsArticleService, "chatgpt">(
+        "bbs",
+        new BbsArticleService(),
+      ),
     ],
     config: {
       locale: "en-US",
     },
   });
-  agent.on("text", async (e) => {
-    if (e.role === "assistant") {
-      console.log(chalk.yellow("text"), chalk.blueBright(e.role), "\n\n", await e.join());
-    }
+  agent.on("assistantMessage", async (e) => {
+    console.log(chalk.yellow("text"), chalk.blueBright("assistant"), "\n\n", await e.join());
   });
   agent.on("call", e =>
     console.log(chalk.blueBright("call"), e.operation.function.name));
@@ -98,8 +94,16 @@ async function main(): Promise<void> {
       const histories: AgenticaHistory<"chatgpt">[]
         = await agent.conversate(content);
       for (const h of histories.slice(1)) {
-        if (h.type === "text") {
-          trace(chalk.yellow("Text"), chalk.blueBright(h.role), "\n\n", h.text);
+        if (h.type === "userMessage") {
+          trace(
+            chalk.yellow("Text"),
+            chalk.blueBright("user"),
+            "\n\n",
+            h.contents.find(c => c.type === "text")?.text,
+          );
+        }
+        if (h.type === "assistantMessage") {
+          trace(chalk.yellow("Text"), chalk.blueBright("assistant"), "\n\n", h.text);
         }
         else if (h.type === "describe") {
           trace(

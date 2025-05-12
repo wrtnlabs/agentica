@@ -17,8 +17,8 @@ import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createTextEvent } from "../factory/events";
-import { createSelectHistory, createTextHistory, decodeHistory } from "../factory/histories";
+import { creatAssistantEvent } from "../factory/events";
+import { createAssistantMessageHistory, createSelectHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -144,7 +144,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents,
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
         // SYSTEM PROMPT
         {
@@ -259,11 +259,11 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       && choice.message.content != null
       && choice.message.content.length !== 0
     ) {
-      const text = createTextHistory({ text: choice.message.content });
+      const text = createAssistantMessageHistory({ text: choice.message.content });
       prompts.push(text);
 
       ctx.dispatch(
-        createTextEvent({
+        creatAssistantEvent({
           stream: toAsyncGenerator(text.text),
           join: async () => Promise.resolve(text.text),
           done: () => true,

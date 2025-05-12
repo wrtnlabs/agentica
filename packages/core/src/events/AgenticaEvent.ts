@@ -1,5 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaAssistantMessageEvent } from "./AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "./AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "./AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
@@ -8,8 +9,7 @@ import type { AgenticaInitializeEvent } from "./AgenticaInitializeEvent";
 import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
 import type { AgenticaSelectEvent } from "./AgenticaSelectEvent";
-import type { AgenticaTextEvent } from "./AgenticaTextEvent";
-import type { AgenticaUserInputEvent } from "./AgenticaUserInputEvent";
+import type { AgenticaUserMessageEvent } from "./AgenticaUserMessageEvent";
 import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
 
 /**
@@ -23,31 +23,31 @@ import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
  * @author Samchon
  */
 export type AgenticaEvent<Model extends ILlmSchema.Model> =
+  | AgenticaUserMessageEvent
+  | AgenticaAssistantMessageEvent
+  | AgenticaInitializeEvent
+  | AgenticaSelectEvent<Model>
   | AgenticaCallEvent<Model>
   | AgenticaCancelEvent<Model>
-  | AgenticaDescribeEvent<Model>
   | AgenticaExecuteEvent<Model>
-  | AgenticaInitializeEvent
-  | AgenticaRequestEvent
-  | AgenticaResponseEvent
-  | AgenticaSelectEvent<Model>
-  | AgenticaTextEvent
+  | AgenticaDescribeEvent<Model>
   | AgenticaValidateEvent<Model>
-  | AgenticaUserInputEvent;
+  | AgenticaRequestEvent
+  | AgenticaResponseEvent;
 export namespace AgenticaEvent {
   export type Type = AgenticaEvent<any>["type"];
   export interface Mapper<Model extends ILlmSchema.Model> {
+    userMessage: AgenticaUserMessageEvent;
+    assistantMessage: AgenticaAssistantMessageEvent;
+    select: AgenticaSelectEvent<Model>;
+    initialize: AgenticaInitializeEvent;
     call: AgenticaCallEvent<Model>;
     cancel: AgenticaCancelEvent<Model>;
-    describe: AgenticaDescribeEvent<Model>;
     execute: AgenticaExecuteEvent<Model>;
-    initialize: AgenticaInitializeEvent;
+    describe: AgenticaDescribeEvent<Model>;
+    validate: AgenticaValidateEvent<Model>;
     request: AgenticaRequestEvent;
     response: AgenticaResponseEvent;
-    select: AgenticaSelectEvent<Model>;
-    text: AgenticaTextEvent;
-    validate: AgenticaValidateEvent<Model>;
-    user_input: AgenticaUserInputEvent;
   }
   export type Source =
     | "initialize"

@@ -1,6 +1,8 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaUserMessageEvent, AgenticaValidateEvent } from "../events";
+import type { AgenticaAssistantMessageEvent } from "../events/AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
@@ -9,32 +11,16 @@ import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent";
 import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
-import type { AgenticaTextEvent } from "../events/AgenticaTextEvent";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createTextEvent } from "../factory/events";
+import { creatAssistantEvent, createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createUserMessageEvent, createValidateEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
-function findOperation<Model extends ILlmSchema.Model>(props: {
-  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
-  input: {
-    controller: string;
-    function: string;
-  };
-}): AgenticaOperation<Model> {
-  const found: AgenticaOperation<Model> | undefined = props.operations
-    .get(props.input.controller)
-    ?.get(props.input.function);
-  if (found === undefined) {
-    throw new Error(
-      `No operation found: (controller: ${props.input.controller}, function: ${props.input.function})`,
-    );
-  }
-  return found;
-}
-
-function transform<Model extends ILlmSchema.Model>(props: {
+/**
+ * @internal
+ */
+export function transformEvent<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson;
 }): AgenticaEvent<Model> {
@@ -76,15 +62,26 @@ function transform<Model extends ILlmSchema.Model>(props: {
       event: props.event,
     });
   }
-  else if (props.event.type === "text") {
-    return transformText({
+  else if (props.event.type === "assistantMessage") {
+    return transformAssistantMessage({
       event: props.event,
     });
   }
-  else { throw new Error("Unknown event type"); }
+  else if (props.event.type === "userMessage") {
+    return transformUserMessage({
+      event: props.event,
+    });
+  }
+  return transformValidateEvent({
+    operations: props.operations,
+    event: props.event,
+  });
 }
 
-function transformCall<Model extends ILlmSchema.Model>(props: {
+/**
+ * @internal
+ */
+export function transformCall<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ICall;
 }): AgenticaCallEvent<Model> {
@@ -98,7 +95,10 @@ function transformCall<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-export function transformCancel<Model extends ILlmSchema.Model>(props: {
+/**
+ * @internal
+ */
+function transformCancel<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ICancel;
 }): AgenticaCancelEvent<Model> {
@@ -113,6 +113,9 @@ export function transformCancel<Model extends ILlmSchema.Model>(props: {
   });
 }
 
+/**
+ * @internal
+ */
 function transformDescribe<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.IDescribe;
@@ -131,6 +134,9 @@ function transformDescribe<Model extends ILlmSchema.Model>(props: {
   });
 }
 
+/**
+ * @internal
+ */
 function transformExecute<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.IExecute;
@@ -146,16 +152,25 @@ function transformExecute<Model extends ILlmSchema.Model>(props: {
   });
 }
 
+/**
+ * @internal
+ */
 function transformInitialize(): AgenticaInitializeEvent {
   return createInitializeEvent();
 }
 
+/**
+ * @internal
+ */
 function transformRequest(props: {
   event: IAgenticaEventJson.IRequest;
 }): AgenticaRequestEvent {
   return createRequestEvent(props.event);
 }
 
+/**
+ * @internal
+ */
 function transformSelect<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   event: IAgenticaEventJson.ISelect;
@@ -171,10 +186,13 @@ function transformSelect<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-function transformText(props: {
-  event: IAgenticaEventJson.IText;
-}): AgenticaTextEvent {
-  return createTextEvent({
+/**
+ * @internal
+ */
+function transformAssistantMessage(props: {
+  event: IAgenticaEventJson.IAssistantMessage;
+}): AgenticaAssistantMessageEvent {
+  return creatAssistantEvent({
     stream: toAsyncGenerator(props.event.text),
     done: () => true,
     get: () => props.event.text,
@@ -182,15 +200,49 @@ function transformText(props: {
   });
 }
 
-export const AgenticaEventTransformer = {
-  transform,
-  transformCall,
-  transformCancel,
-  transformDescribe,
-  transformExecute,
-  transformInitialize,
-  transformRequest,
-  transformSelect,
-  transformText,
-  findOperation,
-};
+/**
+ * @internal
+ */
+function transformUserMessage(props: {
+  event: IAgenticaEventJson.IUserMessage;
+}): AgenticaUserMessageEvent {
+  return createUserMessageEvent(props.event);
+}
+
+/**
+ * @internal
+ */
+function transformValidateEvent<Model extends ILlmSchema.Model>(props: {
+  event: IAgenticaEventJson.IValidate;
+  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+}): AgenticaValidateEvent<Model> {
+  return createValidateEvent({
+    id: props.event.id,
+    operation: findOperation({
+      operations: props.operations,
+      input: props.event.operation,
+    }),
+    result: props.event.result,
+  });
+}
+
+/**
+ * @internal
+ */
+function findOperation<Model extends ILlmSchema.Model>(props: {
+  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+  input: {
+    controller: string;
+    function: string;
+  };
+}): AgenticaOperation<Model> {
+  const found: AgenticaOperation<Model> | undefined = props.operations
+    .get(props.input.controller)
+    ?.get(props.input.function);
+  if (found === undefined) {
+    throw new Error(
+      `No operation found: (controller: ${props.input.controller}, function: ${props.input.function})`,
+    );
+  }
+  return found;
+}

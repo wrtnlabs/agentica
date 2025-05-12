@@ -1,13 +1,13 @@
-import type { AgenticaUserInputHistory } from "@agentica/core/src/histories/AgenticaUserInputHistory";
+import type { AgenticaUserMessageHistory } from "@agentica/core";
 
 import FaceIcon from "@mui/icons-material/Face";
 import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export function AgenticaChatUserInput({
+export function AgenticaChatUserMessageMovie({
   prompt,
-}: AgenticaChatUserInput.IProps) {
+}: AgenticaChatUserMessageMovie.IProps) {
   return (
     <div
       style={{
@@ -49,8 +49,8 @@ export function AgenticaChatUserInput({
     </div>
   );
 }
-export namespace AgenticaChatUserInput {
+export namespace AgenticaChatUserMessageMovie {
   export interface IProps {
-    prompt: AgenticaUserInputHistory;
+    prompt: AgenticaUserMessageHistory;
   }
 }

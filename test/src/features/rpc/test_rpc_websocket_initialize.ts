@@ -55,7 +55,7 @@ export async function test_rpc_websocket_initialize(): Promise<void | false> {
     describe: async (evt) => {
       events.push(evt);
     },
-    text: async (evt) => {
+    assistantMessage: async (evt) => {
       events.push(evt);
     },
     initialize: async (evt) => {

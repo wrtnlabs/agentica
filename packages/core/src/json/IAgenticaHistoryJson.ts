@@ -1,4 +1,4 @@
-import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
+import type { AgenticaUserMessageContent } from "../histories";
 
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
@@ -20,24 +20,45 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
  * @author Samchon
  */
 export type IAgenticaHistoryJson =
-  | IAgenticaHistoryJson.IUserInput
-  | IAgenticaHistoryJson.IText
+  | IAgenticaHistoryJson.IUserMessage
+  | IAgenticaHistoryJson.IAssistantMessage
   | IAgenticaHistoryJson.ISelect
   | IAgenticaHistoryJson.ICancel
   | IAgenticaHistoryJson.IExecute
   | IAgenticaHistoryJson.IDescribe;
 export namespace IAgenticaHistoryJson {
+  export type Type = IAgenticaHistoryJson["type"];
+  export interface Mapper {
+    userMessage: IUserMessage;
+    assistantMessage: IAssistantMessage;
+    select: ISelect;
+    cancel: ICancel;
+    execute: IExecute;
+    describe: IDescribe;
+  }
+
   /**
-   * User input prompt.
+   * User prompt.
    *
-   * User input prompt about the user's input.
+   * User prompt about the user's input.
    */
-  export interface IUserInput extends IBase<"user_input"> {
+  export interface IUserMessage extends IBase<"userMessage"> {
     /**
      * User input.
      */
-    contents: Array<AgenticaUserInputHistory.Contents>;
+    contents: Array<AgenticaUserMessageContent>;
   }
+
+  /**
+   * Assistant prompt.
+   */
+  export interface IAssistantMessage extends IBase<"assistantMessage"> {
+    /**
+     * The text content.
+     */
+    text: string;
+  }
+
   /**
    * Select prompt.
    *
@@ -114,21 +135,6 @@ export namespace IAgenticaHistoryJson {
 
     /**
      * Description text.
-     */
-    text: string;
-  }
-
-  /**
-   * Text prompt.
-   */
-  export interface IText extends IBase<"text"> {
-    /**
-     * Role of the orator.
-     */
-    role: "assistant";
-
-    /**
-     * The text content.
      */
     text: string;
   }

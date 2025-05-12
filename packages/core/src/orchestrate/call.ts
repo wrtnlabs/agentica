@@ -17,18 +17,18 @@ import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
-import { createCallEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
-import { createCancelHistory, createExecuteHistory, createTextHistory, decodeHistory } from "../factory/histories";
+import { creatAssistantEvent, createCallEvent, createExecuteEvent, createValidateEvent } from "../factory/events";
+import { createAssistantMessageHistory, createCancelHistory, createExecuteHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -54,7 +54,7 @@ export async function call<Model extends ILlmSchema.Model>(
       // USER INPUT
       {
         role: "user",
-        content: ctx.prompt.contents,
+        content: ctx.prompt.contents.map(decodeUserMessageContent),
       },
       // SYSTEM PROMPT
       ...(ctx.config?.systemPrompt?.execute === null
@@ -104,7 +104,7 @@ export async function call<Model extends ILlmSchema.Model>(
       Array<
         | AgenticaExecuteHistory<Model>
         | AgenticaCancelHistory<Model>
-        | AgenticaTextHistory
+        | AgenticaAssistantMessageHistory
       >
     >
   > = [];
@@ -181,11 +181,11 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextHistory = createTextHistory(
+        const value: AgenticaAssistantMessageHistory = createAssistantMessageHistory(
           { text: choice.message.content! },
         );
         ctx.dispatch(
-          createTextEvent({
+          creatAssistantEvent({
             get: () => value.text,
             done: () => true,
             stream: toAsyncGenerator(value.text),
@@ -471,7 +471,7 @@ async function correct<Model extends ILlmSchema.Model>(
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents,
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
         // TYPE CORRECTION
         ...(ctx.config?.systemPrompt?.execute === null

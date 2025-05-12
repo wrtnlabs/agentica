@@ -57,7 +57,7 @@ export async function test_base_streaming(): Promise<void | false> {
     }
   });
 
-  agent.on("text", () => {
+  agent.on("assistantMessage", () => {
     textEventReceived = true;
     // This event is fired when text content is received
   });
@@ -82,10 +82,10 @@ export async function test_base_streaming(): Promise<void | false> {
 
   // Verify the response contains a text from the AI
   const aiResponse = result.find(
-    prompt => prompt.type === "text" && prompt.role === "assistant",
+    prompt => prompt.type === "assistantMessage",
   );
 
-  if (aiResponse === undefined || aiResponse.type !== "text") {
+  if (aiResponse === undefined || aiResponse.type !== "assistantMessage") {
     throw new Error("No assistant text response found");
   }
 
