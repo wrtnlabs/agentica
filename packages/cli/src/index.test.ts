@@ -18,22 +18,8 @@ const startMock = vi.fn();
 const promptIntroMock = vi.fn();
 
 describe("version", () => {
-  it("should return 0.0.0 as version when AGENTICA_VERSION is not set", async () => {
-    const { program } = await import("./index");
-
-    // override output to avoid the process to exit
-    program.exitOverride().action(() => {});
-
-    // using the exit override to capture the version output
-    expect(() => {
-      program.parse(["node", "agentica", "--version"]);
-    }).toThrow("0.0.0");
-  });
-
-  it("should return the version from AGENTICA_VERSION", async () => {
-    // stub the environment variable
-    vi.stubEnv("AGENTICA_VERSION", "1.2.3");
-
+  it("test the version command", async () => {
+    const { version } = await import("../package.json");
     const { program } = await import("./index");
 
     // override output to avoid the process to exit
@@ -41,7 +27,7 @@ describe("version", () => {
 
     expect(() => {
       program.parse(["node", "agentica", "--version"]);
-    }).toThrow("1.2.3");
+    }).toThrow(version);
   });
 });
 

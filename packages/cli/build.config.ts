@@ -2,8 +2,6 @@ import UnpluginTypia from "@ryoppippi/unplugin-typia/rollup";
 import { isCI } from "std-env";
 import { defineBuildConfig } from "unbuild";
 
-import pkgJson from "./package.json";
-
 export default defineBuildConfig({
   outDir: "dist",
   entries: ["src/index.ts"],
@@ -14,9 +12,6 @@ export default defineBuildConfig({
       // plugin should be added to the first
       options.plugins.unshift(UnpluginTypia());
     },
-  },
-  replace: {
-    "process.env.AGENTICA_VERSION": JSON.stringify(pkgJson.version), // replace version from package.json on build
   },
   rollup: {
     inlineDependencies: [
