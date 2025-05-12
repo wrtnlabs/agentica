@@ -63,7 +63,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
    */
   const llmVendor = agent.getVendor();
   const isAssistantHistory = last?.type === "assistant";
-  if (!isTextPrompt) {
+  if (!isAssistantHistory) {
     return null;
   }
 
