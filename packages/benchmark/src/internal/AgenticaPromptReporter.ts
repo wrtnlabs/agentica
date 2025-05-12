@@ -16,7 +16,7 @@ function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): st
     return [`### User Input`, p.contents, ""].join("\n");
   }
   if (p.type === "assistant") {
-    return [`### Text (assistant)`, p.text, ""].join("\n");
+    return [`### Assistant`, p.text, ""].join("\n");
   }
 
   if (p.type === "select" || p.type === "cancel") {
