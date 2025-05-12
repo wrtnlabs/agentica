@@ -126,7 +126,7 @@ export namespace IAgenticaController {
      * MCP client for connection.
      */
     // @ts-ignore
-    client: import("@modelcontextprotocol/sdk/client/index.d.ts").Client
+    client: import("@modelcontextprotocol/sdk/client/index.d.ts").Client;
   }
 
   interface IBase<Protocol, Application> {
