@@ -60,6 +60,7 @@
     "commander": "^10.0.0",
     "memfs": "^4.17.0",
     "msw": "^2.7.3",
+    "nano-spawn": "^1.0.1",
     "picocolors": "^1.1.1",
     "publint": "^0.3.9",
     "std-env": "^3.8.1",
