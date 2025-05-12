@@ -1,16 +1,16 @@
 import type { AgenticaHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
+import { AgenticaChatAssistantMessageMovie } from "./AgenticaChatAssistantMessageMovie";
 import { AgenticaChatDescribeMessageMovie } from "./AgenticaChatDescribeMessageMovie";
 import { AgenticaChatSelectMessageMovie } from "./AgenticaChatSelectMessageMovie";
-import { AgenticaChatTextMessageMovie } from "./AgenticaChatTextMessageMovie";
-import { AgenticaChatUserInput } from "./AgenticaChatUserInput";
+import { AgenticaChatUserMessageMovie } from "./AgenticaChatUserMessageMovie";
 
 export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
   prompt,
 }: AgenticaChatMessageMovie.IProps<Model>) {
-  if (prompt.type === "text") {
-    return <AgenticaChatTextMessageMovie prompt={prompt} />;
+  if (prompt.type === "assistant") {
+    return <AgenticaChatAssistantMessageMovie prompt={prompt} />;
   }
 
   if (prompt.type === "select") {
@@ -27,8 +27,8 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
     return null;
   }
 
-  if (prompt.type === "user_input") {
-    return <AgenticaChatUserInput prompt={prompt} />;
+  if (prompt.type === "user") {
+    return <AgenticaChatUserMessageMovie prompt={prompt} />;
   }
 
   prompt satisfies never;

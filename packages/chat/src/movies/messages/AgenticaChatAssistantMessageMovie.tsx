@@ -1,11 +1,11 @@
-import type { AgenticaTextHistory } from "@agentica/core";
+import type { AgenticaAssistantHistory } from "@agentica/core";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export function AgenticaChatTextMessageMovie({
+export function AgenticaChatAssistantMessageMovie({
   prompt,
 }: AgenticaChatTextMessageMovie.IProps) {
   return (
@@ -39,6 +39,6 @@ export function AgenticaChatTextMessageMovie({
 }
 export namespace AgenticaChatTextMessageMovie {
   export interface IProps {
-    prompt: AgenticaTextHistory;
+    prompt: AgenticaAssistantHistory;
   }
 }

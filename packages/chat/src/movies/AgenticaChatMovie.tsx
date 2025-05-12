@@ -1,5 +1,14 @@
-import type { Agentica, AgenticaDescribeEvent, AgenticaHistory, AgenticaOperationSelection, AgenticaSelectEvent, AgenticaTextEvent, AgenticaTokenUsage, AgenticaValidateEvent } from "@agentica/core";
-import type { AgenticaUserInputEvent } from "@agentica/core/src/events/AgenticaUserInputEvent";
+import type {
+  Agentica,
+  AgenticaAssistantEvent,
+  AgenticaDescribeEvent,
+  AgenticaHistory,
+  AgenticaOperationSelection,
+  AgenticaSelectEvent,
+  AgenticaTokenUsage,
+  AgenticaUserEvent,
+  AgenticaValidateEvent,
+} from "@agentica/core";
 import type {
   Theme,
 } from "@mui/material";
@@ -63,11 +72,12 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // EVENT INTERACTIONS
   // ----
   // EVENT LISTENERS
-  const handleUserInput = async (event: AgenticaUserInputEvent) => {
-    await event.join(); // @todo Jaxtyn: streaming
+  const handleUser = async (event: AgenticaUserEvent) => {
+    console.log("handleUser()");
     setHistories(prev => [...prev, event.toHistory()]);
   };
-  const handleText = async (event: AgenticaTextEvent) => {
+  const handleAssistant = async (event: AgenticaAssistantEvent) => {
+    console.log("handleAssistant()");
     await event.join(); // @todo Jaxtyn: streaming
     setHistories(prev => [...prev, event.toHistory()]);
   };
@@ -88,17 +98,17 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     if (inputRef.current !== null) {
       inputRef.current.select();
     }
-    agent.on("text", handleText);
-    agent.on("user_input", handleUserInput);
-    agent.on("describe", handleDescribe);
+    agent.on("assistant", handleAssistant);
+    agent.on("user", handleUser);
     agent.on("select", handleSelect);
+    agent.on("describe", handleDescribe);
     agent.on("validate", handleValidate);
     setTokenUsage(agent.getTokenUsage());
     return () => {
-      agent.off("text", handleText);
-      agent.off("user_input", handleUserInput);
-      agent.off("describe", handleDescribe);
+      agent.off("assistant", handleAssistant);
+      agent.off("user", handleUser);
       agent.off("select", handleSelect);
+      agent.off("describe", handleDescribe);
       agent.off("validate", handleValidate);
     };
   }, []);
@@ -243,6 +253,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     </div>
   );
 
+  console.log("AgenticaChatMovie()");
   return (
     <div style={{ width: "100%", height: "100%" }}>
       <AppBar ref={upperDivRef} position="relative" component="div">

@@ -1,4 +1,4 @@
-import { AgenticaUserContent } from "../histories";
+import type { AgenticaUserContent } from "../histories";
 import type { AgenticaUserHistory } from "../histories/AgenticaUserHistory";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 

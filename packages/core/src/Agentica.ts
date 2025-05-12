@@ -6,6 +6,7 @@ import type { AgenticaOperationCollection } from "./context/AgenticaOperationCol
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
+import type { AgenticaUserContent } from "./histories";
 import type { AgenticaHistory } from "./histories/AgenticaHistory";
 import type { AgenticaUserHistory } from "./histories/AgenticaUserHistory";
 import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
@@ -19,11 +20,10 @@ import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUs
 import { createUserHistory } from "./factory";
 import { createInitializeEvent, createRequestEvent, createUserEvent } from "./factory/events";
 import { execute } from "./orchestrate/execute";
+import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
-import { transformHistory } from "./transformers/transformHistory";
-import { AgenticaUserContent } from "./histories";
 
 /**
  * Agentica AI chatbot agent.

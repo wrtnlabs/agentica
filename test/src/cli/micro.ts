@@ -39,12 +39,10 @@ async function main(): Promise<void> {
         : undefined,
     },
     controllers: [
-      {
-        protocol: "class",
-        name: "bbs",
-        application: typia.llm.application<BbsArticleService, "chatgpt">(),
-        execute: new BbsArticleService(),
-      },
+      typia.llm.controller<BbsArticleService, "chatgpt">(
+        "bbs",
+        new BbsArticleService(),
+      ),
     ],
     config: {
       locale: "en-US",

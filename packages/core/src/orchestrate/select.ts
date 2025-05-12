@@ -18,7 +18,7 @@ import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { creatAssistantEvent } from "../factory/events";
-import { createSelectHistory, createAssistantHistory, decodeHistory, decodeUserContent } from "../factory/histories";
+import { createAssistantHistory, createSelectHistory, decodeHistory, decodeUserContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";

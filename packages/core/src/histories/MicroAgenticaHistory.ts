@@ -1,8 +1,8 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaAssistantHistory } from "./AgenticaAssistantHistory";
 import type { AgenticaDescribeHistory } from "./AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "./AgenticaExecuteHistory";
-import type { AgenticaAssistantHistory } from "./AgenticaAssistantHistory";
 import type { AgenticaUserHistory } from "./AgenticaUserHistory";
 
 export type MicroAgenticaHistory<Model extends ILlmSchema.Model> =
