@@ -7,7 +7,7 @@ import { MarkdownViewer } from "../../components/MarkdownViewer";
 
 export function AgenticaChatUserMessageMovie({
   prompt,
-}: AgenticaChatUserInput.IProps) {
+}: AgenticaChatUserMessageMovie.IProps) {
   return (
     <div
       style={{
@@ -49,7 +49,7 @@ export function AgenticaChatUserMessageMovie({
     </div>
   );
 }
-export namespace AgenticaChatUserInput {
+export namespace AgenticaChatUserMessageMovie {
   export interface IProps {
     prompt: AgenticaUserHistory;
   }
