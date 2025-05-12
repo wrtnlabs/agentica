@@ -1,7 +1,8 @@
 import type OpenAI from "openai";
+import type { IValidation } from "typia";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
-import type { AgenticaUserContent } from "../histories";
+import type { AgenticaUserMessageContent } from "../histories";
 
 import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
@@ -26,13 +27,13 @@ export type IAgenticaEventJson =
   | IAgenticaEventJson.IRequest
   | IAgenticaEventJson.ISelect
   | IAgenticaEventJson.IValidate
-  | IAgenticaEventJson.IAssistant
-  | IAgenticaEventJson.IUser;
+  | IAgenticaEventJson.IAssistantMessage
+  | IAgenticaEventJson.IUserMessage;
 export namespace IAgenticaEventJson {
   export type Type = IAgenticaEventJson["type"];
   export interface Mapper {
-    user: IUser;
-    assistant: IAssistant;
+    userMessage: IUserMessage;
+    assistantMessage: IAssistantMessage;
     initialize: IInitialize;
     select: ISelect;
     cancel: ICancel;
@@ -43,10 +44,20 @@ export namespace IAgenticaEventJson {
   }
 
   /**
-   * Event of user input.
+   * Event of assistant message.
    */
-  export interface IUser extends IBase<"user"> {
-    contents: Array<AgenticaUserContent>;
+  export interface IAssistantMessage extends IBase<"assistantMessage"> {
+    /**
+     * Conversation text.
+     */
+    text: string;
+  }
+
+  /**
+   * Event of user message.
+   */
+  export interface IUserMessage extends IBase<"userMessage"> {
+    contents: Array<AgenticaUserMessageContent>;
   }
 
   /**
@@ -92,7 +103,22 @@ export namespace IAgenticaEventJson {
     arguments: Record<string, any>;
   }
 
-  export interface IValidate extends IBase<"validate"> {}
+  export interface IValidate extends IBase<"validate"> {
+    /**
+     * ID of the tool calling.
+     */
+    id: string;
+
+    /**
+     * Target operation to call.
+     */
+    operation: IAgenticaOperationJson;
+
+    /**
+     * Validation result as a failure.
+     */
+    result: IValidation.IFailure;
+  }
 
   /**
    * Event of function calling execution.
@@ -141,16 +167,6 @@ export namespace IAgenticaEventJson {
      * Whether the streaming is completed or not.
      */
     done: boolean;
-  }
-
-  /**
-   * Event of assistant message.
-   */
-  export interface IAssistant extends IBase<"assistant"> {
-    /**
-     * Conversation text.
-     */
-    text: string;
   }
 
   /**

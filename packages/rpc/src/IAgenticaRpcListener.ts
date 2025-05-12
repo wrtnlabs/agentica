@@ -58,14 +58,14 @@ export interface IAgenticaRpcListener {
    *
    * @param evt Event of assistant conversation
    */
-  assistant: (evt: IAgenticaEventJson.IAssistant) => Promise<void>;
+  assistantMessage: (evt: IAgenticaEventJson.IAssistantMessage) => Promise<void>;
 
   /**
    * User conversation message.
    *
    * @param evt Event of user conversation
    */
-  user?: (evt: IAgenticaEventJson.IUser) => Promise<void>;
+  userMessage?: (evt: IAgenticaEventJson.IUserMessage) => Promise<void>;
 
   /**
    * Initialize the AI agent.

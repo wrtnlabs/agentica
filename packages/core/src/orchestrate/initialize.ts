@@ -10,7 +10,7 @@ import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { creatAssistantEvent } from "../factory/events";
-import { createAssistantHistory, decodeHistory, decodeUserContent } from "../factory/histories";
+import { createAssistantMessageHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
@@ -36,7 +36,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents.map(decodeUserContent),
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
         {
           // SYSTEM PROMPT
@@ -144,7 +144,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
       && choice.message.content.length !== 0
     ) {
       prompts.push(
-        createAssistantHistory({ text: choice.message.content }),
+        createAssistantMessageHistory({ text: choice.message.content }),
       );
     }
   }

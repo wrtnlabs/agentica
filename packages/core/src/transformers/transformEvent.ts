@@ -1,7 +1,8 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaAssistantEvent } from "../events/AgenticaAssistantEvent";
+import type { AgenticaUserMessageEvent, AgenticaValidateEvent } from "../events";
+import type { AgenticaAssistantMessageEvent } from "../events/AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
@@ -12,7 +13,7 @@ import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { creatAssistantEvent, createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent } from "../factory/events";
+import { creatAssistantEvent, createCallEvent, createCancelEvent, createDescribeEvent, createExecuteEvent, createInitializeEvent, createRequestEvent, createSelectEvent, createUserMessageEvent, createValidateEvent } from "../factory/events";
 import { createOperationSelection } from "../factory/operations";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
@@ -61,12 +62,20 @@ export function transformEvent<Model extends ILlmSchema.Model>(props: {
       event: props.event,
     });
   }
-  else if (props.event.type === "assistant") {
-    return transformAssistant({
+  else if (props.event.type === "assistantMessage") {
+    return transformAssistantMessage({
       event: props.event,
     });
   }
-  else { throw new Error("Unknown event type"); }
+  else if (props.event.type === "userMessage") {
+    return transformUserMessage({
+      event: props.event,
+    });
+  }
+  return transformValidateEvent({
+    operations: props.operations,
+    event: props.event,
+  });
 }
 
 /**
@@ -180,14 +189,40 @@ function transformSelect<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-function transformAssistant(props: {
-  event: IAgenticaEventJson.IAssistant;
-}): AgenticaAssistantEvent {
+function transformAssistantMessage(props: {
+  event: IAgenticaEventJson.IAssistantMessage;
+}): AgenticaAssistantMessageEvent {
   return creatAssistantEvent({
     stream: toAsyncGenerator(props.event.text),
     done: () => true,
     get: () => props.event.text,
     join: async () => props.event.text,
+  });
+}
+
+/**
+ * @internal
+ */
+function transformUserMessage(props: {
+  event: IAgenticaEventJson.IUserMessage;
+}): AgenticaUserMessageEvent {
+  return createUserMessageEvent(props.event);
+}
+
+/**
+ * @internal
+ */
+function transformValidateEvent<Model extends ILlmSchema.Model>(props: {
+  event: IAgenticaEventJson.IValidate;
+  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+}): AgenticaValidateEvent<Model> {
+  return createValidateEvent({
+    id: props.event.id,
+    operation: findOperation({
+      operations: props.operations,
+      input: props.event.operation,
+    }),
+    result: props.event.result,
   });
 }
 

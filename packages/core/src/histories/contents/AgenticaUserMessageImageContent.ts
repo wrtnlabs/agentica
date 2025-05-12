@@ -1,6 +1,6 @@
 import type { tags } from "typia";
 
-import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
+import type { AgenticaUserMessageContentBase } from "./AgenticaUserMessageContentBase";
 
 /**
  * Image content by user.
@@ -8,7 +8,7 @@ import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
  * @reference https://platform.openai.com/docs/guides/vision
  * @author SunRabbit
  */
-export interface AgenticaUserImageContent extends AgenticaUserContentBase<"image"> {
+export interface AgenticaUserMessageImageContent extends AgenticaUserMessageContentBase<"image"> {
   /**
    * Image URL.
    */

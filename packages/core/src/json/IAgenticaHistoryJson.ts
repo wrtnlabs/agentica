@@ -1,4 +1,4 @@
-import type { AgenticaUserContent } from "../histories";
+import type { AgenticaUserMessageContent } from "../histories";
 
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
@@ -20,29 +20,39 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
  * @author Samchon
  */
 export type IAgenticaHistoryJson =
-  | IAgenticaHistoryJson.IUser
-  | IAgenticaHistoryJson.IAssistant
+  | IAgenticaHistoryJson.IUserMessage
+  | IAgenticaHistoryJson.IAssistantMessage
   | IAgenticaHistoryJson.ISelect
   | IAgenticaHistoryJson.ICancel
   | IAgenticaHistoryJson.IExecute
   | IAgenticaHistoryJson.IDescribe;
 export namespace IAgenticaHistoryJson {
+  export type Type = IAgenticaHistoryJson["type"];
+  export interface Mapper {
+    userMessage: IUserMessage;
+    assistantMessage: IAssistantMessage;
+    select: ISelect;
+    cancel: ICancel;
+    execute: IExecute;
+    describe: IDescribe;
+  }
+
   /**
    * User prompt.
    *
    * User prompt about the user's input.
    */
-  export interface IUser extends IBase<"user"> {
+  export interface IUserMessage extends IBase<"userMessage"> {
     /**
      * User input.
      */
-    contents: Array<AgenticaUserContent>;
+    contents: Array<AgenticaUserMessageContent>;
   }
 
   /**
    * Assistant prompt.
    */
-  export interface IAssistant extends IBase<"assistant"> {
+  export interface IAssistantMessage extends IBase<"assistantMessage"> {
     /**
      * The text content.
      */

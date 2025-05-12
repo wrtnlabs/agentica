@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import type { AgenticaAssistantEvent } from "../events/AgenticaAssistantEvent";
+import type { AgenticaAssistantMessageEvent } from "../events/AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "../events/AgenticaDescribeEvent";
@@ -15,13 +15,13 @@ import type { AgenticaInitializeEvent } from "../events/AgenticaInitializeEvent"
 import type { AgenticaRequestEvent } from "../events/AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "../events/AgenticaResponseEvent";
 import type { AgenticaSelectEvent } from "../events/AgenticaSelectEvent";
-import type { AgenticaUserEvent } from "../events/AgenticaUserEvent";
+import type { AgenticaUserMessageEvent } from "../events/AgenticaUserMessageEvent";
 import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
-import type { AgenticaUserContent } from "../histories";
+import type { AgenticaUserMessageContent } from "../histories";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { createExecuteHistory, createSelectHistory, createUserHistory } from "./histories";
+import { createExecuteHistory, createSelectHistory, createUserMessageHistory } from "./histories";
 
 /* -----------------------------------------------------------
   FUNCTION SELECTS
@@ -136,17 +136,17 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
 /* -----------------------------------------------------------
   CONTENTS
 ----------------------------------------------------------- */
-export function createUserEvent(props: {
-  contents: Array<AgenticaUserContent>;
-}): AgenticaUserEvent {
+export function createUserMessageEvent(props: {
+  contents: Array<AgenticaUserMessageContent>;
+}): AgenticaUserMessageEvent {
   return {
-    type: "user",
+    type: "userMessage",
     contents: props.contents,
     toJSON: () => ({
-      type: "user",
+      type: "userMessage",
       contents: props.contents,
     }),
-    toHistory: () => createUserHistory({
+    toHistory: () => createUserMessageHistory({
       contents: props.contents,
     }),
   };
@@ -157,21 +157,21 @@ export function creatAssistantEvent(props: {
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
-}): AgenticaAssistantEvent {
+}): AgenticaAssistantMessageEvent {
   return {
-    type: "assistant",
+    type: "assistantMessage",
     stream: props.stream,
     join: props.join,
     toJSON: () => ({
-      type: "assistant",
+      type: "assistantMessage",
       done: props.done(),
       text: props.get(),
     }),
     toHistory: () => ({
-      type: "assistant",
+      type: "assistantMessage",
       text: props.get(),
       toJSON: () => ({
-        type: "assistant",
+        type: "assistantMessage",
         text: props.get(),
       }),
     }),

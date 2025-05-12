@@ -48,7 +48,7 @@ async function main(): Promise<void> {
       locale: "en-US",
     },
   });
-  agent.on("assistant", async (e) => {
+  agent.on("assistantMessage", async (e) => {
     console.log(chalk.yellow("text"), chalk.blueBright("assistant"), "\n\n", await e.join());
   });
   agent.on("call", e =>
@@ -94,7 +94,7 @@ async function main(): Promise<void> {
       const histories: AgenticaHistory<"chatgpt">[]
         = await agent.conversate(content);
       for (const h of histories.slice(1)) {
-        if (h.type === "user") {
+        if (h.type === "userMessage") {
           trace(
             chalk.yellow("Text"),
             chalk.blueBright("user"),
@@ -102,7 +102,7 @@ async function main(): Promise<void> {
             h.contents.find(c => c.type === "text")?.text,
           );
         }
-        if (h.type === "assistant") {
+        if (h.type === "assistantMessage") {
           trace(chalk.yellow("Text"), chalk.blueBright("assistant"), "\n\n", h.text);
         }
         else if (h.type === "describe") {

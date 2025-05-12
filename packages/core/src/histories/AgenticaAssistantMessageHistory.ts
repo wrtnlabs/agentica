@@ -2,7 +2,9 @@ import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
 import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
 
-export interface AgenticaAssistantHistory
-  extends AgenticaHistoryBase<"assistant", IAgenticaHistoryJson.IAssistant> {
+export interface AgenticaAssistantMessageHistory extends AgenticaHistoryBase<
+  "assistantMessage",
+  IAgenticaHistoryJson.IAssistantMessage
+> {
   text: string;
 }

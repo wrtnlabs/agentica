@@ -65,7 +65,7 @@ export async function test_rpc_websocket_call(): Promise<void | false> {
     describe: async (evt) => {
       events.push(evt);
     },
-    assistant: async (evt) => {
+    assistantMessage: async (evt) => {
       events.push(evt);
     },
     initialize: async (evt) => {
@@ -101,10 +101,10 @@ export async function test_rpc_websocket_call(): Promise<void | false> {
   TestValidator.equals("events")(
     events.filter(e => e.type !== "cancel").map(e => e.type),
   )([
-    "user",
+    "userMessage",
     "initialize",
-    "assistant",
-    "user",
+    "assistantMessage",
+    "userMessage",
     "select",
     "call",
     "execute",

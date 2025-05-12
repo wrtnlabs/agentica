@@ -12,8 +12,8 @@ import type { IAgenticaEventJson } from "./IAgenticaEventJson";
  * @author Samchon
  */
 export type IMicroAgenticaEventJson =
-  | IAgenticaEventJson.IUser
-  | IAgenticaEventJson.IAssistant
+  | IAgenticaEventJson.IUserMessage
+  | IAgenticaEventJson.IAssistantMessage
   | IAgenticaEventJson.ICall
   | IAgenticaEventJson.IDescribe
   | IAgenticaEventJson.IExecute

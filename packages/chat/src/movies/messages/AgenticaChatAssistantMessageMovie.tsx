@@ -1,4 +1,4 @@
-import type { AgenticaAssistantHistory } from "@agentica/core";
+import type { AgenticaAssistantMessageHistory } from "@agentica/core";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
@@ -39,6 +39,6 @@ export function AgenticaChatAssistantMessageMovie({
 }
 export namespace AgenticaChatAssistantMessageMovie {
   export interface IProps {
-    prompt: AgenticaAssistantHistory;
+    prompt: AgenticaAssistantMessageHistory;
   }
 }

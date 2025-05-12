@@ -1,6 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
-import type { AgenticaAssistantEvent } from "./AgenticaAssistantEvent";
+import type { AgenticaAssistantMessageEvent } from "./AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "./AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "./AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
@@ -9,7 +9,7 @@ import type { AgenticaInitializeEvent } from "./AgenticaInitializeEvent";
 import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
 import type { AgenticaSelectEvent } from "./AgenticaSelectEvent";
-import type { AgenticaUserEvent } from "./AgenticaUserEvent";
+import type { AgenticaUserMessageEvent } from "./AgenticaUserMessageEvent";
 import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
 
 /**
@@ -23,8 +23,8 @@ import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
  * @author Samchon
  */
 export type AgenticaEvent<Model extends ILlmSchema.Model> =
-  | AgenticaUserEvent
-  | AgenticaAssistantEvent
+  | AgenticaUserMessageEvent
+  | AgenticaAssistantMessageEvent
   | AgenticaInitializeEvent
   | AgenticaSelectEvent<Model>
   | AgenticaCallEvent<Model>
@@ -37,8 +37,8 @@ export type AgenticaEvent<Model extends ILlmSchema.Model> =
 export namespace AgenticaEvent {
   export type Type = AgenticaEvent<any>["type"];
   export interface Mapper<Model extends ILlmSchema.Model> {
-    user: AgenticaUserEvent;
-    assistant: AgenticaAssistantEvent;
+    userMessage: AgenticaUserMessageEvent;
+    assistantMessage: AgenticaAssistantMessageEvent;
     select: AgenticaSelectEvent<Model>;
     initialize: AgenticaInitializeEvent;
     call: AgenticaCallEvent<Model>;

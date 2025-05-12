@@ -3,14 +3,14 @@ import type OpenAI from "openai";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
-import type { AgenticaUserContent } from "../histories";
-import type { AgenticaAssistantHistory } from "../histories/AgenticaAssistantHistory";
+import type { AgenticaUserMessageContent } from "../histories";
+import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
-import type { AgenticaUserHistory } from "../histories/AgenticaUserHistory";
+import type { AgenticaUserMessageHistory } from "../histories/AgenticaUserMessageHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
 /**
@@ -91,7 +91,7 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
       },
     ];
   }
-  else if (history.type === "assistant") {
+  else if (history.type === "assistantMessage") {
     return [
       {
         role: "assistant",
@@ -102,7 +102,7 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
   return [
     {
       role: "user",
-      content: history.contents.map(decodeUserContent),
+      content: history.contents.map(decodeUserMessageContent),
     },
   ];
 }
@@ -110,7 +110,7 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
 /**
  * @internal
  */
-export function decodeUserContent(content: AgenticaUserContent): OpenAI.ChatCompletionContentPart {
+export function decodeUserMessageContent(content: AgenticaUserMessageContent): OpenAI.ChatCompletionContentPart {
   if (content.type === "audio") {
     return {
       type: "input_audio",
@@ -151,14 +151,14 @@ export function decodeUserContent(content: AgenticaUserContent): OpenAI.ChatComp
 /**
  * @internal
  */
-export function createUserHistory(props: {
-  contents: Array<AgenticaUserContent>;
-}): AgenticaUserHistory {
+export function createUserMessageHistory(props: {
+  contents: Array<AgenticaUserMessageContent>;
+}): AgenticaUserMessageHistory {
   return {
-    type: "user",
+    type: "userMessage",
     contents: props.contents,
     toJSON: () => ({
-      type: "user",
+      type: "userMessage",
       contents: props.contents,
     }),
   };
@@ -170,11 +170,11 @@ export function createUserHistory(props: {
 /**
  * @internal
  */
-export function createAssistantHistory(props: {
+export function createAssistantMessageHistory(props: {
   text: string;
-}): AgenticaAssistantHistory {
-  const prompt: IAgenticaHistoryJson.IAssistant = {
-    type: "assistant",
+}): AgenticaAssistantMessageHistory {
+  const prompt: IAgenticaHistoryJson.IAssistantMessage = {
+    type: "assistantMessage",
     text: props.text,
   };
   return {

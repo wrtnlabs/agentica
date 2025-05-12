@@ -1,4 +1,4 @@
-export * from "./AgenticaAssistantEvent";
+export * from "./AgenticaAssistantMessageEvent";
 export * from "./AgenticaCallEvent";
 export * from "./AgenticaCancelEvent";
 export * from "./AgenticaDescribeEvent";
@@ -9,6 +9,6 @@ export * from "./AgenticaInitializeEvent";
 export * from "./AgenticaRequestEvent";
 export * from "./AgenticaResponseEvent";
 export * from "./AgenticaSelectEvent";
-export * from "./AgenticaUserEvent";
+export * from "./AgenticaUserMessageEvent";
 export * from "./AgenticaValidateEvent";
 export * from "./MicroAgenticaEvent";

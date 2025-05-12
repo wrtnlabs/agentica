@@ -58,12 +58,12 @@ implements IAgenticaRpcService<Model> {
     const { agent, listener } = props;
 
     // ESSENTIAL LISTENERS
-    agent.on("user", async (event) => {
-      listener.user!(event.toJSON()).catch(() => {});
+    agent.on("userMessage", async (event) => {
+      listener.userMessage!(event.toJSON()).catch(() => {});
     });
-    agent.on("assistant", async (evt) => {
+    agent.on("assistantMessage", async (evt) => {
       await evt.join();
-      listener.assistant(evt.toJSON()).catch(() => {});
+      listener.assistantMessage(evt.toJSON()).catch(() => {});
     });
     agent.on("describe", async (evt) => {
       await evt.join();

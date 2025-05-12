@@ -1,4 +1,4 @@
-import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
+import type { AgenticaUserMessageContentBase } from "./AgenticaUserMessageContentBase";
 
 /**
  * File content by user.
@@ -6,15 +6,15 @@ import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
  * @reference https://platform.openai.com/docs/api-reference/uploads/create
  * @author SunRabbit
  */
-export interface AgenticaUserFileContent extends AgenticaUserContentBase<"file"> {
+export interface AgenticaUserMessageFileContent extends AgenticaUserMessageContentBase<"file"> {
   /**
    * Reference to the pre-uploaded file or the data itself.
    *
    * @todo Properly define independent interface
    */
-  file: AgenticaUserFileContent.IReference | AgenticaUserFileContent.IData;
+  file: AgenticaUserMessageFileContent.IReference | AgenticaUserMessageFileContent.IData;
 }
-export namespace AgenticaUserFileContent {
+export namespace AgenticaUserMessageFileContent {
   export interface IReference {
     type: "reference";
     id: string;

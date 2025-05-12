@@ -16,7 +16,7 @@ import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createCancelHistory, decodeHistory, decodeUserContent } from "../factory/histories";
+import { createCancelHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
@@ -141,7 +141,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents.map(decodeUserContent),
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
         // SYSTEM PROMPT
         {

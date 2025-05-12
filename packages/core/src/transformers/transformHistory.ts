@@ -1,8 +1,8 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
-import type { AgenticaUserHistory } from "../histories";
-import type { AgenticaAssistantHistory } from "../histories/AgenticaAssistantHistory";
+import type { AgenticaUserMessageHistory } from "../histories";
+import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
@@ -10,7 +10,7 @@ import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
-import { createAssistantHistory, createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createUserHistory } from "../factory/histories";
+import { createAssistantMessageHistory, createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createUserMessageHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 
 /**
@@ -21,14 +21,14 @@ export function transformHistory<Model extends ILlmSchema.Model>(props: {
   history: IAgenticaHistoryJson;
 }): AgenticaHistory<Model> {
   // USER
-  if (props.history.type === "user") {
-    return transformUser({
+  if (props.history.type === "userMessage") {
+    return transformUserMessage({
       history: props.history,
     });
   }
   // ASSISTANT
-  else if (props.history.type === "assistant") {
-    return transformAssistant({
+  else if (props.history.type === "assistantMessage") {
+    return transformAssistantMessage({
       history: props.history,
     });
   }
@@ -52,25 +52,22 @@ export function transformHistory<Model extends ILlmSchema.Model>(props: {
       history: props.history,
     });
   }
-  else if (props.history.type === "describe") {
-    return transformDescribe({
-      operations: props.operations,
-      history: props.history,
-    });
-  }
-  throw new Error("Invalid prompt type.");
+  return transformDescribe({
+    operations: props.operations,
+    history: props.history,
+  });
 }
 
-function transformAssistant(props: {
-  history: IAgenticaHistoryJson.IAssistant;
-}): AgenticaAssistantHistory {
-  return createAssistantHistory(props.history);
+function transformAssistantMessage(props: {
+  history: IAgenticaHistoryJson.IAssistantMessage;
+}): AgenticaAssistantMessageHistory {
+  return createAssistantMessageHistory(props.history);
 }
 
-function transformUser(props: {
-  history: IAgenticaHistoryJson.IUser;
-}): AgenticaUserHistory {
-  return createUserHistory(props.history);
+function transformUserMessage(props: {
+  history: IAgenticaHistoryJson.IUserMessage;
+}): AgenticaUserMessageHistory {
+  return createUserMessageHistory(props.history);
 }
 
 function transformSelect<Model extends ILlmSchema.Model>(props: {

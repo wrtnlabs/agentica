@@ -1,4 +1,4 @@
-import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
+import type { AgenticaUserMessageContentBase } from "./AgenticaUserMessageContentBase";
 
 /**
  * Text content by user.
@@ -7,7 +7,7 @@ import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
  * @author Samchon
  * @author SunRabbit
  */
-export interface AgenticaUserTextContent extends AgenticaUserContentBase<"text"> {
+export interface AgenticaUserMessageTextContent extends AgenticaUserMessageContentBase<"text"> {
   /**
    * The text content.
    */

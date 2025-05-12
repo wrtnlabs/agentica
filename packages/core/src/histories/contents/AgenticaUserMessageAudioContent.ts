@@ -1,4 +1,4 @@
-import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
+import type { AgenticaUserMessageContentBase } from "./AgenticaUserMessageContentBase";
 
 /**
  * Audio content by user.
@@ -8,7 +8,7 @@ import type { AgenticaUserContentBase } from "./AgenticaUserContentBase";
  *          so it's too big data
  * @author SunRabbit
  */
-export interface AgenticaUserAudioContent extends AgenticaUserContentBase<"audio"> {
+export interface AgenticaUserMessageAudioContent extends AgenticaUserMessageContentBase<"audio"> {
   /**
    * Base64 encoded audio data.
    */

@@ -9,7 +9,7 @@ import { AgenticaChatUserMessageMovie } from "./AgenticaChatUserMessageMovie";
 export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
   prompt,
 }: AgenticaChatMessageMovie.IProps<Model>) {
-  if (prompt.type === "assistant") {
+  if (prompt.type === "assistantMessage") {
     return <AgenticaChatAssistantMessageMovie prompt={prompt} />;
   }
 
@@ -27,12 +27,11 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
     return null;
   }
 
-  if (prompt.type === "user") {
+  if (prompt.type === "userMessage") {
     return <AgenticaChatUserMessageMovie prompt={prompt} />;
   }
 
   prompt satisfies never;
-
   return null;
 }
 export namespace AgenticaChatMessageMovie {

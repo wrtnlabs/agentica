@@ -1,4 +1,4 @@
-import type { AgenticaUserHistory } from "@agentica/core";
+import type { AgenticaUserMessageHistory } from "@agentica/core";
 
 import FaceIcon from "@mui/icons-material/Face";
 import { Card, CardContent, Chip } from "@mui/material";
@@ -51,6 +51,6 @@ export function AgenticaChatUserMessageMovie({
 }
 export namespace AgenticaChatUserMessageMovie {
   export interface IProps {
-    prompt: AgenticaUserHistory;
+    prompt: AgenticaUserMessageHistory;
   }
 }

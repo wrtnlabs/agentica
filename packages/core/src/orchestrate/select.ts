@@ -18,7 +18,7 @@ import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { creatAssistantEvent } from "../factory/events";
-import { createAssistantHistory, createSelectHistory, decodeHistory, decodeUserContent } from "../factory/histories";
+import { createAssistantMessageHistory, createSelectHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -144,7 +144,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents.map(decodeUserContent),
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
         // SYSTEM PROMPT
         {
@@ -259,7 +259,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       && choice.message.content != null
       && choice.message.content.length !== 0
     ) {
-      const text = createAssistantHistory({ text: choice.message.content });
+      const text = createAssistantMessageHistory({ text: choice.message.content });
       prompts.push(text);
 
       ctx.dispatch(

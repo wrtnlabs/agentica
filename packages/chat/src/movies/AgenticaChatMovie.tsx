@@ -1,12 +1,12 @@
 import type {
   Agentica,
-  AgenticaAssistantEvent,
+  AgenticaAssistantMessageEvent,
   AgenticaDescribeEvent,
   AgenticaHistory,
   AgenticaOperationSelection,
   AgenticaSelectEvent,
   AgenticaTokenUsage,
-  AgenticaUserEvent,
+  AgenticaUserMessageEvent,
   AgenticaValidateEvent,
 } from "@agentica/core";
 import type {
@@ -72,10 +72,10 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // EVENT INTERACTIONS
   // ----
   // EVENT LISTENERS
-  const handleUser = async (event: AgenticaUserEvent) => {
+  const handleUserMessage = async (event: AgenticaUserMessageEvent) => {
     setHistories(prev => [...prev, event.toHistory()]);
   };
-  const handleAssistant = async (event: AgenticaAssistantEvent) => {
+  const handleAssistantMessage = async (event: AgenticaAssistantMessageEvent) => {
     await event.join(); // @todo Jaxtyn: streaming
     setHistories(prev => [...prev, event.toHistory()]);
   };
@@ -96,15 +96,15 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     if (inputRef.current !== null) {
       inputRef.current.select();
     }
-    agent.on("assistant", handleAssistant);
-    agent.on("user", handleUser);
+    agent.on("assistantMessage", handleAssistantMessage);
+    agent.on("userMessage", handleUserMessage);
     agent.on("select", handleSelect);
     agent.on("describe", handleDescribe);
     agent.on("validate", handleValidate);
     setTokenUsage(agent.getTokenUsage());
     return () => {
-      agent.off("assistant", handleAssistant);
-      agent.off("user", handleUser);
+      agent.off("assistantMessage", handleAssistantMessage);
+      agent.off("userMessage", handleUserMessage);
       agent.off("select", handleSelect);
       agent.off("describe", handleDescribe);
       agent.off("validate", handleValidate);

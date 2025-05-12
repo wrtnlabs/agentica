@@ -5,7 +5,7 @@
  * @author Wrtn Technologies
  */
 import type {
-  AgenticaAssistantHistory,
+  AgenticaAssistantMessageHistory,
   AgenticaOperationSelection,
   AgenticaTokenUsage,
 } from "@agentica/core";
@@ -61,7 +61,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaAssistantHistory[];
+    assistantPrompts: AgenticaAssistantMessageHistory[];
   }
 
   /**
@@ -85,7 +85,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaAssistantHistory[];
+    assistantPrompts: AgenticaAssistantMessageHistory[];
   }
 
   /**
