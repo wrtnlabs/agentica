@@ -2,7 +2,8 @@ import type { AgenticaEvent, IAgenticaController } from "@agentica/core";
 
 import { Agentica, assertMcpController } from "@agentica/core";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
+import { createServer } from "@wrtnlabs/calculator-mcp";
 import OpenAI from "openai";
 import typia from "typia";
 
@@ -17,16 +18,19 @@ export async function test_base_mcp_work_describe(): Promise<void | false> {
   const events: AgenticaEvent<"chatgpt">[] = [];
   let functionCalled = false;
 
+  const server = await createServer({
+    name: "calculator",
+    version: "1.0.0",
+  });
+  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   // calculator controller
   const client = new Client({
     name: "calculator",
     version: "1.0.0",
   });
 
-  await client.connect(new StdioClientTransport({
-    command: "npx",
-    args: ["-y", "@wrtnlabs/calculator-mcp"],
-  }));
+  await client.connect(clientTransport);
+  await server.connect(serverTransport);
 
   const calculatorController: IAgenticaController<"chatgpt"> = await assertMcpController({
     name: "calculator",

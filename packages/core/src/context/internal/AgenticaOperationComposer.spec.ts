@@ -1,7 +1,8 @@
 import type { IChatGptSchema, IHttpLlmFunction, ILlmFunction, IMcpLlmFunction, IValidation } from "@samchon/openapi";
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory";
+import { createServer } from "@wrtnlabs/calculator-mcp";
 
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
@@ -86,10 +87,19 @@ async function createMockMcpController(name: string, functions: IMcpLlmFunction<
 
 describe("a AgenticaOperationComposer", () => {
   beforeAll(async () => {
-    await client.connect(new StdioClientTransport({
-      command: "npx",
-      args: ["-y", "@wrtnlabs/calculator-mcp"],
-    }));
+    // eslint-disable-next-line ts/no-unsafe-call
+    const server = await createServer({
+      name: "calculator",
+      version: "1.0.0",
+    });
+
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+
+    await Promise.all([
+      client.connect(clientTransport),
+      // eslint-disable-next-line ts/no-unsafe-call
+      server.connect(serverTransport),
+    ]);
   });
   describe("compose", () => {
     it("should compose operations from controllers", async () => {
