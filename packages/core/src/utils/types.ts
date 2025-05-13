@@ -28,16 +28,23 @@ export type Fail = 0;
  * // see in `tst` folder
  * ```
  */
-export declare function check<Type, Expect, Outcome extends Boolean>(
-  debug?: Type
-): Equals<Equals<Type, Expect>, Outcome>;
+export function check<Type, Expect, Outcome extends Boolean>(
+  debug?: Type,
+): Equals<Equals<Type, Expect>, Outcome> {
+  if (debug !== undefined) {
+    // eslint-disable-next-line no-console
+    console.log(debug);
+  }
+
+  return 1 as Equals<Equals<Type, Expect>, Outcome>;
+}
 
 /**
  * Validates a batch of [[check]]
- * @param checks a batch of [[check]]
+ * @param _checks a batch of [[check]]
  * @example
  * ```ts
  * // see in `tst` folder
  * ```
  */
-export declare function checks(checks: 1[]): void;
+export function checks(_checks: 1[]): void { }

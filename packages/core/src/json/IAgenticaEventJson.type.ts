@@ -1,5 +1,5 @@
 import type { AgenticaEvent } from "../events";
-import type { Pass } from "../utils/types";
+import type { Fail, Pass } from "../utils/types";
 
 import { check, checks } from "../utils/types";
 
@@ -14,6 +14,6 @@ checks([
   check<
     AgenticaEvent.Type,
     keyof IAgenticaEventJson.Mapper,
-    Pass
+    Fail
   >(),
 ]);
