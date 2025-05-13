@@ -6,15 +6,19 @@ settings:
 
 catalogs:
   libs:
-    '@modelcontextprotocol/sdk':
-      specifier: ^1.9.0
-      version: 1.9.0
     openai:
       specifier: ^4.80.0
       version: 4.91.1
     type-fest:
       specifier: ^4.37.0
       version: 4.39.1
+  mcp:
+    '@modelcontextprotocol/sdk':
+      specifier: ^1.9.0
+      version: 1.9.0
+    '@wrtnlabs/calculator-mcp':
+      specifier: ^0.2.1
+      version: 0.2.1
   typescript:
     ts-patch:
       specifier: ^3.3.0
@@ -350,7 +354,7 @@ importers:
         version: 11.1.0
     devDependencies:
       '@modelcontextprotocol/sdk':
-        specifier: catalog:libs
+        specifier: catalog:mcp
         version: 1.9.0
       '@nestia/e2e':
         specifier: ^6.0.1
@@ -370,6 +374,9 @@ importers:
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
+      '@wrtnlabs/calculator-mcp':
+        specifier: catalog:mcp
+        version: 0.2.1
       openai:
         specifier: catalog:libs
         version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
@@ -511,7 +518,7 @@ importers:
         specifier: workspace:^
         version: link:../packages/vector-selector
       '@modelcontextprotocol/sdk':
-        specifier: ^1.9.0
+        specifier: catalog:mcp
         version: 1.9.0
       '@nestia/e2e':
         specifier: ^6.0.1
@@ -522,6 +529,9 @@ importers:
       '@samchon/shopping-api':
         specifier: ^0.17.0
         version: 0.17.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      '@wrtnlabs/calculator-mcp':
+        specifier: catalog:mcp
+        version: 0.2.1
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -3324,6 +3334,10 @@ packages:
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
+  '@wrtnlabs/calculator-mcp@0.2.1':
+    resolution: {integrity: sha512-t0yEi/u/XMwj+fBI0hgkafNVCbUqTt8rBsIHKEPccH29RuY5+XU63LahXGOcPoW+OWUcmR94PaH2j8KJa6tPbw==}
+    hasBin: true
+
   '@wrtnlabs/connector-hive-api@1.5.0':
     resolution: {integrity: sha512-2PV0kVEEWYLaHrqdl70MnOOLtug5ZRfNN1PmWCHJM+OeNhLaa/z3luoRpnmaCmVx3W3wxAO6HS1fxapwvcfpIA==}
 
@@ -6119,6 +6133,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch-native@1.6.6:
     resolution: {integrity: sha512-8Mc2HhqPdlIfedsuZoc3yioPuzp6b+L5jRCRY1QzuWZh2EGJVQrGppC6V6cF0bLdbW0+O2YpqCA25aF/1lvipQ==}
@@ -11170,6 +11185,8 @@ snapshots:
       '@vue/shared': 3.5.13
 
   '@vue/shared@3.5.13': {}
+
+  '@wrtnlabs/calculator-mcp@0.2.1': {}
 
   '@wrtnlabs/connector-hive-api@1.5.0(@samchon/openapi@4.3.0)(typescript@5.8.3)':
     dependencies:

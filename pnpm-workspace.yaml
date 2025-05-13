@@ -5,9 +5,11 @@ packages:
   - website
 catalogs:
   libs:
-    "@modelcontextprotocol/sdk": ^1.9.0
     openai: ^4.80.0
     type-fest: ^4.37.0
+  mcp:
+    "@modelcontextprotocol/sdk": ^1.9.0
+    "@wrtnlabs/calculator-mcp": ^0.2.1
   typescript:
     ts-patch: ^3.3.0
     typescript: ~5.8.3
