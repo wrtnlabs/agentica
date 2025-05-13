@@ -85,7 +85,7 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
 }
 
 async function runPrepareCommand({ packageManager, projectAbsolutePath }: Pick<InstallDependenciesOptions, "packageManager" | "projectAbsolutePath">): Promise<void> {
-  const [command, ...args] = runCommand({ packageManager, command: "prepare" });
+  const [command, ...args] = runCommand({ packageManager, command: "prepare" }).split(" ");
 
   const s = p.spinner();
 
