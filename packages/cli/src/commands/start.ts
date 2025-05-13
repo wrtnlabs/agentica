@@ -11,7 +11,7 @@ import process from "node:process";
 import type { SimplifyDeep } from "type-fest";
 
 import * as p from "@clack/prompts";
-import spawn from "nano-spawn";
+import spawn, { SubprocessError } from "nano-spawn";
 import * as picocolors from "picocolors";
 import typia from "typia";
 
@@ -77,9 +77,16 @@ async function installServicesAsDependencies({ packageManager, projectAbsolutePa
 
   s.start("📦 Package installation in progress...");
 
-  await spawn(command, args, {
-    cwd: projectAbsolutePath,
-  });
+  try {
+    await spawn(command, args, { cwd: projectAbsolutePath });
+  }
+  catch (e) {
+    if (e instanceof SubprocessError) {
+      p.log.error(`❌ Package installation failed: ${e.output}`);
+      process.exit(1);
+    }
+    throw e;
+  }
 
   s.stop("✅ Package installation completed");
 }
@@ -91,9 +98,16 @@ async function runPrepareCommand({ packageManager, projectAbsolutePath }: Pick<I
 
   s.start("📦 Package installation in progress...");
 
-  await spawn(command, args, {
-    cwd: projectAbsolutePath,
-  });
+  try {
+    await spawn(command, args, { cwd: projectAbsolutePath });
+  }
+  catch (e) {
+    if (e instanceof SubprocessError) {
+      p.log.error(`❌ Package installation failed: ${e.output}`);
+      process.exit(1);
+    }
+    throw e;
+  }
 
   s.stop("✅ Package installation completed");
 }
