@@ -10,12 +10,12 @@ import {
 } from "@mui/material";
 import ShoppingApi from "@samchon/shopping-api";
 import OpenAI from "openai";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import { VendorConfigurationMovie } from "../common/VendorConfigurationMovie";
 
-import { ShoppingChatApplication } from "./ShoppingChatApplication";
+import { ShoppingChatApplication, ShoppingChatApplicationSkeleton } from "./ShoppingChatApplication";
 
 function Application() {
   const [config, setConfig] = useState<VendorConfigurationMovie.IConfig>(
@@ -78,7 +78,9 @@ function Application() {
     >
       {next !== null
         ? (
-            <ShoppingChatApplication {...next} />
+            <Suspense fallback={<ShoppingChatApplicationSkeleton />}>
+              <ShoppingChatApplication {...next} />
+            </Suspense>
           )
         : (
             <FormControl
