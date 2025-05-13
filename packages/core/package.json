@@ -59,13 +59,14 @@
     "uuid": "^11.0.4"
   },
   "devDependencies": {
-    "@modelcontextprotocol/sdk": "catalog:libs",
+    "@modelcontextprotocol/sdk": "catalog:mcp",
     "@nestia/e2e": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
     "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^22.13.4",
     "@types/uuid": "^10.0.0",
+    "@wrtnlabs/calculator-mcp": "catalog:mcp",
     "openai": "catalog:libs",
     "rimraf": "^6.0.1",
     "rollup": "^4.34.8",

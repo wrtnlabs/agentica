@@ -91,7 +91,8 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
       },
     ];
   }
-  else if (history.type === "assistantMessage") {
+
+  if (history.type === "assistantMessage") {
     return [
       {
         role: "assistant",
@@ -99,18 +100,30 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
       },
     ];
   }
-  return [
-    {
-      role: "user",
-      content: history.contents.map(decodeUserMessageContent),
-    },
-  ];
+
+  if (history.type === "userMessage") {
+    const contents = history.contents;
+
+    return [
+      {
+        role: "user",
+        content: contents.map(decodeUserMessageContent),
+      },
+    ];
+  }
+
+  history satisfies never;
+  throw new Error(`Unsupported history type, value: ${JSON.stringify(history)}`);
 }
 
 /**
  * @internal
  */
 export function decodeUserMessageContent(content: AgenticaUserMessageContent): OpenAI.ChatCompletionContentPart {
+  if (content.type === "text") {
+    return content;
+  }
+
   if (content.type === "audio") {
     return {
       type: "input_audio",
@@ -120,7 +133,8 @@ export function decodeUserMessageContent(content: AgenticaUserMessageContent): O
       },
     };
   }
-  else if (content.type === "file") {
+
+  if (content.type === "file") {
     return {
       type: "file",
       file: content.file.type === "data"
@@ -133,7 +147,8 @@ export function decodeUserMessageContent(content: AgenticaUserMessageContent): O
           },
     };
   }
-  else if (content.type === "image") {
+
+  if (content.type === "image") {
     return {
       type: "image_url",
       image_url: {
@@ -142,7 +157,9 @@ export function decodeUserMessageContent(content: AgenticaUserMessageContent): O
       },
     };
   }
-  return content;
+
+  content satisfies never;
+  throw new Error(`Unsupported user message content type, value: ${JSON.stringify(content)}`);
 }
 
 /* -----------------------------------------------------------
