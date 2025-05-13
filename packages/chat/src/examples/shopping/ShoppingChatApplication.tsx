@@ -1,8 +1,4 @@
-import type {
-  IHttpConnection,
-  IHttpLlmApplication,
-  ILlmSchema,
-} from "@samchon/openapi";
+import type { IHttpConnection, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import { Agentica } from "@agentica/core";
@@ -14,8 +10,19 @@ import typia from "typia";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
 
+export function ShoppingChatApplicationSkeleton() {
+  return (
+    <div>
+      <h2>Loading Swagger document</h2>
+      <hr />
+      <p>Wait for a moment please.</p>
+      <p>Loading Swagger document...</p>
+    </div>
+  );
+}
+
 export async function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
-  const application: IHttpLlmApplication<ILlmSchema.Model> | null = HttpLlm.application({
+  const application = HttpLlm.application({
     model: props.schemaModel,
     document: OpenApi.convert(
       await fetch(
@@ -25,17 +32,6 @@ export async function ShoppingChatApplication(props: ShoppingChatApplication.IPr
         .then(v => typia.assert<Parameters<typeof OpenApi.convert>[0]>(v)),
     ),
   });
-
-  if (application === null) {
-    return (
-      <div>
-        <h2>Loading Swagger document</h2>
-        <hr />
-        <p>Wait for a moment please.</p>
-        <p>Loading Swagger document...</p>
-      </div>
-    );
-  }
 
   const agent: Agentica<ILlmSchema.Model> = new Agentica({
     model: props.schemaModel,
