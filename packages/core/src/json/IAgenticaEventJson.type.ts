@@ -14,6 +14,6 @@ checks([
   check<
     AgenticaEvent.Type,
     keyof IAgenticaEventJson.Mapper,
-    Fail
+    Pass
   >(),
 ]);
