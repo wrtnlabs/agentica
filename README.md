@@ -113,9 +113,7 @@ Our demonstrations showcase the power and simplicity of Agentica's function call
 - [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/uploader)
 - [Enterprise E-commerce Agent](https://wrtnlabs.io/agentica/playground/shopping)
 
-  <p align="center">
-  <img src="https://github.com/user-attachments/assets/fbfa9f93-304c-4728-933e-deb8ecd7a2af" alt="Ecommerce" />
-</p>
+![E-commerce Agent Demo](https://github.com/user-attachments/assets/fbfa9f93-304c-4728-933e-deb8ecd7a2af)
 
 <!--
 @todo this section would be changed after making tutorial playground
