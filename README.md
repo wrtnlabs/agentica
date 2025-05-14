@@ -113,6 +113,10 @@ Our demonstrations showcase the power and simplicity of Agentica's function call
 - [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/uploader)
 - [Enterprise E-commerce Agent](https://wrtnlabs.io/agentica/playground/shopping)
 
+  <p align="center">
+  <img src="https://github.com/user-attachments/assets/fbfa9f93-304c-4728-933e-deb8ecd7a2af" alt="Ecommerce" />
+</p>
+
 <!--
 @todo this section would be changed after making tutorial playground
 -->
@@ -137,33 +141,12 @@ Find comprehensive resources at our [official website](https://wrtnlabs.io/agent
 - [Youtube](https://www.youtube.com/@wrtnlabs)
 - [Paper](https://wrtnlabs.io/agentica/paper)
 
-### Quick Preview of Agentica
 
 A quick walkthrough of Agentica’s core features.
-[Click to view tutorial on YouTube](https://www.youtube.com/watch?v=jCmPnkB7RzY)
 
 https://github.com/user-attachments/assets/a9fd81f6-e379-410a-8055-2bcaa10bd312
 
-### GitHub Agent Tutorial
-
-Build an AI-powered GitHub bot that searches users, reads profiles, and lists repos via GitHub connector.
-[Click to view tutorial on YouTube](https://www.youtube.com/watch?v=4ozukHJJ2_4)
-
-https://github.com/user-attachments/assets/6c13c8a3-822f-4e49-b7dc-91585dcd1da7
-
-### Google Agent Tutorial
-
-Connect Gmail, Calendar & Google Flights to create a chat-based assistant that reads emails, manages events, and finds flights.
-[Click to view tutorial on YouTube](https://www.youtube.com/watch?v=KWSvsIZKrFw)
-
-https://github.com/user-attachments/assets/84a3ec50-9d6d-4af4-8235-384d1e19475c
-
-### RAG Agent Preview
-
-Implement Retrieval-Augmented Generation to build a JavaScript expert agent that grounds answers in the “Eloquent JavaScript” PDF.
-[Click to view tutorial on YouTube](https://www.youtube.com/watch?v=zEtMXzHwzX0)
-
-https://github.com/user-attachments/assets/5f89bdcb-fff1-4dd1-b152-f0ecb743247d
+> [Click to view tutorial on YouTube](https://www.youtube.com/watch?v=jCmPnkB7RzY)
 
 ## 🌟 Why Agentica?
 
