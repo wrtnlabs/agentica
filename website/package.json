@@ -9,7 +9,7 @@
     "prebuild:typedoc": "node build/typedoc",
     "prebuild:playground": "node build/playground",
     "postbuild": "pnpm --aggregate-output /^postbuild:/",
-    "postbuild:sitemap": "node build/sitemap",
+    "postbuild:sitemap": "next-sitemap",
     "postbuild:pagefind": "pagefind --site .next/server/app --output-path out/_pagefind",
     "start": "next start",
     "lint": "next lint"
