@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "packages/*/src/**"
+      - "packages/*/package.json"
       - "test/**"
       - package.json
 jobs:
