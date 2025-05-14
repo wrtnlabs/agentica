@@ -137,50 +137,33 @@ Find comprehensive resources at our [official website](https://wrtnlabs.io/agent
 - [Youtube](https://www.youtube.com/@wrtnlabs)
 - [Paper](https://wrtnlabs.io/agentica/paper)
 
-
 ### Quick Preview of Agentica
 
-A quick walkthrough of Agentica’s core features.  
+A quick walkthrough of Agentica’s core features.
 [Click to view tutorial on YouTube](https://www.youtube.com/watch?v=jCmPnkB7RzY)
-
 
 https://github.com/user-attachments/assets/a9fd81f6-e379-410a-8055-2bcaa10bd312
 
-
-
 ### GitHub Agent Tutorial
 
-Build an AI-powered GitHub bot that searches users, reads profiles, and lists repos via GitHub connector.  
+Build an AI-powered GitHub bot that searches users, reads profiles, and lists repos via GitHub connector.
 [Click to view tutorial on YouTube](https://www.youtube.com/watch?v=4ozukHJJ2_4)
-
-
 
 https://github.com/user-attachments/assets/6c13c8a3-822f-4e49-b7dc-91585dcd1da7
 
-
-
 ### Google Agent Tutorial
 
-Connect Gmail, Calendar & Google Flights to create a chat-based assistant that reads emails, manages events, and finds flights.  
+Connect Gmail, Calendar & Google Flights to create a chat-based assistant that reads emails, manages events, and finds flights.
 [Click to view tutorial on YouTube](https://www.youtube.com/watch?v=KWSvsIZKrFw)
-
-
 
 https://github.com/user-attachments/assets/84a3ec50-9d6d-4af4-8235-384d1e19475c
 
-
-
 ### RAG Agent Preview
 
-Implement Retrieval-Augmented Generation to build a JavaScript expert agent that grounds answers in the “Eloquent JavaScript” PDF.  
+Implement Retrieval-Augmented Generation to build a JavaScript expert agent that grounds answers in the “Eloquent JavaScript” PDF.
 [Click to view tutorial on YouTube](https://www.youtube.com/watch?v=zEtMXzHwzX0)
 
-
-
 https://github.com/user-attachments/assets/5f89bdcb-fff1-4dd1-b152-f0ecb743247d
-
-
-
 
 ## 🌟 Why Agentica?
 
@@ -226,16 +209,11 @@ By the way, as Agentica has resolved the difficulty and instability problems of 
 | Stability   | 🟢 Stable     | ❌ Unstable              | 🟢 Stable                 |
 | Flexibility | ❌ Inflexible | 🟢 Flexible              | 🟢 Flexible               |
 
-
-
-
 ## 💬 Community & Support
 
 For support, questions, or to provide feedback, join our Discord community:
 
 [![Discord](https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx)](https://discord.gg/aMhRmzkqCx)
-
-
 
 ## ⚖️ License
 
@@ -247,5 +225,3 @@ Agentica is open-source and available under the [MIT License](https://github.com
 <div align="center">
   Agentica is maintained by <a href="https://wrtnlabs.io">Wrtn Technologies</a> &mdash; Empowering developers to transform TypeScript functions and OpenAPI specs into powerful AI agents.
 </div>
-
-
