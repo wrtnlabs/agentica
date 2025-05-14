@@ -115,7 +115,16 @@ Find comprehensive resources at our [official website](https://wrtnlabs.io/agent
 
 - [Home](https://wrtnlabs.io/agentica)
 - [Guide Documents](https://wrtnlabs.io/agentica/docs)
+  - [Setup](https://wrtnlabs.io/agentica/docs/setup/cli/)
+  - [Concepts](https://wrtnlabs.io/agentica/docs/concepts/function-calling/)
+  - [Core Library](https://wrtnlabs.io/agentica/docs/core/)
+  - [WebSocket Protocol](https://wrtnlabs.io/agentica/docs/websocket/)
+  - [Plugin Modules](https://wrtnlabs.io/agentica/docs/plugins/benchmark/)
 - [Tutorial](https://wrtnlabs.io/agentica/tutorial)
+  - [Productivity](https://wrtnlabs.io/agentica/tutorial/productivity/arxiv/)
+  - [Coding](https://wrtnlabs.io/agentica/tutorial/coding/file-system/)
+  - [React Native](https://wrtnlabs.io/agentica/tutorial/react-native/sms/)
+  - [Enterprise](https://wrtnlabs.io/agentica/tutorial/enterprise/shopping/)
 - [API Documents](https://wrtnlabs.io/agentica/api)
 - [Youtube](https://www.youtube.com/@wrtnlabs)
 - [Paper](https://wrtnlabs.io/agentica/paper)
@@ -154,6 +163,7 @@ Agentica enhances AI function calling by the following strategies:
 Thanks to these innovations, Agentica makes AI function calling easier, safer, and more accurate than before. Development becomes more intuitive since you only need to prepare functions relevant to your specific use case, and scaling your agent's capabilities is as simple as adding or removing functions.
 
 In 2023, when OpenAI announced function calling, many predicted that function calling-driven AI development would become the mainstream. However, in reality, due to the difficulty and instability of function calling, the trend in AI development became agent workflow. Agent workflow, which is inflexible and must be created for specific purposes, has conquered the AI agent ecosystem.
+
 By the way, as Agentica has resolved the difficulty and instability problems of function calling, the time has come to embrace function-driven AI development once again.
 
 | Type        | Workflow      | Vanilla Function Calling | Agentica Function Calling |
