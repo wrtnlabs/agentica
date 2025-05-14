@@ -4,7 +4,7 @@
   "description": "Agentica Website",
   "scripts": {
     "dev": "next",
-    "build": "pnpm run prebuild && next build && pnpm run postbuild",
+    "build": "next build",
     "prebuild": "node build/typedoc && node build/playground",
     "postbuild": "node build/sitemap && pagefind --site .next/server/app --output-path out/_pagefind",
     "start": "next start",
