@@ -139,7 +139,9 @@ Find comprehensive resources at our [official website](https://wrtnlabs.io/agent
 - [Youtube](https://www.youtube.com/@wrtnlabs)
 - [Paper](https://wrtnlabs.io/agentica/paper)
 
-https://github.com/user-attachments/assets/656b20da-7bb2-40b0-a792-663de226cb1f
+
+https://github.com/user-attachments/assets/2f2a4cdc-6cf1-4304-b82d-04a8ed0be0dd
+
 
 
 ## 🌟 Why Agentica?
