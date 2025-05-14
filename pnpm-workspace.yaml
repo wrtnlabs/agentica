@@ -3,6 +3,7 @@ packages:
   - benchmark/*
   - test
   - website
+enablePrePostScripts: true
 catalogs:
   libs:
     openai: ^4.80.0
