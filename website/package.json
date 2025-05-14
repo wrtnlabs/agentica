@@ -6,7 +6,9 @@
     "dev": "next",
     "build": "next build",
     "prebuild": "node build/typedoc && node build/playground",
-    "postbuild": "node build/sitemap && pagefind --site .next/server/app --output-path out/_pagefind",
+    "postbuild": "pnpm --aggregate-output /^postbuild:/",
+    "postbuild:sitemap": "node build/sitemap",
+    "postbuild:pagefind": "pagefind --site .next/server/app --output-path out/_pagefind",
     "start": "next start",
     "lint": "next lint"
   },
