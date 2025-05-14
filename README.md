@@ -26,6 +26,7 @@ Are you a TypeScript developer? Then you're already an AI developer. Familiar wi
 <!-- eslint-skip -->
 
 ```typescript
+
 import { Agentica, assertHttpController } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
@@ -39,12 +40,10 @@ const agent = new Agentica({
   },
   controllers: [
     // functions from TypeScript class
-    {
-      protocol: "class",
-      name: "filesystem",
-      application: typia.llm.application<MobileFileSystem, "chatgpt">(),
-      execute: new MobileFileSystem(),
-    },
+    typia.llm.controller<MobileFileSystem, "chatgpt">(
+      "filesystem",
+      MobileFileSystem()
+    ),
     // functions from Swagger/OpenAPI
     assertHttpController({
       name: "shopping",
@@ -60,6 +59,7 @@ const agent = new Agentica({
   ],
 });
 await agent.conversate("I wanna buy MacBook Pro");
+
 ```
 
 ## 📦 Setup
@@ -102,7 +102,7 @@ Experience Agentica firsthand through our [interactive playground](https://wrtnl
 Our demonstrations showcase the power and simplicity of Agentica's function calling capabilities across different integration methods.
 
 - [TypeScript Class](https://wrtnlabs.io/agentica/playground/bbs)
-- [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/swagger)
+- [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/uploader)
 - [Enterprise E-commerce Agent](https://wrtnlabs.io/agentica/playground/shopping)
 
 <!--
