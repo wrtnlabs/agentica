@@ -42,7 +42,7 @@ const agent = new Agentica({
     // functions from TypeScript class
     typia.llm.controller<MobileFileSystem, "chatgpt">(
       "filesystem",
-      MobileFileSystem()
+      MobileFileSystem(),
     ),
     // functions from Swagger/OpenAPI
     assertHttpController({
