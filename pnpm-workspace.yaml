@@ -4,6 +4,8 @@ packages:
   - test
   - website
 enablePrePostScripts: true
+useNodeVersion: 22.15.0
+engineStrict: true
 catalogs:
   libs:
     openai: ^4.80.0
