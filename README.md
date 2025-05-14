@@ -1,10 +1,8 @@
 # Agentica, AI Function Calling Framework
 
-<!-- https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488 -->
-
 ![Agentica - ReadMe Diagram](https://github.com/user-attachments/assets/ecd06d51-b818-41c8-ab31-f0e40f48034e)
 
-<!-- ── 첫 줄: 라이선스·NPM·빌드·뉴스레터 ── -->
+<!-- Github/NPM Badges -->
 <p align="center">
   <a href="https://github.com/wrtnlabs/agentica/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/></a>
   <a href="https://www.npmjs.com/package/@agentica/core"><img src="https://img.shields.io/npm/v/@agentica/core.svg" alt="NPM Version"/></a>
@@ -13,7 +11,7 @@
  <a href="https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild"><img src="https://github.com/wrtnlabs/agentica/workflows/build/badge.svg" alt="Build Status"/></a>
 </p>
 
-<!-- ── 둘째 줄: YouTube · Discord ── -->
+<!-- Youtube + Discord -->
 <p align="center">
   <a href="https://www.youtube.com/@wrtnlabs"><img src="https://img.shields.io/badge/YouTube%20Tutorial-0d1117?style=social&logo=youtube" alt="YouTube"/></a>&nbsp;
   <a href="https://discord.gg/aMhRmzkqCx"><img src="https://img.shields.io/badge/Discord-0d1117?style=social&logo=discord" alt="Discord"/></a>
@@ -139,10 +137,9 @@ Find comprehensive resources at our [official website](https://wrtnlabs.io/agent
 - [Youtube](https://www.youtube.com/@wrtnlabs)
 - [Paper](https://wrtnlabs.io/agentica/paper)
 
-
 https://github.com/user-attachments/assets/2f2a4cdc-6cf1-4304-b82d-04a8ed0be0dd
 
-
+> Tutorial Videos: https://www.youtube.com/@wrtnlabs
 
 ## 🌟 Why Agentica?
 
