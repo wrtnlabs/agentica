@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "packages/*/src/**"
+      - "packages/*/package.json"
       - "website/**"
       - package.json
       - .github/workflows/website.yml
