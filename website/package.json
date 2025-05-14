@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "prebuild": "node build/typedoc && node build/playground",
+    "prebuild": "pnpm --aggregate-output /^prebuild:/",
+    "prebuild:typedoc": "node build/typedoc",
+    "prebuild:playground": "node build/playground",
     "postbuild": "pnpm --aggregate-output /^postbuild:/",
     "postbuild:sitemap": "node build/sitemap",
     "postbuild:pagefind": "pagefind --site .next/server/app --output-path out/_pagefind",
