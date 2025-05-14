@@ -21,6 +21,8 @@ export default defineBuildConfig({
 
       "picocolors",
 
+      "nano-spawn",
+
       // @clack/prompts related
       "sisteransi",
       "@clack/prompts",

@@ -14,7 +14,7 @@ catalogs:
     ts-patch: ^3.3.0
     typescript: ~5.8.3
   typia:
-    "@ryoppippi/unplugin-typia": ^2.2.1
+    "@ryoppippi/unplugin-typia": ^2.6.2
     "@samchon/openapi": ^4.3.0
     typia: ^9.3.0
   vite:

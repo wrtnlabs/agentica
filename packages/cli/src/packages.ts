@@ -39,13 +39,13 @@ interface InstallProps {
 export function installCommand({ packageManager, pkg }: InstallProps) {
   switch (packageManager) {
     case "npm":
-      return `npm install ${pkg ?? ""}`;
+      return `npm install ${pkg ?? ""}`.trim();
     case "yarn":
       return pkg != null ? `yarn add ${pkg}` : "yarn";
     case "pnpm":
-      return `pnpm install ${pkg ?? ""}`;
+      return `pnpm install ${pkg ?? ""}`.trim();
     case "bun":
-      return `bun install ${pkg ?? ""}`;
+      return `bun install ${pkg ?? ""}`.trim();
     default:
       /** exhaustive check */
       packageManager satisfies never;
@@ -60,13 +60,13 @@ export function installCommand({ packageManager, pkg }: InstallProps) {
 export function runCommand({ packageManager, command }: { packageManager: PackageManager; command: string }) {
   switch (packageManager) {
     case "npm":
-      return `npm run ${command}`;
+      return `npm run ${command}`.trim();
     case "yarn":
-      return `yarn ${command}`;
+      return `yarn ${command}`.trim();
     case "pnpm":
-      return `pnpm ${command}`;
+      return `pnpm ${command}`.trim();
     case "bun":
-      return `bun ${command}`;
+      return `bun ${command}`.trim();
     default:
       /** exhaustive check */
       packageManager satisfies never;

@@ -11,6 +11,7 @@ import process from "node:process";
 import type { SimplifyDeep } from "type-fest";
 
 import * as p from "@clack/prompts";
+import spawn, { SubprocessError } from "nano-spawn";
 import * as picocolors from "picocolors";
 import typia from "typia";
 
@@ -20,7 +21,7 @@ import type { PackageManager } from "../packages";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand, runCommand } from "../packages";
-import { execAsync, formatWithPrettier } from "../utils";
+import { formatWithPrettier } from "../utils";
 
 export const START_TEMPLATES = [
   "nodejs",
@@ -70,29 +71,43 @@ interface InstallDependenciesOptions {
 async function installServicesAsDependencies({ packageManager, projectAbsolutePath, services }: InstallDependenciesOptions): Promise<void> {
   /* if no services are selected, undefined is passed to the package manager */
   const pkg = services.length > 0 ? ([...services.map(service => serviceToConnector(service))]).join(" ") : undefined;
-  const command = installCommand({ packageManager, pkg });
+  const [command, ...args] = installCommand({ packageManager, pkg }).split(" ");
 
   const s = p.spinner();
 
   s.start("📦 Package installation in progress...");
 
-  await execAsync(command, {
-    cwd: projectAbsolutePath,
-  });
+  try {
+    await spawn(command, args, { cwd: projectAbsolutePath });
+  }
+  catch (e) {
+    if (e instanceof SubprocessError) {
+      p.log.error(`❌ Package installation failed: ${e.output}`);
+      process.exit(1);
+    }
+    throw e;
+  }
 
   s.stop("✅ Package installation completed");
 }
 
 async function runPrepareCommand({ packageManager, projectAbsolutePath }: Pick<InstallDependenciesOptions, "packageManager" | "projectAbsolutePath">): Promise<void> {
-  const prepareCommand = runCommand({ packageManager, command: "prepare" });
+  const [command, ...args] = runCommand({ packageManager, command: "prepare" }).split(" ");
 
   const s = p.spinner();
 
   s.start("📦 Package installation in progress...");
 
-  await execAsync(prepareCommand, {
-    cwd: projectAbsolutePath,
-  });
+  try {
+    await spawn(command, args, { cwd: projectAbsolutePath });
+  }
+  catch (e) {
+    if (e instanceof SubprocessError) {
+      p.log.error(`❌ Package installation failed: ${e.output}`);
+      process.exit(1);
+    }
+    throw e;
+  }
 
   s.stop("✅ Package installation completed");
 }
