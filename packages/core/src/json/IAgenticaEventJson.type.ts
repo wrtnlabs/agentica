@@ -1,5 +1,5 @@
 import type { AgenticaEvent } from "../events";
-import type { Fail, Pass } from "../utils/types";
+import type { Pass } from "../utils/types";
 
 import { check, checks } from "../utils/types";
 
