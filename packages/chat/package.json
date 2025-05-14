@@ -37,7 +37,7 @@
   "scripts": {
     "build": "pnpm --aggregate-output /^build:/",
     "build:static": "rimraf dist && tsc -b && vite build",
-    "build:lib": "rimraf lib && tsc --project tsconfig.lib.json --emitDeclarationOnly && rollup -c",
+    "build:lib": "rimraf lib && rollup -c",
     "dev": "vite",
     "lint": "eslint .",
     "format": "eslint --fix .",
