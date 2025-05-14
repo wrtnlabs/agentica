@@ -25,10 +25,12 @@ export type IAgenticaEventJson =
   | IAgenticaEventJson.IExecute
   | IAgenticaEventJson.IInitialize
   | IAgenticaEventJson.IRequest
+  | IAgenticaEventJson.IResponse
   | IAgenticaEventJson.ISelect
   | IAgenticaEventJson.IValidate
   | IAgenticaEventJson.IAssistantMessage
   | IAgenticaEventJson.IUserMessage;
+
 export namespace IAgenticaEventJson {
   export type Type = IAgenticaEventJson["type"];
   export interface Mapper {
@@ -41,6 +43,8 @@ export namespace IAgenticaEventJson {
     execute: IExecute;
     describe: IDescribe;
     request: IRequest;
+    response: IResponse;
+    validate: IValidate;
   }
 
   /**
@@ -182,6 +186,26 @@ export namespace IAgenticaEventJson {
      * Request body.
      */
     body: OpenAI.ChatCompletionCreateParamsStreaming;
+
+    /**
+     * Options for the request.
+     */
+    options?: OpenAI.RequestOptions | undefined;
+  }
+
+  /**
+   * Response event of LLM vendor API.
+   */
+  export interface IResponse extends IBase<"response"> {
+    /**
+     * The source agent of the response.
+     */
+    source: AgenticaEventSource;
+
+    /**
+     * Response body.
+     */
+    body: OpenAI.ChatCompletion;
 
     /**
      * Options for the request.
