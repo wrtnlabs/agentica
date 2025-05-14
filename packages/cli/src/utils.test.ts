@@ -25,17 +25,21 @@ describe("insertWithIndent", () => {
 
     const code = `
     if (x) {
-     doSomething();
+      doSomething();
     }
     `;
 
     const result = await insertWithIndent(content, "/// INSERT HERE", code);
     
+    console.log(result);
+
     expect(result).toBe(`
     function foo() {
+      
       if (x) {
         doSomething();
       }
+    
     }
     `);
   });

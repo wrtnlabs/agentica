@@ -45,7 +45,7 @@ export async function formatWithPrettier(content: string) {
 export async function insertWithIndent(
   content: string,
   placeholder: string,
-  code: string
+  code: string,
 ) {
   try {
     const [detectIndent, indentString] = await Promise.all([
@@ -53,8 +53,8 @@ export async function insertWithIndent(
       import("indent-string"),
     ]);
 
-    const indent = detectIndent.default(placeholder).amount;
-    const indentedCode = indentString.default(code, indent);
+    const indent = detectIndent.default(content);
+    const indentedCode = indentString.default(code, indent.amount, { indent: ' '});
 
     return content.replace(placeholder, indentedCode);
   }
