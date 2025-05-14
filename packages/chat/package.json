@@ -35,7 +35,7 @@
     "src"
   ],
   "scripts": {
-    "build": "npm run build:static && npm run build:lib",
+    "build": "pnpm --aggregate-output /^build:/",
     "build:static": "rimraf dist && tsc -b && vite build",
     "build:lib": "rimraf lib && tsc --project tsconfig.lib.json --emitDeclarationOnly && rollup -c",
     "dev": "vite",
