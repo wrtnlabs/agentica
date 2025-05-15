@@ -185,6 +185,202 @@ By the way, as Agentica has resolved the difficulty and instability problems of 
 | Stability   | 🟢 Stable     | ❌ Unstable              | 🟢 Stable                 |
 | Flexibility | ❌ Inflexible | 🟢 Flexible              | 🟢 Flexible               |
 
+## 🙋 Frequently Asked Questions (FAQ)
+
+**General**
+
+### Q: **How do I install Agentica?**
+
+A: Install Agentica using npm:
+
+```
+npm install @agentica/core @samchon/openapi typia
+npx typia setup
+```
+
+For CLI-based project setup:
+
+```
+npx agentica@latest start
+```
+
+### Q: **What’s the quickest way to start with Agentica?**
+
+A: Use the npx agentica@latest start wizard. It lets you pick a package-manager, choose a template and add pre-built controllers in one pass.
+
+### Q: **What types of projects can I create?**
+
+A: 
+- **NodeJS Agent Server**
+- **NestJS Agent Server**
+- **React Client Application**
+- **Standalone Application**
+
+### Q: **Does Agentica depend on other frameworks?**
+
+A: No. Agentica uses **`@samchon/openapi`** for OpenAPI specification handling and **`typia`** for TypeScript type transformation, but it doesn't depend on other agent frameworks. This ensures a lean, fast, and flexible experience. 
+
+### Q: **Is Agentica open-source?**
+
+A: Yes, Agentica is open-source and available under the MIT License. It actively encourages community contributions and collaboration. 
+
+### Q: **Who develops Agentica?**
+
+A: Agentica is proudly developed and maintained by Wrtn Technologies, with the goal of empowering developers to build reliable and structured AI agents effortlessly. 
+
+---
+
+**Features and Capabilities**
+
+### Q: **Can Agentica handle complex use cases?**
+
+A: Yes. Agentica excels at handling complex real-world scenarios, as demonstrated by projects like the shopping backend with 289 API functions. It can manage enterprise-level chatbots and complex workflows without requiring you to create complicated agent graphs. If you'd like to see the scenario in action, you can check it out in the following playground.
+
+https://wrtnlabs.io/agentica/playground/shopping/
+
+### Q: **Can I use Agentica with different AI models?**
+
+A: Yes, Agentica officially supports various language models including:
+
+- OpenAI models (GPT-4o-mini, GPT-4, etc.)
+- Meta's Llama models
+- Anthropic's Claude models
+- Google's Gemini models
+
+Here's a simple example of how to configure Agentica with Meta's Llama model instead of OpenAI:
+
+```
+// Using OpenAI GPT
+const gptAgent = new Agentica({
+  model: "chatgpt",
+  vendor: {
+    model: "gpt-4o-mini",
+    api: new OpenAI({
+      apiKey: "********",
+    }),
+  },
+  controllers: [/* your controllers */]
+});
+
+// Using Meta's Llama
+const llamaAgent = new Agentica({
+  model: "llama",// Specify the model type
+  vendor: {
+    model: "llama-3-70b-instruct",// Specify the specific model
+    api: new OpenAI({// Still uses OpenAI SDK as connection interface
+      apiKey: "********",
+      baseURL: "https://your-llama-api-endpoint",// Point to your Llama API
+    }),
+  },
+  controllers: [/* your controllers */]
+});
+```
+
+When switching models, you need to:
+
+1. Change the **`model`** parameter to match the LLM vendor (e.g., "chatgpt", "llama", "claude", "gemini")
+2. Update the vendor configuration with the appropriate model name
+3. Configure the API connection (may require different baseURL for non-OpenAI models)
+
+Note that different models may have slightly different function calling capabilities and schema requirements, which Agentica handles automatically through its conversion system.
+
+### Q: **What makes Agentica different from other frameworks?**
+
+A: Agentica focuses on four developer-visible advantages you rarely get all at once elsewhere:
+
+1. **Comments → Code, automatically**
+    
+    You document functions or paste an OpenAPI file—Agentica harvests that text at build time and turns it into an LLM tool-catalog. No extra JSON schemas, no “tool” subclasses, no duplicated docs.
+    
+2. **Two-step calls that slash errors**
+    
+    The LLM first *chooses* a function from the catalog, then a second, constrained call *fills the arguments*. Because intent and arguments are separated, hallucinated keys and bloated prompts disappear, cutting debug time and token use.
+    
+3. **Compiler-speed validation**
+    
+    Function payloads are checked by typia—a compile-time code-generator that benchmarks up to 20 000× faster than run-time JSON-Schema validators. Bad data is rejected before it touches your business logic.
+    
+4. **Built-in documentation benchmark**
+    
+    The @agentica/benchmark CLI fires synthetic chats at your agent and flags any case where the LLM picks the wrong tool, letting you fix gaps *before* shipping.
+    
+
+**Why it matters:**
+
+Less boilerplate to write, fewer hallucinations to chase, instant type-safe guards, and a safety net that tells you when your docs aren’t good enough—all without pulling in a heavyweight dependency chain.
+
+### Q: **How does Agentica handle function calling?**
+
+A: Agentica uses a sophisticated orchestration system with multiple steps: initialize, select, call, and describe. This approach significantly improves function calling accuracy through a validation feedback strategy that can increase success rates from approximately 70% on first attempt to nearly 100% after feedback cycles. document-driven-development.
+
+### Q: **Does Agentica support integration with external APIs?**
+
+A: Absolutely! Agentica can integrate with external APIs through multiple types of function controllers:
+
+- HTTP Controllers: Connect to REST APIs using Swagger/OpenAPI documentation
+- Class Controllers: Use TypeScript classes as function sources
+- MCP Controllers: Connect to Model Context Protocol systems
+
+---
+
+**Technical Features**
+
+### Q: **What programming languages does Agentica support?**
+
+A: Agentica is primarily TypeScript/JavaScript-based, designed for Node.js environments (version 18.18.0 or higher). It can be used in both backend and frontend applications. 
+
+### Q: **How does Agentica improve function calling accuracy?**
+
+A: Agentica uses a validation feedback strategy where:
+
+1. The LLM attempts to generate function arguments
+2. Agentica validates the arguments against expected types
+3. If validation fails, detailed error information is sent back to the LLM
+4. The LLM corrects the arguments based on the feedback
+5. The process repeats until valid arguments are produced document-driven-development.
+
+### Q: **Does Agentica support vector databases for semantic search?**
+
+A: Yes, Agentica supports vector databases for semantic search through plugins like **`AgenticaOpenAIVectorStoreSelector`** and **`AgenticaPgVectorSelector`**, enabling document retrieval based on natural language queries. 
+
+### Q: **Can I use Agentica with NestJS or React?**
+
+A: Yes, Agentica provides CLI tools to set up projects with different frameworks including NestJS and React. You can create standalone applications or combined NestJS+React projects. 
+
+### Q: **Does Agentica offer benchmarking tools?**
+
+A: Yes, Agentica provides benchmarking tools through the **`@agentica/benchmark`** module, which helps you test and improve the quality of your AI agents, especially for function selection accuracy. 
+
+### Q: How does Agentica handle Document-Driven Development (DDD)?
+
+A: Agentica treats your JSDoc and schema comments as executable metadata and wires them straight into the runtime:
+
+1. **JSDoc harvesting** – During build, it scans every exported function (or imported Swagger spec), pulls the natural-language description, types, and any @before / @after tags into a JSON manifest.
+2. **Two-phase orchestration** – At run-time the LLM first chooses a function from those purpose lines; a second, constrained call fills in the arguments. Comments stay focused on *what* the function does, not *how* to call it.
+3. **Dependency enforcement** – The scheduler automatically respects @before / @after tags, guaranteeing proper call order.
+4. **Schema-aware hints** – Field-level comments on DTOs become JSON-Schema, so the engine can validate or auto-correct the LLM’s payloads.
+5. **Documentation guardrails** – The @agentica/benchmark CLI fires synthetic chats at the agent and flags any case where the LLM picks the wrong tool.
+6. **Proven scale** – This DDD flow powered an e-commerce agent with **289 API endpoints**, achieving a 100 % correct function-selection rate—no hand-drawn workflows needed.
+
+In short, you evolve an Agentica agent by editing comments; the framework turns those docs into a live, validated tool-catalog for the LLM.
+
+---
+
+**Resources and Community**
+
+### Q: **Where can I find real-world Agentica examples?**
+
+A: You can find examples and tutorials on the Agentica website and GitHub repository. There are demonstrations for various use cases including shopping chatbots, file system operations, Notion integration, and vector store implementations. 
+
+### Q: **How can I contribute to Agentica?**
+
+A: Contributions are warmly welcomed! Check out the CONTRIBUTING.md file in the GitHub repository to get started. You can fork the repository, create your branch, implement your changes, and submit a pull request. 
+
+### Q: **Where can I get help with Agentica?**
+
+A: You can join the Agentica community on Discord for support and discussions. Additionally, comprehensive documentation is available on the [Agentica website](https://wrtnlabs.io/agentica/docs/).
+
+
 ## 💬 Community & Support
 
 For support, questions, or to provide feedback, join our Discord community:
