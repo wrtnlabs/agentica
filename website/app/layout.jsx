@@ -95,6 +95,9 @@ export default async function RootLayout(props) {
           data-light-mode="true"
           id="guru-widget-id"
         /> */}
+        <Script async type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `self.WebAssembly = self.WebAssembly || (await import("https://unpkg.com/polywasm@0.1.4/index.min.js")).WebAssembly`
+        }} />
       </Head>
       <body>
         <Layout
