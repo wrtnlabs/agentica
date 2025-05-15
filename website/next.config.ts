@@ -13,11 +13,4 @@ export default withNextra({
   images: {
     unoptimized: true,
   },
-  webpack: (config) => {
-    config.experiments = {
-      ...config.experiments,
-      asyncWebAssembly: true,
-    };
-    return config;
-  }
 });
