@@ -76,7 +76,7 @@ export interface IMicroAgenticaProps<Model extends ILlmSchema.Model> {
    * You can start token usage tracing by assigning this property.
    *
    * If you assign {@link IAgenticaTokenUsageJson} value, the
-   * token usage tracing would be from the value. Ohterwise you
+   * token usage tracing would be from the value. Otherwise you
    * assign the {@link AgenticaTokenUsage} typed instance, the
    * tracing would be binded to the instance.
    */
