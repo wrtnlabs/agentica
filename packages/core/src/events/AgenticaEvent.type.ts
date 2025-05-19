@@ -7,12 +7,12 @@ import type { AgenticaEvent } from "./AgenticaEvent";
 
 checks([
   check<
-    AgenticaHistory.Type extends AgenticaEvent.Type ? true : false,
+    Exclude<AgenticaHistory.Type, "systemMessage"> extends AgenticaEvent.Type ? true : false,
     true,
     Pass
   >(),
   check<
-    AgenticaHistory.Type extends keyof AgenticaEvent.Mapper<any> ? true : false,
+    Exclude<AgenticaHistory.Type, "systemMessage"> extends keyof AgenticaEvent.Mapper<any> ? true : false,
     true,
     Pass
   >(),
