@@ -1,5 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaTokenUsage } from "../context/AgenticaTokenUsage";
+import type { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
 import type { IMicroAgenticaHistoryJson } from "../json/IMicroAgenticaHistoryJson";
 
 import type { IAgenticaController } from "./IAgenticaController";
@@ -67,4 +69,16 @@ export interface IMicroAgenticaProps<Model extends ILlmSchema.Model> {
    * assign the previouis prompt histories to this property.
    */
   histories?: IMicroAgenticaHistoryJson[];
+
+  /**
+   * Token usage information.
+   *
+   * You can start token usage tracing by assigning this property.
+   *
+   * If you assign {@link IAgenticaTokenUsageJson} value, the
+   * token usage tracing would be from the value. Ohterwise you
+   * assign the {@link AgenticaTokenUsage} typed instance, the
+   * tracing would be binded to the instance.
+   */
+  tokenUsage?: IAgenticaTokenUsageJson | AgenticaTokenUsage | undefined;
 }
