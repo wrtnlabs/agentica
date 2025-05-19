@@ -4,6 +4,7 @@ export * from "./AgenticaDescribeHistory";
 export * from "./AgenticaExecuteHistory";
 export * from "./AgenticaHistory";
 export * from "./AgenticaSelectHistory";
+export * from "./AgenticaSystemMessageHistory";
 export * from "./AgenticaUserMessageHistory";
 export * from "./contents";
 export * from "./MicroAgenticaHistory";

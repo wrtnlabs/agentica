@@ -4,6 +4,7 @@ import type { ILlmSchema } from "@samchon/openapi";
 import { AgenticaChatAssistantMessageMovie } from "./AgenticaChatAssistantMessageMovie";
 import { AgenticaChatDescribeMessageMovie } from "./AgenticaChatDescribeMessageMovie";
 import { AgenticaChatSelectMessageMovie } from "./AgenticaChatSelectMessageMovie";
+import { AgenticaChatSystemMessageMovie } from "./AgenticaChatSystemMessageMovie";
 import { AgenticaChatUserMessageMovie } from "./AgenticaChatUserMessageMovie";
 
 export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
@@ -29,6 +30,10 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
 
   if (prompt.type === "userMessage") {
     return <AgenticaChatUserMessageMovie prompt={prompt} />;
+  }
+
+  if (prompt.type === "systemMessage") {
+    return <AgenticaChatSystemMessageMovie prompt={prompt} />;
   }
 
   prompt satisfies never;
