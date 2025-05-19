@@ -58,8 +58,11 @@ import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamU
 export class MicroAgentica<Model extends ILlmSchema.Model> {
   private readonly operations_: AgenticaOperationCollection<Model>;
   private readonly histories_: MicroAgenticaHistory<Model>[];
-  private readonly listeners_: Map<string, Set<(event: MicroAgenticaEvent<Model>) => Promise<void>>>;
   private readonly token_usage_: AgenticaTokenUsage;
+  private readonly listeners_: Map<
+    string,
+    Set<(event: MicroAgenticaEvent<Model>) => Promise<void>>
+  >;
 
   /* -----------------------------------------------------------
     CONSTRUCTOR
@@ -80,8 +83,12 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
         history: input,
       }),
     ) as MicroAgenticaHistory<Model>[];
+    this.token_usage_ = this.props.tokenUsage !== undefined
+      ? this.props.tokenUsage instanceof AgenticaTokenUsage
+        ? this.props.tokenUsage
+        : new AgenticaTokenUsage(this.props.tokenUsage)
+      : AgenticaTokenUsage.zero();
     this.listeners_ = new Map();
-    this.token_usage_ = AgenticaTokenUsage.zero();
   }
 
   /**

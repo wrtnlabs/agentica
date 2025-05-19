@@ -1,6 +1,10 @@
+import type { CompletionUsage } from "openai/resources";
+
 import typia from "typia";
 
 import type { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
+
+import { AgenticaTokenUsageAggregator } from "./internal/AgenticaTokenUsageAggregator";
 
 export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
   /**
@@ -72,6 +76,17 @@ export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
     increment(this.cancel, y.cancel);
     increment(this.call, y.call);
     increment(this.describe, y.describe);
+  }
+
+  public use(
+    kind: Exclude<keyof IAgenticaTokenUsageJson, "aggregate">,
+    completionUsage: CompletionUsage,
+  ): void {
+    AgenticaTokenUsageAggregator.aggregate({
+      kind,
+      completionUsage,
+      usage: this,
+    });
   }
 
   public toJSON(): IAgenticaTokenUsageJson {

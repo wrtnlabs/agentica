@@ -94,7 +94,11 @@ export class Agentica<Model extends ILlmSchema.Model> {
     );
 
     // STATUS
-    this.token_usage_ = AgenticaTokenUsage.zero();
+    this.token_usage_ = this.props.tokenUsage !== undefined
+      ? this.props.tokenUsage instanceof AgenticaTokenUsage
+        ? this.props.tokenUsage
+        : new AgenticaTokenUsage(this.props.tokenUsage)
+      : AgenticaTokenUsage.zero();
     this.ready_ = false;
     this.executor_
       = typeof props.config?.executor === "function"
