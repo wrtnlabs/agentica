@@ -8,9 +8,10 @@ import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHisto
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
+import type { AgenticaSystemMessageHistory } from "../histories/AgenticaSystemMessageHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
-import { createAssistantMessageHistory, createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createUserMessageHistory } from "../factory/histories";
+import { createAssistantMessageHistory, createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createSystemMessageHistory, createUserMessageHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 
 /**
@@ -29,6 +30,12 @@ export function transformHistory<Model extends ILlmSchema.Model>(props: {
   // ASSISTANT
   else if (props.history.type === "assistantMessage") {
     return transformAssistantMessage({
+      history: props.history,
+    });
+  }
+  // SYSTEM
+  else if (props.history.type === "systemMessage") {
+    return transformSystemMessage({
       history: props.history,
     });
   }
@@ -62,6 +69,12 @@ function transformAssistantMessage(props: {
   history: IAgenticaHistoryJson.IAssistantMessage;
 }): AgenticaAssistantMessageHistory {
   return createAssistantMessageHistory(props.history);
+}
+
+function transformSystemMessage(props: {
+  history: IAgenticaHistoryJson.ISystemMessage;
+}): AgenticaSystemMessageHistory {
+  return createSystemMessageHistory(props.history);
 }
 
 function transformUserMessage(props: {

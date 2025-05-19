@@ -20,27 +20,29 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
  * @author Samchon
  */
 export type IAgenticaHistoryJson =
-  | IAgenticaHistoryJson.IUserMessage
-  | IAgenticaHistoryJson.IAssistantMessage
   | IAgenticaHistoryJson.ISelect
   | IAgenticaHistoryJson.ICancel
   | IAgenticaHistoryJson.IExecute
-  | IAgenticaHistoryJson.IDescribe;
+  | IAgenticaHistoryJson.IDescribe
+  | IAgenticaHistoryJson.IAssistantMessage
+  | IAgenticaHistoryJson.ISystemMessage
+  | IAgenticaHistoryJson.IUserMessage;
 export namespace IAgenticaHistoryJson {
   export type Type = IAgenticaHistoryJson["type"];
   export interface Mapper {
-    userMessage: IUserMessage;
-    assistantMessage: IAssistantMessage;
     select: ISelect;
     cancel: ICancel;
     execute: IExecute;
     describe: IDescribe;
+    assistantMessage: IAssistantMessage;
+    systemMessage: ISystemMessage;
+    userMessage: IUserMessage;
   }
 
   /**
-   * User prompt.
+   * User message.
    *
-   * User prompt about the user's input.
+   * User message about the user's input.
    */
   export interface IUserMessage extends IBase<"userMessage"> {
     /**
@@ -50,7 +52,17 @@ export namespace IAgenticaHistoryJson {
   }
 
   /**
-   * Assistant prompt.
+   * System message.
+   */
+  export interface ISystemMessage extends IBase<"systemMessage"> {
+    /**
+     * The text content.
+     */
+    text: string;
+  }
+
+  /**
+   * Assistant message.
    */
   export interface IAssistantMessage extends IBase<"assistantMessage"> {
     /**

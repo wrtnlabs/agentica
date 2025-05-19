@@ -10,6 +10,7 @@ import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHisto
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
+import type { AgenticaSystemMessageHistory } from "../histories/AgenticaSystemMessageHistory";
 import type { AgenticaUserMessageHistory } from "../histories/AgenticaUserMessageHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
@@ -101,9 +102,17 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
     ];
   }
 
+  if (history.type === "systemMessage") {
+    return [
+      {
+        role: "system",
+        content: history.text,
+      },
+    ];
+  }
+
   if (history.type === "userMessage") {
     const contents = history.contents;
-
     return [
       {
         role: "user",
@@ -192,6 +201,22 @@ export function createAssistantMessageHistory(props: {
 }): AgenticaAssistantMessageHistory {
   const prompt: IAgenticaHistoryJson.IAssistantMessage = {
     type: "assistantMessage",
+    text: props.text,
+  };
+  return {
+    ...prompt,
+    toJSON: () => prompt,
+  };
+}
+
+/**
+ * @internal
+ */
+export function createSystemMessageHistory(props: {
+  text: string;
+}): AgenticaSystemMessageHistory {
+  const prompt: IAgenticaHistoryJson.ISystemMessage = {
+    type: "systemMessage",
     text: props.text,
   };
   return {
