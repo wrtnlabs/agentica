@@ -316,7 +316,6 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
   const check: IValidation<unknown> = props.operation.function.validate(
     props.call.arguments,
   );
-
   if (check.success === false) {
     props.ctx.dispatch(
       createValidateEvent({
@@ -461,54 +460,54 @@ async function correct<Model extends ILlmSchema.Model>(
   // ----
   const completionStream = await ctx.request("call", {
     messages: [
-        // COMMON SYSTEM PROMPT
-        {
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
+      // PREVIOUS HISTORIES
+      ...ctx.histories.map(decodeHistory).flat(),
+      // USER INPUT
+      {
+        role: "user",
+        content: ctx.prompt.contents.map(decodeUserMessageContent),
+      },
+      // TYPE CORRECTION
+      ...(ctx.config?.systemPrompt?.execute === null
+        ? []
+        : [{
           role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
-        // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodeHistory).flat(),
-        // USER INPUT
-        {
-          role: "user",
-          content: ctx.prompt.contents.map(decodeUserMessageContent),
-        },
-        // TYPE CORRECTION
-        ...(ctx.config?.systemPrompt?.execute === null
-          ? []
-          : [{
-            role: "system",
-            content:
-            ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
-            ?? AgenticaSystemPrompt.EXECUTE,
-          } satisfies OpenAI.ChatCompletionSystemMessageParam]
-        ),
-        {
-          role: "assistant",
-          tool_calls: [
-            {
-              type: "function",
-              id: call.id,
-              function: {
-                name: call.operation.name,
-                arguments: JSON.stringify(call.arguments),
-              },
-            } satisfies OpenAI.ChatCompletionMessageToolCall,
-          ],
-        } satisfies OpenAI.ChatCompletionAssistantMessageParam,
-        {
-          role: "tool",
-          content: typeof error === "string" ? error : JSON.stringify(error),
-          tool_call_id: call.id,
-        } satisfies OpenAI.ChatCompletionToolMessageParam,
-        {
-          role: "system",
-          content: [
-            "You A.I. assistant has composed wrong arguments.",
-            "",
-            "Correct it at the next function calling.",
-          ].join("\n"),
-        },
+          content:
+          ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
+          ?? AgenticaSystemPrompt.EXECUTE,
+        } satisfies OpenAI.ChatCompletionSystemMessageParam]
+      ),
+      {
+        role: "assistant",
+        tool_calls: [
+          {
+            type: "function",
+            id: call.id,
+            function: {
+              name: call.operation.name,
+              arguments: JSON.stringify(call.arguments),
+            },
+          } satisfies OpenAI.ChatCompletionMessageToolCall,
+        ],
+      } satisfies OpenAI.ChatCompletionAssistantMessageParam,
+      {
+        role: "tool",
+        content: typeof error === "string" ? error : JSON.stringify(error),
+        tool_call_id: call.id,
+      } satisfies OpenAI.ChatCompletionToolMessageParam,
+      {
+        role: "system",
+        content: [
+          "You A.I. assistant has composed wrong arguments.",
+          "",
+          "Correct it at the next function calling.",
+        ].join("\n"),
+      },
     ],
     // STACK FUNCTIONS
     tools: [
@@ -516,7 +515,6 @@ async function correct<Model extends ILlmSchema.Model>(
         type: "function",
         function: {
           name: call.operation.name,
-
           description: call.operation.function.description,
           /**
            * @TODO fix it
@@ -540,7 +538,12 @@ async function correct<Model extends ILlmSchema.Model>(
         },
       },
     ],
-    tool_choice: "auto",
+    tool_choice: {
+      type: "function",
+      function: {
+        name: call.operation.name,
+      },
+    },
     parallel_tool_calls: false,
   });
 

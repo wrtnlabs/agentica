@@ -36,7 +36,9 @@ interface IFailure {
   validation: IValidation.IFailure;
 }
 
-export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> {
+export async function select<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model>,
+): Promise<AgenticaHistory<Model>[]> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
@@ -97,7 +99,12 @@ export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   return [collection];
 }
 
-async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, operations: AgenticaOperation<Model>[], retry: number, failures?: IFailure[]): Promise<AgenticaHistory<Model>[]> {
+async function step<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model>,
+  operations: AgenticaOperation<Model>[],
+  retry: number,
+  failures?: IFailure[],
+): Promise<AgenticaHistory<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -157,22 +164,26 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         ...emendMessages(failures ?? []),
     ],
     // STACK FUNCTIONS
-    tools: CONTAINER.functions.map(
-      func =>
-          ({
-            type: "function",
-            function: {
-              name: func.name,
-              description: func.description,
-              /**
-               * @TODO fix it
-               * The property and value have a type mismatch, but it works.
-               */
-              parameters: func.parameters as unknown as Record<string, unknown>,
-            },
-          }) satisfies OpenAI.ChatCompletionTool,
-    ),
-    tool_choice: "auto",
+    tools: [{
+      type: "function",
+      function: {
+        name: CONTAINER.functions[0]!.name,
+        description: CONTAINER.functions[0]!.description,
+        /**
+         * @TODO fix it
+         * The property and value have a type mismatch, but it works.
+         */
+        parameters: CONTAINER.functions[0]!.parameters as unknown as Record<string, unknown>,
+      },
+    } satisfies OpenAI.ChatCompletionTool],
+    tool_choice: retry === 0
+      ? "auto"
+      : {
+          type: "function",
+          function: {
+            name: CONTAINER.functions[0]!.name,
+          },
+        },
     parallel_tool_calls: false,
   });
 
