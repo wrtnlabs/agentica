@@ -124,6 +124,10 @@ export namespace IAgenticaController {
   export interface IMcp<Model extends ILlmSchema.Model> extends IBase<"mcp", IMcpLlmApplication<Model>> {
     /**
      * MCP client for connection.
+     *
+     * @warning You have to install `@modelcontextprotocol/sdk` package
+     *          to use this type properly. If not, this type would work
+     *          as an `any` type, so that you can't validate it.
      */
     // @ts-ignore Type checking only when `@modelcontextprotocol/sdk` is installed.
     //            This strategy is useful for someone who does not need MCP,

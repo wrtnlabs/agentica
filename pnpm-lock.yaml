@@ -20,6 +20,9 @@ catalogs:
       specifier: ^0.2.1
       version: 0.2.1
   typescript:
+    ts-node:
+      specifier: ^10.9.2
+      version: 10.9.2
     ts-patch:
       specifier: ^3.3.0
       version: 3.3.0
@@ -31,11 +34,11 @@ catalogs:
       specifier: ^2.6.2
       version: 2.6.2
     '@samchon/openapi':
-      specifier: ^4.3.0
-      version: 4.3.0
+      specifier: ^4.3.1
+      version: 4.3.1
     typia:
-      specifier: ^9.3.0
-      version: 9.3.0
+      specifier: ^9.3.1
+      version: 9.3.1
   vite:
     vitest:
       specifier: ^3.0.9
@@ -89,7 +92,7 @@ importers:
         version: link:../../packages/vector-selector
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
       better-sqlite3:
         specifier: ^11.9.1
         version: 11.9.1
@@ -104,11 +107,11 @@ importers:
         version: 0.1.7-alpha.2
       typia:
         specifier: catalog:typia
-        version: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
     devDependencies:
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.0
+        version: 4.3.1
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -122,7 +125,7 @@ importers:
         specifier: ^4.29.1
         version: 4.39.0
       ts-node:
-        specifier: ^10.9.2
+        specifier: catalog:typescript
         version: 10.9.2(@types/node@22.13.9)(typescript@5.8.3)
       ts-patch:
         specifier: catalog:typescript
@@ -138,7 +141,7 @@ importers:
         version: link:../core
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.0
+        version: 4.3.1
       openai:
         specifier: catalog:libs
         version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
@@ -147,7 +150,7 @@ importers:
         version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
     devDependencies:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
@@ -187,7 +190,7 @@ importers:
         version: 6.4.10(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.0
+        version: 4.3.1
       html-to-image:
         specifier: ^1.11.13
         version: 1.11.13
@@ -208,7 +211,7 @@ importers:
         version: 1.0.2
       typia:
         specifier: catalog:typia
-        version: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
       uuid:
         specifier: ^11.0.5
         version: 11.1.0
@@ -224,10 +227,10 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@ryoppippi/unplugin-typia':
         specifier: catalog:typia
-        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
+        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
       '@types/js-yaml':
         specifier: ^4.0.9
         version: 4.0.9
@@ -293,7 +296,7 @@ importers:
         version: 0.10.0
       '@ryoppippi/unplugin-typia':
         specifier: catalog:typia
-        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))
+        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))
       '@types/node':
         specifier: ^20.14.8
         version: 20.17.30
@@ -319,7 +322,7 @@ importers:
         specifier: ^3.8.1
         version: 3.9.0
       ts-node:
-        specifier: ^10.9.2
+        specifier: catalog:typescript
         version: 10.9.2(@types/node@20.17.30)(typescript@5.8.3)
       ts-patch:
         specifier: catalog:typescript
@@ -332,7 +335,7 @@ importers:
         version: 5.8.3
       typia:
         specifier: catalog:typia
-        version: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
       unbuild:
         specifier: ^3.5.0
         version: 3.5.0(typescript@5.8.3)
@@ -348,10 +351,10 @@ importers:
     dependencies:
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.0
+        version: 4.3.1
       typia:
         specifier: catalog:typia
-        version: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
       uuid:
         specifier: ^11.0.4
         version: 11.1.0
@@ -370,9 +373,9 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@ryoppippi/unplugin-typia':
         specifier: catalog:typia
-        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
+        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
       '@types/node':
-        specifier: ^22.13.4
+        specifier: ^22.13.9
         version: 22.13.9
       '@types/uuid':
         specifier: ^10.0.0
@@ -390,7 +393,7 @@ importers:
         specifier: ^4.34.8
         version: 4.39.0
       ts-node:
-        specifier: ^10.9.2
+        specifier: catalog:typescript
         version: 10.9.2(@types/node@22.13.9)(typescript@5.8.3)
       ts-patch:
         specifier: catalog:typescript
@@ -418,10 +421,10 @@ importers:
         version: link:../core
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.0
+        version: 4.3.1
       typia:
         specifier: catalog:typia
-        version: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
     devDependencies:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
@@ -431,7 +434,7 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
@@ -458,7 +461,7 @@ importers:
         version: 1.8.0
       '@wrtnlabs/connector-hive-api':
         specifier: ^1.5.0
-        version: 1.5.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 1.5.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
       better-sqlite3:
         specifier: ^11.9.1
         version: 11.9.1
@@ -480,7 +483,7 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.0
+        version: 4.3.1
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -528,10 +531,10 @@ importers:
         version: 6.0.1
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.0
+        version: 4.3.1
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
       '@wrtnlabs/calculator-mcp':
         specifier: catalog:mcp
         version: 0.2.1
@@ -555,7 +558,7 @@ importers:
         version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -564,7 +567,7 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       ts-node:
-        specifier: ^10.9.2
+        specifier: catalog:typescript
         version: 10.9.2(@types/node@22.13.9)(typescript@5.8.3)
       ts-patch:
         specifier: catalog:typescript
@@ -2544,8 +2547,8 @@ packages:
       vite:
         optional: true
 
-  '@samchon/openapi@4.3.0':
-    resolution: {integrity: sha512-PdagymZCUCPmhtfriO+6xYRulds2hgo1ec0LduPFEAOWkZ4viM15iRuEa5wkm9DkDRF/oaMiC+dOgXefmOFZAA==}
+  '@samchon/openapi@4.3.1':
+    resolution: {integrity: sha512-oNvCJWRbN+Z+i0H6X4lfDffsJg/gG3MJ0zBVqwOJq1Th24OcqgyWsvoXj4EY4AMYZedgBjyPYYXhs802Zb72Vw==}
 
   '@samchon/shopping-api@0.17.0':
     resolution: {integrity: sha512-aGDCAD9IhXnFKEhxn2qW5W8bu7DPXtDzabuX0I69vnQrrb/c3FVIqQAaF69d+Fd7jxF/iVguouCm4YdvjdmaCg==}
@@ -7654,18 +7657,18 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typia@9.0.1:
-    resolution: {integrity: sha512-ubx0/jugX1PbNT07jpKI/7+eW4RSe3t9QueIqFDza2Dpmfgb3Epa/YY0IDkLWshzXV1/OjBQh8cADM617xDUnw==}
-    hasBin: true
-    peerDependencies:
-      '@samchon/openapi': '>=4.0.0 <5.0.0'
-      typescript: '>=4.8.0 <5.9.0'
-
   typia@9.3.0:
     resolution: {integrity: sha512-srQSYteGIrMiM36y/8MfqrCYA2RWyk4Bb7Xrlk3Ywfpc7AmmzcxwZkPuC4xOkI1IwRfjkhM7k4wviRb6WtW46g==}
     hasBin: true
     peerDependencies:
       '@samchon/openapi': '>=4.3.0 <5.0.0'
+      typescript: '>=4.8.0 <5.9.0'
+
+  typia@9.3.1:
+    resolution: {integrity: sha512-a3rqaWE3j5ynK3nmBPEMngLfVP7FH3OrgC4xO4A4QQdcgdVL/nxTxdEqYuEjRCdcOgZCIqOt3CNoQaorOITArg==}
+    hasBin: true
+    peerDependencies:
+      '@samchon/openapi': '>=4.3.1 <5.0.0'
       typescript: '>=4.8.0 <5.9.0'
 
   uc.micro@2.1.0:
@@ -9609,15 +9612,15 @@ snapshots:
 
   '@nestia/e2e@6.0.1': {}
 
-  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.0)(typia@9.0.1(@samchon/openapi@4.3.0)(typescript@5.8.3))':
+  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.1)(typia@9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3))':
     dependencies:
-      '@samchon/openapi': 4.3.0
-      typia: 9.0.1(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      '@samchon/openapi': 4.3.1
+      typia: 9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
 
-  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.0)(typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3))':
+  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.1)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))':
     dependencies:
-      '@samchon/openapi': 4.3.0
-      typia: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      '@samchon/openapi': 4.3.1
+      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
 
   '@next/env@13.5.11': {}
 
@@ -10161,7 +10164,7 @@ snapshots:
 
   '@rushstack/eslint-patch@1.11.0': {}
 
-  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))':
+  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.39.0)
       consola: 3.4.2
@@ -10173,14 +10176,14 @@ snapshots:
       pkg-types: 2.1.0
       type-fest: 4.39.1
       typescript: 5.8.3
-      typia: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
       unplugin: 2.2.2
     optionalDependencies:
       vite: 5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0)
     transitivePeerDependencies:
       - rollup
 
-  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))':
+  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.39.0)
       consola: 3.4.2
@@ -10192,19 +10195,19 @@ snapshots:
       pkg-types: 2.1.0
       type-fest: 4.39.1
       typescript: 5.8.3
-      typia: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
       unplugin: 2.2.2
     optionalDependencies:
       vite: 5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0)
     transitivePeerDependencies:
       - rollup
 
-  '@samchon/openapi@4.3.0': {}
+  '@samchon/openapi@4.3.1': {}
 
-  '@samchon/shopping-api@0.17.0(@samchon/openapi@4.3.0)(typescript@5.8.3)':
+  '@samchon/shopping-api@0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)':
     dependencies:
-      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.0)(typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3))
-      typia: 9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.1)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))
+      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
       uuid: 11.1.0
     transitivePeerDependencies:
       - '@samchon/openapi'
@@ -11195,11 +11198,11 @@ snapshots:
 
   '@wrtnlabs/calculator-mcp@0.2.1': {}
 
-  '@wrtnlabs/connector-hive-api@1.5.0(@samchon/openapi@4.3.0)(typescript@5.8.3)':
+  '@wrtnlabs/connector-hive-api@1.5.0(@samchon/openapi@4.3.1)(typescript@5.8.3)':
     dependencies:
-      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.0)(typia@9.0.1(@samchon/openapi@4.3.0)(typescript@5.8.3))
+      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.1)(typia@9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3))
       tgrid: 1.1.0
-      typia: 9.0.1(@samchon/openapi@4.3.0)(typescript@5.8.3)
+      typia: 9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
     transitivePeerDependencies:
       - '@samchon/openapi'
       - bufferutil
@@ -16621,9 +16624,10 @@ snapshots:
 
   typescript@5.8.3: {}
 
-  typia@9.0.1(@samchon/openapi@4.3.0)(typescript@5.8.3):
+  typia@9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3):
     dependencies:
-      '@samchon/openapi': 4.3.0
+      '@samchon/openapi': 4.3.1
+      '@standard-schema/spec': 1.0.0
       commander: 10.0.1
       comment-json: 4.2.5
       inquirer: 8.2.6
@@ -16631,9 +16635,9 @@ snapshots:
       randexp: 0.5.3
       typescript: 5.8.3
 
-  typia@9.3.0(@samchon/openapi@4.3.0)(typescript@5.8.3):
+  typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3):
     dependencies:
-      '@samchon/openapi': 4.3.0
+      '@samchon/openapi': 4.3.1
       '@standard-schema/spec': 1.0.0
       commander: 10.0.1
       comment-json: 4.2.5
