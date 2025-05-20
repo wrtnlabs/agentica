@@ -24,10 +24,7 @@ export async function validateMcpController<
   Model extends ILlmSchema.Model,
 >(props: {
   name: string;
-  // @ts-ignore Type checking only when `@modelcontextprotocol/sdk` is installed.
-  //            This strategy is useful for someone who does not need MCP,
-  //            for someone who has not installed `@modelcontextprotocol/sdk`.
-  client: import("@modelcontextprotocol/sdk/client/index.d.ts").Client;
+  client: IAgenticaController.IMcp<Model>["client"];
   model: Model;
   options?: Partial<IMcpLlmApplication.IOptions<Model>>;
 }): Promise<IValidation<IAgenticaController.IMcp<Model>>> {
