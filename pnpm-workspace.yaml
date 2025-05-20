@@ -14,12 +14,13 @@ catalogs:
     "@modelcontextprotocol/sdk": ^1.9.0
     "@wrtnlabs/calculator-mcp": ^0.2.1
   typescript:
+    ts-node: ^10.9.2
     ts-patch: ^3.3.0
     typescript: ~5.8.3
   typia:
     "@ryoppippi/unplugin-typia": ^2.6.2
-    "@samchon/openapi": ^4.3.0
-    typia: ^9.3.0
+    "@samchon/openapi": ^4.3.1
+    typia: ^9.3.1
   vite:
     vitest: ^3.0.9
 onlyBuiltDependencies:

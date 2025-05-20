@@ -23,10 +23,7 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
 export async function assertMcpController<Model extends ILlmSchema.Model>(props: {
   name: string;
   model: Model;
-  // @ts-ignore Type checking only when `@modelcontextprotocol/sdk` is installed.
-  //            This strategy is useful for someone who does not need MCP,
-  //            for someone who has not installed `@modelcontextprotocol/sdk`.
-  client: import("@modelcontextprotocol/sdk/client/index.d.ts").Client;
+  client: IAgenticaController.IMcp<Model>["client"];
   options?: Partial<IMcpLlmApplication.IOptions<Model>>;
 }): Promise<IAgenticaController.IMcp<Model>> {
   // for peerDependencies
