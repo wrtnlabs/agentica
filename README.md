@@ -13,14 +13,20 @@
 
 <!-- Youtube + Discord -->
 <p align="center">
-  <a href="https://www.youtube.com/@wrtnlabs"><img src="https://img.shields.io/badge/YouTube%20Tutorial-0d1117?style=social&logo=youtube" alt="YouTube"/></a>&nbsp;
-  <a href="https://discord.gg/aMhRmzkqCx"><img src="https://img.shields.io/badge/Discord-0d1117?style=social&logo=discord" alt="Discord"/></a>
+  <a href="https://www.youtube.com/@wrtnlabs">
+    <img src="https://img.shields.io/badge/YouTube%20Tutorial-0d1117?style=social&logo=youtube" alt="YouTube"/>
+  </a>
+  &nbsp;
+  <a href="https://discord.gg/aMhRmzkqCx">
+    <img src="https://img.shields.io/badge/Discord-0d1117?style=social&logo=discord" alt="Discord"/>
+  </a>
 </p>
 
 <p align="center">
-  <a href="https://wrtnlabs.io/agentica/images/badges/fund-raising-news-202503.svg">
+  <a href="https://www.bloomberg.com/news/videos/2025-03-31/wtrn-on-series-b-funding-growth-strategy-video">
     <img src="https://wrtnlabs.io/agentica/images/badges/fund-raising-news-202503.svg" />
   </a>
+  &nbsp;&nbsp;
   <a href="https://github.com/wrtnlabs">
     <img src="https://wrtnlabs.io/agentica/images/badges/open-source-mission.svg" />
   </a>
