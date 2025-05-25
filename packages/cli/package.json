@@ -58,6 +58,7 @@
     "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^20.14.8",
     "commander": "^10.0.0",
+    "gunshi": "^0.24.0",
     "memfs": "^4.17.0",
     "msw": "^2.7.3",
     "nano-spawn": "^1.0.1",

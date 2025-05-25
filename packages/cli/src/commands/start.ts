@@ -11,6 +11,7 @@ import process from "node:process";
 import type { SimplifyDeep } from "type-fest";
 
 import * as p from "@clack/prompts";
+import { cli, define } from "gunshi";
 import spawn, { SubprocessError } from "nano-spawn";
 import * as picocolors from "picocolors";
 import typia from "typia";
@@ -533,7 +534,7 @@ export async function setupReactNativeProject({ projectAbsolutePath, context }: 
 /**
  * Start a new project
  */
-export async function start({ template }: StartOptions) {
+async function start({ template }: StartOptions) {
   p.intro("Agentica Start Wizard");
 
   /** context for the start command */
@@ -593,3 +594,19 @@ export async function start({ template }: StartOptions) {
 ⚠️  ${picocolors.yellow("Note:")} Please implement constructor values for each controller generated in index.ts
 `);
 }
+
+export const startCommand = define({
+  name: "start",
+  description: "Start a new Agentica project",
+  args: {
+    project: {
+      type: "enum",
+      choices: START_TEMPLATES,
+      description: "The project type",
+      short: "p",
+    },
+  },
+  async run(ctx) {
+    await start({ template: ctx.values.project });
+  },
+});

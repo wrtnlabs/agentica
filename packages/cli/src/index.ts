@@ -1,47 +1,33 @@
 import process from "node:process";
 
+import type { Args, Command } from "gunshi";
+
 import * as p from "@clack/prompts";
-import { Command, Option } from "commander";
+import { cli, define } from "gunshi";
 import * as picocolors from "picocolors";
 
-import { version } from "../package.json";
-
-import type { StarterTemplate } from "./commands/start";
+import { description, name, version } from "../package.json";
 
 import { start } from "./commands";
-import { START_TEMPLATES } from "./commands/start";
+import { START_TEMPLATES, startCommand } from "./commands/start";
 
-interface CliOptions {
-  project?: StarterTemplate;
-}
+// Create a Map of sub-commands
+const subCommands = new Map<string, Command<Args>>();
+subCommands.set("start", startCommand);
 
-const program = new Command();
+const mainCommand = define({
+  name,
+});
 
-program
-  .version(version);
-
-// TODO: project option should be template
-program
-  .command("start")
-  .description("Start a new project")
-  .addOption(
-    new Option(
-      "-p, --project <project>",
-      "The project type",
-    )
-      .choices(START_TEMPLATES),
-  )
-  .action(async (options: CliOptions) => {
-    p.intro(`🚀 ${picocolors.blueBright("Agentica")} Setup Wizard`);
-
-    await start({ template: options.project });
+async function program() {
+  return cli(process.argv.slice(2), mainCommand, {
+    subCommands,
+    name,
+    version,
+    description,
   });
-
-/**
- * Run the program
- */
-export function run() {
-  program.parse(process.argv);
 }
 
-export { program };
+export async function run() {
+  await program();
+}

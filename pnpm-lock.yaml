@@ -303,6 +303,9 @@ importers:
       commander:
         specifier: ^10.0.0
         version: 10.0.1
+      gunshi:
+        specifier: ^0.24.0
+        version: 0.24.0
       memfs:
         specifier: ^4.17.0
         version: 4.17.0
@@ -3432,6 +3435,10 @@ packages:
   args-tokenizer@0.3.0:
     resolution: {integrity: sha512-xXAd7G2Mll5W8uo37GETpQ2VrE84M181Z7ugHFGQnJZ50M2mbOv0osSZ9VsSgPfJQ+LVG0prSi0th+ELMsno7Q==}
 
+  args-tokens@0.18.0:
+    resolution: {integrity: sha512-jL9s94QUvUBehrX+ptmkgLzvvDGcC62b6ocAv1TU3JKPBEf3OL7qUZI3r6jAI2KF9f6AOuRqwP3+CZBpZBTblA==}
+    engines: {node: '>= 20'}
+
   aria-hidden@1.2.4:
     resolution: {integrity: sha512-y+CcFFwelSXpLZk/7fMB2mUbGtX9lKycf1MWJ7CaTIERyitVlyQx6C+sxcROU2BAJ24OiZyK+8wj2i8AlBoS3A==}
     engines: {node: '>=10'}
@@ -5026,6 +5033,10 @@ packages:
   graphql@16.10.0:
     resolution: {integrity: sha512-AjqGKbDGUFRKIRCP9tCKiIGHyriz2oHEbPIbEtcSLSs4YjReZOIPQQWek4+6hjw62H9QShXHyaGivGiYVLeYFQ==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
+
+  gunshi@0.24.0:
+    resolution: {integrity: sha512-gghYZ1HbTNbId4Uv5GeLtajMPI4DQPQBjjdBzEy7AIvBmQJqnxgKB0CGJXXCcgdKle+JnLH9deqTEz0o17+6sw==}
+    engines: {node: '>= 20'}
 
   hachure-fill@0.5.2:
     resolution: {integrity: sha512-3GKBOn+m2LX9iq+JC1064cSFprJY4jL1jCXTcpnfER5HYE2l/4EfWSGzkPa/ZDBmYI0ZOEj5VHV/eKnPGkHuOg==}
@@ -11296,6 +11307,8 @@ snapshots:
 
   args-tokenizer@0.3.0: {}
 
+  args-tokens@0.18.0: {}
+
   aria-hidden@1.2.4:
     dependencies:
       tslib: 2.8.1
@@ -13283,6 +13296,10 @@ snapshots:
   graphemer@1.4.0: {}
 
   graphql@16.10.0: {}
+
+  gunshi@0.24.0:
+    dependencies:
+      args-tokens: 0.18.0
 
   hachure-fill@0.5.2: {}
 
