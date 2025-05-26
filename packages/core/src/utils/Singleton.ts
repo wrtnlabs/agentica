@@ -5,6 +5,24 @@ const NOT_MOUNTED_YET = {};
 
 /**
  * @internal
+ *
+ * @description
+ * A singleton class that creates a single instance of a class.
+ *
+ * @example
+ * ```ts
+ * const singleton = new Singleton((name: string) => new SomeClass(name));
+ * const instance = singleton.get("test");
+ * ```
+ *
+ * but next case is not work
+ * ```ts
+ * const singleton = new Singleton((name: string) => new SomeClass(name));
+ * const instance = singleton.get("test");
+ * const instance2 = singleton.get("test2");
+ *
+ * expect(instance).toBe(instance2); // true
+ * ```
  */
 export class Singleton<T, Args extends any[] = []> {
   private readonly closure_: (...args: Args) => T;

@@ -3,9 +3,6 @@
  * This file contains tiny utility functions that should not be in rest of the modules.
  */
 
-import { exec } from "node:child_process";
-import { promisify } from "node:util";
-
 /**
  * Convert a string to a capitalized string.
  * @example

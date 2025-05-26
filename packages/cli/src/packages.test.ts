@@ -10,7 +10,7 @@ describe("installCommand", () => {
   it("npm without package", () => {
     const packageManager = "npm";
     const result = installCommand({ packageManager });
-    expect(result).toBe("npm install ");
+    expect(result).toBe("npm install");
   });
 
   it("yarn", () => {
@@ -34,7 +34,7 @@ describe("installCommand", () => {
   it("pnpm without package", () => {
     const packageManager = "pnpm";
     const result = installCommand({ packageManager });
-    expect(result).toBe("pnpm install ");
+    expect(result).toBe("pnpm install");
   });
 
   it("bun", () => {
@@ -46,7 +46,7 @@ describe("installCommand", () => {
   it("bun without package", () => {
     const packageManager = "bun";
     const result = installCommand({ packageManager });
-    expect(result).toBe("bun install ");
+    expect(result).toBe("bun install");
   });
 
   it("unsupported", () => {

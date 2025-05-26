@@ -1,7 +1,8 @@
 import type OpenAI from "openai";
+import type { IValidation } from "typia";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
-import type { AgenticaUserInputHistory } from "../histories/AgenticaUserInputHistory";
+import type { AgenticaUserMessageContent } from "../histories";
 
 import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
@@ -24,27 +25,43 @@ export type IAgenticaEventJson =
   | IAgenticaEventJson.IExecute
   | IAgenticaEventJson.IInitialize
   | IAgenticaEventJson.IRequest
+  | IAgenticaEventJson.IResponse
   | IAgenticaEventJson.ISelect
-  | IAgenticaEventJson.IText
-  | IAgenticaEventJson.IValidate;
+  | IAgenticaEventJson.IValidate
+  | IAgenticaEventJson.IAssistantMessage
+  | IAgenticaEventJson.IUserMessage;
+
 export namespace IAgenticaEventJson {
   export type Type = IAgenticaEventJson["type"];
   export interface Mapper {
+    userMessage: IUserMessage;
+    assistantMessage: IAssistantMessage;
     initialize: IInitialize;
     select: ISelect;
     cancel: ICancel;
     call: ICall;
     execute: IExecute;
     describe: IDescribe;
-    text: IText;
     request: IRequest;
+    response: IResponse;
+    validate: IValidate;
   }
 
   /**
-   * Event of user input.
+   * Event of assistant message.
    */
-  export interface IUserInput extends IBase<"user_input"> {
-    contents: Array<AgenticaUserInputHistory.Contents>;
+  export interface IAssistantMessage extends IBase<"assistantMessage"> {
+    /**
+     * Conversation text.
+     */
+    text: string;
+  }
+
+  /**
+   * Event of user message.
+   */
+  export interface IUserMessage extends IBase<"userMessage"> {
+    contents: Array<AgenticaUserMessageContent>;
   }
 
   /**
@@ -90,7 +107,22 @@ export namespace IAgenticaEventJson {
     arguments: Record<string, any>;
   }
 
-  export interface IValidate extends IBase<"validate"> {}
+  export interface IValidate extends IBase<"validate"> {
+    /**
+     * ID of the tool calling.
+     */
+    id: string;
+
+    /**
+     * Target operation to call.
+     */
+    operation: IAgenticaOperationJson;
+
+    /**
+     * Validation result as a failure.
+     */
+    result: IValidation.IFailure;
+  }
 
   /**
    * Event of function calling execution.
@@ -142,26 +174,6 @@ export namespace IAgenticaEventJson {
   }
 
   /**
-   * Event of text message.
-   */
-  export interface IText extends IBase<"text"> {
-    /**
-     * Role of the orator.
-     */
-    role: "assistant";
-
-    /**
-     * Conversation text.
-     */
-    text: string;
-
-    /**
-     * Whether the streaming is completed or not.
-     */
-    done: boolean;
-  }
-
-  /**
    * Request event of LLM vendor API.
    */
   export interface IRequest extends IBase<"request"> {
@@ -174,6 +186,26 @@ export namespace IAgenticaEventJson {
      * Request body.
      */
     body: OpenAI.ChatCompletionCreateParamsStreaming;
+
+    /**
+     * Options for the request.
+     */
+    options?: OpenAI.RequestOptions | undefined;
+  }
+
+  /**
+   * Response event of LLM vendor API.
+   */
+  export interface IResponse extends IBase<"response"> {
+    /**
+     * The source agent of the response.
+     */
+    source: AgenticaEventSource;
+
+    /**
+     * Response body.
+     */
+    body: OpenAI.ChatCompletion;
 
     /**
      * Options for the request.

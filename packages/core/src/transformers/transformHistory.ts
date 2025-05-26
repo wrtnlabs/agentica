@@ -1,24 +1,41 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaUserMessageHistory } from "../histories";
+import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
+import type { AgenticaSystemMessageHistory } from "../histories/AgenticaSystemMessageHistory";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
-import { createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createTextHistory } from "../factory/histories";
+import { createAssistantMessageHistory, createCancelHistory, createDescribeHistory, createExecuteHistory, createSelectHistory, createSystemMessageHistory, createUserMessageHistory } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 
-function transform<Model extends ILlmSchema.Model>(props: {
+/**
+ * @internal
+ */
+export function transformHistory<Model extends ILlmSchema.Model>(props: {
   operations: Map<string, Map<string, AgenticaOperation<Model>>>;
   history: IAgenticaHistoryJson;
 }): AgenticaHistory<Model> {
-  // TEXT
-  if (props.history.type === "text") {
-    return transformText({
+  // USER
+  if (props.history.type === "userMessage") {
+    return transformUserMessage({
+      history: props.history,
+    });
+  }
+  // ASSISTANT
+  else if (props.history.type === "assistantMessage") {
+    return transformAssistantMessage({
+      history: props.history,
+    });
+  }
+  // SYSTEM
+  else if (props.history.type === "systemMessage") {
+    return transformSystemMessage({
       history: props.history,
     });
   }
@@ -42,19 +59,28 @@ function transform<Model extends ILlmSchema.Model>(props: {
       history: props.history,
     });
   }
-  else if (props.history.type === "describe") {
-    return transformDescribe({
-      operations: props.operations,
-      history: props.history,
-    });
-  }
-  throw new Error("Invalid prompt type.");
+  return transformDescribe({
+    operations: props.operations,
+    history: props.history,
+  });
 }
 
-function transformText(props: {
-  history: IAgenticaHistoryJson.IText;
-}): AgenticaTextHistory {
-  return createTextHistory(props.history);
+function transformAssistantMessage(props: {
+  history: IAgenticaHistoryJson.IAssistantMessage;
+}): AgenticaAssistantMessageHistory {
+  return createAssistantMessageHistory(props.history);
+}
+
+function transformSystemMessage(props: {
+  history: IAgenticaHistoryJson.ISystemMessage;
+}): AgenticaSystemMessageHistory {
+  return createSystemMessageHistory(props.history);
+}
+
+function transformUserMessage(props: {
+  history: IAgenticaHistoryJson.IUserMessage;
+}): AgenticaUserMessageHistory {
+  return createUserMessageHistory(props.history);
 }
 
 function transformSelect<Model extends ILlmSchema.Model>(props: {
@@ -146,12 +172,3 @@ function findOperation<Model extends ILlmSchema.Model>(props: {
   }
   return found;
 }
-
-export const AgenticaHistoryTransformer = {
-  transform,
-  transformText,
-  transformSelect,
-  transformCancel,
-  transformExecute,
-  transformDescribe,
-};

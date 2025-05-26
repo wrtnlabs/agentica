@@ -18,6 +18,8 @@ import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
  * @author Samchon
  */
 export type IMicroAgenticaHistoryJson =
-  | IAgenticaHistoryJson.IText
   | IAgenticaHistoryJson.IExecute
-  | IAgenticaHistoryJson.IDescribe;
+  | IAgenticaHistoryJson.IDescribe
+  | IAgenticaHistoryJson.IAssistantMessage
+  | IAgenticaHistoryJson.ISystemMessage
+  | IAgenticaHistoryJson.IUserMessage;

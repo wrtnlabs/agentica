@@ -4,6 +4,8 @@ import * as p from "@clack/prompts";
 import { Command, Option } from "commander";
 import * as picocolors from "picocolors";
 
+import { version } from "../package.json";
+
 import type { StarterTemplate } from "./commands/start";
 
 import { start } from "./commands";
@@ -13,16 +15,10 @@ interface CliOptions {
   project?: StarterTemplate;
 }
 
-/**
- * The version of the Agentica CLI
- * in production, it will be replaced by unbuild
- */
-const VERSION = process.env.AGENTICA_VERSION ?? "0.0.0";
-
 const program = new Command();
 
 program
-  .version(VERSION);
+  .version(version);
 
 // TODO: project option should be template
 program

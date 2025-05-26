@@ -17,18 +17,18 @@ import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
-import type { AgenticaTextHistory } from "../histories/AgenticaTextHistory";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
-import { createCallEvent, createExecuteEvent, createTextEvent, createValidateEvent } from "../factory/events";
-import { createCancelHistory, createExecuteHistory, createTextHistory, decodeHistory } from "../factory/histories";
+import { creatAssistantEvent, createCallEvent, createExecuteEvent, createValidateEvent } from "../factory/events";
+import { createAssistantMessageHistory, createCancelHistory, createExecuteHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -54,7 +54,7 @@ export async function call<Model extends ILlmSchema.Model>(
       // USER INPUT
       {
         role: "user",
-        content: ctx.prompt.contents,
+        content: ctx.prompt.contents.map(decodeUserMessageContent),
       },
       // SYSTEM PROMPT
       ...(ctx.config?.systemPrompt?.execute === null
@@ -104,7 +104,7 @@ export async function call<Model extends ILlmSchema.Model>(
       Array<
         | AgenticaExecuteHistory<Model>
         | AgenticaCancelHistory<Model>
-        | AgenticaTextHistory
+        | AgenticaAssistantMessageHistory
       >
     >
   > = [];
@@ -181,11 +181,11 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
-        const value: AgenticaTextHistory = createTextHistory(
+        const value: AgenticaAssistantMessageHistory = createAssistantMessageHistory(
           { text: choice.message.content! },
         );
         ctx.dispatch(
-          createTextEvent({
+          creatAssistantEvent({
             get: () => value.text,
             done: () => true,
             stream: toAsyncGenerator(value.text),
@@ -316,7 +316,6 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
   const check: IValidation<unknown> = props.operation.function.validate(
     props.call.arguments,
   );
-
   if (check.success === false) {
     props.ctx.dispatch(
       createValidateEvent({
@@ -461,54 +460,54 @@ async function correct<Model extends ILlmSchema.Model>(
   // ----
   const completionStream = await ctx.request("call", {
     messages: [
-        // COMMON SYSTEM PROMPT
-        {
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
+      // PREVIOUS HISTORIES
+      ...ctx.histories.map(decodeHistory).flat(),
+      // USER INPUT
+      {
+        role: "user",
+        content: ctx.prompt.contents.map(decodeUserMessageContent),
+      },
+      // TYPE CORRECTION
+      ...(ctx.config?.systemPrompt?.execute === null
+        ? []
+        : [{
           role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
-        // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodeHistory).flat(),
-        // USER INPUT
-        {
-          role: "user",
-          content: ctx.prompt.contents,
-        },
-        // TYPE CORRECTION
-        ...(ctx.config?.systemPrompt?.execute === null
-          ? []
-          : [{
-            role: "system",
-            content:
-            ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
-            ?? AgenticaSystemPrompt.EXECUTE,
-          } satisfies OpenAI.ChatCompletionSystemMessageParam]
-        ),
-        {
-          role: "assistant",
-          tool_calls: [
-            {
-              type: "function",
-              id: call.id,
-              function: {
-                name: call.operation.name,
-                arguments: JSON.stringify(call.arguments),
-              },
-            } satisfies OpenAI.ChatCompletionMessageToolCall,
-          ],
-        } satisfies OpenAI.ChatCompletionAssistantMessageParam,
-        {
-          role: "tool",
-          content: typeof error === "string" ? error : JSON.stringify(error),
-          tool_call_id: call.id,
-        } satisfies OpenAI.ChatCompletionToolMessageParam,
-        {
-          role: "system",
-          content: [
-            "You A.I. assistant has composed wrong arguments.",
-            "",
-            "Correct it at the next function calling.",
-          ].join("\n"),
-        },
+          content:
+          ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
+          ?? AgenticaSystemPrompt.EXECUTE,
+        } satisfies OpenAI.ChatCompletionSystemMessageParam]
+      ),
+      {
+        role: "assistant",
+        tool_calls: [
+          {
+            type: "function",
+            id: call.id,
+            function: {
+              name: call.operation.name,
+              arguments: JSON.stringify(call.arguments),
+            },
+          } satisfies OpenAI.ChatCompletionMessageToolCall,
+        ],
+      } satisfies OpenAI.ChatCompletionAssistantMessageParam,
+      {
+        role: "tool",
+        content: typeof error === "string" ? error : JSON.stringify(error),
+        tool_call_id: call.id,
+      } satisfies OpenAI.ChatCompletionToolMessageParam,
+      {
+        role: "system",
+        content: [
+          "You A.I. assistant has composed wrong arguments.",
+          "",
+          "Correct it at the next function calling.",
+        ].join("\n"),
+      },
     ],
     // STACK FUNCTIONS
     tools: [
@@ -516,7 +515,6 @@ async function correct<Model extends ILlmSchema.Model>(
         type: "function",
         function: {
           name: call.operation.name,
-
           description: call.operation.function.description,
           /**
            * @TODO fix it
@@ -540,7 +538,12 @@ async function correct<Model extends ILlmSchema.Model>(
         },
       },
     ],
-    tool_choice: "auto",
+    tool_choice: {
+      type: "function",
+      function: {
+        name: call.operation.name,
+      },
+    },
     parallel_tool_calls: false,
   });
 

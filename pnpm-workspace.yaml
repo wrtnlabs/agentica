@@ -3,18 +3,24 @@ packages:
   - benchmark/*
   - test
   - website
+enablePrePostScripts: true
+useNodeVersion: 22.15.0
+engineStrict: true
 catalogs:
   libs:
-    "@modelcontextprotocol/sdk": ^1.9.0
     openai: ^4.80.0
     type-fest: ^4.37.0
+  mcp:
+    "@modelcontextprotocol/sdk": ^1.9.0
+    "@wrtnlabs/calculator-mcp": ^0.2.1
   typescript:
+    ts-node: ^10.9.2
     ts-patch: ^3.3.0
     typescript: ~5.8.3
   typia:
-    "@ryoppippi/unplugin-typia": ^2.2.1
-    "@samchon/openapi": ^4.2.0
-    typia: ^9.0.1
+    "@ryoppippi/unplugin-typia": ^2.6.2
+    "@samchon/openapi": ^4.3.1
+    typia: ^9.3.1
   vite:
     vitest: ^3.0.9
 onlyBuiltDependencies:

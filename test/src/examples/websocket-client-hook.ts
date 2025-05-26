@@ -16,8 +16,9 @@ async function main() {
     IAgenticaRpcListener,
     IAgenticaRpcService<"llama">
   > = new WebSocketConnector(null, {
-    text: async (evt) => {
-      console.log(evt.role, evt.text);
+    userMessage: async () => {},
+    assistantMessage: async (evt) => {
+      console.log("assistant", evt.text);
     },
     describe: async (evt) => {
       console.log("describer", evt.text);

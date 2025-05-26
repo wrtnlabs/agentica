@@ -6,8 +6,9 @@ import type { AgenticaOperationCollection } from "./context/AgenticaOperationCol
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
+import type { AgenticaUserMessageContent } from "./histories";
 import type { AgenticaHistory } from "./histories/AgenticaHistory";
-import type { AgenticaUserInputHistory } from "./histories/AgenticaUserInputHistory";
+import type { AgenticaUserMessageHistory } from "./histories/AgenticaUserMessageHistory";
 import type { IAgenticaConfig } from "./structures/IAgenticaConfig";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaProps } from "./structures/IAgenticaProps";
@@ -16,10 +17,10 @@ import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createUserInputHistory } from "./factory";
-import { createInitializeEvent, createRequestEvent, createUserInputEvent } from "./factory/events";
+import { createUserMessageHistory } from "./factory";
+import { createInitializeEvent, createRequestEvent, createUserMessageEvent } from "./factory/events";
 import { execute } from "./orchestrate/execute";
-import { AgenticaHistoryTransformer } from "./transformers/AgenticaHistoryTransformer";
+import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
@@ -86,14 +87,18 @@ export class Agentica<Model extends ILlmSchema.Model> {
     this.stack_ = [];
     this.listeners_ = new Map();
     this.histories_ = (props.histories ?? []).map(input =>
-      AgenticaHistoryTransformer.transform({
+      transformHistory({
         operations: this.operations_.group,
         history: input,
       }),
     );
 
     // STATUS
-    this.token_usage_ = AgenticaTokenUsage.zero();
+    this.token_usage_ = this.props.tokenUsage !== undefined
+      ? this.props.tokenUsage instanceof AgenticaTokenUsage
+        ? this.props.tokenUsage
+        : new AgenticaTokenUsage(this.props.tokenUsage)
+      : AgenticaTokenUsage.zero();
     this.ready_ = false;
     this.executor_
       = typeof props.config?.executor === "function"
@@ -130,12 +135,12 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @returns List of newly created chat prompts
    */
   public async conversate(
-    content: string | AgenticaUserInputHistory.Contents | Array<AgenticaUserInputHistory.Contents>,
+    content: string | AgenticaUserMessageContent | Array<AgenticaUserMessageContent>,
     options: {
       abortSignal?: AbortSignal;
     } = {},
   ): Promise<AgenticaHistory<Model>[]> {
-    const prompt: AgenticaUserInputHistory = createUserInputHistory({
+    const prompt: AgenticaUserMessageHistory = createUserMessageHistory({
       contents: Array.isArray(content)
         ? content
         : typeof content === "string"
@@ -147,7 +152,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     });
 
     this.dispatch(
-      createUserInputEvent({
+      createUserMessageEvent({
         contents: prompt.contents,
       }),
     ).catch(() => {});
@@ -226,7 +231,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * @internal
    */
   public getContext(props: {
-    prompt: AgenticaUserInputHistory;
+    prompt: AgenticaUserMessageHistory;
     usage: AgenticaTokenUsage;
     abortSignal?: AbortSignal;
   }): AgenticaContext<Model> {

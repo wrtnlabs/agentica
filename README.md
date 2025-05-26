@@ -1,15 +1,21 @@
 # Agentica, AI Function Calling Framework
 
-<!-- https://github.com/user-attachments/assets/5326cc59-5129-470d-abcb-c3f458b5c488 -->
+![Agentica - ReadMe Diagram](https://github.com/user-attachments/assets/ecd06d51-b818-41c8-ab31-f0e40f48034e)
 
-![Logo](https://wrtnlabs.io/agentica/og.jpg?refresh)
+<!-- Github/NPM Badges -->
+<p align="center">
+  <a href="https://github.com/wrtnlabs/agentica/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/></a>
+  <a href="https://www.npmjs.com/package/@agentica/core"><img src="https://img.shields.io/npm/v/@agentica/core.svg" alt="NPM Version"/></a>
+  <a href="https://www.npmjs.com/package/@agentica/core"><img src="https://img.shields.io/npm/dm/@agentica/core.svg" alt="NPM Downloads"/></a>
+  <a href="https://dormoshe.io/newsletters/373"><img src="https://img.shields.io/badge/DorMoshe%20Newsletter-Top%20%236%20of%201K-orange?style=flat&logo=rss" alt="Newsletter Top #6"/></a>
+ <a href="https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild"><img src="https://github.com/wrtnlabs/agentica/workflows/build/badge.svg" alt="Build Status"/></a>
+</p>
 
-[![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wrtnlabs/agentica/blob/master/LICENSE)
-[![NPM Version](https://img.shields.io/npm/v/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
-[![NPM Downloads](https://img.shields.io/npm/dm/@agentica/core.svg)](https://www.npmjs.com/package/@agentica/core)
-[![Build Status](https://github.com/wrtnlabs/agentica/workflows/build/badge.svg)](https://github.com/wrtnlabs/agentica/actions?query=workflow%3Abuild)
-[![Guide Documents](https://img.shields.io/badge/Guide-Documents-forestgreen)](https://wrtnlabs.io/agentica/)
-[![Discord Badge](https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx?style=flat)](https://discord.gg/aMhRmzkqCx)
+<!-- Youtube + Discord -->
+<p align="center">
+  <a href="https://www.youtube.com/@wrtnlabs"><img src="https://img.shields.io/badge/YouTube%20Tutorial-0d1117?style=social&logo=youtube" alt="YouTube"/></a>&nbsp;
+  <a href="https://discord.gg/aMhRmzkqCx"><img src="https://img.shields.io/badge/Discord-0d1117?style=social&logo=discord" alt="Discord"/></a>
+</p>
 
 Agentic AI framework specialized in AI Function Calling.
 
@@ -26,6 +32,7 @@ Are you a TypeScript developer? Then you're already an AI developer. Familiar wi
 <!-- eslint-skip -->
 
 ```typescript
+
 import { Agentica, assertHttpController } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
@@ -39,12 +46,10 @@ const agent = new Agentica({
   },
   controllers: [
     // functions from TypeScript class
-    {
-      protocol: "class",
-      name: "filesystem",
-      application: typia.llm.application<MobileFileSystem, "chatgpt">(),
-      execute: new MobileFileSystem(),
-    },
+    typia.llm.controller<MobileFileSystem, "chatgpt">(
+      "filesystem",
+      MobileFileSystem(),
+    ),
     // functions from Swagger/OpenAPI
     assertHttpController({
       name: "shopping",
@@ -60,6 +65,7 @@ const agent = new Agentica({
   ],
 });
 await agent.conversate("I wanna buy MacBook Pro");
+
 ```
 
 ## 📦 Setup
@@ -102,8 +108,10 @@ Experience Agentica firsthand through our [interactive playground](https://wrtnl
 Our demonstrations showcase the power and simplicity of Agentica's function calling capabilities across different integration methods.
 
 - [TypeScript Class](https://wrtnlabs.io/agentica/playground/bbs)
-- [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/swagger)
+- [Swagger/OpenAPI Document](https://wrtnlabs.io/agentica/playground/uploader)
 - [Enterprise E-commerce Agent](https://wrtnlabs.io/agentica/playground/shopping)
+
+![E-commerce Agent Demo](https://github.com/user-attachments/assets/fbfa9f93-304c-4728-933e-deb8ecd7a2af)
 
 <!--
 @todo this section would be changed after making tutorial playground
@@ -115,10 +123,23 @@ Find comprehensive resources at our [official website](https://wrtnlabs.io/agent
 
 - [Home](https://wrtnlabs.io/agentica)
 - [Guide Documents](https://wrtnlabs.io/agentica/docs)
+  - [Setup](https://wrtnlabs.io/agentica/docs/setup/cli/)
+  - [Concepts](https://wrtnlabs.io/agentica/docs/concepts/function-calling/)
+  - [Core Library](https://wrtnlabs.io/agentica/docs/core/)
+  - [WebSocket Protocol](https://wrtnlabs.io/agentica/docs/websocket/)
+  - [Plugin Modules](https://wrtnlabs.io/agentica/docs/plugins/benchmark/)
 - [Tutorial](https://wrtnlabs.io/agentica/tutorial)
+  - [Productivity](https://wrtnlabs.io/agentica/tutorial/productivity/arxiv/)
+  - [Coding](https://wrtnlabs.io/agentica/tutorial/coding/file-system/)
+  - [React Native](https://wrtnlabs.io/agentica/tutorial/react-native/sms/)
+  - [Enterprise](https://wrtnlabs.io/agentica/tutorial/enterprise/shopping/)
 - [API Documents](https://wrtnlabs.io/agentica/api)
 - [Youtube](https://www.youtube.com/@wrtnlabs)
 - [Paper](https://wrtnlabs.io/agentica/paper)
+
+https://github.com/user-attachments/assets/2f2a4cdc-6cf1-4304-b82d-04a8ed0be0dd
+
+> Tutorial Videos: https://www.youtube.com/@wrtnlabs
 
 ## 🌟 Why Agentica?
 
@@ -154,6 +175,7 @@ Agentica enhances AI function calling by the following strategies:
 Thanks to these innovations, Agentica makes AI function calling easier, safer, and more accurate than before. Development becomes more intuitive since you only need to prepare functions relevant to your specific use case, and scaling your agent's capabilities is as simple as adding or removing functions.
 
 In 2023, when OpenAI announced function calling, many predicted that function calling-driven AI development would become the mainstream. However, in reality, due to the difficulty and instability of function calling, the trend in AI development became agent workflow. Agent workflow, which is inflexible and must be created for specific purposes, has conquered the AI agent ecosystem.
+
 By the way, as Agentica has resolved the difficulty and instability problems of function calling, the time has come to embrace function-driven AI development once again.
 
 | Type        | Workflow      | Vanilla Function Calling | Agentica Function Calling |
@@ -162,3 +184,20 @@ By the way, as Agentica has resolved the difficulty and instability problems of 
 | Difficulty  | ❌ Difficult  | ❌ Difficult             | 🟢 Easy                   |
 | Stability   | 🟢 Stable     | ❌ Unstable              | 🟢 Stable                 |
 | Flexibility | ❌ Inflexible | 🟢 Flexible              | 🟢 Flexible               |
+
+## 💬 Community & Support
+
+For support, questions, or to provide feedback, join our Discord community:
+
+[![Discord](https://dcbadge.limes.pink/api/server/https://discord.gg/aMhRmzkqCx)](https://discord.gg/aMhRmzkqCx)
+
+## ⚖️ License
+
+Agentica is open-source and available under the [MIT License](https://github.com/wrtnlabs/agentica/blob/master/LICENSE).
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ecd0b82e-bfb7-4eb5-ae97-75be0cb22f10" alt="Wrtn Labs Logo" />
+</p>
+<div align="center">
+  Agentica is maintained by <a href="https://wrtnlabs.io">Wrtn Technologies</a> &mdash; Empowering developers to transform TypeScript functions and OpenAPI specs into powerful AI agents.
+</div>

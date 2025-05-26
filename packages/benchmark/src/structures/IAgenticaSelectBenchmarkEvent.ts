@@ -5,8 +5,8 @@
  * @author Wrtn Technologies
  */
 import type {
+  AgenticaAssistantMessageHistory,
   AgenticaOperationSelection,
-  AgenticaTextHistory,
   AgenticaTokenUsage,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
@@ -61,7 +61,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaTextHistory[];
+    assistantPrompts: AgenticaAssistantMessageHistory[];
   }
 
   /**
@@ -85,7 +85,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Prompt messages from the assistant.
      */
-    assistantPrompts: AgenticaTextHistory[];
+    assistantPrompts: AgenticaAssistantMessageHistory[];
   }
 
   /**

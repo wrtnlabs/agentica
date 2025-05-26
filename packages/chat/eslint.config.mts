@@ -5,5 +5,6 @@ export default wrtnlabs({
   rules: {
     "no-alert": "off",
     "no-console": "off",
+    "ts/no-unsafe-member-access": "off",
   }
 });

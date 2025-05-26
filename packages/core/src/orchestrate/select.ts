@@ -17,8 +17,8 @@ import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createTextEvent } from "../factory/events";
-import { createSelectHistory, createTextHistory, decodeHistory } from "../factory/histories";
+import { creatAssistantEvent } from "../factory/events";
+import { createAssistantMessageHistory, createSelectHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -36,7 +36,9 @@ interface IFailure {
   validation: IValidation.IFailure;
 }
 
-export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> {
+export async function select<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model>,
+): Promise<AgenticaHistory<Model>[]> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
@@ -97,7 +99,12 @@ export async function select<Model extends ILlmSchema.Model>(ctx: AgenticaContex
   return [collection];
 }
 
-async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>, operations: AgenticaOperation<Model>[], retry: number, failures?: IFailure[]): Promise<AgenticaHistory<Model>[]> {
+async function step<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model>,
+  operations: AgenticaOperation<Model>[],
+  retry: number,
+  failures?: IFailure[],
+): Promise<AgenticaHistory<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -144,7 +151,7 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         // USER INPUT
         {
           role: "user",
-          content: ctx.prompt.contents,
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
         // SYSTEM PROMPT
         {
@@ -157,22 +164,26 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
         ...emendMessages(failures ?? []),
     ],
     // STACK FUNCTIONS
-    tools: CONTAINER.functions.map(
-      func =>
-          ({
-            type: "function",
-            function: {
-              name: func.name,
-              description: func.description,
-              /**
-               * @TODO fix it
-               * The property and value have a type mismatch, but it works.
-               */
-              parameters: func.parameters as unknown as Record<string, unknown>,
-            },
-          }) satisfies OpenAI.ChatCompletionTool,
-    ),
-    tool_choice: "auto",
+    tools: [{
+      type: "function",
+      function: {
+        name: CONTAINER.functions[0]!.name,
+        description: CONTAINER.functions[0]!.description,
+        /**
+         * @TODO fix it
+         * The property and value have a type mismatch, but it works.
+         */
+        parameters: CONTAINER.functions[0]!.parameters as unknown as Record<string, unknown>,
+      },
+    } satisfies OpenAI.ChatCompletionTool],
+    tool_choice: retry === 0
+      ? "auto"
+      : {
+          type: "function",
+          function: {
+            name: CONTAINER.functions[0]!.name,
+          },
+        },
     parallel_tool_calls: false,
   });
 
@@ -259,11 +270,11 @@ async function step<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>,
       && choice.message.content != null
       && choice.message.content.length !== 0
     ) {
-      const text = createTextHistory({ text: choice.message.content });
+      const text = createAssistantMessageHistory({ text: choice.message.content });
       prompts.push(text);
 
       ctx.dispatch(
-        createTextEvent({
+        creatAssistantEvent({
           stream: toAsyncGenerator(text.text),
           join: async () => Promise.resolve(text.text),
           done: () => true,

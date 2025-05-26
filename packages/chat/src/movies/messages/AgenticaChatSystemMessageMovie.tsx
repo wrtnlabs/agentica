@@ -1,13 +1,13 @@
-import type { AgenticaTextHistory } from "@agentica/core";
+import type { AgenticaSystemMessageHistory } from "@agentica/core";
 
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Card, CardContent, Chip } from "@mui/material";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export function AgenticaChatTextMessageMovie({
+export function AgenticaChatSystemMessageMovie({
   prompt,
-}: AgenticaChatTextMessageMovie.IProps) {
+}: AgenticaChatSystemMessageMovie.IProps) {
   return (
     <div
       style={{
@@ -27,7 +27,7 @@ export function AgenticaChatTextMessageMovie({
         <CardContent>
           <Chip
             icon={<SmartToyIcon />}
-            label="Assistant"
+            label="System"
             variant="outlined"
             color="success"
           />
@@ -37,8 +37,8 @@ export function AgenticaChatTextMessageMovie({
     </div>
   );
 }
-export namespace AgenticaChatTextMessageMovie {
+export namespace AgenticaChatSystemMessageMovie {
   export interface IProps {
-    prompt: AgenticaTextHistory;
+    prompt: AgenticaSystemMessageHistory;
   }
 }
