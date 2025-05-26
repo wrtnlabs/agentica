@@ -1,4 +1,4 @@
-import { capitalize, insertWithIndent, formatWithPrettier } from "./utils";
+import { capitalize, formatWithPrettier, insertWithIndent } from "./utils";
 
 describe("capitalize", () => {
   it("should return a string with the first letter capitalized", () => {
@@ -30,8 +30,6 @@ describe("insertWithIndent", () => {
     `;
 
     const result = await insertWithIndent(content, "/// INSERT HERE", code);
-    
-    console.log(result);
 
     expect(result).toBe(`
     function foo() {

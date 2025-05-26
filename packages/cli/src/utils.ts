@@ -51,7 +51,7 @@ export async function insertWithIndent(
     ]);
 
     const indent = detectIndent.default(content);
-    const indentedCode = indentString.default(code, indent.amount, { indent: ' '});
+    const indentedCode = indentString.default(code, indent.amount, { indent: " " });
 
     return content.replace(placeholder, indentedCode);
   }
