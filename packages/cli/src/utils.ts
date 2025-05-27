@@ -2,6 +2,8 @@
  * @module
  * This file contains tiny utility functions that should not be in rest of the modules.
  */
+import detectIndent from "detect-indent";
+import indentString from "indent-string";
 
 /**
  * Convert a string to a capitalized string.
@@ -39,20 +41,14 @@ export async function formatWithPrettier(content: string) {
  * If indent-string & detect-indent is not installed,
  * it returns the content as is.
  */
-export async function insertWithIndent(
+export function insertWithIndent(
   content: string,
   placeholder: string,
   code: string,
-) {
+): string {
   try {
-    const [detectIndent, indentString] = await Promise.all([
-      import("detect-indent"),
-      import("indent-string"),
-    ]);
-
-    const indent = detectIndent.default(content);
-    const indentedCode = indentString.default(code, indent.amount, { indent: " " });
-
+    const indent = detectIndent(content);
+    const indentedCode = indentString(code, indent.amount, { indent: " " });
     return content.replace(placeholder, indentedCode);
   }
   catch {
