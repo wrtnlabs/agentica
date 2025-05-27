@@ -5,12 +5,13 @@ import typia from "typia";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
+import type { AgenticaAssistantMessageEvent } from "../events";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { creatAssistantEvent } from "../factory/events";
-import { createAssistantMessageHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { creatAssistantMessageEvent } from "../factory/events";
+import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
@@ -21,30 +22,32 @@ const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
 >().functions[0]!;
 
 export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> {
+  const prompts: AgenticaHistory<Model>[] = [];
+
   // ----
   // EXECUTE CHATGPT API
   // ----
   const completionStream = await ctx.request("initialize", {
     messages: [
-        // COMMON SYSTEM PROMPT
-        {
-          role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
-        // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodeHistory).flat(),
-        // USER INPUT
-        {
-          role: "user",
-          content: ctx.prompt.contents.map(decodeUserMessageContent),
-        },
-        {
-          // SYSTEM PROMPT
-          role: "system",
-          content:
-            ctx.config?.systemPrompt?.initialize?.(ctx.histories)
-            ?? AgenticaSystemPrompt.INITIALIZE,
-        },
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
+      // PREVIOUS HISTORIES
+      ...ctx.histories.map(decodeHistory).flat(),
+      // USER INPUT
+      {
+        role: "user",
+        content: ctx.prompt.contents.map(decodeUserMessageContent),
+      },
+      {
+        // SYSTEM PROMPT
+        role: "system",
+        content:
+          ctx.config?.systemPrompt?.initialize?.(ctx.histories)
+          ?? AgenticaSystemPrompt.INITIALIZE,
+      },
     ],
     // GETTER FUNCTION
     tools: [
@@ -106,17 +109,17 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         };
         mpsc.produce(choice.delta.content);
 
-        ctx.dispatch(
-          creatAssistantEvent({
-            stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
-            done: () => mpsc.done(),
-            get: () => textContext[choice.index]!.content,
-            join: async () => {
-              await mpsc.waitClosed();
-              return textContext[choice.index]!.content;
-            },
-          }),
-        ).catch(() => {});
+        const event: AgenticaAssistantMessageEvent = creatAssistantMessageEvent({
+          stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
+          done: () => mpsc.done(),
+          get: () => textContext[choice.index]!.content,
+          join: async () => {
+            await mpsc.waitClosed();
+            return textContext[choice.index]!.content;
+          },
+        });
+        ctx.dispatch(event).catch(() => {});
+        prompts.push(event.toHistory());
       }
     };
 
@@ -136,18 +139,6 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
   // ----
   // PROCESS COMPLETION
   // ----
-  const prompts: AgenticaHistory<Model>[] = [];
-  for (const choice of completion.choices) {
-    if (
-      choice.message.role === "assistant"
-      && choice.message.content != null
-      && choice.message.content.length !== 0
-    ) {
-      prompts.push(
-        createAssistantMessageHistory({ text: choice.message.content }),
-      );
-    }
-  }
   if (
     completion.choices.some(
       c =>
@@ -158,6 +149,5 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         ),
     )
   ) { await ctx.initialize(); }
-
   return prompts;
 }

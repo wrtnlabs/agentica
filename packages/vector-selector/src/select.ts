@@ -1,4 +1,4 @@
-import type { AgenticaContext, AgenticaOperationSelection, AgenticaSelectHistory } from "@agentica/core";
+import type { AgenticaAssistantMessageEvent, AgenticaContext, AgenticaOperationSelection, AgenticaSelectHistory } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import { factory, utils } from "@agentica/core";
@@ -82,8 +82,15 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   if (toolCalls.length === 0) {
     return selectCompletion.choices.flatMap((v) => {
       if (v.message.content != null && v.message.content !== "") {
+        const event: AgenticaAssistantMessageEvent = factory.creatAssistantMessageEvent({
+          stream: utils.toAsyncGenerator(v.message.content),
+          done: () => true,
+          get: () => v.message.content as string,
+          join: async () => (v.message.content as string),
+        });
+        ctx.dispatch(event).catch(() => {});
         return [
-          factory.createAssistantMessageHistory({ text: v.message.content }),
+          event.toHistory(),
         ];
       }
       return [];
@@ -148,13 +155,16 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   const prompts: AgenticaSelectHistory<SchemaModel>[] = [];
   toolCalls.forEach((v) => {
     v.message.tool_calls!.forEach((tc) => {
+      const created_at: string = new Date().toISOString();
       const collection: AgenticaSelectHistory<SchemaModel> = {
         type: "select",
         id: tc.id,
+        created_at,
         selections: [],
         toJSON: () => ({
           type: "select",
           id: tc.id,
+          created_at,
           selections: collection.selections.map(s => s.toJSON()),
         }),
       };

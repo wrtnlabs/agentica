@@ -8,6 +8,5 @@ import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
 export interface AgenticaSelectHistory<
   Model extends ILlmSchema.Model,
 > extends AgenticaHistoryBase<"select", IAgenticaHistoryJson.ISelect> {
-  id: string;
   selections: AgenticaOperationSelection<Model>[];
 }

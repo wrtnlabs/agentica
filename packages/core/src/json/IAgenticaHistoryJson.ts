@@ -1,3 +1,5 @@
+import type { tags } from "typia";
+
 import type { AgenticaUserMessageContent } from "../histories";
 
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
@@ -153,8 +155,18 @@ export namespace IAgenticaHistoryJson {
 
   interface IBase<Type extends string> {
     /**
+     * Primary key of the history.
+     */
+    id: string;
+
+    /**
      * Discriminator type.
      */
     type: Type;
+
+    /**
+     * Creation timestamp of the history.
+     */
+    created_at: string & tags.Format<"date-time">;
   }
 }

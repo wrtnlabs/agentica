@@ -82,6 +82,7 @@ export async function cancel<Model extends ILlmSchema.Model>(
   // RE-COLLECT SELECT FUNCTION EVENTS
   const collection: AgenticaCancelHistory<Model> = createCancelHistory({
     id: v4(),
+    created_at: new Date().toISOString(),
     selections: [],
   });
   for (const e of events) {
@@ -240,6 +241,7 @@ async function step<Model extends ILlmSchema.Model>(
 
         const collection: AgenticaCancelHistory<Model> = createCancelHistory({
           id: tc.id,
+          created_at: new Date().toISOString(),
           selections: [],
         });
 

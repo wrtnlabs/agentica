@@ -1,9 +1,12 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import { v4 } from "uuid";
+
 import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
+import type { AgenticaUserMessageEvent } from "./events";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { AgenticaUserMessageContent } from "./histories";
@@ -17,7 +20,6 @@ import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createUserMessageHistory } from "./factory";
 import { createInitializeEvent, createRequestEvent, createUserMessageEvent } from "./factory/events";
 import { execute } from "./orchestrate/execute";
 import { transformHistory } from "./transformers/transformHistory";
@@ -140,7 +142,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       abortSignal?: AbortSignal;
     } = {},
   ): Promise<AgenticaHistory<Model>[]> {
-    const prompt: AgenticaUserMessageHistory = createUserMessageHistory({
+    const event: AgenticaUserMessageEvent = createUserMessageEvent({
       contents: Array.isArray(content)
         ? content
         : typeof content === "string"
@@ -150,13 +152,11 @@ export class Agentica<Model extends ILlmSchema.Model> {
             }]
           : [content],
     });
-
     this.dispatch(
-      createUserMessageEvent({
-        contents: prompt.contents,
-      }),
+      event,
     ).catch(() => {});
 
+    const prompt: AgenticaUserMessageHistory = event.toHistory();
     const newbie: AgenticaHistory<Model>[] = await this.executor_(
       this.getContext({
         prompt,
@@ -302,6 +302,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
 
         const [streamForStream, streamForJoin] = streamForEvent.tee();
         await dispatch({
+          id: v4(),
           type: "response",
           source,
           stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
@@ -311,6 +312,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
             const chunks = await StreamUtil.readAll(streamForJoin);
             return ChatGptCompletionMessageUtil.merge(chunks);
           },
+          created_at: new Date().toISOString(),
         });
 
         return streamForReturn;

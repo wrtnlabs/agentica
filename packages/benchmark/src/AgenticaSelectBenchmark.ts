@@ -15,6 +15,7 @@ import type { tags } from "typia";
  */
 import { AgenticaTokenUsage, factory, orchestrate } from "@agentica/core";
 import { Semaphore } from "tstl";
+import { v4 } from "uuid";
 
 import type { IAgenticaSelectBenchmarkEvent } from "./structures/IAgenticaSelectBenchmarkEvent";
 import type { IAgenticaSelectBenchmarkResult } from "./structures/IAgenticaSelectBenchmarkResult";
@@ -154,6 +155,8 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
       const context = this.agent_.getContext({
         prompt: factory.createUserMessageHistory({
+          id: v4(),
+          created_at: started_at.toISOString(),
           contents: [{
             type: "text",
             text: scenario.text,

@@ -16,6 +16,7 @@ import {
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
+import type { AgenticaAssistantMessageEvent } from "../events";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
@@ -27,8 +28,8 @@ import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
-import { creatAssistantEvent, createCallEvent, createExecuteEvent, createValidateEvent } from "../factory/events";
-import { createAssistantMessageHistory, createCancelHistory, createExecuteHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { creatAssistantMessageEvent, createCallEvent, createExecuteEvent, createValidateEvent } from "../factory/events";
+import { createCancelHistory, createExecuteHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -181,18 +182,15 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content.length !== 0
     ) {
       closures.push(async () => {
-        const value: AgenticaAssistantMessageHistory = createAssistantMessageHistory(
-          { text: choice.message.content! },
-        );
-        ctx.dispatch(
-          creatAssistantEvent({
-            get: () => value.text,
-            done: () => true,
-            stream: toAsyncGenerator(value.text),
-            join: async () => Promise.resolve(value.text),
-          }),
-        ).catch(() => {});
-        return [value];
+        const text: string = choice.message.content!;
+        const event: AgenticaAssistantMessageEvent = creatAssistantMessageEvent({
+          get: () => text,
+          done: () => true,
+          stream: toAsyncGenerator(text),
+          join: async () => Promise.resolve(text),
+        });
+        ctx.dispatch(event).catch(() => {});
+        return [event.toHistory()];
       });
     }
   }

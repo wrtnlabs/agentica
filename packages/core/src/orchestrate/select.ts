@@ -17,8 +17,8 @@ import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { creatAssistantEvent } from "../factory/events";
-import { createAssistantMessageHistory, createSelectHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { creatAssistantMessageEvent } from "../factory/events";
+import { createSelectHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -85,6 +85,7 @@ export async function select<Model extends ILlmSchema.Model>(
   // RE-COLLECT SELECT FUNCTION EVENTS
   const collection: AgenticaSelectHistory<Model> = createSelectHistory({
     id: v4(),
+    created_at: new Date().toISOString(),
     selections: [],
   });
   for (const e of events) {
@@ -110,58 +111,58 @@ async function step<Model extends ILlmSchema.Model>(
   // ----
   const completionStream = await ctx.request("select", {
     messages: [
-        // COMMON SYSTEM PROMPT
-        {
-          role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
-        // CANDIDATE FUNCTIONS
-        {
-          role: "assistant",
-          tool_calls: [
-            {
-              type: "function",
-              id: "getApiFunctions",
-              function: {
-                name: "getApiFunctions",
-                arguments: JSON.stringify({}),
-              },
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
+      // CANDIDATE FUNCTIONS
+      {
+        role: "assistant",
+        tool_calls: [
+          {
+            type: "function",
+            id: "getApiFunctions",
+            function: {
+              name: "getApiFunctions",
+              arguments: JSON.stringify({}),
             },
-          ],
-        },
-        {
-          role: "tool",
-          tool_call_id: "getApiFunctions",
-          content: JSON.stringify(
-            operations.map(op => ({
-              name: op.name,
-              description: op.function.description,
-              ...(op.protocol === "http"
-                ? {
-                    method: op.function.method,
-                    path: op.function.path,
-                    tags: op.function.tags,
-                  }
-                : {}),
-            })),
-          ),
-        },
-        // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodeHistory).flat(),
-        // USER INPUT
-        {
-          role: "user",
-          content: ctx.prompt.contents.map(decodeUserMessageContent),
-        },
-        // SYSTEM PROMPT
-        {
-          role: "system",
-          content:
-            ctx.config?.systemPrompt?.select?.(ctx.histories)
-            ?? AgenticaSystemPrompt.SELECT,
-        },
-        // TYPE CORRECTIONS
-        ...emendMessages(failures ?? []),
+          },
+        ],
+      },
+      {
+        role: "tool",
+        tool_call_id: "getApiFunctions",
+        content: JSON.stringify(
+          operations.map(op => ({
+            name: op.name,
+            description: op.function.description,
+            ...(op.protocol === "http"
+              ? {
+                  method: op.function.method,
+                  path: op.function.path,
+                  tags: op.function.tags,
+                }
+              : {}),
+          })),
+        ),
+      },
+      // PREVIOUS HISTORIES
+      ...ctx.histories.map(decodeHistory).flat(),
+      // USER INPUT
+      {
+        role: "user",
+        content: ctx.prompt.contents.map(decodeUserMessageContent),
+      },
+      // SYSTEM PROMPT
+      {
+        role: "system",
+        content:
+          ctx.config?.systemPrompt?.select?.(ctx.histories)
+          ?? AgenticaSystemPrompt.SELECT,
+      },
+      // TYPE CORRECTIONS
+      ...emendMessages(failures ?? []),
     ],
     // STACK FUNCTIONS
     tools: [{
@@ -232,20 +233,19 @@ async function step<Model extends ILlmSchema.Model>(
           continue;
         }
         const input = typia.json.isParse<__IChatFunctionReference.IProps>(tc.function.arguments);
-
         if (input === null) {
           continue;
         }
 
         const collection: AgenticaSelectHistory<Model>
-              = createSelectHistory({
-                id: tc.id,
-                selections: [],
-              });
+          = createSelectHistory({
+            id: tc.id,
+            selections: [],
+            created_at: new Date().toISOString(),
+          });
         for (const reference of input.functions) {
           const operation: AgenticaOperation<Model> | null
-                = await selectFunction(ctx, reference);
-
+            = await selectFunction(ctx, reference);
           if (operation === null) {
             continue;
           }
@@ -270,20 +270,16 @@ async function step<Model extends ILlmSchema.Model>(
       && choice.message.content != null
       && choice.message.content.length !== 0
     ) {
-      const text = createAssistantMessageHistory({ text: choice.message.content });
-      prompts.push(text);
-
-      ctx.dispatch(
-        creatAssistantEvent({
-          stream: toAsyncGenerator(text.text),
-          join: async () => Promise.resolve(text.text),
-          done: () => true,
-          get: () => text.text,
-        }),
-      ).catch(() => {});
+      const event = creatAssistantMessageEvent({
+        stream: toAsyncGenerator(choice.message.content),
+        join: async () => Promise.resolve(choice.message.content!),
+        done: () => true,
+        get: () => choice.message.content!,
+      });
+      ctx.dispatch(event).catch(() => {});
+      prompts.push(event.toHistory());
     }
   }
-
   return prompts;
 }
 
