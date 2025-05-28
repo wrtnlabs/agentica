@@ -1,6 +1,5 @@
 import type { ILlmSchema, IValidation } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { tags } from "typia";
 
 import { v4 } from "uuid";
 
@@ -136,31 +135,35 @@ export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
-  id: string;
   operation: AgenticaOperation<Model>;
   arguments: Record<string, unknown>;
   value: unknown;
-  created_at: string & tags.Format<"date-time">;
 }): AgenticaExecuteEvent<Model> {
+  const id: string = v4();
+  const created_at: string = new Date().toISOString();
   return {
     type: "execute",
+    id,
+    created_at,
     protocol: props.operation.protocol as "class",
-    id: props.id,
     operation: props.operation as AgenticaOperation.Class<Model>,
     arguments: props.arguments,
     value: props.value as any,
-    created_at: props.created_at,
     toJSON: () => ({
       type: "execute",
+      id,
+      created_at,
       protocol: props.operation.protocol as "class",
-      id: props.id,
       operation: props.operation.toJSON(),
       arguments: props.arguments,
       value: props.value,
-      created_at: props.created_at,
     }),
     toHistory: () =>
-      createExecuteHistory(props) as AgenticaExecuteHistory.Class<Model>,
+      createExecuteHistory({
+        id,
+        created_at,
+        ...props,
+      }) as AgenticaExecuteHistory.Class<Model>,
   };
 }
 

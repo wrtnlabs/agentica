@@ -18,9 +18,6 @@ import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaAssistantMessageEvent, AgenticaExecuteEvent } from "../events";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
-import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
-import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
-import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
@@ -28,8 +25,7 @@ import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { creatAssistantMessageEvent, createCallEvent, createExecuteEvent, createValidateEvent } from "../factory/events";
-import { createCancelHistory, createExecuteHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
-import { createOperationSelection } from "../factory/operations";
+import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
@@ -99,18 +95,9 @@ export async function call<Model extends ILlmSchema.Model>(
   // ----
   // PROCESS COMPLETION
   // ----
-  const closures: Array<
-    () => Promise<
-      Array<
-        | AgenticaExecuteHistory<Model>
-        | AgenticaCancelHistory<Model>
-        | AgenticaAssistantMessageHistory
-      >
-    >
-  > = [];
-
   const chunks = await StreamUtil.readAll(completionStream);
   const completion = ChatGptCompletionMessageUtil.merge(chunks);
+  const executes: AgenticaExecuteEvent<Model>[] = [];
 
   for (const choice of completion.choices) {
     for (const tc of choice.message.tool_calls ?? []) {
@@ -120,59 +107,34 @@ export async function call<Model extends ILlmSchema.Model>(
         if (operation === undefined) {
           continue;
         }
-        closures.push(
-          async (): Promise<
-            Array<AgenticaExecuteHistory<Model> | AgenticaCancelHistory<Model>>
-          > => {
-            const call: AgenticaCallEvent<Model> = createCallEvent({
-              id: tc.id,
-              operation,
-              // @TODO add type assertion!
-              arguments: JSON.parse(tc.function.arguments) as Record<string, unknown>,
-            });
-            if (call.operation.protocol === "http") {
-              fillHttpArguments({
-                operation: call.operation,
-                arguments: call.arguments,
-              });
-            }
-            await ctx.dispatch(call);
+        const call: AgenticaCallEvent<Model> = createCallEvent({
+          id: tc.id,
+          operation,
+          // @TODO add type assertion!
+          arguments: JSON.parse(tc.function.arguments) as Record<string, unknown>,
+        });
+        if (call.operation.protocol === "http") {
+          fillHttpArguments({
+            operation: call.operation,
+            arguments: call.arguments,
+          });
+        }
+        ctx.dispatch(call);
 
-            const execute: AgenticaExecuteHistory<Model> = await propagate(
-              ctx,
-              call,
-              0,
-            );
-            ctx.dispatch(
-              createExecuteEvent({
-                id: call.id,
-                operation: call.operation,
-                arguments: execute.arguments,
-                value: execute.value,
-              }),
-            ).catch(() => {});
-
-            if (isAgenticaContext(ctx)) {
-              cancelFunctionFromContext(ctx, {
-                name: call.operation.name,
-                reason: "completed",
-              });
-              return [
-                execute,
-                createCancelHistory({
-                  id: call.id,
-                  selections: [
-                    createOperationSelection({
-                      operation: call.operation,
-                      reason: "complete",
-                    }),
-                  ],
-                }),
-              ];
-            }
-            return [execute];
-          },
+        const exec: AgenticaExecuteEvent<Model> = await propagate(
+          ctx,
+          call,
+          0,
         );
+        ctx.dispatch(exec);
+        executes.push(exec);
+
+        if (isAgenticaContext(ctx)) {
+          cancelFunctionFromContext(ctx, {
+            name: call.operation.name,
+            reason: "completed",
+          });
+        }
       }
     }
     if (
@@ -180,27 +142,24 @@ export async function call<Model extends ILlmSchema.Model>(
       && choice.message.content != null
       && choice.message.content.length !== 0
     ) {
-      closures.push(async () => {
-        const text: string = choice.message.content!;
-        const event: AgenticaAssistantMessageEvent = creatAssistantMessageEvent({
-          get: () => text,
-          done: () => true,
-          stream: toAsyncGenerator(text),
-          join: async () => Promise.resolve(text),
-        });
-        ctx.dispatch(event).catch(() => {});
-        return [event.toHistory()];
+      const text: string = choice.message.content;
+      const event: AgenticaAssistantMessageEvent = creatAssistantMessageEvent({
+        get: () => text,
+        done: () => true,
+        stream: toAsyncGenerator(text),
+        join: async () => Promise.resolve(text),
       });
+      ctx.dispatch(event);
     }
   }
-  return (await Promise.all(closures.map(async fn => fn()))).flat();
+  return executes;
 }
 
 async function propagate<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   call: AgenticaCallEvent<Model>,
   retry: number,
-): Promise<AgenticaExecuteHistory<Model>> {
+): Promise<AgenticaExecuteEvent<Model>> {
   switch (call.operation.protocol) {
     case "http": {
       return propagateHttp({ ctx, operation: call.operation, call, retry });
@@ -270,9 +229,8 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
       (success === false
         ? await correct(props.ctx, props.call, props.retry, response.body)
         : null)
-      ?? createExecuteHistory({
+      ?? createExecuteEvent({
         operation: props.call.operation,
-        id: props.call.id,
         arguments: props.call.arguments,
         value: response,
       })
@@ -280,9 +238,8 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
   }
   catch (error) {
     // DISPATCH ERROR
-    return createExecuteHistory({
+    return createExecuteEvent({
       operation: props.call.operation,
-      id: props.call.id,
       arguments: props.call.arguments,
       value: {
         status: 500,
@@ -305,7 +262,7 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
   operation: AgenticaOperation.Class<Model>;
   call: AgenticaCallEvent<Model>;
   retry: number;
-}): Promise<AgenticaExecuteHistory<Model>> {
+}): Promise<AgenticaExecuteEvent<Model>> {
 // ----
   // CLASS FUNCTION
   // ----
@@ -320,13 +277,12 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
         operation: props.call.operation,
         result: check,
       }),
-    ).catch(() => {});
+    );
     return (
       (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)
         ? await correct(props.ctx, props.call, props.retry, check.errors)
         : null)
-      ?? createExecuteHistory({
-        id: props.call.id,
+      ?? createExecuteEvent({
         operation: props.call.operation,
         arguments: props.call.arguments,
         value: {
@@ -340,16 +296,14 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
   // EXECUTE FUNCTION
   try {
     const value = await executeClassOperation(props.operation, props.call.arguments);
-    return createExecuteHistory({
-      id: props.call.id,
+    return createExecuteEvent({
       operation: props.call.operation,
       arguments: props.call.arguments,
       value,
     });
   }
   catch (error) {
-    return createExecuteHistory({
-      id: props.call.id,
+    return createExecuteEvent({
       operation: props.call.operation,
       arguments: props.call.arguments,
       value:
@@ -369,23 +323,21 @@ async function propagateMcp<Model extends ILlmSchema.Model>(props: {
   operation: AgenticaOperation.Mcp<Model>;
   call: AgenticaCallEvent<Model>;
   retry: number;
-}): Promise<AgenticaExecuteHistory<Model>> {
+}): Promise<AgenticaExecuteEvent<Model>> {
   // ----
   // MCP PROTOCOL
   // ----
   // @TODO: implement argument validation logic
   try {
     const value = await executeMcpOperation(props.operation, props.call.arguments);
-    return createExecuteHistory({
-      id: props.call.id,
+    return createExecuteEvent({
       operation: props.call.operation,
       arguments: props.call.arguments,
       value,
     });
   }
   catch (error) {
-    return createExecuteHistory({
-      id: props.call.id,
+    return createExecuteEvent({
       operation: props.call.operation,
       arguments: props.call.arguments,
       value:
@@ -451,7 +403,7 @@ async function correct<Model extends ILlmSchema.Model>(
   call: AgenticaCallEvent<Model>,
   retry: number,
   error: unknown,
-): Promise<AgenticaExecuteHistory<Model> | null> {
+): Promise<AgenticaExecuteEvent<Model> | null> {
   // ----
   // EXECUTE CHATGPT API
   // ----

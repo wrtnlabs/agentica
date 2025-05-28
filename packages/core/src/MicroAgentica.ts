@@ -235,7 +235,6 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     usage: AgenticaTokenUsage;
     dispatch: (event: MicroAgenticaEvent<Model>) => void;
   }): MicroAgenticaContext<Model> {
-    const dispatch = this.dispatch.bind(this);
     return {
       operations: this.operations_,
       config: this.props.config,
@@ -257,7 +256,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
           },
           options: this.props.vendor.options,
         });
-        await dispatch(event);
+        props.dispatch(event);
 
         // completion
         const completion = await this.props.vendor.api.chat.completions.create(
@@ -291,7 +290,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
         })();
 
         const [streamForStream, streamForJoin] = streamForEvent.tee();
-        await dispatch({
+        props.dispatch({
           id: v4(),
           type: "response",
           source,
@@ -304,7 +303,6 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
           },
           created_at: new Date().toISOString(),
         });
-
         return streamForReturn;
       },
     };

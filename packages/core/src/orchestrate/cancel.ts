@@ -48,7 +48,10 @@ export async function cancel<Model extends ILlmSchema.Model>(
         {
           ...ctx,
           stack: stacks[i]!,
-          dispatch: e => events.push(e),
+          dispatch: (e) => {
+            events.push(e);
+            return e;
+          },
         },
         operations,
         0,
