@@ -87,7 +87,6 @@ async function createMockMcpController(name: string, functions: IMcpLlmFunction<
 
 describe("a AgenticaOperationComposer", () => {
   beforeAll(async () => {
-    // eslint-disable-next-line ts/no-unsafe-call
     const server = await createServer({
       name: "calculator",
       version: "1.0.0",
@@ -97,7 +96,7 @@ describe("a AgenticaOperationComposer", () => {
 
     await Promise.all([
       client.connect(clientTransport),
-      // eslint-disable-next-line ts/no-unsafe-call
+
       server.connect(serverTransport),
     ]);
   });
