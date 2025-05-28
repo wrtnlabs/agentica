@@ -19,7 +19,7 @@ export function selectFunctionFromContext<
   reference: __IChatFunctionReference,
 ): void {
   const operation: AgenticaOperation<Model> | undefined
-      = ctx.operations.flat.get(reference.name);
+    = ctx.operations.flat.get(reference.name);
   if (operation === undefined) {
     return;
   }
@@ -29,6 +29,8 @@ export function selectFunctionFromContext<
       operation,
       reason: reference.reason,
     });
+  ctx.stack.push(selection);
+
   const event: AgenticaSelectEvent<Model> = createSelectEvent({
     selection,
   });

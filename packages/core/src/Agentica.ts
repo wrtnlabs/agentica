@@ -140,18 +140,18 @@ export class Agentica<Model extends ILlmSchema.Model> {
       abortSignal?: AbortSignal;
     } = {},
   ): Promise<AgenticaHistory<Model>[]> {
-    const histories: Array<() => Promise<AgenticaHistory<Model>>> = [];
+    const historyGetters: Array<() => Promise<AgenticaHistory<Model>>> = [];
     const dispatch = (event: AgenticaEvent<Model>): void => {
       this.dispatch(event).catch(() => {});
       if ("toHistory" in event) {
         if ("join" in event) {
-          histories.push(async () => {
+          historyGetters.push(async () => {
             await event.join();
             return event.toHistory();
           });
         }
         else {
-          histories.push(async () => event.toHistory());
+          historyGetters.push(async () => event.toHistory());
         }
       }
     };
@@ -178,7 +178,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     );
 
     const completed: AgenticaHistory<Model>[] = await Promise.all(
-      histories.map(async h => h()),
+      historyGetters.map(async h => h()),
     );
     this.histories_.push(...completed);
     return completed;

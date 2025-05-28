@@ -163,9 +163,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         operations: agent
           .getHistories()
           .filter(p => p.type === "select")
-          .map(p => p.selections)
-          .flat()
-          .map(p => p.operation),
+          .map(p => p.selection.operation),
         strict: false,
       });
       const call = success();

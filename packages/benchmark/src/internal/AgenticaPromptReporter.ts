@@ -25,21 +25,13 @@ function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): st
   if (p.type === "select" || p.type === "cancel") {
     return [
       `### ${p.type === "select" ? "Select" : "Cancel"}`,
-      ...p.selections
-        .flatMap((s) => {
-          const functionDescriptionCount = s.operation.function.description?.length ?? 0;
-
-          return [
-            `#### ${s.operation.name}`,
-            `  - controller: ${s.operation.controller.name}`,
-            `  - function: ${s.operation.function.name}`,
-            `  - reason: ${s.reason}`,
-            "",
-            ...(functionDescriptionCount > 0
-              ? [s.operation.function.description, ""]
-              : []),
-          ];
-        }),
+      `  - controller: ${p.selection.operation.controller.name}`,
+      `  - function: ${p.selection.operation.function.name}`,
+      `  - reason: ${p.selection.reason}`,
+      "",
+      ...((p.selection.operation.function.description?.length ?? 0) !== 0
+        ? [p.selection.operation.function.description, ""]
+        : []),
     ].join("\n");
   }
 
