@@ -4,7 +4,6 @@ import type OpenAI from "openai";
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaDescribeEvent } from "../events";
-import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
@@ -18,9 +17,9 @@ import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/Stream
 export async function describe<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   histories: AgenticaExecuteHistory<Model>[],
-): Promise<AgenticaDescribeHistory<Model>[]> {
+): Promise<void> {
   if (histories.length === 0) {
-    return [];
+    return;
   }
 
   const completionStream = await ctx.request("describe", {
@@ -47,8 +46,7 @@ export async function describe<Model extends ILlmSchema.Model>(
     mpsc: MPSC<string>;
   })[] = [];
 
-  const entireEvents: AgenticaDescribeEvent<Model>[] = [];
-  const completion = await StreamUtil.reduce<
+  await StreamUtil.reduce<
     OpenAI.ChatCompletionChunk,
     Promise<OpenAI.ChatCompletion>
   >(completionStream, async (accPromise, chunk) => {
@@ -94,8 +92,7 @@ export async function describe<Model extends ILlmSchema.Model>(
             return describeContext[choice.index]!.content;
           },
         });
-        ctx.dispatch(event).catch(() => {});
-        entireEvents.push(event);
+        ctx.dispatch(event);
       }
     };
 
@@ -107,11 +104,6 @@ export async function describe<Model extends ILlmSchema.Model>(
     registerContext(chunk.choices);
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
-
-  if (completion == null) {
-    throw new Error("No completion received");
-  }
-  return entireEvents.map(e => e.toHistory());
 }
 
 export const ChatGptDescribeFunctionAgent = {

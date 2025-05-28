@@ -8,6 +8,5 @@ import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
 export interface AgenticaCancelHistory<
   Model extends ILlmSchema.Model,
 > extends AgenticaHistoryBase<"cancel", IAgenticaHistoryJson.ICancel> {
-  id: string;
-  selections: AgenticaOperationSelection<Model>[];
+  selection: AgenticaOperationSelection<Model>;
 }

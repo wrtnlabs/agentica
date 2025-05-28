@@ -10,7 +10,6 @@ import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { MicroAgenticaEvent } from "./events/MicroAgenticaEvent";
 import type { AgenticaUserMessageContent } from "./histories";
 import type { AgenticaExecuteHistory } from "./histories/AgenticaExecuteHistory";
-import type { AgenticaUserMessageHistory } from "./histories/AgenticaUserMessageHistory";
 import type { MicroAgenticaHistory } from "./histories/MicroAgenticaHistory";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
@@ -121,7 +120,23 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public async conversate(
     content: string | AgenticaUserMessageContent | Array<AgenticaUserMessageContent>,
   ): Promise<MicroAgenticaHistory<Model>[]> {
-    const event: AgenticaUserMessageEvent = createUserMessageEvent({
+    const histories: Array<() => Promise<MicroAgenticaHistory<Model>>> = [];
+    const dispatch = (event: MicroAgenticaEvent<Model>): void => {
+      this.dispatch(event).catch(() => {});
+      if ("toHistory" in event) {
+        if ("join" in event) {
+          histories.push(async () => {
+            await event.join();
+            return event.toHistory();
+          });
+        }
+        else {
+          histories.push(async () => event.toHistory());
+        }
+      }
+    };
+
+    const prompt: AgenticaUserMessageEvent = createUserMessageEvent({
       contents: Array.isArray(content)
         ? content
         : typeof content === "string"
@@ -131,26 +146,26 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
             }]
           : [content],
     });
-    this.dispatch(event).catch(() => {});
+    dispatch(prompt);
 
-    const prompt: AgenticaUserMessageHistory = event.toHistory();
     const ctx: MicroAgenticaContext<Model> = this.getContext({
       prompt,
+      dispatch,
       usage: this.token_usage_,
     });
-    const histories: MicroAgenticaHistory<Model>[] = await call(
+    const executes: AgenticaExecuteHistory<Model>[] = await call(
       ctx,
       this.operations_.array,
-    ) as MicroAgenticaHistory<Model>[];
-    const executes: AgenticaExecuteHistory<Model>[] = histories.filter(p => p.type === "execute");
-    if (executes.length
-      && ctx.config?.executor?.describe !== null
-      && ctx.config?.executor?.describe !== false) {
-      histories.push(...await describe(ctx, executes));
+    );
+    if (executes.length) {
+      await describe(ctx, executes);
     }
 
-    this.histories_.push(prompt, ...histories);
-    return histories;
+    const completed: MicroAgenticaHistory<Model>[] = await Promise.all(
+      histories.map(async h => h()),
+    );
+    this.histories_.push(...completed);
+    return completed;
   }
 
   /**
@@ -216,8 +231,9 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * @internal
    */
   public getContext(props: {
-    prompt: AgenticaUserMessageHistory;
+    prompt: AgenticaUserMessageEvent;
     usage: AgenticaTokenUsage;
+    dispatch: (event: MicroAgenticaEvent<Model>) => void;
   }): MicroAgenticaContext<Model> {
     const dispatch = this.dispatch.bind(this);
     return {
@@ -226,7 +242,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
 
       histories: this.histories_,
       prompt: props.prompt,
-      dispatch,
+      dispatch: props.dispatch,
       request: async (source, body) => {
         // request information
         const event: AgenticaRequestEvent = createRequestEvent({

@@ -64,7 +64,7 @@ export function createSelectEvent<Model extends ILlmSchema.Model>(props: {
     toHistory: () => createSelectHistory({
       id,
       created_at,
-      selections: [props.selection],
+      selection: props.selection,
     }),
   };
 }
@@ -114,20 +114,20 @@ export function createCallEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
+  id: string;
   operation: AgenticaOperation<Model>;
   result: IValidation.IFailure;
 }): AgenticaValidateEvent<Model> {
-  const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
     type: "validate",
-    id,
+    id: props.id,
     created_at,
     operation: props.operation,
     result: props.result,
     toJSON: () => ({
       type: "validate",
-      id,
+      id: props.id,
       created_at,
       operation: props.operation.toJSON(),
       result: props.result,

@@ -80,14 +80,9 @@ export namespace IAgenticaHistoryJson {
    */
   export interface ISelect extends IBase<"select"> {
     /**
-     * ID of the LLM tool call result.
-     */
-    id: string;
-
-    /**
      * Operations that have been selected.
      */
-    selections: IAgenticaOperationSelectionJson[];
+    selection: IAgenticaOperationSelectionJson;
   }
 
   /**
@@ -97,14 +92,9 @@ export namespace IAgenticaHistoryJson {
    */
   export interface ICancel extends IBase<"cancel"> {
     /**
-     * ID of the LLM tool call result.
-     */
-    id: string;
-
-    /**
      * Operations that have been cancelled.
      */
-    selections: IAgenticaOperationSelectionJson[];
+    selection: IAgenticaOperationSelectionJson;
   }
 
   /**
@@ -113,11 +103,6 @@ export namespace IAgenticaHistoryJson {
    * Execution prompt about the LLM function calling.
    */
   export interface IExecute extends IBase<"execute"> {
-    /**
-     * ID of the LLM tool call result.
-     */
-    id: string;
-
     /**
      * Target operation to call.
      */

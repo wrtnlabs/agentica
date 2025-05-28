@@ -5,8 +5,7 @@ import typia from "typia";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { __IChatInitialApplication } from "../context/internal/__IChatInitialApplication";
-import type { AgenticaAssistantMessageEvent } from "../events";
-import type { AgenticaHistory } from "../histories/AgenticaHistory";
+import type { AgenticaAssistantMessageEvent } from "../events/AgenticaAssistantMessageEvent";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
@@ -21,9 +20,7 @@ const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
   "chatgpt"
 >().functions[0]!;
 
-export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<AgenticaHistory<Model>[]> {
-  const prompts: AgenticaHistory<Model>[] = [];
-
+export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<void> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -118,8 +115,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
             return textContext[choice.index]!.content;
           },
         });
-        ctx.dispatch(event).catch(() => {});
-        prompts.push(event.toHistory());
+        ctx.dispatch(event);
       }
     };
 
@@ -148,6 +144,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
             tc.type === "function" && tc.function.name === FUNCTION.name,
         ),
     )
-  ) { await ctx.initialize(); }
-  return prompts;
+  ) {
+    await ctx.initialize();
+  }
 }

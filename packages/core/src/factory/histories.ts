@@ -34,10 +34,10 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
             function: {
               name: `${history.type}Functions`,
               arguments: JSON.stringify({
-                functions: history.selections.map(s => ({
-                  name: s.operation.function.name,
-                  reason: s.reason,
-                })),
+                function: {
+                  name: history.selection.operation.name,
+                  reason: history.selection.reason,
+                },
               }),
             },
           },
@@ -274,18 +274,18 @@ export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
 export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
-  selections: AgenticaOperationSelection<Model>[];
+  selection: AgenticaOperationSelection<Model>;
 }): AgenticaSelectHistory<Model> {
   return {
     type: "select",
     id: props.id,
-    selections: props.selections,
+    selection: props.selection,
     created_at: props.created_at,
     toJSON: () => ({
       type: "select",
       id: props.id,
       created_at: props.created_at,
-      selections: props.selections.map(selection => selection.toJSON()),
+      selection: props.selection.toJSON(),
     }),
   };
 }
@@ -296,18 +296,18 @@ export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
 export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
-  selections: AgenticaOperationSelection<Model>[];
+  selection: AgenticaOperationSelection<Model>;
 }): AgenticaCancelHistory<Model> {
   return {
     type: "cancel",
     id: props.id,
     created_at: props.created_at,
-    selections: props.selections,
+    selection: props.selection,
     toJSON: () => ({
       type: "cancel",
       id: props.id,
       created_at: props.created_at,
-      selections: props.selections.map(selection => selection.toJSON()),
+      selection: props.selection.toJSON(),
     }),
   };
 }

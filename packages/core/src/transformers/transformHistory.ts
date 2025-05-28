@@ -90,16 +90,13 @@ function transformSelect<Model extends ILlmSchema.Model>(props: {
   return createSelectHistory({
     id: props.history.id,
     created_at: props.history.created_at,
-    selections: props.history.selections.map(
-      select =>
-        createOperationSelection({
-          operation: findOperation({
-            operations: props.operations,
-            input: select.operation,
-          }),
-          reason: select.reason,
-        }),
-    ),
+    selection: createOperationSelection({
+      operation: findOperation({
+        operations: props.operations,
+        input: props.history.selection.operation,
+      }),
+      reason: props.history.selection.reason,
+    }),
   });
 }
 
@@ -110,16 +107,13 @@ function transformCancel<Model extends ILlmSchema.Model>(props: {
   return createCancelHistory({
     id: props.history.id,
     created_at: props.history.created_at,
-    selections: props.history.selections.map(
-      select =>
-        createOperationSelection({
-          operation: findOperation({
-            operations: props.operations,
-            input: select.operation,
-          }),
-          reason: select.reason,
-        }),
-    ),
+    selection: createOperationSelection({
+      operation: findOperation({
+        operations: props.operations,
+        input: props.history.selection.operation,
+      }),
+      reason: props.history.selection.reason,
+    }),
   });
 }
 

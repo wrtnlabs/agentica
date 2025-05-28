@@ -6,9 +6,9 @@ import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
-import type { AgenticaUserMessageEvent } from "./events";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
+import type { AgenticaUserMessageEvent } from "./events/AgenticaUserMessageEvent";
 import type { AgenticaUserMessageContent } from "./histories";
 import type { AgenticaHistory } from "./histories/AgenticaHistory";
 import type { AgenticaUserMessageHistory } from "./histories/AgenticaUserMessageHistory";
@@ -66,9 +66,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   // STATUS
   private readonly token_usage_: AgenticaTokenUsage;
   private ready_: boolean;
-  private readonly executor_: (
-    ctx: AgenticaContext<Model>,
-  ) => Promise<AgenticaHistory<Model>[]>;
+  private readonly executor_: (ctx: AgenticaContext<Model>) => Promise<void>;
 
   /* -----------------------------------------------------------
     CONSTRUCTOR
@@ -142,7 +140,23 @@ export class Agentica<Model extends ILlmSchema.Model> {
       abortSignal?: AbortSignal;
     } = {},
   ): Promise<AgenticaHistory<Model>[]> {
-    const event: AgenticaUserMessageEvent = createUserMessageEvent({
+    const histories: Array<() => Promise<AgenticaHistory<Model>>> = [];
+    const dispatch = (event: AgenticaEvent<Model>): void => {
+      this.dispatch(event).catch(() => {});
+      if ("toHistory" in event) {
+        if ("join" in event) {
+          histories.push(async () => {
+            await event.join();
+            return event.toHistory();
+          });
+        }
+        else {
+          histories.push(async () => event.toHistory());
+        }
+      }
+    };
+
+    const prompt: AgenticaUserMessageEvent = createUserMessageEvent({
       contents: Array.isArray(content)
         ? content
         : typeof content === "string"
@@ -152,20 +166,22 @@ export class Agentica<Model extends ILlmSchema.Model> {
             }]
           : [content],
     });
-    this.dispatch(
-      event,
-    ).catch(() => {});
+    dispatch(prompt);
 
-    const prompt: AgenticaUserMessageHistory = event.toHistory();
-    const newbie: AgenticaHistory<Model>[] = await this.executor_(
+    await this.executor_(
       this.getContext({
-        prompt,
+        dispatch,
+        prompt: prompt.toHistory(),
         abortSignal: options.abortSignal,
         usage: this.token_usage_,
       }),
     );
-    this.histories_.push(prompt, ...newbie);
-    return [prompt, ...newbie];
+
+    const completed: AgenticaHistory<Model>[] = await Promise.all(
+      histories.map(async h => h()),
+    );
+    this.histories_.push(...completed);
+    return completed;
   }
 
   /**
@@ -233,9 +249,9 @@ export class Agentica<Model extends ILlmSchema.Model> {
   public getContext(props: {
     prompt: AgenticaUserMessageHistory;
     usage: AgenticaTokenUsage;
+    dispatch: (event: AgenticaEvent<Model>) => void;
     abortSignal?: AbortSignal;
   }): AgenticaContext<Model> {
-    const dispatch = async (event: AgenticaEvent<Model>) => this.dispatch(event);
     return {
       // APPLICATION
       operations: this.operations_,
@@ -249,7 +265,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       abortSignal: props.abortSignal,
 
       // HANDLERS
-      dispatch: async event => this.dispatch(event),
+      dispatch: props.dispatch,
       request: async (source, body) => {
         // request information
         const event: AgenticaRequestEvent = createRequestEvent({
@@ -267,7 +283,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
             signal: props.abortSignal,
           },
         });
-        await dispatch(event);
+        props.dispatch(event);
 
         // completion
         const completion = await this.props.vendor.api.chat.completions.create(
@@ -301,7 +317,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
         })().catch(() => {});
 
         const [streamForStream, streamForJoin] = streamForEvent.tee();
-        await dispatch({
+        props.dispatch({
           id: v4(),
           type: "response",
           source,
@@ -314,12 +330,11 @@ export class Agentica<Model extends ILlmSchema.Model> {
           },
           created_at: new Date().toISOString(),
         });
-
         return streamForReturn;
       },
       initialize: async () => {
         this.ready_ = true;
-        await dispatch(createInitializeEvent());
+        props.dispatch(createInitializeEvent());
       },
     };
   }

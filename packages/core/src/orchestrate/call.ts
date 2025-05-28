@@ -16,12 +16,11 @@ import {
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
-import type { AgenticaAssistantMessageEvent } from "../events";
+import type { AgenticaAssistantMessageEvent, AgenticaExecuteEvent } from "../events";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
 import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
-import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
@@ -34,12 +33,12 @@ import { createOperationSelection } from "../factory/operations";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
-import { cancelFunction } from "./internal/cancelFunction";
+import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
 
 export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   operations: AgenticaOperation<Model>[],
-): Promise<AgenticaHistory<Model>[]> {
+): Promise<AgenticaExecuteEvent<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
   // ----
@@ -154,7 +153,7 @@ export async function call<Model extends ILlmSchema.Model>(
             ).catch(() => {});
 
             if (isAgenticaContext(ctx)) {
-              cancelFunction(ctx, {
+              cancelFunctionFromContext(ctx, {
                 name: call.operation.name,
                 reason: "completed",
               });
@@ -226,7 +225,7 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
     call: AgenticaCallEvent<Model>;
     retry: number;
   },
-): Promise<AgenticaExecuteHistory<Model>> {
+): Promise<AgenticaExecuteEvent<Model>> {
   // ----
   // HTTP PROTOCOL
   // ----
@@ -241,10 +240,10 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
         operation: props.operation,
         result: check,
       }),
-    ).catch(() => {});
+    );
 
     if (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)) {
-      const trial: AgenticaExecuteHistory<Model> | null = await correct(
+      const trial: AgenticaExecuteEvent<Model> | null = await correct(
         props.ctx,
         props.call,
         props.retry,
@@ -547,6 +546,7 @@ async function correct<Model extends ILlmSchema.Model>(
 
   const chunks = await StreamUtil.readAll(completionStream);
   const completion = ChatGptCompletionMessageUtil.merge(chunks);
+
   // ----
   // PROCESS COMPLETION
   // ----

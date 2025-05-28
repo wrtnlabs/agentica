@@ -3,24 +3,23 @@ import type OpenAI from "openai";
 import type { IValidation } from "typia";
 
 import typia from "typia";
-import { v4 } from "uuid";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 import type { __IChatCancelFunctionsApplication } from "../context/internal/__IChatCancelFunctionsApplication";
 import type { __IChatFunctionReference } from "../context/internal/__IChatFunctionReference";
+import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
-import type { AgenticaCancelHistory } from "../histories/AgenticaCancelHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { createCancelHistory, decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
-import { cancelFunction } from "./internal/cancelFunction";
+import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatCancelFunctionsApplication,
@@ -35,7 +34,7 @@ interface IFailure {
 
 export async function cancel<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model>,
-): Promise<AgenticaCancelHistory<Model>[]> {
+): Promise<void> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
@@ -43,15 +42,13 @@ export async function cancel<Model extends ILlmSchema.Model>(
   const stacks: AgenticaOperationSelection<Model>[][]
       = ctx.operations.divided.map(() => []);
   const events: AgenticaEvent<Model>[] = [];
-  const prompts: AgenticaCancelHistory<Model>[][] = await Promise.all(
+  await Promise.all(
     ctx.operations.divided.map(async (operations, i) =>
       step(
         {
           ...ctx,
           stack: stacks[i]!,
-          dispatch: async (e) => {
-            events.push(e);
-          },
+          dispatch: e => events.push(e),
         },
         operations,
         0,
@@ -59,12 +56,11 @@ export async function cancel<Model extends ILlmSchema.Model>(
     ),
   );
 
-  // NO FUNCTION SELECTION, SO THAT ONLY TEXT LEFT
-  if (stacks.every(s => s.length === 0)) {
-    return prompts[0]!;
-  }
   // ELITICISM
-  else if ((ctx.config?.eliticism ?? AgenticaConstant.ELITICISM) === true) {
+  if (
+    (ctx.config?.eliticism ?? AgenticaConstant.ELITICISM) === true
+    && stacks.some(s => s.length !== 0)
+  ) {
     return step(
       ctx,
       stacks
@@ -78,23 +74,12 @@ export async function cancel<Model extends ILlmSchema.Model>(
       0,
     );
   }
-
-  // RE-COLLECT SELECT FUNCTION EVENTS
-  const collection: AgenticaCancelHistory<Model> = createCancelHistory({
-    id: v4(),
-    created_at: new Date().toISOString(),
-    selections: [],
-  });
-  for (const e of events) {
-    if (e.type === "select") {
-      collection.selections.push(e.selection);
-      cancelFunction(ctx, {
-        name: e.selection.operation.name,
-        reason: e.selection.reason,
-      });
-    }
+  else {
+    const cancelled: AgenticaCancelEvent<Model>[]
+        = events.filter(e => e.type === "cancel");
+    (cancelled.length !== 0 ? cancelled : events)
+      .forEach(ctx.dispatch);
   }
-  return [collection];
 }
 
 async function step<Model extends ILlmSchema.Model>(
@@ -102,64 +87,64 @@ async function step<Model extends ILlmSchema.Model>(
   operations: AgenticaOperation<Model>[],
   retry: number,
   failures?: IFailure[],
-): Promise<AgenticaCancelHistory<Model>[]> {
+): Promise<void> {
   // ----
   // EXECUTE CHATGPT API
   // ----
   const completionStream = await ctx.request("cancel", {
     messages: [
-        // COMMON SYSTEM PROMPT
-        {
-          role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
-        // CANDIDATE FUNCTIONS
-        {
-          role: "assistant",
-          tool_calls: [
-            {
-              type: "function",
-              id: "getApiFunctions",
-              function: {
-                name: "getApiFunctions",
-                arguments: JSON.stringify({}),
-              },
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
+      // CANDIDATE FUNCTIONS
+      {
+        role: "assistant",
+        tool_calls: [
+          {
+            type: "function",
+            id: "getApiFunctions",
+            function: {
+              name: "getApiFunctions",
+              arguments: JSON.stringify({}),
             },
-          ],
-        },
-        {
-          role: "tool",
-          tool_call_id: "getApiFunctions",
-          content: JSON.stringify(
-            operations.map(op => ({
-              name: op.name,
-              description: op.function.description,
-              ...(op.protocol === "http"
-                ? {
-                    method: op.function.method,
-                    path: op.function.path,
-                    tags: op.function.tags,
-                  }
-                : {}),
-            })),
-          ),
-        },
-        // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodeHistory).flat(),
-        // USER INPUT
-        {
-          role: "user",
-          content: ctx.prompt.contents.map(decodeUserMessageContent),
-        },
-        // SYSTEM PROMPT
-        {
-          role: "system",
-          content:
-            ctx.config?.systemPrompt?.cancel?.(ctx.histories)
-            ?? AgenticaSystemPrompt.CANCEL,
-        },
-        // TYPE CORRECTIONS
-        ...emendMessages(failures ?? []),
+          },
+        ],
+      },
+      {
+        role: "tool",
+        tool_call_id: "getApiFunctions",
+        content: JSON.stringify(
+          operations.map(op => ({
+            name: op.name,
+            description: op.function.description,
+            ...(op.protocol === "http"
+              ? {
+                  method: op.function.method,
+                  path: op.function.path,
+                  tags: op.function.tags,
+                }
+              : {}),
+          })),
+        ),
+      },
+      // PREVIOUS HISTORIES
+      ...ctx.histories.map(decodeHistory).flat(),
+      // USER INPUT
+      {
+        role: "user",
+        content: ctx.prompt.contents.map(decodeUserMessageContent),
+      },
+      // SYSTEM PROMPT
+      {
+        role: "system",
+        content:
+          ctx.config?.systemPrompt?.cancel?.(ctx.histories)
+          ?? AgenticaSystemPrompt.CANCEL,
+      },
+      // TYPE CORRECTIONS
+      ...emendMessages(failures ?? []),
     ],
     // STACK FUNCTIONS
     tools: [{
@@ -201,9 +186,9 @@ async function step<Model extends ILlmSchema.Model>(
           continue;
         }
 
-        const input = JSON.parse(tc.function.arguments) as object;
+        const input: object = JSON.parse(tc.function.arguments) as object;
         const validation: IValidation<__IChatFunctionReference.IProps>
-            = typia.validate<__IChatFunctionReference.IProps>(input);
+          = typia.validate<__IChatFunctionReference.IProps>(input);
         if (validation.success === false) {
           failures.push({
             id: tc.id,
@@ -221,7 +206,6 @@ async function step<Model extends ILlmSchema.Model>(
   // ----
   // PROCESS COMPLETION
   // ----
-  const prompts: AgenticaCancelHistory<Model>[] = [];
   for (const choice of completion.choices) {
     // TOOL CALLING HANDLER
     if (choice.message.tool_calls != null) {
@@ -229,36 +213,24 @@ async function step<Model extends ILlmSchema.Model>(
         if (tc.type !== "function") {
           continue;
         }
-
-        if (tc.function.name !== "cancelFunctions") {
+        else if (tc.function.name !== "cancelFunctions") {
           continue;
         }
 
-        const input = typia.json.isParse<__IChatFunctionReference.IProps>(tc.function.arguments);
+        const input: __IChatFunctionReference.IProps | null
+          = typia.json.isParse<
+            __IChatFunctionReference.IProps
+          >(tc.function.arguments);
         if (input === null) {
           continue;
         }
 
-        const collection: AgenticaCancelHistory<Model> = createCancelHistory({
-          id: tc.id,
-          created_at: new Date().toISOString(),
-          selections: [],
-        });
-
         for (const reference of input.functions) {
-          const operation = cancelFunction(ctx, reference);
-          if (operation !== null) {
-            collection.selections.push(operation);
-          }
-        }
-
-        if (collection.selections.length !== 0) {
-          prompts.push(collection);
+          cancelFunctionFromContext(ctx, reference);
         }
       }
     }
   }
-  return prompts;
 }
 
 function emendMessages(failures: IFailure[]): OpenAI.ChatCompletionMessageParam[] {
