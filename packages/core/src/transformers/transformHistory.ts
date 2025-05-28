@@ -89,16 +89,14 @@ function transformSelect<Model extends ILlmSchema.Model>(props: {
 }): AgenticaSelectHistory<Model> {
   return createSelectHistory({
     id: props.history.id,
-    selections: props.history.selections.map(
-      select =>
-        createOperationSelection({
-          operation: findOperation({
-            operations: props.operations,
-            input: select.operation,
-          }),
-          reason: select.reason,
-        }),
-    ),
+    created_at: props.history.created_at,
+    selection: createOperationSelection({
+      operation: findOperation({
+        operations: props.operations,
+        input: props.history.selection.operation,
+      }),
+      reason: props.history.selection.reason,
+    }),
   });
 }
 
@@ -108,16 +106,14 @@ function transformCancel<Model extends ILlmSchema.Model>(props: {
 }): AgenticaCancelHistory<Model> {
   return createCancelHistory({
     id: props.history.id,
-    selections: props.history.selections.map(
-      select =>
-        createOperationSelection({
-          operation: findOperation({
-            operations: props.operations,
-            input: select.operation,
-          }),
-          reason: select.reason,
-        }),
-    ),
+    created_at: props.history.created_at,
+    selection: createOperationSelection({
+      operation: findOperation({
+        operations: props.operations,
+        input: props.history.selection.operation,
+      }),
+      reason: props.history.selection.reason,
+    }),
   });
 }
 
@@ -127,6 +123,7 @@ function transformExecute<Model extends ILlmSchema.Model>(props: {
 }): AgenticaExecuteHistory<Model> {
   return createExecuteHistory({
     id: props.history.id,
+    created_at: props.history.created_at,
     operation: findOperation({
       operations: props.operations,
       input: props.history.operation,
@@ -145,6 +142,8 @@ function transformDescribe<Model extends ILlmSchema.Model>(props: {
   history: IAgenticaHistoryJson.IDescribe;
 }): AgenticaDescribeHistory<Model> {
   return createDescribeHistory({
+    id: props.history.id,
+    created_at: props.history.created_at,
     text: props.history.text,
     executes: props.history.executes.map(next =>
       transformExecute({

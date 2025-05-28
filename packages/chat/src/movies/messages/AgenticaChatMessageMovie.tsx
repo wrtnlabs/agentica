@@ -15,9 +15,7 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
   }
 
   if (prompt.type === "select") {
-    return prompt.selections.map(selection => (
-      <AgenticaChatSelectMessageMovie selection={selection} />
-    ));
+    return <AgenticaChatSelectMessageMovie selection={prompt.selection} />;
   }
 
   if (prompt.type === "describe") {

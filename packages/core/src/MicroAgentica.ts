@@ -1,13 +1,15 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import { v4 } from "uuid";
+
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
+import type { AgenticaUserMessageEvent } from "./events";
 import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { MicroAgenticaEvent } from "./events/MicroAgenticaEvent";
 import type { AgenticaUserMessageContent } from "./histories";
 import type { AgenticaExecuteHistory } from "./histories/AgenticaExecuteHistory";
-import type { AgenticaUserMessageHistory } from "./histories/AgenticaUserMessageHistory";
 import type { MicroAgenticaHistory } from "./histories/MicroAgenticaHistory";
 import type { IAgenticaController } from "./structures/IAgenticaController";
 import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
@@ -17,7 +19,6 @@ import type { IMicroAgenticaProps } from "./structures/IMicroAgenticaProps";
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
 import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createUserMessageHistory } from "./factory";
 import { createRequestEvent, createUserMessageEvent } from "./factory/events";
 import { call, describe } from "./orchestrate";
 import { transformHistory } from "./transformers/transformHistory";
@@ -119,7 +120,23 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public async conversate(
     content: string | AgenticaUserMessageContent | Array<AgenticaUserMessageContent>,
   ): Promise<MicroAgenticaHistory<Model>[]> {
-    const talk = createUserMessageHistory({
+    const histories: Array<() => Promise<MicroAgenticaHistory<Model>>> = [];
+    const dispatch = (event: MicroAgenticaEvent<Model>): void => {
+      this.dispatch(event).catch(() => {});
+      if ("toHistory" in event) {
+        if ("join" in event) {
+          histories.push(async () => {
+            await event.join();
+            return event.toHistory();
+          });
+        }
+        else {
+          histories.push(async () => event.toHistory());
+        }
+      }
+    };
+
+    const prompt: AgenticaUserMessageEvent = createUserMessageEvent({
       contents: Array.isArray(content)
         ? content
         : typeof content === "string"
@@ -129,29 +146,26 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
             }]
           : [content],
     });
-    this.dispatch(
-      createUserMessageEvent({
-        contents: talk.contents,
-      }),
-    ).catch(() => {});
+    dispatch(prompt);
 
     const ctx: MicroAgenticaContext<Model> = this.getContext({
-      prompt: talk,
+      prompt,
+      dispatch,
       usage: this.token_usage_,
     });
-    const histories: MicroAgenticaHistory<Model>[] = await call(
+    const executes: AgenticaExecuteHistory<Model>[] = await call(
       ctx,
       this.operations_.array,
-    ) as MicroAgenticaHistory<Model>[];
-    const executes: AgenticaExecuteHistory<Model>[] = histories.filter(p => p.type === "execute");
-    if (executes.length
-      && ctx.config?.executor?.describe !== null
-      && ctx.config?.executor?.describe !== false) {
-      histories.push(...await describe(ctx, executes));
+    );
+    if (executes.length) {
+      await describe(ctx, executes);
     }
 
-    this.histories_.push(talk, ...histories);
-    return histories;
+    const completed: MicroAgenticaHistory<Model>[] = await Promise.all(
+      histories.map(async h => h()),
+    );
+    this.histories_.push(...completed);
+    return completed;
   }
 
   /**
@@ -217,17 +231,17 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * @internal
    */
   public getContext(props: {
-    prompt: AgenticaUserMessageHistory;
+    prompt: AgenticaUserMessageEvent;
     usage: AgenticaTokenUsage;
+    dispatch: (event: MicroAgenticaEvent<Model>) => void;
   }): MicroAgenticaContext<Model> {
-    const dispatch = this.dispatch.bind(this);
     return {
       operations: this.operations_,
       config: this.props.config,
 
       histories: this.histories_,
       prompt: props.prompt,
-      dispatch,
+      dispatch: props.dispatch,
       request: async (source, body) => {
         // request information
         const event: AgenticaRequestEvent = createRequestEvent({
@@ -242,7 +256,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
           },
           options: this.props.vendor.options,
         });
-        await dispatch(event);
+        props.dispatch(event);
 
         // completion
         const completion = await this.props.vendor.api.chat.completions.create(
@@ -276,7 +290,8 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
         })();
 
         const [streamForStream, streamForJoin] = streamForEvent.tee();
-        await dispatch({
+        props.dispatch({
+          id: v4(),
           type: "response",
           source,
           stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
@@ -286,8 +301,8 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
             const chunks = await StreamUtil.readAll(streamForJoin);
             return ChatGptCompletionMessageUtil.merge(chunks);
           },
+          created_at: new Date().toISOString(),
         });
-
         return streamForReturn;
       },
     };

@@ -32,11 +32,6 @@ export namespace AgenticaExecuteHistory {
     Value,
   > extends AgenticaHistoryBase<"execute", IAgenticaHistoryJson.IExecute> {
     /**
-     * ID of the LLM tool call result.
-     */
-    id: string;
-
-    /**
      * Protocol of the operation.
      */
     protocol: Protocol;

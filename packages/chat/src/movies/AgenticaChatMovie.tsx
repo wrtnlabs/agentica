@@ -152,13 +152,11 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     const selections: AgenticaOperationSelection<Model>[] = agent
       .getHistories()
       .filter(h => h.type === "select")
-      .map(h => h.selections)
-      .flat();
+      .map(h => h.selection);
     for (const cancel of agent
       .getHistories()
       .filter(h => h.type === "cancel")
-      .map(h => h.selections)
-      .flat()) {
+      .map(h => h.selection)) {
       const index: number = selections.findIndex(
         s =>
           s.operation.protocol === cancel.operation.protocol

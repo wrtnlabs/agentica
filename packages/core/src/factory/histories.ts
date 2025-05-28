@@ -1,5 +1,6 @@
 import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
+import type { tags } from "typia";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
@@ -33,10 +34,10 @@ export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaH
             function: {
               name: `${history.type}Functions`,
               arguments: JSON.stringify({
-                functions: history.selections.map(s => ({
-                  name: s.operation.function.name,
-                  reason: s.reason,
-                })),
+                function: {
+                  name: history.selection.operation.name,
+                  reason: history.selection.reason,
+                },
               }),
             },
           },
@@ -178,13 +179,19 @@ export function decodeUserMessageContent(content: AgenticaUserMessageContent): O
  * @internal
  */
 export function createUserMessageHistory(props: {
+  id: string;
+  created_at: string & tags.Format<"date-time">;
   contents: Array<AgenticaUserMessageContent>;
 }): AgenticaUserMessageHistory {
   return {
     type: "userMessage",
+    id: props.id,
+    created_at: props.created_at,
     contents: props.contents,
     toJSON: () => ({
       type: "userMessage",
+      id: props.id,
+      created_at: props.created_at,
       contents: props.contents,
     }),
   };
@@ -197,10 +204,14 @@ export function createUserMessageHistory(props: {
  * @internal
  */
 export function createAssistantMessageHistory(props: {
+  id: string;
+  created_at: string & tags.Format<"date-time">;
   text: string;
 }): AgenticaAssistantMessageHistory {
   const prompt: IAgenticaHistoryJson.IAssistantMessage = {
     type: "assistantMessage",
+    id: props.id,
+    created_at: props.created_at,
     text: props.text,
   };
   return {
@@ -213,10 +224,14 @@ export function createAssistantMessageHistory(props: {
  * @internal
  */
 export function createSystemMessageHistory(props: {
+  id: string;
+  created_at: string & tags.Format<"date-time">;
   text: string;
 }): AgenticaSystemMessageHistory {
   const prompt: IAgenticaHistoryJson.ISystemMessage = {
     type: "systemMessage",
+    id: props.id,
+    created_at: props.created_at,
     text: props.text,
   };
   return {
@@ -229,15 +244,21 @@ export function createSystemMessageHistory(props: {
  * @internal
  */
 export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
+  id: string;
+  created_at: string & tags.Format<"date-time">;
   executes: AgenticaExecuteHistory<Model>[];
   text: string;
 }): AgenticaDescribeHistory<Model> {
   return {
     type: "describe",
+    id: props.id,
+    created_at: props.created_at,
     text: props.text,
     executes: props.executes,
     toJSON: () => ({
       type: "describe",
+      id: props.id,
+      created_at: props.created_at,
       text: props.text,
       executes: props.executes.map(execute => execute.toJSON()),
     }),
@@ -252,16 +273,19 @@ export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
  */
 export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
-  selections: AgenticaOperationSelection<Model>[];
+  created_at: string & tags.Format<"date-time">;
+  selection: AgenticaOperationSelection<Model>;
 }): AgenticaSelectHistory<Model> {
   return {
     type: "select",
     id: props.id,
-    selections: props.selections,
+    selection: props.selection,
+    created_at: props.created_at,
     toJSON: () => ({
       type: "select",
       id: props.id,
-      selections: props.selections.map(selection => selection.toJSON()),
+      created_at: props.created_at,
+      selection: props.selection.toJSON(),
     }),
   };
 }
@@ -271,16 +295,19 @@ export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
  */
 export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
   id: string;
-  selections: AgenticaOperationSelection<Model>[];
+  created_at: string & tags.Format<"date-time">;
+  selection: AgenticaOperationSelection<Model>;
 }): AgenticaCancelHistory<Model> {
   return {
     type: "cancel",
     id: props.id,
-    selections: props.selections,
+    created_at: props.created_at,
+    selection: props.selection,
     toJSON: () => ({
       type: "cancel",
       id: props.id,
-      selections: props.selections.map(selection => selection.toJSON()),
+      created_at: props.created_at,
+      selection: props.selection.toJSON(),
     }),
   };
 }
@@ -292,6 +319,7 @@ export function createExecuteHistory<
   Model extends ILlmSchema.Model,
 >(props: {
   id: string;
+  created_at: string & tags.Format<"date-time">;
   operation: AgenticaOperation<Model>;
   arguments: Record<string, any>;
   value: unknown;
@@ -300,13 +328,15 @@ export function createExecuteHistory<
     type: "execute",
     protocol: props.operation.protocol as "class",
     id: props.id,
+    created_at: props.created_at,
     operation: props.operation as AgenticaOperation.Class<Model>,
     arguments: props.arguments,
     value: props.value,
     toJSON: () => ({
       type: "execute",
-      protocol: props.operation.protocol,
       id: props.id,
+      created_at: props.created_at,
+      protocol: props.operation.protocol,
       operation: props.operation.toJSON(),
       arguments: props.arguments,
       value: props.value,

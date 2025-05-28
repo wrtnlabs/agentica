@@ -3,13 +3,13 @@ import type OpenAI from "openai";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
-import type { AgenticaDescribeHistory } from "../histories/AgenticaDescribeHistory";
+import type { AgenticaDescribeEvent } from "../events";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createDescribeEvent } from "../factory/events";
-import { createDescribeHistory, decodeHistory } from "../factory/histories";
+import { decodeHistory } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
@@ -17,9 +17,9 @@ import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/Stream
 export async function describe<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   histories: AgenticaExecuteHistory<Model>[],
-): Promise<AgenticaDescribeHistory<Model>[]> {
+): Promise<void> {
   if (histories.length === 0) {
-    return [];
+    return;
   }
 
   const completionStream = await ctx.request("describe", {
@@ -46,7 +46,7 @@ export async function describe<Model extends ILlmSchema.Model>(
     mpsc: MPSC<string>;
   })[] = [];
 
-  const completion = await StreamUtil.reduce<
+  await StreamUtil.reduce<
     OpenAI.ChatCompletionChunk,
     Promise<OpenAI.ChatCompletion>
   >(completionStream, async (accPromise, chunk) => {
@@ -82,18 +82,17 @@ export async function describe<Model extends ILlmSchema.Model>(
         };
         mpsc.produce(choice.delta.content);
 
-        ctx.dispatch(
-          createDescribeEvent({
-            executes: histories,
-            stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
-            done: () => mpsc.done(),
-            get: () => describeContext[choice.index]?.content ?? "",
-            join: async () => {
-              await mpsc.waitClosed();
-              return describeContext[choice.index]!.content;
-            },
-          }),
-        ).catch(() => {});
+        const event: AgenticaDescribeEvent<Model> = createDescribeEvent({
+          executes: histories,
+          stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
+          done: () => mpsc.done(),
+          get: () => describeContext[choice.index]?.content ?? "",
+          join: async () => {
+            await mpsc.waitClosed();
+            return describeContext[choice.index]!.content;
+          },
+        });
+        ctx.dispatch(event);
       }
     };
 
@@ -105,25 +104,6 @@ export async function describe<Model extends ILlmSchema.Model>(
     registerContext(chunk.choices);
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
-
-  if (completion == null) {
-    throw new Error("No completion received");
-  }
-  const descriptions: AgenticaDescribeHistory<Model>[] = completion.choices
-    .map(choice =>
-      choice.message.role === "assistant"
-        ? choice.message.content
-        : null,
-    )
-    .filter(str => str !== null)
-    .map(
-      content =>
-        createDescribeHistory({
-          executes: histories,
-          text: content,
-        }),
-    );
-  return descriptions;
 }
 
 export const ChatGptDescribeFunctionAgent = {
