@@ -55,6 +55,3 @@ export function insertWithIndent(
     return content;
   }
 }
-
-/** promisified exec */
-export const execAsync = promisify(exec);
