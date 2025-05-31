@@ -1,3 +1,5 @@
+import type { tags } from "typia";
+
 /**
  * Base type for all histories in Agentica.
  *
@@ -15,9 +17,19 @@ export interface AgenticaHistoryBase<
   Json extends { type: Type },
 > {
   /**
+   * Primary key of the history.
+   */
+  id: string;
+
+  /**
    * Discriminator type.
    */
   type: Type;
+
+  /**
+   * Creation timestamp of the history.
+   */
+  created_at: string & tags.Format<"date-time">;
 
   toJSON: () => Json;
 }

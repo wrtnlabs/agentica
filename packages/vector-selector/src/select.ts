@@ -1,4 +1,4 @@
-import type { AgenticaContext, AgenticaOperationSelection, AgenticaSelectHistory } from "@agentica/core";
+import type { AgenticaAssistantMessageEvent, AgenticaContext, AgenticaOperationSelection } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import { factory, utils } from "@agentica/core";
@@ -21,7 +21,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   toolList: object[];
   prevFailures?: IFailure[];
   restRetry?: number;
-}) {
+}): Promise<void> {
   const { ctx, toolList, prevFailures = [], restRetry = 5 } = props;
   const selectCompletion = await ctx.request("select", {
     messages: [
@@ -80,13 +80,16 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
     .filter(v => v.message.tool_calls != null);
 
   if (toolCalls.length === 0) {
-    return selectCompletion.choices.flatMap((v) => {
+    selectCompletion.choices.forEach((v) => {
       if (v.message.content != null && v.message.content !== "") {
-        return [
-          factory.createAssistantMessageHistory({ text: v.message.content }),
-        ];
+        const event: AgenticaAssistantMessageEvent = factory.creatAssistantMessageEvent({
+          stream: utils.toAsyncGenerator(v.message.content),
+          done: () => true,
+          get: () => v.message.content as string,
+          join: async () => (v.message.content as string),
+        });
+        ctx.dispatch(event);
       }
-      return [];
     });
   }
 
@@ -145,19 +148,8 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
     });
   }
 
-  const prompts: AgenticaSelectHistory<SchemaModel>[] = [];
   toolCalls.forEach((v) => {
     v.message.tool_calls!.forEach((tc) => {
-      const collection: AgenticaSelectHistory<SchemaModel> = {
-        type: "select",
-        id: tc.id,
-        selections: [],
-        toJSON: () => ({
-          type: "select",
-          id: tc.id,
-          selections: collection.selections.map(s => s.toJSON()),
-        }),
-      };
       const arg = JSON.parse(tc.function.arguments) as {
         function_list: {
           reason: string;
@@ -176,14 +168,14 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
             operation,
           });
         ctx.stack.push(selection);
-        ctx.dispatch(factory.createSelectEvent({ selection })).catch(() => {});
-        collection.selections.push(selection);
+        ctx.dispatch(
+          factory.createSelectEvent({
+            selection,
+          }),
+        );
       });
-      prompts.push(collection);
     });
   });
-
-  return prompts;
 }
 
 function emendMessages<SchemaModel extends ILlmSchema.Model>(failures: IFailure[]): ReturnType<typeof factory.decodeHistory<SchemaModel>> {

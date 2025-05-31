@@ -1,4 +1,4 @@
-import type { AgenticaContext, AgenticaHistory } from "@agentica/core";
+import type { AgenticaContext } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
 import { extractQuery } from "./extract_query";
@@ -26,7 +26,7 @@ export function BootAgenticaVectorSelector<SchemaModel extends ILlmSchema.Model>
   const { searchTool, embedContext } = props.strategy;
   const selectorExecute = async (
     ctx: AgenticaContext<SchemaModel>,
-  ): Promise<AgenticaHistory<SchemaModel>[]> => {
+  ): Promise<void> => {
     if (!isEmbedded(ctx)) {
       await embedContext({ ctx, setEmbedded: () => setEmbedded(ctx) });
     }
@@ -49,13 +49,10 @@ export function BootAgenticaVectorSelector<SchemaModel extends ILlmSchema.Model>
     })).then(arr => uniqBy(arr, v => v.name));
 
     if (toolList.length === 0) {
-      return [];
+      return;
     }
-
-    const prompts = await selectFunction({ ctx, toolList });
-    return prompts;
+    await selectFunction({ ctx, toolList });
   };
-
   return selectorExecute;
 }
 

@@ -1,5 +1,5 @@
 import type OpenAI from "openai";
-import type { IValidation } from "typia";
+import type { IValidation, tags } from "typia";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 import type { AgenticaUserMessageContent } from "../histories";
@@ -215,8 +215,18 @@ export namespace IAgenticaEventJson {
 
   interface IBase<Type extends string> {
     /**
+     * Primary key of the event.
+     */
+    id: string;
+
+    /**
      * Discriminator type.
      */
     type: Type;
+
+    /**
+     * Creation timestamp of the event.
+     */
+    created_at: string & tags.Format<"date-time">;
   }
 }

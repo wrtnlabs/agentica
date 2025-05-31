@@ -68,7 +68,8 @@
     "@wrtnlabs/connector-hive-api": "^1.5.0",
     "better-sqlite3": "^11.9.1",
     "cohere-ai": "^7.17.1",
-    "sqlite-vec": "0.1.7-alpha.2"
+    "sqlite-vec": "0.1.7-alpha.2",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@agentica/core": "workspace:^",
@@ -76,7 +77,7 @@
     "@rollup/plugin-typescript": "^12.1.1",
     "@samchon/openapi": "catalog:typia",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.13.9",
     "json-schema-to-ts": "^3.1.1",
     "rimraf": "^6.0.1",
     "rollup": "^4.29.1",

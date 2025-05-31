@@ -1,6 +1,7 @@
 import type {
   Agentica,
   AgenticaContext,
+  AgenticaEvent,
   AgenticaHistory,
   AgenticaOperationSelection,
 } from "@agentica/core";
@@ -15,6 +16,7 @@ import type { tags } from "typia";
  */
 import { AgenticaTokenUsage, factory, orchestrate } from "@agentica/core";
 import { Semaphore } from "tstl";
+import { v4 } from "uuid";
 
 import type { IAgenticaSelectBenchmarkEvent } from "./structures/IAgenticaSelectBenchmarkEvent";
 import type { IAgenticaSelectBenchmarkResult } from "./structures/IAgenticaSelectBenchmarkResult";
@@ -152,31 +154,49 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     const started_at: Date = new Date();
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
-      const context = this.agent_.getContext({
+      const historyGetters: Array<() => Promise<AgenticaHistory<Model>>> = [];
+      const dispatch = (event: AgenticaEvent<Model>): void => {
+        if ("toHistory" in event) {
+          if ("join" in event) {
+            historyGetters.push(async () => {
+              await event.join();
+              return event.toHistory();
+            });
+          }
+          else {
+            historyGetters.push(async () => event.toHistory());
+          }
+        }
+      };
+      const context: AgenticaContext<Model> = this.agent_.getContext({
         prompt: factory.createUserMessageHistory({
+          id: v4(),
+          created_at: started_at.toISOString(),
           contents: [{
             type: "text",
             text: scenario.text,
           }],
         }),
         usage,
+        dispatch,
       });
       if (typeof context.config?.executor === "function") {
         throw new TypeError("select function is not found");
       }
 
+      await (context.config?.executor?.select ?? orchestrate.select)({
+        ...context,
+        histories: this.histories_.slice(),
+        stack: [],
+        ready: () => true,
+      });
       const histories: AgenticaHistory<Model>[]
-        = await (context.config?.executor?.select ?? orchestrate.select)({
-          ...context,
-          histories: this.histories_.slice(),
-          stack: [],
-          ready: () => true,
-          dispatch: async () => {},
-        } satisfies AgenticaContext<Model>);
+        = await Promise.all(
+          historyGetters.map(async g => g()),
+        );
       const selected: AgenticaOperationSelection<Model>[] = histories
         .filter(p => p.type === "select")
-        .map(p => p.selections)
-        .flat();
+        .map(p => p.selection);
       return {
         type: AgenticaBenchmarkPredicator.success({
           expected: scenario.expected,
