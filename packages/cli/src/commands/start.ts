@@ -333,7 +333,7 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     connectorCode: connectorsCode,
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
-  await writeFile(indexFilePath, formattedIndexFileContent);
+  await writeFile(indexFilePath, updatedIndexFileContent);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -388,7 +388,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     connectorCode: connectorsCode,
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
-  await writeFile(indexFilePath, formattedIndexFileContent);
+  await writeFile(indexFilePath, updatedIndexFileContent);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -447,7 +447,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     connectorCode: connectorsCode,
   });
   const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
-  await writeFile(indexFilePath, formattedIndexFileContent);
+  await writeFile(indexFilePath, updatedIndexFileContent);
 
   // write .env file
   await writeEnvKeysToDotEnv({

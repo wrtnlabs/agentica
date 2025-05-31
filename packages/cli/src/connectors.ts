@@ -7,7 +7,7 @@ import type { Tagged, UnwrapTagged } from "type-fest";
 
 import typia from "typia";
 
-import { capitalize } from "./utils";
+import { capitalize, insertWithIndent } from "./utils";
 
 const CONNECTORS_LIST_URL = "https://raw.githubusercontent.com/wrtnlabs/connectors/refs/heads/main/connectors-list.json";
 const CONNECTOR_PREFIX = "@wrtnlabs/connector-";
@@ -171,7 +171,6 @@ export function insertCodeIntoAgenticaStarter({
   importCode,
   connectorCode,
 }: InsertCodeIntoAgenticaStarterProps): string {
-  return content
-    .replace("/// INSERT IMPORT HERE", importCode)
-    .replace("/// INSERT CONTROLLER HERE", connectorCode);
+  const result = insertWithIndent(content, "/// INSERT IMPORT HERE", importCode);
+  return insertWithIndent(result, "/// INSERT CONTROLLER HERE", connectorCode);
 }
