@@ -309,6 +309,12 @@ importers:
       commander:
         specifier: ^10.0.0
         version: 10.0.1
+      detect-indent:
+        specifier: ^7.0.1
+        version: 7.0.1
+      indent-string:
+        specifier: ^5.0.0
+        version: 5.0.0
       memfs:
         specifier: ^4.17.0
         version: 4.17.0
@@ -4189,6 +4195,10 @@ packages:
 
   destr@2.0.5:
     resolution: {integrity: sha512-ugFTXCtDZunbzasqBxrK93Ik/DRYsO6S/fedkWEMKqt04xZ4csmnmwGDBAb07QWNaGMAmnTIemsYZCksjATwsA==}
+
+  detect-indent@7.0.1:
+    resolution: {integrity: sha512-Mc7QhQ8s+cLrnUfU/Ji94vG/r8M26m8f++vyres4ZoojaRDpZ1eSIh/EpzLNwlWuvzSZ3UbDFspjFvTDXe6e/g==}
+    engines: {node: '>=12.20'}
 
   detect-libc@2.0.3:
     resolution: {integrity: sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw==}
@@ -12146,6 +12156,8 @@ snapshots:
   dequal@2.0.3: {}
 
   destr@2.0.5: {}
+
+  detect-indent@7.0.1: {}
 
   detect-libc@2.0.3: {}
 

@@ -2,6 +2,8 @@
  * @module
  * This file contains tiny utility functions that should not be in rest of the modules.
  */
+import detectIndent from "detect-indent";
+import indentString from "indent-string";
 
 /**
  * Convert a string to a capitalized string.
@@ -28,6 +30,26 @@ export async function formatWithPrettier(content: string) {
     return await prettier.format(content, {
       parser: "typescript",
     });
+  }
+  catch {
+    return content;
+  }
+}
+
+/**
+ * Format the given content with indent-string.
+ * If indent-string & detect-indent is not installed,
+ * it returns the content as is.
+ */
+export function insertWithIndent(
+  content: string,
+  placeholder: string,
+  code: string,
+): string {
+  try {
+    const indent = detectIndent(content);
+    const indentedCode = indentString(code, indent.amount, { indent: " " });
+    return content.replace(placeholder, indentedCode);
   }
   catch {
     return content;
