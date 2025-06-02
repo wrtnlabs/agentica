@@ -1,16 +1,22 @@
+import { createFixture } from "fs-fixture";
+
 import { createDirectory, writeEnvKeysToDotEnv } from "./fs";
 
 describe("createDirectory", () => {
   it("should create a new directory", async () => {
-    await createDirectory({ projectPath: "/my-new-project" });
-    expect(vol.existsSync("/my-new-project")).toBe(true);
+    await using fixture = await createFixture();
+    await createDirectory({ projectPath: fixture.getPath("my-new-project") });
+    expect(await fixture.exists("my-new-project")).toBe(true);
   });
 
   it("should throw an error if the directory already exists", async () => {
     /** suppose the directory already exists */
-    vol.mkdirSync("my-new-project", { recursive: true });
+    await using fixture = await createFixture({
+      "my-new-project/.dummy": "dummy content",
+    });
 
-    await expect(createDirectory({ projectPath: "my-new-project" }))
+    const projectPath = fixture.getPath("my-new-project");
+    await expect(createDirectory({ projectPath }))
       .rejects
       .toThrow("my-new-project directory already exists.");
   });
@@ -19,40 +25,38 @@ describe("createDirectory", () => {
 describe("writeEnvKeysToDotEnv", () => {
   it("should set project empty .env file", async () => {
     /** ensure the directory exists */
-    vol.mkdirSync("/my-new-project", { recursive: true });
+    await using fixture = await createFixture();
 
     await writeEnvKeysToDotEnv({
-      projectPath: "/my-new-project",
+      projectPath: fixture.path,
       dotEnvfileName: ".env",
       apiKeys: [],
     });
 
-    expect(vol.existsSync("/my-new-project/.env")).toBe(true);
+    expect(await fixture.exists(".env")).toBe(true);
   });
 
   it("should add api keys to the .env file", async () => {
     /** ensure the directory exists */
-    vol.mkdirSync("/my-new-project", { recursive: true });
+    await using fixture = await createFixture();
 
     await writeEnvKeysToDotEnv({
-      projectPath: "/my-new-project",
+      projectPath: fixture.path,
       dotEnvfileName: ".env",
       apiKeys: [
         { key: "OPENAI_API_KEY", value: "sk-foo" },
       ],
     });
 
-    const content = vol.readFileSync("/my-new-project/.env", "utf-8");
-
-    expect(content).toBe("OPENAI_API_KEY=sk-foo");
+    expect (await fixture.readFile(".env", "utf-8")).toBe("OPENAI_API_KEY=sk-foo");
   });
 
   it("should add multiple api keys to the .env file", async () => {
     /** ensure the directory exists */
-    vol.mkdirSync("/my-new-project", { recursive: true });
+    await using fixture = await createFixture();
 
     await writeEnvKeysToDotEnv({
-      projectPath: "/my-new-project",
+      projectPath: fixture.path,
       dotEnvfileName: ".env",
       apiKeys: [
         { key: "OPENAI_API_KEY", value: "sk-foo" },
@@ -60,47 +64,47 @@ describe("writeEnvKeysToDotEnv", () => {
       ],
     });
 
-    const content = vol.readFileSync("/my-new-project/.env", "utf-8");
-
-    expect(content).toBe("OPENAI_API_KEY=sk-foo\nOPENAI_API_SECRET=sk-bar");
+    expect(await fixture.readFile(".env", "utf-8")).toBe("OPENAI_API_KEY=sk-foo\nOPENAI_API_SECRET=sk-bar");
   });
 
   it("should set default .env file name if not provided", async () => {
     /** ensure the directory exists */
-    vol.mkdirSync("/my-new-project", { recursive: true });
+    await using fixture = await createFixture();
 
     await writeEnvKeysToDotEnv({
-      projectPath: "/my-new-project",
+      projectPath: fixture.path,
       apiKeys: [
         { key: "OPENAI_API_KEY", value: "sk-foo" },
       ],
     });
 
-    expect(vol.existsSync("/my-new-project/.env")).toBe(true);
+    expect(await fixture.exists(".env")).toBe(true);
   });
 
   it("should append api keys to the existing .env file", async () => {
     /** ensure the directory exists */
-    vol.mkdirSync("/my-new-project", { recursive: true });
-
-    vol.writeFileSync("/my-new-project/.env", "OPENAI_API_KEY=sk-foo");
+    await using fixture = await createFixture({
+      "my-new-project": {
+        ".env": "OPENAI_API_KEY=sk-foo",
+      },
+    });
 
     await writeEnvKeysToDotEnv({
-      projectPath: "/my-new-project",
+      projectPath: fixture.getPath("my-new-project"),
       dotEnvfileName: ".env",
       apiKeys: [
         { key: "OPENAI_API_SECRET", value: "sk-bar" },
       ],
     });
 
-    const content = vol.readFileSync("/my-new-project/.env", "utf-8");
-
-    expect(content).toBe("OPENAI_API_KEY=sk-foo\nOPENAI_API_SECRET=sk-bar");
+    expect(await fixture.readFile("my-new-project/.env", "utf-8")).toBe("OPENAI_API_KEY=sk-foo\nOPENAI_API_SECRET=sk-bar");
   });
 
   it("should throw an error if the directory does not exist", async () => {
+    await using fixture = await createFixture();
+
     await expect(writeEnvKeysToDotEnv({
-      projectPath: "/my-new-project",
+      projectPath: fixture.getPath("my-new-project"),
       dotEnvfileName: ".env",
       apiKeys: [],
     }))
