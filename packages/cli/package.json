@@ -49,9 +49,6 @@
     "format": "eslint --fix .",
     "test": "vitest"
   },
-  "optionalDependencies": {
-    "prettier": ">=2.4.0"
-  },
   "devDependencies": {
     "@bluwy/giget-core": "^0.1.2",
     "@clack/prompts": "^0.10.0",

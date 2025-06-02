@@ -20,23 +20,6 @@ export function capitalize(service: string): string {
 }
 
 /**
- * Format the given content with prettier.
- * If prettier is not installed, it returns the content as is.
- */
-export async function formatWithPrettier(content: string) {
-  try {
-  /** if prettier is not installed, return undefined */
-    const prettier = await import("prettier");
-    return await prettier.format(content, {
-      parser: "typescript",
-    });
-  }
-  catch {
-    return content;
-  }
-}
-
-/**
  * Format the given content with indent-string.
  * If indent-string & detect-indent is not installed,
  * it returns the content as is.
