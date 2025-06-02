@@ -1,14 +1,4 @@
-import { vol } from "memfs";
-
 import { createDirectory, writeEnvKeysToDotEnv } from "./fs";
-
-vi.mock("node:fs");
-vi.mock("node:fs/promises");
-
-beforeEach(() => {
-  // reset the state of in-memory fs
-  vol.reset();
-});
 
 describe("createDirectory", () => {
   it("should create a new directory", async () => {
