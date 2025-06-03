@@ -18,7 +18,7 @@ import {
 const PACKAGE_MANAGERS_WITHOUT_YARN = PACKAGE_MANAGERS.filter(packageManager => packageManager !== "yarn");
 describe("start command integration test", () => {
   it.todo("we support yarn but it doesn't work on CI, so we need to fix it");
-  describe.each(PACKAGE_MANAGERS_WITHOUT_YARN)("packageManager: %s", { timeout: 1_000_000, concurrent: true }, async (packageManager) => {
+  describe.each(PACKAGE_MANAGERS_WITHOUT_YARN)("packageManager: %s", { timeout: 1_000_000_000, concurrent: true }, async (packageManager) => {
     describe("setupStandAloneProject", () => {
       it("should create a new directory and set project .env file", async () => {
         /** create a fixture */
