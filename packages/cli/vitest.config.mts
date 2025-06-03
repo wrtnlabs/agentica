@@ -9,5 +9,6 @@ export default defineConfig({
     globals: true,
     exclude: ["**/node_modules/**", "**/dist/**", "**/bin/**"],
     setupFiles: ["vitest.setup.ts"],
+    maxConcurrency: 10,
   },
 });
