@@ -7,15 +7,18 @@ settings:
 catalogs:
   libs:
     openai:
-      specifier: ^4.80.0
-      version: 4.91.1
+      specifier: ^5.2.0
+      version: 5.2.0
+    tstl:
+      specifier: ^3.0.0
+      version: 3.0.0
     type-fest:
       specifier: ^4.37.0
       version: 4.39.1
   mcp:
     '@modelcontextprotocol/sdk':
-      specifier: ^1.9.0
-      version: 1.9.0
+      specifier: ^1.12.0
+      version: 1.12.1
     '@wrtnlabs/calculator-mcp':
       specifier: ^0.2.1
       version: 0.2.1
@@ -31,11 +34,11 @@ catalogs:
       version: 5.8.3
   typia:
     '@ryoppippi/unplugin-typia':
-      specifier: ^2.6.2
-      version: 2.6.2
+      specifier: ^2.6.4
+      version: 2.6.4
     '@samchon/openapi':
-      specifier: ^4.3.1
-      version: 4.3.1
+      specifier: ^4.3.3
+      version: 4.3.3
     typia:
       specifier: ^9.3.1
       version: 9.3.1
@@ -92,7 +95,7 @@ importers:
         version: link:../../packages/vector-selector
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.3)(typescript@5.8.3)
       better-sqlite3:
         specifier: ^11.9.1
         version: 11.9.1
@@ -101,17 +104,17 @@ importers:
         version: 16.4.7
       openai:
         specifier: catalog:libs
-        version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
+        version: 5.2.0(zod@3.24.2)
       sqlite-vec:
         specifier: 0.1.7-alpha.2
         version: 0.1.7-alpha.2
       typia:
         specifier: catalog:typia
-        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
     devDependencies:
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.1
+        version: 4.3.3
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -141,16 +144,16 @@ importers:
         version: link:../core
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.1
+        version: 4.3.3
       openai:
         specifier: catalog:libs
-        version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
+        version: 5.2.0(zod@3.24.2)
       tstl:
-        specifier: ^3.0.0
+        specifier: catalog:libs
         version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -196,13 +199,13 @@ importers:
         version: 6.4.10(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.1
+        version: 4.3.3
       html-to-image:
         specifier: ^1.11.13
         version: 1.11.13
       openai:
         specifier: catalog:libs
-        version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
+        version: 5.2.0(zod@3.24.2)
       react-markdown:
         specifier: ^9.0.3
         version: 9.1.0(@types/react@19.0.0)(react@18.3.1)
@@ -217,7 +220,7 @@ importers:
         version: 1.0.2
       typia:
         specifier: catalog:typia
-        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       uuid:
         specifier: ^11.0.5
         version: 11.1.0
@@ -233,10 +236,10 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@ryoppippi/unplugin-typia':
         specifier: catalog:typia
-        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
+        version: 2.6.4(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.3)(typescript@5.8.3)
       '@types/js-yaml':
         specifier: ^4.0.9
         version: 4.0.9
@@ -302,7 +305,7 @@ importers:
         version: 0.10.0
       '@ryoppippi/unplugin-typia':
         specifier: catalog:typia
-        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))
+        version: 2.6.4(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))
       '@types/node':
         specifier: ^20.14.8
         version: 20.17.30
@@ -341,7 +344,7 @@ importers:
         version: 5.8.3
       typia:
         specifier: catalog:typia
-        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       unbuild:
         specifier: ^3.5.0
         version: 3.5.0(typescript@5.8.3)
@@ -357,17 +360,20 @@ importers:
     dependencies:
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.1
+        version: 4.3.3
+      tstl:
+        specifier: catalog:libs
+        version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       uuid:
         specifier: ^11.0.4
         version: 11.1.0
     devDependencies:
       '@modelcontextprotocol/sdk':
         specifier: catalog:mcp
-        version: 1.9.0
+        version: 1.12.1
       '@nestia/e2e':
         specifier: ^6.0.1
         version: 6.0.1
@@ -379,7 +385,7 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@ryoppippi/unplugin-typia':
         specifier: catalog:typia
-        version: 2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
+        version: 2.6.4(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))
       '@types/node':
         specifier: ^22.13.9
         version: 22.13.9
@@ -391,7 +397,7 @@ importers:
         version: 0.2.1
       openai:
         specifier: catalog:libs
-        version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
+        version: 5.2.0(zod@3.24.2)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -427,10 +433,10 @@ importers:
         version: link:../core
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.1
+        version: 4.3.3
       typia:
         specifier: catalog:typia
-        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
     devDependencies:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
@@ -440,7 +446,7 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.3)(typescript@5.8.3)
       '@types/node':
         specifier: ^22.13.4
         version: 22.13.9
@@ -467,7 +473,7 @@ importers:
         version: 1.8.0
       '@wrtnlabs/connector-hive-api':
         specifier: ^1.5.0
-        version: 1.5.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 1.5.0(@samchon/openapi@4.3.3)(typescript@5.8.3)
       better-sqlite3:
         specifier: ^11.9.1
         version: 11.9.1
@@ -492,7 +498,7 @@ importers:
         version: 12.1.2(rollup@4.39.0)(tslib@2.8.1)(typescript@5.8.3)
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.1
+        version: 4.3.3
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -534,16 +540,16 @@ importers:
         version: link:../packages/vector-selector
       '@modelcontextprotocol/sdk':
         specifier: catalog:mcp
-        version: 1.9.0
+        version: 1.12.1
       '@nestia/e2e':
         specifier: ^6.0.1
         version: 6.0.1
       '@samchon/openapi':
         specifier: catalog:typia
-        version: 4.3.1
+        version: 4.3.3
       '@samchon/shopping-api':
         specifier: ^0.17.0
-        version: 0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 0.17.0(@samchon/openapi@4.3.3)(typescript@5.8.3)
       '@wrtnlabs/calculator-mcp':
         specifier: catalog:mcp
         version: 0.2.1
@@ -558,16 +564,16 @@ importers:
         version: 12.0.1
       openai:
         specifier: catalog:libs
-        version: 4.91.1(encoding@0.1.13)(zod@3.24.2)
+        version: 5.2.0(zod@3.24.2)
       tgrid:
         specifier: ^1.1.0
         version: 1.1.0
       tstl:
-        specifier: ^3.0.0
+        specifier: catalog:libs
         version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+        version: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -651,7 +657,7 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.1.3)
       tstl:
-        specifier: ^3.0.0
+        specifier: catalog:libs
         version: 3.0.0
       use-stick-to-bottom:
         specifier: ^1.1.0
@@ -1694,8 +1700,8 @@ packages:
   '@mermaid-js/parser@0.4.0':
     resolution: {integrity: sha512-wla8XOWvQAwuqy+gxiZqY+c7FokraOTHRWMsbB4AgRx9Sy7zKslNyejy7E+a77qHfey5GXw/ik3IXv/NHMJgaA==}
 
-  '@modelcontextprotocol/sdk@1.9.0':
-    resolution: {integrity: sha512-Jq2EUCQpe0iyO5FGpzVYDNFR6oR53AIrwph9yWl7uSc7IWUMsrmpmSaTGra5hQNunXpM+9oit85p924jWuHzUA==}
+  '@modelcontextprotocol/sdk@1.12.1':
+    resolution: {integrity: sha512-KG1CZhZfWg+u8pxeM/mByJDScJSrjjxLc8fwQqbsS8xCjBmQfMNEBTotYdNanKekepnfRI85GtgQlctLFpcYPw==}
     engines: {node: '>=18'}
 
   '@mswjs/interceptors@0.37.6':
@@ -2543,12 +2549,12 @@ packages:
   '@rushstack/eslint-patch@1.11.0':
     resolution: {integrity: sha512-zxnHvoMQVqewTJr/W4pKjF0bMGiKJv1WX7bSrkl46Hg0QjESbzBROWK0Wg4RphzSOS5Jiy7eFimmM3UgMrMZbQ==}
 
-  '@ryoppippi/unplugin-typia@2.6.2':
-    resolution: {integrity: sha512-nPhcmjKd2N7yijSjmxJaTlIyA1uka2SkvFtsvrMY8aaAW/ml8FeqaPCYOov7z/PMvbNkqI3OmEQ0EkECKUYOVg==}
+  '@ryoppippi/unplugin-typia@2.6.4':
+    resolution: {integrity: sha512-dQuZkz3BpSk59PMyJsWXEAose2u0eXFy5rA6EC3j/LtcELHIkyx1ebbk/CfjsQJaKCkkXdY0UeOrcHMAHjHkcQ==}
     peerDependencies:
       svelte: ^5.28.2
       typescript: '>=4.8.0 <5.9.0'
-      typia: '>=9.2.0'
+      typia: '>=9.3.0'
       vite: '>=3.0.0'
     peerDependenciesMeta:
       svelte:
@@ -2556,8 +2562,8 @@ packages:
       vite:
         optional: true
 
-  '@samchon/openapi@4.3.1':
-    resolution: {integrity: sha512-oNvCJWRbN+Z+i0H6X4lfDffsJg/gG3MJ0zBVqwOJq1Th24OcqgyWsvoXj4EY4AMYZedgBjyPYYXhs802Zb72Vw==}
+  '@samchon/openapi@4.3.3':
+    resolution: {integrity: sha512-jCyp1YZsFBIWXjHBfjYGlRXTGf5h5jrvGiAhKFI4Yxs8wg4YoVHMaDeC2AWcpo4L9KYVQ2uuePMM56g0jzK8sA==}
 
   '@samchon/shopping-api@0.17.0':
     resolution: {integrity: sha512-aGDCAD9IhXnFKEhxn2qW5W8bu7DPXtDzabuX0I69vnQrrb/c3FVIqQAaF69d+Fd7jxF/iVguouCm4YdvjdmaCg==}
@@ -3089,12 +3095,6 @@ packages:
   '@types/nlcst@2.0.3':
     resolution: {integrity: sha512-vSYNSDe6Ix3q+6Z7ri9lyWqgGhJTmzRjZRqyq15N0Z/1/UnVsno9G/N40NBijoYx2seFDIl0+B2mgAb9mezUCA==}
 
-  '@types/node-fetch@2.6.12':
-    resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
-
-  '@types/node@18.19.86':
-    resolution: {integrity: sha512-fifKayi175wLyKyc5qUfyENhQ1dCNI1UNjp653d8kuYcPQN5JhX3dGuP/XmvPTg/xRBn1VTLpbmi+H/Mr7tLfQ==}
-
   '@types/node@20.17.30':
     resolution: {integrity: sha512-7zf4YyHA+jvBNfVrk2Gtvs6x7E8V+YDW05bNfG2XkWDJfYRXrTiP/DsB2zSYTaHX0bGIujTBQdMVAhb+j7mwpg==}
 
@@ -3394,10 +3394,6 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  agentkeepalive@4.6.0:
-    resolution: {integrity: sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==}
-    engines: {node: '>= 8.0.0'}
-
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
 
@@ -3600,6 +3596,9 @@ packages:
     resolution: {integrity: sha512-cM/4+kO2A2l3aDSL7tr/ALg8TWPihl1fDWHZyz55JlDmzd01Y+8Vq3YQ1ydeKDS4QFN+tKaLsVzhdDIb/cbsLQ==}
     engines: {node: '>=18'}
     hasBin: true
+
+  bun-only@0.0.1:
+    resolution: {integrity: sha512-eQdy3eKF3MPcrwhvDq/7BykQ9kpl9Lu/zJ9IcL1AsjZ4vct68Du8reZisptp7YL8b65iImMf9j06xmGUNsc2rQ==}
 
   busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
@@ -4861,9 +4860,6 @@ packages:
     resolution: {integrity: sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==}
     engines: {node: '>=14'}
 
-  form-data-encoder@1.7.2:
-    resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
-
   form-data-encoder@4.0.2:
     resolution: {integrity: sha512-KQVhvhK8ZkWzxKxOr56CPulAhH3dobtuQ4+hNQ+HekH/Wp5gSOafqRAeTphQUJAIk0GBvHZgJ2ZGRWd5kphMuw==}
     engines: {node: '>= 18'}
@@ -4875,10 +4871,6 @@ packages:
   format@0.2.2:
     resolution: {integrity: sha512-wzsgA6WOq+09wrU1tsJ09udeR/YZRaeArL9e1wPbFg3GG2yDnC2ldKpxs4xunpFF9DgqCqOIra3bc1HWrJ37Ww==}
     engines: {node: '>=0.4.x'}
-
-  formdata-node@4.4.1:
-    resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
-    engines: {node: '>= 12.20'}
 
   formdata-node@6.0.3:
     resolution: {integrity: sha512-8e1++BCiTzUno9v5IZ2J6bv4RU+3UKDmqWUQD0MIMVCd9AdhWkO1gw57oo1mNEX1dMq2EGI+FbWz4B92pscSQg==}
@@ -5144,9 +5136,6 @@ packages:
   human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
-
-  humanize-ms@1.2.1:
-    resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
 
   hyperdyperid@1.2.0:
     resolution: {integrity: sha512-Y93lCzHYgGWdrJ66yIktxiaGULYc6oGiABxhcO5AufBeOyoIdZF7bIfLaOrbM0iGIOXQQgxxRrFEnb+Y6w1n4A==}
@@ -6149,11 +6138,6 @@ packages:
     resolution: {integrity: sha512-c5XK0MjkGBrQPGYG24GBADZud0NCbznxNx0ZkS+ebUTrmV1qTDxPxSL8zEAPURXSbLRWVexxmP4986BziahL5w==}
     engines: {node: '>=10'}
 
-  node-domexception@1.0.0:
-    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
-    engines: {node: '>=10.5.0'}
-    deprecated: Use your platform's native DOMException instead
-
   node-fetch-native@1.6.6:
     resolution: {integrity: sha512-8Mc2HhqPdlIfedsuZoc3yioPuzp6b+L5jRCRY1QzuWZh2EGJVQrGppC6V6cF0bLdbW0+O2YpqCA25aF/1lvipQ==}
 
@@ -6249,8 +6233,8 @@ packages:
   oniguruma-to-es@3.1.1:
     resolution: {integrity: sha512-bUH8SDvPkH3ho3dvwJwfonjlQ4R80vjyvrU8YpxuROddv55vAEJrTuCuCVUhhsHbtlD9tGGbaNApGQckXhS8iQ==}
 
-  openai@4.91.1:
-    resolution: {integrity: sha512-DbjrR0hIMQFbxz8+3qBsfPJnh3+I/skPgoSlT7f9eiZuhGBUissPQULNgx6gHNkLoZ3uS0uYS6eXPUdtg4nHzw==}
+  openai@5.2.0:
+    resolution: {integrity: sha512-b+Sf2Yk2eApDkhqHr7C4d5hux9gkHUvyqQ7RrdSfLsjrXkCZpJPqkME0u5Py7RPB28Ozz+RkJZpW7YPTOoChew==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -7699,9 +7683,6 @@ packages:
       typescript:
         optional: true
 
-  undici-types@5.26.5:
-    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
@@ -7963,10 +7944,6 @@ packages:
 
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
-
-  web-streams-polyfill@4.0.0-beta.3:
-    resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
-    engines: {node: '>= 14'}
 
   web-worker@1.5.0:
     resolution: {integrity: sha512-RiMReJrTAiA+mBjGONMnjVDP2u3p9R1vkcGz6gDIrOMT3oGuYwX2WRMYI9ipkphSuE5XKEhydbhNEJh4NY9mlw==}
@@ -9444,8 +9421,9 @@ snapshots:
     dependencies:
       langium: 3.3.1
 
-  '@modelcontextprotocol/sdk@1.9.0':
+  '@modelcontextprotocol/sdk@1.12.1':
     dependencies:
+      ajv: 6.12.6
       content-type: 1.0.5
       cors: 2.8.5
       cross-spawn: 7.0.6
@@ -9621,15 +9599,15 @@ snapshots:
 
   '@nestia/e2e@6.0.1': {}
 
-  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.1)(typia@9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3))':
+  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.3)(typia@9.3.0(@samchon/openapi@4.3.3)(typescript@5.8.3))':
     dependencies:
-      '@samchon/openapi': 4.3.1
-      typia: 9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
+      '@samchon/openapi': 4.3.3
+      typia: 9.3.0(@samchon/openapi@4.3.3)(typescript@5.8.3)
 
-  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.1)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))':
+  '@nestia/fetcher@6.0.1(@samchon/openapi@4.3.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))':
     dependencies:
-      '@samchon/openapi': 4.3.1
-      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+      '@samchon/openapi': 4.3.3
+      typia: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
 
   '@next/env@13.5.11': {}
 
@@ -10173,9 +10151,10 @@ snapshots:
 
   '@rushstack/eslint-patch@1.11.0': {}
 
-  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))':
+  '@ryoppippi/unplugin-typia@2.6.4(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.39.0)
+      bun-only: 0.0.1
       consola: 3.4.2
       defu: 6.1.4
       diff-match-patch-es: 1.0.1
@@ -10185,16 +10164,17 @@ snapshots:
       pkg-types: 2.1.0
       type-fest: 4.39.1
       typescript: 5.8.3
-      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+      typia: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       unplugin: 2.2.2
     optionalDependencies:
       vite: 5.4.17(@types/node@20.17.30)(lightningcss@1.29.2)(terser@5.39.0)
     transitivePeerDependencies:
       - rollup
 
-  '@ryoppippi/unplugin-typia@2.6.2(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))':
+  '@ryoppippi/unplugin-typia@2.6.4(rollup@4.39.0)(typescript@5.8.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))(vite@5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0))':
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.39.0)
+      bun-only: 0.0.1
       consola: 3.4.2
       defu: 6.1.4
       diff-match-patch-es: 1.0.1
@@ -10204,19 +10184,19 @@ snapshots:
       pkg-types: 2.1.0
       type-fest: 4.39.1
       typescript: 5.8.3
-      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+      typia: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       unplugin: 2.2.2
     optionalDependencies:
       vite: 5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0)
     transitivePeerDependencies:
       - rollup
 
-  '@samchon/openapi@4.3.1': {}
+  '@samchon/openapi@4.3.3': {}
 
-  '@samchon/shopping-api@0.17.0(@samchon/openapi@4.3.1)(typescript@5.8.3)':
+  '@samchon/shopping-api@0.17.0(@samchon/openapi@4.3.3)(typescript@5.8.3)':
     dependencies:
-      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.1)(typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3))
-      typia: 9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3)
+      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.3)(typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3))
+      typia: 9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3)
       uuid: 11.1.0
     transitivePeerDependencies:
       - '@samchon/openapi'
@@ -10909,15 +10889,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
-  '@types/node-fetch@2.6.12':
-    dependencies:
-      '@types/node': 22.13.9
-      form-data: 4.0.2
-
-  '@types/node@18.19.86':
-    dependencies:
-      undici-types: 5.26.5
-
   '@types/node@20.17.30':
     dependencies:
       undici-types: 6.19.8
@@ -11207,11 +11178,11 @@ snapshots:
 
   '@wrtnlabs/calculator-mcp@0.2.1': {}
 
-  '@wrtnlabs/connector-hive-api@1.5.0(@samchon/openapi@4.3.1)(typescript@5.8.3)':
+  '@wrtnlabs/connector-hive-api@1.5.0(@samchon/openapi@4.3.3)(typescript@5.8.3)':
     dependencies:
-      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.1)(typia@9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3))
+      '@nestia/fetcher': 6.0.1(@samchon/openapi@4.3.3)(typia@9.3.0(@samchon/openapi@4.3.3)(typescript@5.8.3))
       tgrid: 1.1.0
-      typia: 9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3)
+      typia: 9.3.0(@samchon/openapi@4.3.3)(typescript@5.8.3)
     transitivePeerDependencies:
       - '@samchon/openapi'
       - bufferutil
@@ -11267,10 +11238,6 @@ snapshots:
       acorn: 8.14.1
 
   acorn@8.14.1: {}
-
-  agentkeepalive@4.6.0:
-    dependencies:
-      humanize-ms: 1.2.1
 
   ajv@6.12.6:
     dependencies:
@@ -11511,6 +11478,8 @@ snapshots:
       yaml: 2.7.1
     transitivePeerDependencies:
       - magicast
+
+  bun-only@0.0.1: {}
 
   busboy@1.6.0:
     dependencies:
@@ -13117,8 +13086,6 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  form-data-encoder@1.7.2: {}
-
   form-data-encoder@4.0.2: {}
 
   form-data@4.0.2:
@@ -13129,11 +13096,6 @@ snapshots:
       mime-types: 2.1.35
 
   format@0.2.2: {}
-
-  formdata-node@4.4.1:
-    dependencies:
-      node-domexception: 1.0.0
-      web-streams-polyfill: 4.0.0-beta.3
 
   formdata-node@6.0.3: {}
 
@@ -13491,10 +13453,6 @@ snapshots:
       toidentifier: 1.0.1
 
   human-signals@5.0.0: {}
-
-  humanize-ms@1.2.1:
-    dependencies:
-      ms: 2.1.3
 
   hyperdyperid@1.2.0: {}
 
@@ -14825,8 +14783,6 @@ snapshots:
     dependencies:
       semver: 7.7.1
 
-  node-domexception@1.0.0: {}
-
   node-fetch-native@1.6.6: {}
 
   node-fetch@2.7.0(encoding@0.1.13):
@@ -14931,19 +14887,9 @@ snapshots:
       regex: 6.0.1
       regex-recursion: 6.0.2
 
-  openai@4.91.1(encoding@0.1.13)(zod@3.24.2):
-    dependencies:
-      '@types/node': 18.19.86
-      '@types/node-fetch': 2.6.12
-      abort-controller: 3.0.0
-      agentkeepalive: 4.6.0
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
-      node-fetch: 2.7.0(encoding@0.1.13)
+  openai@5.2.0(zod@3.24.2):
     optionalDependencies:
       zod: 3.24.2
-    transitivePeerDependencies:
-      - encoding
 
   optionator@0.9.4:
     dependencies:
@@ -16633,9 +16579,9 @@ snapshots:
 
   typescript@5.8.3: {}
 
-  typia@9.3.0(@samchon/openapi@4.3.1)(typescript@5.8.3):
+  typia@9.3.0(@samchon/openapi@4.3.3)(typescript@5.8.3):
     dependencies:
-      '@samchon/openapi': 4.3.1
+      '@samchon/openapi': 4.3.3
       '@standard-schema/spec': 1.0.0
       commander: 10.0.1
       comment-json: 4.2.5
@@ -16644,9 +16590,9 @@ snapshots:
       randexp: 0.5.3
       typescript: 5.8.3
 
-  typia@9.3.1(@samchon/openapi@4.3.1)(typescript@5.8.3):
+  typia@9.3.1(@samchon/openapi@4.3.3)(typescript@5.8.3):
     dependencies:
-      '@samchon/openapi': 4.3.1
+      '@samchon/openapi': 4.3.3
       '@standard-schema/spec': 1.0.0
       commander: 10.0.1
       comment-json: 4.2.5
@@ -16699,8 +16645,6 @@ snapshots:
       - vue
       - vue-sfc-transformer
       - vue-tsc
-
-  undici-types@5.26.5: {}
 
   undici-types@6.19.8: {}
 
@@ -17090,8 +17034,6 @@ snapshots:
       defaults: 1.0.4
 
   web-namespaces@2.0.1: {}
-
-  web-streams-polyfill@4.0.0-beta.3: {}
 
   web-worker@1.5.0: {}
 

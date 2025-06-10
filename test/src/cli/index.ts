@@ -9,7 +9,6 @@ import type {
   OpenApiV3_1,
   SwaggerV2,
 } from "@samchon/openapi";
-import type { RequestOptions } from "openai/core";
 
 import { Agentica } from "@agentica/core";
 import {
@@ -87,7 +86,7 @@ async function main(): Promise<void> {
       }),
       model: "gpt-4o-mini",
       options: TestGlobal.env.CHATGPT_OPTIONS !== undefined
-        ? JSON.parse(TestGlobal.env.CHATGPT_OPTIONS) as RequestOptions
+        ? JSON.parse(TestGlobal.env.CHATGPT_OPTIONS) as OpenAI.RequestOptions
         : undefined,
     },
     controllers: [

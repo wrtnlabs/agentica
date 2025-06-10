@@ -2,7 +2,6 @@ import fs from "node:fs";
 import process from "node:process";
 
 import type { AgenticaHistory } from "@agentica/core";
-import type { RequestOptions } from "openai/core";
 
 import { MicroAgentica } from "@agentica/core";
 import chalk from "chalk";
@@ -35,7 +34,7 @@ async function main(): Promise<void> {
       }),
       model: "gpt-4o-mini",
       options: TestGlobal.env.CHATGPT_OPTIONS !== undefined
-        ? JSON.parse(TestGlobal.env.CHATGPT_OPTIONS) as RequestOptions
+        ? JSON.parse(TestGlobal.env.CHATGPT_OPTIONS) as OpenAI.RequestOptions
         : undefined,
     },
     controllers: [
