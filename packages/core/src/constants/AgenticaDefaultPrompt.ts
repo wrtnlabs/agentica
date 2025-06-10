@@ -1,5 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import { is_node } from "tstl";
+
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
 import type { IMicroAgenticaSystemPrompt } from "../structures/IMicroAgenticaSystemPrompt";
@@ -9,29 +11,10 @@ import { Singleton } from "../utils/Singleton";
 import { AgenticaSystemPrompt } from "./AgenticaSystemPrompt";
 
 /**
- * @TODO maybe this code will rewrite
- */
-const isNode = new Singleton(() => {
-  const isObject = (obj: any) => typeof obj === "object" && obj !== null;
-  return (
-    // eslint-disable-next-line no-restricted-globals
-    typeof global === "object"
-    // eslint-disable-next-line no-restricted-globals
-    && isObject(global)
-    // eslint-disable-next-line node/prefer-global/process, no-restricted-globals
-    && isObject(global.process)
-    // eslint-disable-next-line node/prefer-global/process, no-restricted-globals
-    && isObject(global.process.versions)
-    // eslint-disable-next-line node/prefer-global/process, no-restricted-globals
-    && typeof global.process.versions.node !== "undefined"
-  );
-});
-
-/**
  * @TODO maybe replace `process` property for lint pass
  */
 const getLocale = new Singleton(() =>
-  isNode.get()
+  is_node()
     // eslint-disable-next-line node/prefer-global/process
     ? (process.env.LANG?.split(".")[0] ?? "en-US")
     : navigator.language,
