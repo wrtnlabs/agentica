@@ -73,6 +73,7 @@
     "rollup": "^4.34.8",
     "ts-node": "catalog:typescript",
     "ts-patch": "catalog:typescript",
+    "tstl": "catalog:libs",
     "typedoc": "^0.27.7",
     "typescript": "catalog:typescript",
     "vitest": "catalog:vite"
