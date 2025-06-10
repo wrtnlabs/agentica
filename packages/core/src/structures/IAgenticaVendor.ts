@@ -39,7 +39,7 @@ export interface IAgenticaVendor {
   options?: OpenAI.RequestOptions | undefined;
 
   /**
-   * Numer of concurrent requests allowed.
+   * Number of concurrent requests allowed.
    *
    * If you configure this property, {@link Agentica} will constraint
    * number of concurrent requests to the LLM vendor. If you want to
