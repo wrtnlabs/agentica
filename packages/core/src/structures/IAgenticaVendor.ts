@@ -41,7 +41,7 @@ export interface IAgenticaVendor {
   /**
    * Number of concurrent requests allowed.
    *
-   * If you configure this property, {@link Agentica} will constraint
+   * If you configure this property, {@link Agentica} will constrain the
    * number of concurrent requests to the LLM vendor. If you want to
    * share the semaphore instance with other agents, you can directly
    * assign the {@link Semaphore} instance to this property.
