@@ -1,5 +1,7 @@
 import type { ILlmSchema } from "@samchon/openapi";
+import type OpenAI from "openai";
 
+import { Semaphore } from "tstl";
 import { v4 } from "uuid";
 
 import type { AgenticaOperation } from "./context/AgenticaOperation";
@@ -65,6 +67,8 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     Set<(event: MicroAgenticaEvent<Model>) => Promise<void>>
   >;
 
+  private readonly semaphore_: Semaphore | null;
+
   /* -----------------------------------------------------------
     CONSTRUCTOR
   ----------------------------------------------------------- */
@@ -90,6 +94,11 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
         : new AgenticaTokenUsage(this.props.tokenUsage)
       : AgenticaTokenUsage.zero();
     this.listeners_ = new Map();
+    this.semaphore_ = props.vendor.semaphore != null
+      ? typeof props.vendor.semaphore === "object"
+        ? props.vendor.semaphore
+        : new Semaphore(props.vendor.semaphore)
+      : null;
   }
 
   /**
@@ -235,6 +244,71 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     usage: AgenticaTokenUsage;
     dispatch: (event: MicroAgenticaEvent<Model>) => void;
   }): MicroAgenticaContext<Model> {
+    const request = async (
+      source: MicroAgenticaEvent.Source,
+      body: Omit<OpenAI.ChatCompletionCreateParamsStreaming, "model" | "stream">,
+    ): Promise<ReadableStream<OpenAI.Chat.Completions.ChatCompletionChunk>> => {
+      const event: AgenticaRequestEvent = createRequestEvent({
+        source,
+        body: {
+          ...body,
+          model: this.props.vendor.model,
+          stream: true,
+          stream_options: {
+            include_usage: true,
+          },
+        },
+        options: this.props.vendor.options,
+      });
+      props.dispatch(event);
+
+      // completion
+      const completion = await this.props.vendor.api.chat.completions.create(
+        event.body,
+        event.options,
+      );
+
+      const [streamForEvent, temporaryStream] = StreamUtil.transform(
+        completion.toReadableStream() as ReadableStream<Uint8Array>,
+        value =>
+          ChatGptCompletionMessageUtil.transformCompletionChunk(value),
+      ).tee();
+
+      const [streamForAggregate, streamForReturn] = temporaryStream.tee();
+
+      void (async () => {
+        const reader = streamForAggregate.getReader();
+        while (true) {
+          const chunk = await reader.read();
+          if (chunk.done) {
+            break;
+          }
+          if (chunk.value.usage != null) {
+            AgenticaTokenUsageAggregator.aggregate({
+              kind: source,
+              completionUsage: chunk.value.usage,
+              usage: props.usage,
+            });
+          }
+        }
+      })().catch(() => {});
+
+      const [streamForStream, streamForJoin] = streamForEvent.tee();
+      props.dispatch({
+        id: v4(),
+        type: "response",
+        source,
+        stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
+        body: event.body,
+        options: event.options,
+        join: async () => {
+          const chunks = await StreamUtil.readAll(streamForJoin);
+          return ChatGptCompletionMessageUtil.merge(chunks);
+        },
+        created_at: new Date().toISOString(),
+      });
+      return streamForReturn;
+    };
     return {
       operations: this.operations_,
       config: this.props.config,
@@ -242,69 +316,17 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       histories: this.histories_,
       prompt: props.prompt,
       dispatch: props.dispatch,
-      request: async (source, body) => {
-        // request information
-        const event: AgenticaRequestEvent = createRequestEvent({
-          source,
-          body: {
-            ...body,
-            model: this.props.vendor.model,
-            stream: true,
-            stream_options: {
-              include_usage: true,
-            },
-          },
-          options: this.props.vendor.options,
-        });
-        props.dispatch(event);
-
-        // completion
-        const completion = await this.props.vendor.api.chat.completions.create(
-          event.body,
-          event.options,
-        );
-
-        const [streamForEvent, temporaryStream] = StreamUtil.transform(
-          completion.toReadableStream() as ReadableStream<Uint8Array>,
-          value =>
-            ChatGptCompletionMessageUtil.transformCompletionChunk(value),
-        ).tee();
-
-        const [streamForAggregate, streamForReturn] = temporaryStream.tee();
-
-        void (async () => {
-          const reader = streamForAggregate.getReader();
-          while (true) {
-            const chunk = await reader.read();
-            if (chunk.done) {
-              break;
-            }
-            if (chunk.value.usage != null) {
-              AgenticaTokenUsageAggregator.aggregate({
-                kind: source,
-                completionUsage: chunk.value.usage,
-                usage: props.usage,
-              });
-            }
+      request: this.semaphore_ === null
+        ? request
+        : async (source, body) => {
+          await this.semaphore_!.acquire();
+          try {
+            return await request(source, body);
           }
-        })();
-
-        const [streamForStream, streamForJoin] = streamForEvent.tee();
-        props.dispatch({
-          id: v4(),
-          type: "response",
-          source,
-          stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
-          body: event.body,
-          options: event.options,
-          join: async () => {
-            const chunks = await StreamUtil.readAll(streamForJoin);
-            return ChatGptCompletionMessageUtil.merge(chunks);
-          },
-          created_at: new Date().toISOString(),
-        });
-        return streamForReturn;
-      },
+          finally {
+            void this.semaphore_!.release().catch(() => {});
+          }
+        },
     };
   }
 
