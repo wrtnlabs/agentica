@@ -1,6 +1,6 @@
 {
   "name": "@agentica/webite",
-  "version": "0.27.3",
+  "version": "0.28.0",
   "description": "Agentica Website",
   "scripts": {
     "dev": "next",
@@ -50,7 +50,7 @@
     "rehype-raw": "^7.0.0",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
-    "tstl": "^3.0.0",
+    "tstl": "catalog:libs",
     "use-stick-to-bottom": "^1.1.0"
   },
   "devDependencies": {

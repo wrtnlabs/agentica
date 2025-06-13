@@ -1,4 +1,5 @@
 import type OpenAI from "openai";
+import type { Semaphore } from "tstl";
 
 /**
  * LLM service vendor for Agentica Chat.
@@ -36,4 +37,18 @@ export interface IAgenticaVendor {
    * Options for the request.
    */
   options?: OpenAI.RequestOptions | undefined;
+
+  /**
+   * Number of concurrent requests allowed.
+   *
+   * If you configure this property, {@link Agentica} will constrain the
+   * number of concurrent requests to the LLM vendor. If you want to
+   * share the semaphore instance with other agents, you can directly
+   * assign the {@link Semaphore} instance to this property.
+   *
+   * Otherwise, it will not limit the number of concurrent
+   * requests, and the {@link Agentica} will send requests
+   * asynchronously without any limit.
+   */
+  semaphore?: Semaphore | number | undefined;
 }

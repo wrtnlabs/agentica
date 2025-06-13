@@ -1,6 +1,6 @@
 {
   "name": "@agentica/benchmark",
-  "version": "0.27.3",
+  "version": "0.28.0",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -52,7 +52,7 @@
     "@agentica/core": "workspace:^",
     "@samchon/openapi": "catalog:typia",
     "openai": "catalog:libs",
-    "tstl": "^3.0.0",
+    "tstl": "catalog:libs",
     "typia": "catalog:typia",
     "uuid": "^11.1.0"
   },
