@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 5a98a707a162b0da7f7271e97f055af69e89788e..5088bede46ec0876c2c062b04e5b6103a0595dfc 100644
+--- a/package.json
++++ b/package.json
+@@ -27,7 +27,7 @@
+     "node": ">=18"
+   },
+   "dependencies": {
+-    "tar": "^6.2.1"
++    "tar": "^7.4.3"
+   },
+   "devDependencies": {
+     "@types/node": "^22.7.4",
