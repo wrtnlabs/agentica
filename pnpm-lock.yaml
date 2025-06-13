@@ -293,6 +293,13 @@ importers:
         version: 5.4.17(@types/node@22.13.9)(lightningcss@1.29.2)(terser@5.39.0)
 
   packages/cli:
+    dependencies:
+      detect-indent:
+        specifier: ^7.0.1
+        version: 7.0.1
+      indent-string:
+        specifier: ^5.0.0
+        version: 5.0.0
     devDependencies:
       '@bluwy/giget-core':
         specifier: ^0.1.2
@@ -309,12 +316,6 @@ importers:
       commander:
         specifier: ^10.0.0
         version: 10.0.1
-      detect-indent:
-        specifier: ^7.0.1
-        version: 7.0.1
-      indent-string:
-        specifier: ^5.0.0
-        version: 5.0.0
       memfs:
         specifier: ^4.17.0
         version: 4.17.0
@@ -354,10 +355,6 @@ importers:
       vitest:
         specifier: catalog:vite
         version: 3.1.1(@types/debug@4.1.12)(@types/node@20.17.30)(lightningcss@1.29.2)(msw@2.7.3(@types/node@20.17.30)(typescript@5.8.3))(terser@5.39.0)
-    optionalDependencies:
-      prettier:
-        specifier: '>=2.4.0'
-        version: 3.5.3
 
   packages/core:
     dependencies:
