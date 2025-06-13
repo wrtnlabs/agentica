@@ -50,6 +50,11 @@ catalogs:
 overrides:
   '@types/react': 19.0.0
 
+patchedDependencies:
+  '@bluwy/giget-core':
+    hash: 490d72b32623e37ded39ee92a0249b67962d8af596897f43a128695f58fcc186
+    path: patches/@bluwy__giget-core.patch
+
 importers:
 
   .:
@@ -306,7 +311,7 @@ importers:
     devDependencies:
       '@bluwy/giget-core':
         specifier: ^0.1.2
-        version: 0.1.2
+        version: 0.1.2(patch_hash=490d72b32623e37ded39ee92a0249b67962d8af596897f43a128695f58fcc186)
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
@@ -8760,7 +8765,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@bluwy/giget-core@0.1.2':
+  '@bluwy/giget-core@0.1.2(patch_hash=490d72b32623e37ded39ee92a0249b67962d8af596897f43a128695f58fcc186)':
     dependencies:
       tar: 6.2.1
 

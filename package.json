@@ -68,6 +68,9 @@
   "pnpm": {
     "overrides": {
       "@types/react": "19.0.0"
+    },
+    "patchedDependencies": {
+      "@bluwy/giget-core": "patches/@bluwy__giget-core.patch"
     }
   },
   "changelogithub": {
