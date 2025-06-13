@@ -49,21 +49,22 @@
     "format": "eslint --fix .",
     "test": "vitest"
   },
-  "optionalDependencies": {
-    "prettier": ">=2.4.0"
+  "dependencies": {
+    "detect-indent": "^7.0.1",
+    "indent-string": "^5.0.0"
   },
   "devDependencies": {
     "@bluwy/giget-core": "^0.1.2",
-    "@clack/prompts": "^0.10.0",
+    "@clack/prompts": "^0.11.0",
     "@ryoppippi/unplugin-typia": "catalog:typia",
-    "@types/node": "^20.14.8",
-    "commander": "^10.0.0",
-    "memfs": "^4.17.0",
-    "msw": "^2.7.3",
-    "nano-spawn": "^1.0.1",
+    "@types/node": "^24.0.1",
+    "commander": "^14.0.0",
+    "memfs": "^4.17.2",
+    "msw": "^2.10.2",
+    "nano-spawn": "^1.0.2",
     "picocolors": "^1.1.1",
-    "publint": "^0.3.9",
-    "std-env": "^3.8.1",
+    "publint": "^0.3.12",
+    "std-env": "^3.9.0",
     "ts-node": "catalog:typescript",
     "ts-patch": "catalog:typescript",
     "type-fest": "catalog:libs",
