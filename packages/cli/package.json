@@ -49,14 +49,16 @@
     "format": "eslint --fix .",
     "test": "vitest"
   },
+  "dependencies": {
+    "detect-indent": "^7.0.1",
+    "indent-string": "^5.0.0"
+  },
   "devDependencies": {
     "@bluwy/giget-core": "^0.1.2",
     "@clack/prompts": "^0.10.0",
     "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^20.14.8",
     "commander": "^10.0.0",
-    "detect-indent": "^7.0.1",
-    "indent-string": "^5.0.0",
     "memfs": "^4.17.0",
     "msw": "^2.7.3",
     "nano-spawn": "^1.0.1",
