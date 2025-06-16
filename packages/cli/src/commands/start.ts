@@ -21,7 +21,6 @@ import type { PackageManager } from "../packages";
 import { generateConnectorsArrayCode, generateServiceImportsCode, getConnectors, insertCodeIntoAgenticaStarter, serviceToConnector } from "../connectors";
 import { downloadTemplateAndPlaceInProject, writeEnvKeysToDotEnv } from "../fs";
 import { detectPackageManager, installCommand, runCommand } from "../packages";
-import { formatWithPrettier } from "../utils";
 
 export const START_TEMPLATES = [
   "nodejs",
@@ -332,8 +331,7 @@ export async function setupStandAloneProject({ projectAbsolutePath, context }: S
     importCode,
     connectorCode: connectorsCode,
   });
-  const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
-  await writeFile(indexFilePath, formattedIndexFileContent);
+  await writeFile(indexFilePath, updatedIndexFileContent);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -387,8 +385,7 @@ export async function setupNodeJSProject({ projectAbsolutePath, context }: Setup
     importCode,
     connectorCode: connectorsCode,
   });
-  const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
-  await writeFile(indexFilePath, formattedIndexFileContent);
+  await writeFile(indexFilePath, updatedIndexFileContent);
 
   // write .env file
   await writeEnvKeysToDotEnv({
@@ -446,8 +443,7 @@ export async function setupNestJSProject({ projectAbsolutePath, context }: Setup
     importCode,
     connectorCode: connectorsCode,
   });
-  const formattedIndexFileContent = await formatWithPrettier(updatedIndexFileContent);
-  await writeFile(indexFilePath, formattedIndexFileContent);
+  await writeFile(indexFilePath, updatedIndexFileContent);
 
   // write .env file
   await writeEnvKeysToDotEnv({

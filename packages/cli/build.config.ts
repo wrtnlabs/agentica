@@ -23,6 +23,10 @@ export default defineBuildConfig({
 
       "nano-spawn",
 
+      // indent
+      "indent-string",
+      "detect-indent",
+
       // @clack/prompts related
       "sisteransi",
       "@clack/prompts",
