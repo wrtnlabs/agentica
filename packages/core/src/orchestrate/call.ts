@@ -89,7 +89,7 @@ export async function call<Model extends ILlmSchema.Model>(
         }) as OpenAI.ChatCompletionTool,
     ),
     tool_choice: "auto",
-    parallel_tool_calls: false,
+    // parallel_tool_calls: false,
   });
 
   // ----
@@ -493,7 +493,7 @@ async function correct<Model extends ILlmSchema.Model>(
         name: call.operation.name,
       },
     },
-    parallel_tool_calls: false,
+    // parallel_tool_calls: false,
   });
 
   const chunks = await StreamUtil.readAll(completionStream);

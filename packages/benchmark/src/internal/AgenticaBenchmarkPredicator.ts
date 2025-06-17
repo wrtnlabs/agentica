@@ -101,7 +101,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
         },
       ],
       tool_choice: "required",
-      parallel_tool_calls: false,
+      // parallel_tool_calls: false,
     },
     llmVendor.options,
   );
