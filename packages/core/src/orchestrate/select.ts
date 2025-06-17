@@ -171,7 +171,7 @@ async function step<Model extends ILlmSchema.Model>(
             name: CONTAINER.functions[0]!.name,
           },
         },
-    parallel_tool_calls: false,
+    // parallel_tool_calls: false,
   });
 
   const chunks = await StreamUtil.readAll(completionStream);

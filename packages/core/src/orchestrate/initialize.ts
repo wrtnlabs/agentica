@@ -62,7 +62,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
       },
     ],
     tool_choice: "auto",
-    parallel_tool_calls: false,
+    // parallel_tool_calls: false,
   });
 
   const textContext: ({
