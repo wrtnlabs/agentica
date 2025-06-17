@@ -70,7 +70,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         name: "select_functions",
       },
     },
-    parallel_tool_calls: false,
+    // parallel_tool_calls: false,
     tools: [Tools.select_functions],
   })
     .then(async v => utils.StreamUtil.readAll(v))
