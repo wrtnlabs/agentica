@@ -26,6 +26,7 @@ import { call, describe } from "./orchestrate";
 import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
 import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
+import { retryAsync } from "./utils/retry";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
 
 /**
@@ -263,10 +264,15 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       props.dispatch(event);
 
       // completion
-      const completion = await this.props.vendor.api.chat.completions.create(
-        event.body,
-        event.options,
-      );
+
+      const completion = await retryAsync(async () =>
+        this.props.vendor.api.chat.completions.create(
+          event.body,
+          event.options,
+        ), {
+        maxRetries: 3,
+        delay: 100,
+      });
 
       const [streamForEvent, temporaryStream] = StreamUtil.transform(
         completion.toReadableStream() as ReadableStream<Uint8Array>,
