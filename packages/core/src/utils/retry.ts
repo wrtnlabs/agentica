@@ -24,12 +24,6 @@ export async function retryAsync<T>(asyncFn: () => Promise<T>, options: {
     }
     catch (error) {
       lastError = error;
-
-      // If this is the last attempt, throw the error
-      if (attempt === maxRetries) {
-        throw lastError;
-      }
-
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
