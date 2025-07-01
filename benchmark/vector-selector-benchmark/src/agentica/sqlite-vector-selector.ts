@@ -62,16 +62,25 @@ export async function sqliteVectorSelectorAgentica(props: {
 
   const ctxForWarmming = agent.getContext({
     prompt: {
-      role: "user",
-      text: "warmming",
-      type: "text",
-      toJSON: () => ({
-        role: "user",
-        text: "warmming",
+      type: "userMessage",
+      contents: [{
         type: "text",
+        text: "warmming",
+      }],
+      created_at: new Date().toISOString(),
+      id: "warmming",
+      toJSON: () => ({
+        type: "userMessage",
+        contents: [{
+          type: "text",
+          text: "warmming",
+        }],
+        created_at: new Date().toISOString(),
+        id: "warmming",
       }),
     },
     usage: AgenticaTokenUsage.zero(),
+    dispatch: () => {},
   });
   // warmming
   await selectorExecute(ctxForWarmming);
