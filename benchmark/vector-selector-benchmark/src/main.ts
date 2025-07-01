@@ -6,7 +6,7 @@ import Database from "better-sqlite3";
 import { config } from "dotenv";
 import OpenAI from "openai";
 
-import { plainAgentica, sqliteVectorSelectorAgentica } from "./agentica";
+import { pgVectorSelectorAgentica, plainAgentica, sqliteVectorSelectorAgentica } from "./agentica";
 import { runShoppingBenchmark } from "./runShoppingBenchmark";
 
 config();
@@ -26,14 +26,14 @@ async function main() {
       },
     }) })
       .then(v => ({ result: v, name: "plain" })),
-    // runShoppingBenchmark({ agent: await pgVectorSelectorAgentica({
-    //   vendor: {
-    //     model: "gpt-4o-mini",
-    //     api: new OpenAI({ apiKey }),
-    //   },
-    //   connectorHiveUrl: process.env.CONNECTOR_HIVE_URL!,
-    // }) })
-    //   .then(v => ({ result: v, name: "pgVectorSelector" })),
+    runShoppingBenchmark({ agent: await pgVectorSelectorAgentica({
+      vendor: {
+        model: "gpt-4o-mini",
+        api: new OpenAI({ apiKey }),
+      },
+      connectorHiveUrl: process.env.CONNECTOR_HIVE_URL!,
+    }) })
+      .then(v => ({ result: v, name: "pgVectorSelector" })),
 
     runShoppingBenchmark({ agent: await sqliteVectorSelectorAgentica({
       vendor: {
