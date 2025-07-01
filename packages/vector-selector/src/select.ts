@@ -1,9 +1,7 @@
 import type { AgenticaAssistantMessageEvent, AgenticaContext, AgenticaOperationSelection } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
-import { factory, utils } from "@agentica/core";
-import { AgenticaDefaultPrompt } from "@agentica/core/src/constants/AgenticaDefaultPrompt";
-import { AgenticaSystemPrompt } from "@agentica/core/src/constants/AgenticaSystemPrompt";
+import { AgenticaDefaultPrompt, AgenticaSystemPrompt, factory, utils } from "@agentica/core";
 
 import { Tools } from "./tools";
 
