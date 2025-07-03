@@ -120,4 +120,22 @@ export interface IAgenticaConfig<Model extends ILlmSchema.Model> {
    * @default true
    */
   eliticism?: boolean;
+
+  /**
+   * Backoff strategy.
+   *
+   * If OpenAI SDK fails to connect LLM API Server, this Backoff factor
+   * would be used to retry for the next connection.
+   *
+   * If the function returns `true`, the retry would be stopped.
+   * Otherwise, the retry would be continued.
+   *
+   * @default (props) => throw props.error
+   * @returns {number} The number of milliseconds to wait before the next retry
+   * @throws {Error} If the function want to stop the retry, you can throw an error
+   */
+  backoffStrategy?: (props: {
+    count: number;
+    error: unknown;
+  }) => number;
 }
