@@ -451,11 +451,8 @@ async function correct<Model extends ILlmSchema.Model>(
       } satisfies OpenAI.ChatCompletionToolMessageParam,
       {
         role: "system",
-        content: [
-          "You A.I. assistant has composed wrong arguments.",
-          "",
-          "Correct it at the next function calling.",
-        ].join("\n"),
+        content: ctx.config?.systemPrompt?.validate?.()
+          ?? AgenticaSystemPrompt.VALIDATE,
       },
     ],
     // STACK FUNCTIONS
