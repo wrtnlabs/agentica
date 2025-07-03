@@ -81,4 +81,5 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
    * tracing would be binded to the instance.
    */
   tokenUsage?: IAgenticaTokenUsageJson | AgenticaTokenUsage | undefined;
+
 }
