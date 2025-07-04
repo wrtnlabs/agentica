@@ -16,7 +16,7 @@ import {
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
-import type { AgenticaAssistantMessageEvent, AgenticaExecuteEvent } from "../events";
+import type { AgenticaAssistantMessageEvent, AgenticaExecuteEvent, AgenticaValidateEvent } from "../events";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
@@ -34,6 +34,14 @@ import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext"
 export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   operations: AgenticaOperation<Model>[],
+): Promise<AgenticaExecuteEvent<Model>[]> {
+  return station(ctx, operations, []);
+}
+
+async function station<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  operations: AgenticaOperation<Model>[],
+  validateEvents: AgenticaValidateEvent<Model>[],
 ): Promise<AgenticaExecuteEvent<Model>[]> {
   // ----
   // EXECUTE CHATGPT API
@@ -125,6 +133,7 @@ export async function call<Model extends ILlmSchema.Model>(
           ctx,
           call,
           0,
+          validateEvents,
         );
         ctx.dispatch(exec);
         executes.push(exec);
@@ -159,16 +168,23 @@ async function propagate<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   call: AgenticaCallEvent<Model>,
   retry: number,
+  validateEvents: AgenticaValidateEvent<Model>[],
 ): Promise<AgenticaExecuteEvent<Model>> {
   switch (call.operation.protocol) {
     case "http": {
-      return propagateHttp({ ctx, operation: call.operation, call, retry });
+      return propagateHttp({
+        ctx,
+        operation: call.operation,
+        call,
+        retry,
+        validateEvents,
+      });
     }
     case "class": {
-      return propagateClass({ ctx, operation: call.operation, call, retry });
+      return propagateClass({ ctx, operation: call.operation, call, retry, validateEvents });
     }
     case "mcp": {
-      return propagateMcp({ ctx, operation: call.operation, call, retry });
+      return propagateMcp({ ctx, operation: call.operation, call, retry, validateEvents });
     }
     default: {
       call.operation satisfies never;
@@ -182,6 +198,7 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
     ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
     operation: AgenticaOperation.Http<Model>;
     call: AgenticaCallEvent<Model>;
+    validateEvents: AgenticaValidateEvent<Model>[];
     retry: number;
   },
 ): Promise<AgenticaExecuteEvent<Model>> {
@@ -193,13 +210,13 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
     props.call.arguments,
   );
   if (check.success === false) {
-    props.ctx.dispatch(
-      createValidateEvent({
-        id: props.call.id,
-        operation: props.operation,
-        result: check,
-      }),
-    );
+    const ve: AgenticaValidateEvent<Model> = createValidateEvent({
+      id: props.call.id,
+      operation: props.call.operation,
+      result: check,
+    });
+    props.ctx.dispatch(ve);
+    props.validateEvents.push(ve);
 
     if (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)) {
       const trial: AgenticaExecuteEvent<Model> | null = await correct(
@@ -207,6 +224,7 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
         props.call,
         props.retry,
         check.errors,
+        props.validateEvents,
       );
       if (trial !== null) {
         return trial;
@@ -227,7 +245,13 @@ async function propagateHttp<Model extends ILlmSchema.Model>(
       // DISPATCH EVENT
     return (
       (success === false
-        ? await correct(props.ctx, props.call, props.retry, response.body)
+        ? await correct(
+          props.ctx,
+          props.call,
+          props.retry,
+          response.body,
+          props.validateEvents,
+        )
         : null)
       ?? createExecuteEvent({
         operation: props.call.operation,
@@ -261,6 +285,7 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
   operation: AgenticaOperation.Class<Model>;
   call: AgenticaCallEvent<Model>;
+  validateEvents: AgenticaValidateEvent<Model>[];
   retry: number;
 }): Promise<AgenticaExecuteEvent<Model>> {
 // ----
@@ -271,16 +296,16 @@ async function propagateClass<Model extends ILlmSchema.Model>(props: {
     props.call.arguments,
   );
   if (check.success === false) {
-    props.ctx.dispatch(
-      createValidateEvent({
-        id: props.call.id,
-        operation: props.call.operation,
-        result: check,
-      }),
-    );
+    const ve: AgenticaValidateEvent<Model> = createValidateEvent({
+      id: props.call.id,
+      operation: props.call.operation,
+      result: check,
+    });
+    props.ctx.dispatch(ve);
+    props.validateEvents.push(ve);
     return (
       (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)
-        ? await correct(props.ctx, props.call, props.retry, check.errors)
+        ? await correct(props.ctx, props.call, props.retry, check.errors, props.validateEvents)
         : null)
       ?? createExecuteEvent({
         operation: props.call.operation,
@@ -322,6 +347,7 @@ async function propagateMcp<Model extends ILlmSchema.Model>(props: {
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
   operation: AgenticaOperation.Mcp<Model>;
   call: AgenticaCallEvent<Model>;
+  validateEvents: AgenticaValidateEvent<Model>[];
   retry: number;
 }): Promise<AgenticaExecuteEvent<Model>> {
   // ----
@@ -390,9 +416,7 @@ async function executeMcpOperation<Model extends ILlmSchema.Model>(
   operationArguments: Record<string, unknown>,
 ): Promise<unknown> {
   return operation.controller.client.callTool({
-
     method: operation.function.name,
-
     name: operation.function.name,
     arguments: operationArguments,
   }).then(v => v.content);
@@ -403,6 +427,7 @@ async function correct<Model extends ILlmSchema.Model>(
   call: AgenticaCallEvent<Model>,
   retry: number,
   error: unknown,
+  validateEvents: AgenticaValidateEvent<Model>[],
 ): Promise<AgenticaExecuteEvent<Model> | null> {
   // ----
   // EXECUTE CHATGPT API
@@ -451,8 +476,19 @@ async function correct<Model extends ILlmSchema.Model>(
       } satisfies OpenAI.ChatCompletionToolMessageParam,
       {
         role: "system",
-        content: ctx.config?.systemPrompt?.validate?.()
-          ?? AgenticaSystemPrompt.VALIDATE,
+        content: ctx.config?.systemPrompt?.validate?.(validateEvents.slice(0, -1))
+          ?? [
+            AgenticaSystemPrompt.VALIDATE,
+            ...(validateEvents.length > 1
+              ? [
+                  "",
+                  AgenticaSystemPrompt.VALIDATE_REPEATED.replace(
+                    "${{HISTORICAL_ERRORS}}",
+                    JSON.stringify(validateEvents.slice(0, -1).map(e => e.result.errors)),
+                  ),
+                ]
+              : []),
+          ].join("\n"),
       },
     ],
     // STACK FUNCTIONS
@@ -467,10 +503,8 @@ async function correct<Model extends ILlmSchema.Model>(
            * The property and value have a type mismatch, but it works.
            */
           parameters: (
-            "separated" in call.operation.function
-
-            && call.operation.function.separated !== undefined
-
+            ("separated" in call.operation.function
+              && call.operation.function.separated !== undefined)
               ? (call.operation.function.separated?.llm
                 ?? ({
                   $defs: {},
@@ -516,6 +550,7 @@ async function correct<Model extends ILlmSchema.Model>(
       arguments: JSON.parse(toolCall.function.arguments) as Record<string, unknown>,
     }),
     retry,
+    validateEvents,
   );
 }
 

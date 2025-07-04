@@ -1,5 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { AgenticaHistory } from "../histories/AgenticaHistory";
 
@@ -167,10 +168,11 @@ export interface IAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * - Format-specific guidance (UUID, email, numeric constraints)
    * - Complete reconstruction recommendations for incompatible values
    *
+   * @props events The previous validation events containing the IValidation.IFailure
    * @returns validation feedback system prompt
    * @default Built-in validation feedback prompt optimized for typia IValidation.IFailure processing
    */
-  validate?: () => string;
+  validate?: (events: AgenticaValidateEvent<Model>[]) => string;
 
   /**
    * Describe system prompt.

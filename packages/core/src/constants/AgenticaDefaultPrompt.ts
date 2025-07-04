@@ -33,12 +33,12 @@ export function write<Model extends ILlmSchema.Model>(config?: IAgenticaConfig<M
   const timezone: string = config?.timezone ?? getTimezone.get();
 
   return AgenticaSystemPrompt.COMMON
-    // intended code
-    // eslint-disable-next-line no-template-curly-in-string
+  // intended code
+
     .replace("${locale}", locale)
-    // eslint-disable-next-line no-template-curly-in-string
+
     .replace("${timezone}", timezone)
-    // eslint-disable-next-line no-template-curly-in-string
+
     .replace("${datetime}", new Date().toISOString());
 }
 export const AgenticaDefaultPrompt = {
