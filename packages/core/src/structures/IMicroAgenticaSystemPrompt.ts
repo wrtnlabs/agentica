@@ -1,5 +1,6 @@
 import type { ILlmSchema } from "@samchon/openapi";
 
+import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
@@ -100,10 +101,11 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * - Complete reconstruction recommendations for incompatible values
    * - Optimized for the simplified MicroAgentica interaction model
    *
+   * @param events The previous validation events containing the IValidation.IFailure
    * @returns validation feedback system prompt
    * @default Built-in validation feedback prompt optimized for typia IValidation.IFailure processing
    */
-  validate?: () => string;
+  validate?: (events: AgenticaValidateEvent<Model>[]) => string;
 
   /**
    * Describe system prompt.
