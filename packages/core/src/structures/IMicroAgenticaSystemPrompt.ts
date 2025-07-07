@@ -5,6 +5,7 @@ import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import type { IMicroAgenticaConfig } from "./IMicroAgenticaConfig";
+import { AgenticaJsonParseErrorEvent } from "../events/AgenticaJsonParseErrorEvent";
 
 /**
  * System prompt collection of the Micro Agentic AI.
@@ -106,6 +107,38 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @default Built-in validation feedback prompt optimized for typia IValidation.IFailure processing
    */
   validate?: (events: AgenticaValidateEvent<Model>[]) => string;
+
+  
+/**
+ * JSON parsing error system prompt.
+ *
+ * When the AI generates function arguments with invalid JSON syntax
+ * that cannot be parsed by `JSON.parse()`, this prompt provides system
+ * instructions for handling the parsing error and requesting corrected
+ * function calls.
+ *
+ * This specialized prompt enables the AI to:
+ * - Understand that the function call arguments contained malformed JSON
+ * - Receive the specific error message from `JSON.parse()` 
+ * - Get guidance on common JSON syntax issues (trailing commas, quote problems, etc.)
+ * - Retry the function call with properly formatted JSON arguments
+ *
+ * The JSON parse error prompt acts as an immediate correction mechanism
+ * when function calling fails at the JSON parsing stage, before any
+ * schema validation occurs. This ensures that basic JSON syntax compliance
+ * is maintained for all function calls.
+ *
+ * Key features include:
+ * - Direct error message reporting from `JSON.parse()`
+ * - Clear identification of the problematic function call
+ * - Specific guidance on JSON syntax requirements
+ * - Immediate retry instruction without additional processing
+ *
+ * @param event The JSON parse error event containing the malformed arguments and error details
+ * @returns JSON parse error system prompt
+ * @default Built-in JSON parse error prompt optimized for syntax correction
+ */
+jsonParseError?: (event: AgenticaJsonParseErrorEvent<Model>) => string;
 
   /**
    * Describe system prompt.

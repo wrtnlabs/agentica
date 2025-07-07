@@ -6,6 +6,7 @@ export * from "./AgenticaEvent";
 export * from "./AgenticaEventSource";
 export * from "./AgenticaExecuteEvent";
 export * from "./AgenticaInitializeEvent";
+export * from "./AgenticaJsonParseErrorEvent";
 export * from "./AgenticaRequestEvent";
 export * from "./AgenticaResponseEvent";
 export * from "./AgenticaSelectEvent";

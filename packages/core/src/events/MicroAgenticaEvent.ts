@@ -4,6 +4,7 @@ import type { AgenticaAssistantMessageEvent } from "./AgenticaAssistantMessageEv
 import type { AgenticaCallEvent } from "./AgenticaCallEvent";
 import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
 import type { AgenticaExecuteEvent } from "./AgenticaExecuteEvent";
+import type { AgenticaJsonParseErrorEvent } from "./AgenticaJsonParseErrorEvent";
 import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
 import type { AgenticaUserMessageEvent } from "./AgenticaUserMessageEvent";
@@ -27,7 +28,8 @@ export type MicroAgenticaEvent<Model extends ILlmSchema.Model> =
   | AgenticaDescribeEvent<Model>
   | AgenticaRequestEvent
   | AgenticaResponseEvent
-  | AgenticaValidateEvent<Model>;
+  | AgenticaValidateEvent<Model>
+  | AgenticaJsonParseErrorEvent<Model>;
 export namespace MicroAgenticaEvent {
   export type Type = MicroAgenticaEvent<any>["type"];
   export interface Mapper<Model extends ILlmSchema.Model> {
@@ -39,6 +41,7 @@ export namespace MicroAgenticaEvent {
     request: AgenticaRequestEvent;
     response: AgenticaResponseEvent;
     validate: AgenticaValidateEvent<Model>;
+    jsonParseError: AgenticaJsonParseErrorEvent<Model>;
   }
   export type Source = "call" | "describe";
 }
