@@ -1,30 +1,28 @@
 import type {
   IChatGptSchema,
-  IHttpMigrateRoute,
   IHttpResponse,
   ILlmSchema,
+  IValidation,
 } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { IValidation } from "typia";
 
-import {
-  ChatGptTypeChecker,
-  HttpLlm,
-  LlmTypeCheckerV3_1,
-} from "@samchon/openapi";
+import { HttpLlm } from "@samchon/openapi";
+import { v4 } from "uuid";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
-import type { AgenticaAssistantMessageEvent, AgenticaExecuteEvent, AgenticaValidateEvent } from "../events";
+import type { AgenticaAssistantMessageEvent, AgenticaValidateEvent } from "../events";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
+import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
+import type { AgenticaJsonParseErrorEvent } from "../events/AgenticaJsonParseErrorEvent";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
-import { creatAssistantMessageEvent, createCallEvent, createExecuteEvent, createValidateEvent } from "../factory/events";
+import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -35,18 +33,7 @@ export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   operations: AgenticaOperation<Model>[],
 ): Promise<AgenticaExecuteEvent<Model>[]> {
-  return station(ctx, operations, []);
-}
-
-async function station<Model extends ILlmSchema.Model>(
-  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
-  operations: AgenticaOperation<Model>[],
-  validateEvents: AgenticaValidateEvent<Model>[],
-): Promise<AgenticaExecuteEvent<Model>[]> {
-  // ----
-  // EXECUTE CHATGPT API
-  // ----
-  const completionStream = await ctx.request("call", {
+  const stream: ReadableStream<OpenAI.ChatCompletionChunk> = await ctx.request("call", {
     messages: [
       // COMMON SYSTEM PROMPT
       {
@@ -99,48 +86,31 @@ async function station<Model extends ILlmSchema.Model>(
     tool_choice: "auto",
     // parallel_tool_calls: false,
   });
-
-  // ----
-  // PROCESS COMPLETION
-  // ----
-  const chunks = await StreamUtil.readAll(completionStream);
-  const completion = ChatGptCompletionMessageUtil.merge(chunks);
+  const chunks: OpenAI.ChatCompletionChunk[] = await StreamUtil.readAll(stream);
+  const completion: OpenAI.ChatCompletion = ChatGptCompletionMessageUtil.merge(chunks);
   const executes: AgenticaExecuteEvent<Model>[] = [];
 
   for (const choice of completion.choices) {
     for (const tc of choice.message.tool_calls ?? []) {
       if (tc.type === "function") {
-        const operation: AgenticaOperation<Model> | undefined
-            = ctx.operations.flat.get(tc.function.name);
-        if (operation === undefined) {
-          continue;
-        }
-        const call: AgenticaCallEvent<Model> = createCallEvent({
-          id: tc.id,
-          operation,
-          // @TODO add type assertion!
-          arguments: JSON.parse(tc.function.arguments) as Record<string, unknown>,
-        });
-        if (call.operation.protocol === "http") {
-          fillHttpArguments({
-            operation: call.operation,
-            arguments: call.arguments,
-          });
-        }
-        ctx.dispatch(call);
-
-        const exec: AgenticaExecuteEvent<Model> = await propagate(
-          ctx,
-          call,
-          0,
-          validateEvents,
+        const operation: AgenticaOperation<Model> | undefined = operations.find(
+          s => s.name === tc.function.name,
         );
-        ctx.dispatch(exec);
-        executes.push(exec);
-
+        if (operation === undefined) {
+          continue; // Ignore unknown tool calls
+        }
+        const event: AgenticaExecuteEvent<Model> = await predicate(
+          ctx,
+          operation,
+          tc,
+          [],
+          ctx.config?.retry ?? AgenticaConstant.RETRY,
+        );
+        ctx.dispatch(event);
+        executes.push(event);
         if (isAgenticaContext(ctx)) {
           cancelFunctionFromContext(ctx, {
-            name: call.operation.name,
+            name: event.operation.name,
             reason: "completed",
           });
         }
@@ -152,7 +122,7 @@ async function station<Model extends ILlmSchema.Model>(
       && choice.message.content.length !== 0
     ) {
       const text: string = choice.message.content;
-      const event: AgenticaAssistantMessageEvent = creatAssistantMessageEvent({
+      const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
         get: () => text,
         done: () => true,
         stream: toAsyncGenerator(text),
@@ -161,278 +131,166 @@ async function station<Model extends ILlmSchema.Model>(
       ctx.dispatch(event);
     }
   }
+  console.error("call", executes);
   return executes;
 }
 
-async function propagate<Model extends ILlmSchema.Model>(
+async function predicate<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
-  call: AgenticaCallEvent<Model>,
-  retry: number,
-  validateEvents: AgenticaValidateEvent<Model>[],
+  operation: AgenticaOperation<Model>,
+  toolCall: OpenAI.ChatCompletionMessageToolCall,
+  previousValidationErrors: AgenticaValidateEvent<Model>[],
+  life: number,
 ): Promise<AgenticaExecuteEvent<Model>> {
-  switch (call.operation.protocol) {
-    case "http": {
-      return propagateHttp({
-        ctx,
-        operation: call.operation,
-        call,
-        retry,
-        validateEvents,
-      });
-    }
-    case "class": {
-      return propagateClass({ ctx, operation: call.operation, call, retry, validateEvents });
-    }
-    case "mcp": {
-      return propagateMcp({ ctx, operation: call.operation, call, retry, validateEvents });
-    }
-    default: {
-      call.operation satisfies never;
-      throw new Error("Unsupported protocol");
-    }
+  // CHECK INPUT ARGUMENT
+  const call: AgenticaCallEvent<Model> | AgenticaJsonParseErrorEvent<Model>
+    = parseArguments(
+      operation,
+      toolCall,
+    );
+  ctx.dispatch(call);
+  if (call.type === "jsonParseError") {
+    return correctJsonError(ctx, call, previousValidationErrors, life - 1);
+  }
+
+  // CHECK TYPE VALIDATION
+  const check: IValidation<unknown> = operation.function.validate(call.arguments);
+  if (check.success === false) {
+    const event: AgenticaValidateEvent<Model> = createValidateEvent({
+      id: toolCall.id,
+      operation,
+      result: check,
+    });
+    ctx.dispatch(event);
+    return correctTypeError(
+      ctx,
+      call,
+      event,
+      [...previousValidationErrors, event],
+      life - 1,
+    );
+  }
+
+  // EXECUTE OPERATION
+  const execute: AgenticaExecuteEvent<Model> = await executeFunction(call, operation);
+  ctx.dispatch(execute);
+  return execute;
+}
+
+/* -----------------------------------------------------------
+  ERROR CORRECTORS
+----------------------------------------------------------- */
+async function correctTypeError<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  callEvent: AgenticaCallEvent<Model>,
+  validateEvent: AgenticaValidateEvent<Model>,
+  previousValidationErrors: AgenticaValidateEvent<Model>[],
+  life: number,
+): Promise<AgenticaExecuteEvent<Model>> {
+  return correctError<Model>(ctx, {
+    giveUp: () => createExecuteEvent({
+      operation: callEvent.operation,
+      arguments: callEvent.arguments,
+      value: {
+        name: "ValidationError",
+        message: `Invalid arguments. The validation failed after ${AgenticaConstant.RETRY} retries.`,
+        errors: validateEvent.result.errors,
+      },
+    }),
+    operation: callEvent.operation,
+    messageArguments: JSON.stringify(callEvent.arguments),
+    messageToolParam: {
+      role: "tool",
+      content: JSON.stringify(validateEvent.result.errors),
+      tool_call_id: callEvent.id,
+    } satisfies OpenAI.ChatCompletionToolMessageParam,
+    systemPrompt: ctx.config?.systemPrompt?.validate?.(previousValidationErrors.slice(0, -1))
+      ?? [
+        AgenticaSystemPrompt.VALIDATE,
+        ...(previousValidationErrors.length > 1
+          ? [
+              "",
+              AgenticaSystemPrompt.VALIDATE_REPEATED.replace(
+                "${{HISTORICAL_ERRORS}}",
+                JSON.stringify(previousValidationErrors.slice(0, -1).map(e => e.result.errors)),
+              ),
+            ]
+          : []),
+      ].join("\n"),
+    life,
+    previousValidationErrors,
+  });
+}
+
+async function correctJsonError<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  parseErrorEvent: AgenticaJsonParseErrorEvent<Model>,
+  previousValidationErrors: AgenticaValidateEvent<Model>[],
+  life: number,
+): Promise<AgenticaExecuteEvent<Model>> {
+  return correctError<Model>(ctx, {
+    giveUp: () => createExecuteEvent({
+      operation: parseErrorEvent.operation,
+      arguments: {},
+      value: {
+        name: "JsonParseError",
+        message: `Invalid JSON format. The parsing failed after ${AgenticaConstant.RETRY} retries.`,
+        arguments: parseErrorEvent.arguments,
+        errorMessage: parseErrorEvent.errorMessage,
+      },
+    }),
+    operation: parseErrorEvent.operation,
+    messageArguments: parseErrorEvent.arguments,
+    messageToolParam: null,
+    systemPrompt: ctx.config?.systemPrompt?.jsonParseError?.(parseErrorEvent)
+      ?? AgenticaSystemPrompt.JSON_PARSE_ERROR.replace(
+        "${{ERROR_MESSAGE}}",
+        parseErrorEvent.errorMessage,
+      ),
+    life,
+    previousValidationErrors,
+  });
+}
+
+function parseArguments<Model extends ILlmSchema.Model>(
+  operation: AgenticaOperation<Model>,
+  toolCall: OpenAI.ChatCompletionMessageToolCall,
+): AgenticaCallEvent<Model> | AgenticaJsonParseErrorEvent<Model> {
+  try {
+    const data: Record<string, unknown> = JSON.parse(toolCall.function.arguments);
+    return createCallEvent({
+      id: toolCall.id,
+      operation,
+      arguments: data,
+    });
+  }
+  catch (error) {
+    return createJsonParseErrorEvent({
+      id: toolCall.id,
+      operation,
+      arguments: toolCall.function.arguments,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
   }
 }
 
-async function propagateHttp<Model extends ILlmSchema.Model>(
+async function correctError<Model extends ILlmSchema.Model>(
+  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   props: {
-    ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
-    operation: AgenticaOperation.Http<Model>;
-    call: AgenticaCallEvent<Model>;
-    validateEvents: AgenticaValidateEvent<Model>[];
-    retry: number;
+    giveUp: () => AgenticaExecuteEvent<Model>;
+    operation: AgenticaOperation<Model>;
+    messageArguments: string;
+    messageToolParam: null | OpenAI.ChatCompletionToolMessageParam;
+    systemPrompt: string;
+    life: number;
+    previousValidationErrors: AgenticaValidateEvent<Model>[];
   },
 ): Promise<AgenticaExecuteEvent<Model>> {
-  // ----
-  // HTTP PROTOCOL
-  // ----
-  // NESTED VALIDATOR
-  const check: IValidation<unknown> = props.operation.function.validate(
-    props.call.arguments,
-  );
-  if (check.success === false) {
-    const ve: AgenticaValidateEvent<Model> = createValidateEvent({
-      id: props.call.id,
-      operation: props.call.operation,
-      result: check,
-    });
-    props.ctx.dispatch(ve);
-    props.validateEvents.push(ve);
-
-    if (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)) {
-      const trial: AgenticaExecuteEvent<Model> | null = await correct(
-        props.ctx,
-        props.call,
-        props.retry,
-        check.errors,
-        props.validateEvents,
-      );
-      if (trial !== null) {
-        return trial;
-      }
-    }
+  if (props.life <= 0) {
+    return props.giveUp();
   }
 
-  try {
-    // CALL HTTP API
-    const response: IHttpResponse = await executeHttpOperation(props.operation, props.call.arguments);
-    // CHECK STATUS
-    const success: boolean
-          = ((response.status === 400
-            || response.status === 404
-            || response.status === 422)
-          && props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)
-          && typeof response.body) === false;
-      // DISPATCH EVENT
-    return (
-      (success === false
-        ? await correct(
-          props.ctx,
-          props.call,
-          props.retry,
-          response.body,
-          props.validateEvents,
-        )
-        : null)
-      ?? createExecuteEvent({
-        operation: props.call.operation,
-        arguments: props.call.arguments,
-        value: response,
-      })
-    );
-  }
-  catch (error) {
-    // DISPATCH ERROR
-    return createExecuteEvent({
-      operation: props.call.operation,
-      arguments: props.call.arguments,
-      value: {
-        status: 500,
-        headers: {},
-        body:
-          error instanceof Error
-            ? {
-                ...error,
-                name: error.name,
-                message: error.message,
-              }
-            : error,
-      },
-    });
-  }
-}
-
-async function propagateClass<Model extends ILlmSchema.Model>(props: {
-  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
-  operation: AgenticaOperation.Class<Model>;
-  call: AgenticaCallEvent<Model>;
-  validateEvents: AgenticaValidateEvent<Model>[];
-  retry: number;
-}): Promise<AgenticaExecuteEvent<Model>> {
-// ----
-  // CLASS FUNCTION
-  // ----
-  // VALIDATE FIRST
-  const check: IValidation<unknown> = props.operation.function.validate(
-    props.call.arguments,
-  );
-  if (check.success === false) {
-    const ve: AgenticaValidateEvent<Model> = createValidateEvent({
-      id: props.call.id,
-      operation: props.call.operation,
-      result: check,
-    });
-    props.ctx.dispatch(ve);
-    props.validateEvents.push(ve);
-    return (
-      (props.retry++ < (props.ctx.config?.retry ?? AgenticaConstant.RETRY)
-        ? await correct(props.ctx, props.call, props.retry, check.errors, props.validateEvents)
-        : null)
-      ?? createExecuteEvent({
-        operation: props.call.operation,
-        arguments: props.call.arguments,
-        value: {
-          name: "TypeGuardError",
-          message: "Invalid arguments.",
-          errors: check.errors,
-        },
-      })
-    );
-  }
-  // EXECUTE FUNCTION
-  try {
-    const value = await executeClassOperation(props.operation, props.call.arguments);
-    return createExecuteEvent({
-      operation: props.call.operation,
-      arguments: props.call.arguments,
-      value,
-    });
-  }
-  catch (error) {
-    return createExecuteEvent({
-      operation: props.call.operation,
-      arguments: props.call.arguments,
-      value:
-        error instanceof Error
-          ? {
-              ...error,
-              name: error.name,
-              message: error.message,
-            }
-          : error,
-    });
-  }
-}
-
-async function propagateMcp<Model extends ILlmSchema.Model>(props: {
-  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>;
-  operation: AgenticaOperation.Mcp<Model>;
-  call: AgenticaCallEvent<Model>;
-  validateEvents: AgenticaValidateEvent<Model>[];
-  retry: number;
-}): Promise<AgenticaExecuteEvent<Model>> {
-  // ----
-  // MCP PROTOCOL
-  // ----
-  // @TODO: implement argument validation logic
-  try {
-    const value = await executeMcpOperation(props.operation, props.call.arguments);
-    return createExecuteEvent({
-      operation: props.call.operation,
-      arguments: props.call.arguments,
-      value,
-    });
-  }
-  catch (error) {
-    return createExecuteEvent({
-      operation: props.call.operation,
-      arguments: props.call.arguments,
-      value:
-        error instanceof Error
-          ? {
-              ...error,
-              name: error.name,
-              message: error.message,
-            }
-          : error,
-    });
-  }
-}
-
-async function executeHttpOperation<Model extends ILlmSchema.Model>(operation: AgenticaOperation.Http<Model>, operationArguments: Record<string, unknown>): Promise<IHttpResponse> {
-  const controllerBaseArguments = {
-    connection: operation.controller.connection,
-    application: operation.controller.application,
-    function: operation.function,
-  };
-  return operation.controller.execute !== undefined
-    ? operation.controller.execute({ ...controllerBaseArguments, arguments: operationArguments })
-    : HttpLlm.propagate({ ...controllerBaseArguments, input: operationArguments });
-}
-
-/**
- * @throws {TypeError}
- */
-async function executeClassOperation<Model extends ILlmSchema.Model>(operation: AgenticaOperation.Class<Model>, operationArguments: Record<string, unknown>): Promise<unknown> {
-  const execute = operation.controller.execute;
-  if (typeof execute === "function") {
-    return await execute({
-      application: operation.controller.application,
-      function: operation.function,
-      arguments: operationArguments,
-    });
-  }
-
-  // As you know, it's very unstable logic.
-  // But this is an intended error.
-  // There are two types of errors that can occur here.
-  // One is a TypeError caused by referencing an undefined value, and the other is a TypeError caused by calling something that isn't a function.
-  // These errors are intentional, and any call to this function must be wrapped in a try-catch block.
-  // Unless there is an overall structural improvement, this function will remain as-is.
-  return ((execute as Record<string, unknown>)[operation.function.name] as (...args: unknown[]) => Promise<unknown>)(operationArguments);
-}
-
-async function executeMcpOperation<Model extends ILlmSchema.Model>(
-  operation: AgenticaOperation.Mcp<Model>,
-  operationArguments: Record<string, unknown>,
-): Promise<unknown> {
-  return operation.controller.client.callTool({
-    method: operation.function.name,
-    name: operation.function.name,
-    arguments: operationArguments,
-  }).then(v => v.content);
-}
-
-async function correct<Model extends ILlmSchema.Model>(
-  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
-  call: AgenticaCallEvent<Model>,
-  retry: number,
-  error: unknown,
-  validateEvents: AgenticaValidateEvent<Model>[],
-): Promise<AgenticaExecuteEvent<Model> | null> {
-  // ----
-  // EXECUTE CHATGPT API
-  // ----
-  const completionStream = await ctx.request("call", {
+  const stream: ReadableStream<OpenAI.ChatCompletionChunk> = await ctx.request("call", {
     messages: [
       // COMMON SYSTEM PROMPT
       {
@@ -447,48 +305,31 @@ async function correct<Model extends ILlmSchema.Model>(
         content: ctx.prompt.contents.map(decodeUserMessageContent),
       },
       // TYPE CORRECTION
-      ...(ctx.config?.systemPrompt?.execute === null
-        ? []
-        : [{
-          role: "system",
-          content:
-          ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
-          ?? AgenticaSystemPrompt.EXECUTE,
-        } satisfies OpenAI.ChatCompletionSystemMessageParam]
-      ),
+      {
+        role: "system",
+        content:
+        ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
+        ?? AgenticaSystemPrompt.EXECUTE,
+      },
       {
         role: "assistant",
         tool_calls: [
           {
             type: "function",
-            id: call.id,
+            id: v4(),
             function: {
-              name: call.operation.name,
-              arguments: JSON.stringify(call.arguments),
+              name: props.operation.name,
+              arguments: props.messageArguments,
             },
           } satisfies OpenAI.ChatCompletionMessageToolCall,
         ],
       } satisfies OpenAI.ChatCompletionAssistantMessageParam,
-      {
-        role: "tool",
-        content: typeof error === "string" ? error : JSON.stringify(error),
-        tool_call_id: call.id,
-      } satisfies OpenAI.ChatCompletionToolMessageParam,
+      ...(props.messageToolParam !== null
+        ? [props.messageToolParam]
+        : []),
       {
         role: "system",
-        content: ctx.config?.systemPrompt?.validate?.(validateEvents.slice(0, -1))
-          ?? [
-            AgenticaSystemPrompt.VALIDATE,
-            ...(validateEvents.length > 1
-              ? [
-                  "",
-                  AgenticaSystemPrompt.VALIDATE_REPEATED.replace(
-                    "${{HISTORICAL_ERRORS}}",
-                    JSON.stringify(validateEvents.slice(0, -1).map(e => e.result.errors)),
-                  ),
-                ]
-              : []),
-          ].join("\n"),
+        content: props.systemPrompt,
       },
     ],
     // STACK FUNCTIONS
@@ -496,16 +337,16 @@ async function correct<Model extends ILlmSchema.Model>(
       {
         type: "function",
         function: {
-          name: call.operation.name,
-          description: call.operation.function.description,
+          name: props.operation.name,
+          description: props.operation.function.description,
           /**
            * @TODO fix it
            * The property and value have a type mismatch, but it works.
            */
           parameters: (
-            ("separated" in call.operation.function
-              && call.operation.function.separated !== undefined)
-              ? (call.operation.function.separated?.llm
+            ("separated" in props.operation.function
+              && props.operation.function.separated !== undefined)
+              ? (props.operation.function.separated?.llm
                 ?? ({
                   $defs: {},
                   type: "object",
@@ -514,79 +355,122 @@ async function correct<Model extends ILlmSchema.Model>(
                   required: [],
                 } satisfies IChatGptSchema.IParameters))
 
-              : call.operation.function.parameters) as unknown as Record<string, unknown>,
+              : props.operation.function.parameters) as unknown as Record<string, unknown>,
         },
       },
     ],
     tool_choice: {
       type: "function",
       function: {
-        name: call.operation.name,
+        name: props.operation.name,
       },
     },
     // parallel_tool_calls: false,
   });
+  const chunks: OpenAI.ChatCompletionChunk[] = await StreamUtil.readAll(stream);
+  const completion: OpenAI.ChatCompletion = ChatGptCompletionMessageUtil.merge(chunks);
 
-  const chunks = await StreamUtil.readAll(completionStream);
-  const completion = ChatGptCompletionMessageUtil.merge(chunks);
-
-  // ----
-  // PROCESS COMPLETION
-  // ----
-  const toolCall: OpenAI.ChatCompletionMessageToolCall | undefined = (
-    completion.choices[0]?.message.tool_calls ?? []
-  ).find(
-    tc =>
-      tc.type === "function" && tc.function.name === call.operation.name,
+  const toolCall: OpenAI.ChatCompletionMessageToolCall | undefined = completion.choices[0]?.message.tool_calls?.find(
+    s => s.function.name === props.operation.name,
   );
-  if (toolCall === undefined) {
-    return null;
-  }
-  return propagate(
-    ctx,
-    createCallEvent({
-      id: toolCall.id,
+  return toolCall === undefined
+    ? props.giveUp()
+    : predicate<Model>(
+        ctx,
+        props.operation,
+        toolCall,
+        props.previousValidationErrors,
+        props.life,
+      );
+}
+
+/* -----------------------------------------------------------
+  FUNCTION EXECUTORS
+----------------------------------------------------------- */
+async function executeFunction<Model extends ILlmSchema.Model>(
+  call: AgenticaCallEvent<Model>,
+  operation: AgenticaOperation<Model>,
+): Promise<AgenticaExecuteEvent<Model>> {
+  try {
+    const value: unknown = await (async () => {
+      switch (operation.protocol) {
+        case "class":
+          return executeClassFunction(call, operation);
+        case "http":
+          return executeHttpOperation(call, operation);
+        case "mcp":
+          return executeMcpOperation(call, operation);
+        default:
+          operation satisfies never; // Ensure all cases are handled
+          throw new Error("Unknown protocol"); // never be happen
+      }
+    })();
+    return createExecuteEvent({
       operation: call.operation,
-      arguments: JSON.parse(toolCall.function.arguments) as Record<string, unknown>,
-    }),
-    retry,
-    validateEvents,
-  );
-}
-
-function fillHttpArguments<Model extends ILlmSchema.Model>(props: {
-  operation: AgenticaOperation<Model>;
-  arguments: Record<string, unknown>;
-}): void {
-  if (props.operation.protocol !== "http") {
-    return;
+      arguments: call.arguments,
+      value,
+    });
   }
-  const route: IHttpMigrateRoute = props.operation.function.route();
-  if (
-    route.body !== null
-    && route.operation().requestBody?.required === true
-    && "body" in props.arguments
-    && isObject(
-      (props.operation.function.parameters as IChatGptSchema.IParameters)
-        .$defs,
-      (props.operation.function.parameters as IChatGptSchema.IParameters)
-        .properties
-        .body!,
-    )
-  ) { props.arguments.body = {}; }
-  if (route.query !== null && "query" in props.arguments && props.arguments.query === undefined) {
-    props.arguments.query = {};
+  catch (error) {
+    return createExecuteEvent({
+      operation: call.operation,
+      arguments: call.arguments,
+      value: error instanceof Error
+        ? {
+            ...error,
+            name: error.name,
+            message: error.message,
+          }
+        : error,
+    });
   }
 }
 
-function isObject($defs: Record<string, IChatGptSchema>, schema: IChatGptSchema): boolean {
-  return (
-    ChatGptTypeChecker.isObject(schema)
-    || (ChatGptTypeChecker.isReference(schema)
-      && isObject($defs, $defs[schema.$ref.split("/").at(-1)!]!))
-    || (ChatGptTypeChecker.isAnyOf(schema)
-      && schema.anyOf.every(schema => isObject($defs, schema)))
-    || (LlmTypeCheckerV3_1.isOneOf(schema)
-      && schema.oneOf.every(schema => isObject($defs, schema)))
-  );
+async function executeClassFunction<Model extends ILlmSchema.Model>(
+  call: AgenticaCallEvent<Model>,
+  operation: AgenticaOperation.Class<Model>,
+): Promise<unknown> {
+  const execute = operation.controller.execute;
+  const value: unknown = typeof execute === "function"
+    ? await execute({
+      application: operation.controller.application,
+      function: operation.function,
+      arguments: call.arguments,
+    })
+    : await (execute as Record<string, any>)[operation.function.name](
+      call.arguments,
+    );
+  return value;
+}
+
+async function executeHttpOperation<Model extends ILlmSchema.Model>(
+  call: AgenticaCallEvent<Model>,
+  operation: AgenticaOperation.Http<Model>,
+): Promise<unknown> {
+  const execute = operation.controller.execute;
+  const value: IHttpResponse = typeof execute === "function"
+    ? await execute({
+      connection: operation.controller.connection,
+      application: operation.controller.application,
+      function: operation.function,
+      arguments: call.arguments,
+    })
+    : await HttpLlm.propagate({
+      connection: operation.controller.connection,
+      application: operation.controller.application,
+      function: operation.function,
+      input: call.arguments,
+    });
+  return value;
+}
+
+async function executeMcpOperation<Model extends ILlmSchema.Model>(
+  call: AgenticaCallEvent<Model>,
+  operation: AgenticaOperation.Mcp<Model>,
+): Promise<unknown> {
+  return operation.controller.client.callTool({
+    method: operation.function.name,
+    name: operation.function.name,
+    arguments: call.arguments,
+  }).then(v => v.content);
 }

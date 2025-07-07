@@ -6,6 +6,7 @@ import type { AgenticaCancelEvent } from "./AgenticaCancelEvent";
 import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
 import type { AgenticaExecuteEvent } from "./AgenticaExecuteEvent";
 import type { AgenticaInitializeEvent } from "./AgenticaInitializeEvent";
+import type { AgenticaJsonParseErrorEvent } from "./AgenticaJsonParseErrorEvent";
 import type { AgenticaRequestEvent } from "./AgenticaRequestEvent";
 import type { AgenticaResponseEvent } from "./AgenticaResponseEvent";
 import type { AgenticaSelectEvent } from "./AgenticaSelectEvent";
@@ -32,6 +33,7 @@ export type AgenticaEvent<Model extends ILlmSchema.Model> =
   | AgenticaExecuteEvent<Model>
   | AgenticaDescribeEvent<Model>
   | AgenticaValidateEvent<Model>
+  | AgenticaJsonParseErrorEvent<Model>
   | AgenticaRequestEvent
   | AgenticaResponseEvent;
 export namespace AgenticaEvent {
@@ -46,6 +48,7 @@ export namespace AgenticaEvent {
     execute: AgenticaExecuteEvent<Model>;
     describe: AgenticaDescribeEvent<Model>;
     validate: AgenticaValidateEvent<Model>;
+    jsonParseError: AgenticaJsonParseErrorEvent<Model>;
     request: AgenticaRequestEvent;
     response: AgenticaResponseEvent;
   }

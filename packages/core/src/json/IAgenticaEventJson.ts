@@ -28,6 +28,7 @@ export type IAgenticaEventJson =
   | IAgenticaEventJson.IResponse
   | IAgenticaEventJson.ISelect
   | IAgenticaEventJson.IValidate
+  | IAgenticaEventJson.IJsonParseError
   | IAgenticaEventJson.IAssistantMessage
   | IAgenticaEventJson.IUserMessage;
 
@@ -45,6 +46,7 @@ export namespace IAgenticaEventJson {
     request: IRequest;
     response: IResponse;
     validate: IValidate;
+    jsonParseError: IJsonParseError;
   }
 
   /**
@@ -109,11 +111,6 @@ export namespace IAgenticaEventJson {
 
   export interface IValidate extends IBase<"validate"> {
     /**
-     * ID of the tool calling.
-     */
-    id: string;
-
-    /**
      * Target operation to call.
      */
     operation: IAgenticaOperationJson;
@@ -122,6 +119,25 @@ export namespace IAgenticaEventJson {
      * Validation result as a failure.
      */
     result: IValidation.IFailure;
+  }
+
+  export interface IJsonParseError extends IBase<"jsonParseError"> {
+    /**
+     * Target operation to call.
+     */
+    operation: IAgenticaOperationJson;
+
+    /**
+     * Arguments of the function calling.
+     *
+     * The value represents the JSON string that failed to parse.
+     */
+    arguments: string;
+
+    /**
+     * Error message of the JSON parse error.
+     */
+    errorMessage: string;
   }
 
   /**

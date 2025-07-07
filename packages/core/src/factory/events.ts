@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
+import type { AgenticaJsonParseErrorEvent } from "../events";
 import type { AgenticaAssistantMessageEvent } from "../events/AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "../events/AgenticaCancelEvent";
@@ -112,6 +113,23 @@ export function createCallEvent<Model extends ILlmSchema.Model>(props: {
   };
 }
 
+export function createJsonParseErrorEvent<Model extends ILlmSchema.Model>(props: {
+  id: string;
+  operation: AgenticaOperation<Model>;
+  arguments: string;
+  errorMessage: string;
+}): AgenticaJsonParseErrorEvent<Model> {
+  const created_at: string = new Date().toISOString();
+  return {
+    type: "jsonParseError",
+    id: props.id,
+    created_at,
+    operation: props.operation,
+    arguments: props.arguments,
+    errorMessage: props.errorMessage,
+  };
+}
+
 export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
   id: string;
   operation: AgenticaOperation<Model>;
@@ -194,7 +212,7 @@ export function createUserMessageEvent(props: {
   };
 }
 
-export function creatAssistantMessageEvent(props: {
+export function createAssistantMessageEvent(props: {
   stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
