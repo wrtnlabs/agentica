@@ -3,6 +3,7 @@ import type {
   AgenticaAssistantMessageEvent,
   AgenticaDescribeEvent,
   AgenticaHistory,
+  AgenticaJsonParseErrorEvent,
   AgenticaOperationSelection,
   AgenticaSelectEvent,
   AgenticaTokenUsage,
@@ -90,6 +91,9 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   const handleValidate = (event: AgenticaValidateEvent<Model>) => {
     console.error(event);
   };
+  const handleJsonParseError = (event: AgenticaJsonParseErrorEvent<Model>) => {
+    console.error(event);
+  };
 
   // INITIALIZATION
   useEffect(() => {
@@ -101,6 +105,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     agent.on("select", handleSelect);
     agent.on("describe", handleDescribe);
     agent.on("validate", handleValidate);
+    agent.on("jsonParseError", handleJsonParseError);
     setTokenUsage(agent.getTokenUsage());
     return () => {
       agent.off("assistantMessage", handleAssistantMessage);
@@ -108,6 +113,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
       agent.off("select", handleSelect);
       agent.off("describe", handleDescribe);
       agent.off("validate", handleValidate);
+      agent.off("jsonParseError", handleJsonParseError);
     };
   }, []);
 

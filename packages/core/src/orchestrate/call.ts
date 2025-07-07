@@ -7,7 +7,6 @@ import type {
 import type OpenAI from "openai";
 
 import { HttpLlm } from "@samchon/openapi";
-import { v4 } from "uuid";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
@@ -66,10 +65,10 @@ export async function call<Model extends ILlmSchema.Model>(
 
             description: s.function.description,
             parameters: (
-              "separated" in s.function
-
-              && s.function.separated !== undefined
-
+              (
+                "separated" in s.function
+                && s.function.separated !== undefined
+              )
                 ? (s.function.separated.llm
                   ?? ({
                     type: "object",
@@ -90,6 +89,7 @@ export async function call<Model extends ILlmSchema.Model>(
   const completion: OpenAI.ChatCompletion = ChatGptCompletionMessageUtil.merge(chunks);
   const executes: AgenticaExecuteEvent<Model>[] = [];
 
+  const retry: number = ctx.config?.retry ?? AgenticaConstant.RETRY;
   for (const choice of completion.choices) {
     for (const tc of choice.message.tool_calls ?? []) {
       if (tc.type === "function") {
@@ -104,7 +104,7 @@ export async function call<Model extends ILlmSchema.Model>(
           operation,
           tc,
           [],
-          ctx.config?.retry ?? AgenticaConstant.RETRY,
+          retry,
         );
         ctx.dispatch(event);
         executes.push(event);
@@ -171,9 +171,7 @@ async function predicate<Model extends ILlmSchema.Model>(
   }
 
   // EXECUTE OPERATION
-  const execute: AgenticaExecuteEvent<Model> = await executeFunction(call, operation);
-  ctx.dispatch(execute);
-  return execute;
+  return executeFunction(call, operation);
 }
 
 /* -----------------------------------------------------------
@@ -197,12 +195,11 @@ async function correctTypeError<Model extends ILlmSchema.Model>(
       },
     }),
     operation: callEvent.operation,
-    messageArguments: JSON.stringify(callEvent.arguments),
-    messageToolParam: {
-      role: "tool",
-      content: JSON.stringify(validateEvent.result.errors),
-      tool_call_id: callEvent.id,
-    } satisfies OpenAI.ChatCompletionToolMessageParam,
+    toolCall: {
+      id: callEvent.id,
+      arguments: JSON.stringify(callEvent.arguments),
+      result: JSON.stringify(validateEvent.result.errors),
+    },
     systemPrompt: ctx.config?.systemPrompt?.validate?.(previousValidationErrors.slice(0, -1))
       ?? [
         AgenticaSystemPrompt.VALIDATE,
@@ -239,8 +236,11 @@ async function correctJsonError<Model extends ILlmSchema.Model>(
       },
     }),
     operation: parseErrorEvent.operation,
-    messageArguments: parseErrorEvent.arguments,
-    messageToolParam: null,
+    toolCall: {
+      id: parseErrorEvent.id,
+      arguments: parseErrorEvent.arguments,
+      result: parseErrorEvent.errorMessage,
+    },
     systemPrompt: ctx.config?.systemPrompt?.jsonParseError?.(parseErrorEvent)
       ?? AgenticaSystemPrompt.JSON_PARSE_ERROR.replace(
         "${{ERROR_MESSAGE}}",
@@ -278,8 +278,11 @@ async function correctError<Model extends ILlmSchema.Model>(
   props: {
     giveUp: () => AgenticaExecuteEvent<Model>;
     operation: AgenticaOperation<Model>;
-    messageArguments: string;
-    messageToolParam: null | OpenAI.ChatCompletionToolMessageParam;
+    toolCall: {
+      id: string;
+      arguments: string;
+      result: string;
+    };
     systemPrompt: string;
     life: number;
     previousValidationErrors: AgenticaValidateEvent<Model>[];
@@ -315,17 +318,19 @@ async function correctError<Model extends ILlmSchema.Model>(
         tool_calls: [
           {
             type: "function",
-            id: v4(),
+            id: props.toolCall.id,
             function: {
               name: props.operation.name,
-              arguments: props.messageArguments,
+              arguments: props.toolCall.arguments,
             },
           } satisfies OpenAI.ChatCompletionMessageToolCall,
         ],
       } satisfies OpenAI.ChatCompletionAssistantMessageParam,
-      ...(props.messageToolParam !== null
-        ? [props.messageToolParam]
-        : []),
+      {
+        role: "tool",
+        content: props.toolCall.result,
+        tool_call_id: props.toolCall.id,
+      },
       {
         role: "system",
         content: props.systemPrompt,

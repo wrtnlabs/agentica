@@ -101,10 +101,8 @@ export async function test_rpc_websocket_call(): Promise<void | false> {
   TestValidator.equals("events")(
     events.filter(e => e.type !== "cancel").map(e => e.type),
   )([
-    "userMessage",
     "initialize",
     "assistantMessage",
-    "userMessage",
     "select",
     "call",
     "execute",
