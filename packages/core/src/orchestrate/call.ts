@@ -21,10 +21,13 @@ import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
+import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
+
+import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
 
 export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
@@ -96,15 +99,21 @@ export async function call<Model extends ILlmSchema.Model>(
         if (operation === undefined) {
           continue; // Ignore unknown tool calls
         }
-        const r: AgenticaExecuteEvent<Model> = await predicate(
+        const event: AgenticaExecuteEvent<Model> = await predicate(
           ctx,
           operation,
           tc,
           [],
           ctx.config?.retry ?? AgenticaConstant.RETRY,
         );
-        ctx.dispatch(r);
-        executes.push(r);
+        ctx.dispatch(event);
+        executes.push(event);
+        if (isAgenticaContext(ctx)) {
+          cancelFunctionFromContext(ctx, {
+            name: event.operation.name,
+            reason: "completed",
+          });
+        }
       }
     }
     if (
@@ -122,6 +131,7 @@ export async function call<Model extends ILlmSchema.Model>(
       ctx.dispatch(event);
     }
   }
+  console.error("call", executes);
   return executes;
 }
 
