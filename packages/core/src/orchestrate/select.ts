@@ -15,7 +15,7 @@ import type { AgenticaEvent } from "../events/AgenticaEvent";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { creatAssistantMessageEvent } from "../factory/events";
+import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -237,7 +237,7 @@ async function step<Model extends ILlmSchema.Model>(
       && choice.message.content != null
       && choice.message.content.length !== 0
     ) {
-      const event: AgenticaAssistantMessageEvent = creatAssistantMessageEvent({
+      const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
         stream: toAsyncGenerator(choice.message.content),
         join: async () => Promise.resolve(choice.message.content!),
         done: () => true,

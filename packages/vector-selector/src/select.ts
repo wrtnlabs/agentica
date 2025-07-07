@@ -80,7 +80,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   if (toolCalls.length === 0) {
     selectCompletion.choices.forEach((v) => {
       if (v.message.content != null && v.message.content !== "") {
-        const event: AgenticaAssistantMessageEvent = factory.creatAssistantMessageEvent({
+        const event: AgenticaAssistantMessageEvent = factory.createAssistantMessageEvent({
           stream: utils.toAsyncGenerator(v.message.content),
           done: () => true,
           get: () => v.message.content as string,

@@ -9,7 +9,7 @@ import type { AgenticaAssistantMessageEvent } from "../events/AgenticaAssistantM
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { creatAssistantMessageEvent } from "../factory/events";
+import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { MPSC } from "../utils/MPSC";
@@ -106,7 +106,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
         };
         mpsc.produce(choice.delta.content);
 
-        const event: AgenticaAssistantMessageEvent = creatAssistantMessageEvent({
+        const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
           stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
           done: () => mpsc.done(),
           get: () => textContext[choice.index]!.content,
