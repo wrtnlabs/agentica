@@ -1,6 +1,6 @@
 {
   "name": "@agentica/core",
-  "version": "0.29.5",
+  "version": "0.29.6",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
