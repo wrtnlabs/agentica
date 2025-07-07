@@ -131,7 +131,6 @@ export async function call<Model extends ILlmSchema.Model>(
       ctx.dispatch(event);
     }
   }
-  console.error("call", executes);
   return executes;
 }
 
