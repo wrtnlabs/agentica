@@ -65,10 +65,10 @@ export async function call<Model extends ILlmSchema.Model>(
 
             description: s.function.description,
             parameters: (
-              "separated" in s.function
-
-              && s.function.separated !== undefined
-
+              (
+                "separated" in s.function
+                && s.function.separated !== undefined
+              )
                 ? (s.function.separated.llm
                   ?? ({
                     type: "object",
@@ -171,9 +171,7 @@ async function predicate<Model extends ILlmSchema.Model>(
   }
 
   // EXECUTE OPERATION
-  const execute: AgenticaExecuteEvent<Model> = await executeFunction(call, operation);
-  ctx.dispatch(execute);
-  return execute;
+  return executeFunction(call, operation);
 }
 
 /* -----------------------------------------------------------
@@ -241,7 +239,7 @@ async function correctJsonError<Model extends ILlmSchema.Model>(
     toolCall: {
       id: parseErrorEvent.id,
       arguments: parseErrorEvent.arguments,
-      result: null,
+      result: parseErrorEvent.errorMessage,
     },
     systemPrompt: ctx.config?.systemPrompt?.jsonParseError?.(parseErrorEvent)
       ?? AgenticaSystemPrompt.JSON_PARSE_ERROR.replace(
@@ -283,7 +281,7 @@ async function correctError<Model extends ILlmSchema.Model>(
     toolCall: {
       id: string;
       arguments: string;
-      result: string | null;
+      result: string;
     };
     systemPrompt: string;
     life: number;
@@ -328,13 +326,11 @@ async function correctError<Model extends ILlmSchema.Model>(
           } satisfies OpenAI.ChatCompletionMessageToolCall,
         ],
       } satisfies OpenAI.ChatCompletionAssistantMessageParam,
-      ...(props.toolCall.result !== null
-        ? [{
-          role: "tool",
-          content: props.toolCall.result,
-          tool_call_id: props.toolCall.id,
-        } satisfies OpenAI.ChatCompletionToolMessageParam]
-        : []),
+      {
+        role: "tool",
+        content: props.toolCall.result,
+        tool_call_id: props.toolCall.id,
+      },
       {
         role: "system",
         content: props.systemPrompt,

@@ -90,9 +90,7 @@ export async function test_rpc_micro_call(): Promise<void | false> {
   TestValidator.equals("events")(
     events.map(e => e.type),
   )([
-    "userMessage",
     "assistantMessage",
-    "userMessage",
     "call",
     "execute",
     "describe",

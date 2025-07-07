@@ -36,6 +36,11 @@ export async function test_rpc_websocket_initialize(): Promise<void | false> {
           apiKey: TestGlobal.chatgptApiKey,
         }),
       },
+      config: {
+        executor: {
+          initialize: true,
+        },
+      },
       controllers: [],
     });
     await acceptor.accept(
