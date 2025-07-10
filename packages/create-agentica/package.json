@@ -1,6 +1,6 @@
 {
   "name": "create-agentica",
-  "version": "0.16.7",
+  "version": "0.16.7-fix-for-wrtn",
   "description": "alias of agentica cli",
   "type": "module",
   "bin": "./index.js",

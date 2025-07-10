@@ -1,6 +1,6 @@
 {
   "name": "@agentica/benchmark",
-  "version": "0.16.7",
+  "version": "0.16.7-fix-for-wrtn",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
