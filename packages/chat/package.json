@@ -1,7 +1,7 @@
 {
   "name": "@agentica/chat",
   "type": "module",
-  "version": "0.30.2",
+  "version": "0.30.3",
   "description": "Frontend Application of Agentica",
   "author": "Wrtn Technologies",
   "license": "MIT",
