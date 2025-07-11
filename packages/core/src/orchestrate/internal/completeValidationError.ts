@@ -8,7 +8,7 @@ export function complementValidationError(
       continue;
     }
     const description: string = [
-      "> You AI has not defined the value (\`undefined\`).",
+      "> You AI have not defined the value (\`undefined\`).",
       ">",
       `> Please fill the \`${error.expected}\` typed value at the next time.`,
     ].join("\n");
