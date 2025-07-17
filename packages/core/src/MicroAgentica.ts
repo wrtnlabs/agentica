@@ -166,7 +166,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       ctx,
       this.operations_.array,
     );
-    if (executes.length) {
+    if (executes.length && this.props.config?.executor?.describe !== null) {
       await describe(ctx, executes);
     }
 
