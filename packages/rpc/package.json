@@ -1,6 +1,6 @@
 {
   "name": "@agentica/rpc",
-  "version": "0.30.4",
+  "version": "0.30.5",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
