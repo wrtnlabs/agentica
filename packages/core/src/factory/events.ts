@@ -22,8 +22,6 @@ import type { AgenticaUserMessageContent } from "../histories";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
-import { complementValidationError } from "../orchestrate/internal/completeValidationError";
-
 import {
   createExecuteHistory,
   createSelectHistory,
@@ -137,7 +135,6 @@ export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
   operation: AgenticaOperation<Model>;
   result: IValidation.IFailure;
 }): AgenticaValidateEvent<Model> {
-  complementValidationError(props.result);
   const created_at: string = new Date().toISOString();
   return {
     type: "validate",
