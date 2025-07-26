@@ -166,12 +166,7 @@ async function step<Model extends ILlmSchema.Model>(
     } satisfies OpenAI.ChatCompletionTool],
     tool_choice: retry === 0
       ? "auto"
-      : {
-          type: "function",
-          function: {
-            name: CONTAINER.functions[0]!.name,
-          },
-        },
+      : "required",
     // parallel_tool_calls: true,
   });
 

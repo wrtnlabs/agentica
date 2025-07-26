@@ -1,5 +1,4 @@
 import type {
-  Agentica,
   AgenticaAssistantMessageEvent,
   AgenticaDescribeEvent,
   AgenticaHistory,
@@ -9,6 +8,7 @@ import type {
   AgenticaTokenUsage,
   AgenticaUserMessageEvent,
   AgenticaValidateEvent,
+  MicroAgentica,
 } from "@agentica/core";
 import type {
   Theme,
@@ -16,6 +16,9 @@ import type {
 import type { ILlmSchema } from "@samchon/openapi";
 import type { ReactElement } from "react";
 
+import {
+  Agentica,
+} from "@agentica/core";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SendIcon from "@mui/icons-material/Send";
@@ -100,20 +103,38 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     if (inputRef.current !== null) {
       inputRef.current.select();
     }
-    agent.on("assistantMessage", handleAssistantMessage);
-    agent.on("userMessage", handleUserMessage);
-    agent.on("select", handleSelect);
-    agent.on("describe", handleDescribe);
-    agent.on("validate", handleValidate);
-    agent.on("jsonParseError", handleJsonParseError);
     setTokenUsage(agent.getTokenUsage());
+    if (agent instanceof Agentica) {
+      agent.on("select", handleSelect);
+      agent.on("assistantMessage", handleAssistantMessage);
+      agent.on("userMessage", handleUserMessage);
+      agent.on("describe", handleDescribe);
+      agent.on("validate", handleValidate);
+      agent.on("jsonParseError", handleJsonParseError);
+    }
+    else {
+      agent.on("assistantMessage", handleAssistantMessage);
+      agent.on("userMessage", handleUserMessage);
+      agent.on("describe", handleDescribe);
+      agent.on("validate", handleValidate);
+      agent.on("jsonParseError", handleJsonParseError);
+    }
     return () => {
-      agent.off("assistantMessage", handleAssistantMessage);
-      agent.off("userMessage", handleUserMessage);
-      agent.off("select", handleSelect);
-      agent.off("describe", handleDescribe);
-      agent.off("validate", handleValidate);
-      agent.off("jsonParseError", handleJsonParseError);
+      if (agent instanceof Agentica) {
+        agent.off("select", handleSelect);
+        agent.off("assistantMessage", handleAssistantMessage);
+        agent.off("userMessage", handleUserMessage);
+        agent.off("describe", handleDescribe);
+        agent.off("validate", handleValidate);
+        agent.off("jsonParseError", handleJsonParseError);
+      }
+      else {
+        agent.off("assistantMessage", handleAssistantMessage);
+        agent.off("userMessage", handleUserMessage);
+        agent.off("describe", handleDescribe);
+        agent.off("validate", handleValidate);
+        agent.off("jsonParseError", handleJsonParseError);
+      }
     };
   }, []);
 
@@ -132,6 +153,14 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
       }
     });
   };
+  useEffect(() => {
+    if (histories.length !== 0) {
+      bodyContainerRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [histories.length]);
 
   const conversate = async () => {
     setText("");
@@ -245,6 +274,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
         onClick={isMobile ? () => setOpenSide(false) : undefined}
       >
         <AgenticaChatSideMovie
+          model={agent.getOperations()[0].controller.application.model}
           vendor={agent.getVendor()}
           config={agent.getConfig()}
           usage={tokenUsage}
@@ -347,7 +377,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
 }
 export namespace AgenticaChatMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
-    agent: Agentica<Model>;
+    agent: Agentica<Model> | MicroAgentica<Model>;
     title?: string;
   }
 }

@@ -363,12 +363,7 @@ async function correctError<Model extends ILlmSchema.Model>(
         },
       },
     ],
-    tool_choice: {
-      type: "function",
-      function: {
-        name: props.operation.name,
-      },
-    },
+    tool_choice: "required",
     // parallel_tool_calls: false,
   });
   const chunks: OpenAI.ChatCompletionChunk[] = await StreamUtil.readAll(stream);

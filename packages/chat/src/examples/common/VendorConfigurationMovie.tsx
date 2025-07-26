@@ -29,6 +29,13 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
     props.onChange(config);
   };
 
+  const handleBaseURL = (str: string) => {
+    const config: VendorConfigurationMovie.IConfig = getConfig();
+    config.baseURL = str;
+    setBaseURL(str);
+    props.onChange(config);
+  };
+
   const handleVendorMode = (_: unknown, value: string) => {
     const config: VendorConfigurationMovie.IConfig = getConfig();
     setVendorMode(value as "gpt-4o" | "gpt-4o-mini" | "manual");
@@ -42,16 +49,15 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
       setSchemaModel("chatgpt");
     }
     else {
-      config.baseURL = "https://openrouter.ai/api/v1";
-      setBaseURL("https://openrouter.ai/api/v1");
+      config.vendorModel = "qwen/qwen3-30b-a3b";
+      config.baseURL = "http://localhost:1234/v1";
+      config.schemaModel = "chatgpt";
+      config.apiKey = "Local LLM does not require an API key";
+      setVendorModel(config.vendorModel);
+      setBaseURL(config.baseURL);
+      setSchemaModel(config.schemaModel);
+      setApiKey(config.apiKey);
     }
-    props.onChange(config);
-  };
-
-  const handleBaseURL = (str: string) => {
-    const config: VendorConfigurationMovie.IConfig = getConfig();
-    config.baseURL = str;
-    setBaseURL(str);
     props.onChange(config);
   };
 
@@ -73,7 +79,7 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
     <>
       <TextField
         onChange={e => handleApiKey(e.target.value)}
-        defaultValue={apiKey}
+        value={apiKey}
         label="OpenAI API Key"
         variant="outlined"
         placeholder="Your OpenAI API Key"
