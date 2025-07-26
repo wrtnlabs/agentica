@@ -3,6 +3,7 @@ import type {
   AgenticaTokenUsage,
   IAgenticaConfig,
   IAgenticaVendor,
+  IMicroAgenticaConfig,
 } from "@agentica/core";
 import type { ILlmSchema } from "@samchon/openapi";
 
@@ -39,9 +40,14 @@ export function AgenticaChatSideMovie<Model extends ILlmSchema.Model>(props: Age
       <hr />
       <ul>
         <li>
-          Model:
+          Vendor Model:
           {" "}
           {props.vendor.model}
+        </li>
+        <li>
+          Schema Model:
+          {" "}
+          {props.model}
         </li>
         <li>
           Locale:
@@ -66,8 +72,9 @@ export function AgenticaChatSideMovie<Model extends ILlmSchema.Model>(props: Age
 }
 export namespace AgenticaChatSideMovie {
   export interface IProps<Model extends ILlmSchema.Model> {
+    model: Model;
     vendor: IAgenticaVendor;
-    config: IAgenticaConfig<Model> | undefined;
+    config: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model> | undefined;
     usage: AgenticaTokenUsage;
     selections: AgenticaOperationSelection<Model>[];
     error: Error | null;

@@ -1,7 +1,7 @@
 import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
-import { Agentica } from "@agentica/core";
+import { MicroAgentica } from "@agentica/core";
 import typia from "typia";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
@@ -20,7 +20,7 @@ const applications = {
 
 export function BbsChatApplication(props: BbsChatApplication.IProps) {
   const service: BbsArticleService = new BbsArticleService();
-  const agent: Agentica<ILlmSchema.Model> = new Agentica({
+  const agent: MicroAgentica<ILlmSchema.Model> = new MicroAgentica({
     model: "chatgpt",
     vendor: {
       api: props.api,
@@ -37,9 +37,6 @@ export function BbsChatApplication(props: BbsChatApplication.IProps) {
     config: {
       locale: props.locale,
       timezone: props.timezone,
-      executor: {
-        initialize: null,
-      },
     },
   });
   return <AgenticaChatApplication agent={agent} />;
