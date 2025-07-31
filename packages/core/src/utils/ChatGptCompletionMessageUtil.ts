@@ -83,7 +83,7 @@ function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
     throw new Error("No chunks received");
   }
 
-  return chunks.reduce(accumulate, {
+  const result = chunks.reduce(accumulate, {
     id: firstChunk.id,
     choices: [],
     created: firstChunk.created,
@@ -93,6 +93,17 @@ function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
     service_tier: firstChunk.service_tier,
     system_fingerprint: firstChunk.system_fingerprint,
   } as ChatCompletion);
+
+  // post-process
+  result.choices.forEach((choice) => {
+    choice.message.tool_calls?.forEach((toolCall) => {
+      if (toolCall.function.arguments === "") {
+        toolCall.function.arguments = "{}";
+      }
+    });
+  });
+
+  return result;
 }
 
 function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice): ChatCompletion.Choice {
