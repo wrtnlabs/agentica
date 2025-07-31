@@ -121,7 +121,7 @@ export class AgenticaTokenUsage implements IAgenticaTokenUsageJson {
     x: AgenticaTokenUsage,
     y: AgenticaTokenUsage,
   ): AgenticaTokenUsage {
-    const z: AgenticaTokenUsage = new AgenticaTokenUsage(x);
+    const z: AgenticaTokenUsage = new AgenticaTokenUsage(x.toJSON());
     z.increment(y.toJSON());
     return z;
   }
