@@ -8,19 +8,17 @@ import type { AgenticaUserMessageContentBase } from "./AgenticaUserMessageConten
  */
 export interface AgenticaUserMessageFileContent extends AgenticaUserMessageContentBase<"file"> {
   /**
-   * Reference to the pre-uploaded file or the data itself.
-   *
-   * @todo Properly define independent interface
+   * Reference to the pre-uploaded file or the base64 data itself.
    */
-  file: AgenticaUserMessageFileContent.IReference | AgenticaUserMessageFileContent.IData;
+  file: AgenticaUserMessageFileContent.IId | AgenticaUserMessageFileContent.IBase64;
 }
 export namespace AgenticaUserMessageFileContent {
-  export interface IReference {
-    type: "reference";
+  export interface IId {
+    type: "id";
     id: string;
   }
-  export interface IData {
-    type: "data";
+  export interface IBase64 {
+    type: "base64";
     name: string;
     data: string;
   }

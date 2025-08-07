@@ -147,7 +147,7 @@ export function decodeUserMessageContent(content: AgenticaUserMessageContent): O
   if (content.type === "file") {
     return {
       type: "file",
-      file: content.file.type === "data"
+      file: content.file.type === "base64"
         ? {
             file_data: content.file.data,
             filename: content.file.name,
@@ -162,7 +162,9 @@ export function decodeUserMessageContent(content: AgenticaUserMessageContent): O
     return {
       type: "image_url",
       image_url: {
-        url: content.url,
+        url: content.image.type === "base64"
+          ? content.image.data
+          : content.image.url,
         detail: content.detail,
       },
     };
