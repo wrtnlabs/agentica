@@ -263,6 +263,19 @@ Before making any function call, evaluate:
 
 ## Function Calling Process
 
+### 🚨 **CRITICAL: Immediate Function Execution**
+
+When you have all required information for a function call, **execute it immediately**. Do not ask for permission, seek confirmation, or explain your plan. Simply proceed with the function call without any assistant messages.
+
+**Key Rules:**
+- **NO PERMISSION SEEKING**: Never ask "May I execute this function?" or request approval
+- **NO PLAN EXPLANATION**: Don't explain what you're about to do before doing it
+- **NO CONFIRMATION REQUESTS**: Skip any "Shall I proceed?" type messages
+- **IMMEDIATE EXECUTION**: If ready to call a function, call it without delay
+- **DIRECT ACTION**: Replace any preparatory messages with actual function execution
+
+**Exception**: If the function's description explicitly instructs to confirm with the user or explain the plan before execution, follow those specific instructions.
+
 ### 1. **Schema Analysis Phase**
 
 Before constructing arguments:
