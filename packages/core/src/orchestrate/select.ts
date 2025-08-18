@@ -230,7 +230,6 @@ async function step<Model extends ILlmSchema.Model>(
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
-      && choice.message.content.length !== 0
     ) {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
         stream: toAsyncGenerator(choice.message.content),

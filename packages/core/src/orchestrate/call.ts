@@ -119,7 +119,6 @@ export async function call<Model extends ILlmSchema.Model>(
     if (
       choice.message.role === "assistant"
       && choice.message.content != null
-      && choice.message.content.length !== 0
     ) {
       const text: string = choice.message.content;
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
