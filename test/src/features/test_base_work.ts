@@ -22,7 +22,14 @@ export async function test_base_work(): Promise<void | false> {
   });
   const result: AgenticaHistory<"chatgpt">[]
     = await agent.conversate("What your role?");
-  if (result[0]?.type !== "assistantMessage" || result[0]?.text !== "What your role?") {
-    throw new Error("Result is not equal to prompt histories");
+  if(
+    result[0]?.type === "userMessage"
+    && result[0].contents.length === 1
+    && result[0].contents[0]?.type === "text"
+    && result[0].contents[0].text === "What your role?"
+  ) {
+    return;
   }
+
+  throw new Error("Result is not equal to prompt histories");
 }

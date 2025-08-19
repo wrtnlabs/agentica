@@ -80,9 +80,6 @@ export async function test_rpc_websocket_call(): Promise<void | false> {
     execute: async (evt) => {
       events.push(evt);
     },
-    cancel: async (evt) => {
-      events.push(evt);
-    },
   });
   await connector.connect(`ws://localhost:${port}`);
 
@@ -99,7 +96,7 @@ export async function test_rpc_websocket_call(): Promise<void | false> {
   await server.close();
 
   TestValidator.equals("events")(
-    events.filter(e => e.type !== "cancel").map(e => e.type),
+    events.map(e => e.type),
   )([
     "initialize",
     "assistantMessage",
