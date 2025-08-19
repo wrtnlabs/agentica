@@ -76,15 +76,10 @@ export async function test_rpc_websocket_initialize(): Promise<void | false> {
 
   TestValidator.equals("events")([
     {
-      type: "text",
-      role: "user",
-    },
-    {
       type: "initialize",
     },
     {
-      type: "text",
-      role: "assistant",
+      type: "assistantMessage",
     },
   ])(events);
 }
