@@ -29,7 +29,7 @@ export async function test_base_event(): Promise<void | false> {
   const initializeListener = () => {
     initializeCount++;
   };
-  const textListener = () => {
+  const textListener = async () => {
     textCount++;
   };
 
@@ -46,10 +46,10 @@ export async function test_base_event(): Promise<void | false> {
     );
   }
 
-  // total twice: initialize, select
-  if (textCount !== 2) {
+  // total once
+  if (textCount !== 1) {
     throw new Error(
-      `Text event should be called twice, but called ${textCount} times`,
+      `Text event should be called once, but called ${textCount} times`,
     );
   }
 
@@ -66,9 +66,9 @@ export async function test_base_event(): Promise<void | false> {
     );
   }
 
-  // total twice: (initialize, select) * 2
-  if ((textCount as number) !== 4) {
-    throw new Error(`Text count should be 4, but got ${textCount}`);
+  // total twice
+  if ((textCount as number) !== 2) {
+    throw new Error(`Text count should be 2, but got ${textCount}`);
   }
 
   // remove text event listener
@@ -83,7 +83,7 @@ export async function test_base_event(): Promise<void | false> {
       `Initialize count should remain 1, but got ${initializeCount}`,
     );
   }
-  if ((textCount as number) !== 4) {
-    throw new Error(`Text count should remain 4, but got ${textCount}`);
+  if ((textCount as number) !== 2) {
+    throw new Error(`Text count should remain 2, but got ${textCount}`);
   }
 }
