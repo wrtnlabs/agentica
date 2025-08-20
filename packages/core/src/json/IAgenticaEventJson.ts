@@ -168,7 +168,7 @@ export namespace IAgenticaEventJson {
      * Whether the execution was successful or not.
      *
      * If the success value is false, it means that an error has
-     * occured during the execution.
+     * occurred during the execution.
      */
     success: boolean;
   }
