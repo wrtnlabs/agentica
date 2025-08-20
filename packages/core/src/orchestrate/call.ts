@@ -25,7 +25,7 @@ import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, creat
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { MPSC } from "../utils";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
 
@@ -107,7 +107,7 @@ export async function call<Model extends ILlmSchema.Model>(
           continue;
         }
 
-        if (choice.delta.content == null) {
+        if (choice.delta.content == null || choice.delta.content === "") {
           continue;
         }
 
@@ -145,6 +145,21 @@ export async function call<Model extends ILlmSchema.Model>(
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
   const completion = nullableCompletion!;
+  const emptyAssistantMessages = completion.choices.filter(v => v.message.tool_calls == null && v.message.content === "");
+  if(emptyAssistantMessages.length > 0) {
+    emptyAssistantMessages.forEach(v => {
+    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
+      stream: toAsyncGenerator(v.message.content ?? ""),
+      done: () => true,
+      get: () => v.message.content ?? "",
+      join: async () => {
+        return v.message.content ?? "";
+      },
+      });
+      ctx.dispatch(event);
+    });
+    return [];
+  }
 
   const executes: AgenticaExecuteEvent<Model>[] = [];
 
