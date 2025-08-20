@@ -156,6 +156,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
   operation: AgenticaOperation<Model>;
   arguments: Record<string, unknown>;
   value: unknown;
+  success: boolean;
 }): AgenticaExecuteEvent<Model> {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
@@ -167,6 +168,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
     operation: props.operation as AgenticaOperation.Class<Model>,
     arguments: props.arguments,
     value: props.value as any,
+    success: props.success,
     toJSON: () => ({
       type: "execute",
       id,
@@ -175,6 +177,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
       operation: props.operation.toJSON(),
       arguments: props.arguments,
       value: props.value,
+      success: props.success,
     }),
     toHistory: () =>
       createExecuteHistory({

@@ -1,8 +1,12 @@
-import { Agentica, AgenticaAssistantMessageEvent, IAgenticaController } from "@agentica/core";
-import { TestGlobal } from "../TestGlobal";
+import assert from "node:assert";
+
+import type { AgenticaAssistantMessageEvent, IAgenticaController } from "@agentica/core";
+
+import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
-import assert from "node:assert";
+
+import { TestGlobal } from "../TestGlobal";
 
 class Weather {
   public getWeather(props: {
@@ -40,9 +44,8 @@ export async function test_call_streaming_base(): Promise<void | false> {
         initialize: null,
         describe: null,
       },
-    }
+    },
   });
-
 
   let isAssistantMessageStreaming = false;
   agent.on("assistantMessage", async (event: AgenticaAssistantMessageEvent) => {
@@ -53,7 +56,6 @@ export async function test_call_streaming_base(): Promise<void | false> {
     isAssistantMessageStreaming = count > 2;
   });
 
-  
   const result = await agent.conversate("How are the weather?");
   assert(result.length === 3);
   assert(result[0]?.type === "userMessage");

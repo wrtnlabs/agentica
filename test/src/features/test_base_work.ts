@@ -22,7 +22,7 @@ export async function test_base_work(): Promise<void | false> {
   });
   const result: AgenticaHistory<"chatgpt">[]
     = await agent.conversate("What your role?");
-  if(
+  if (
     result[0]?.type === "userMessage"
     && result[0].contents.length === 1
     && result[0].contents[0]?.type === "text"

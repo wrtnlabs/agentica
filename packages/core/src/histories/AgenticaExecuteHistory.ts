@@ -54,5 +54,13 @@ export namespace AgenticaExecuteHistory {
      * Otherwise "http", the return value is an HTTP response.
      */
     value: Value;
+
+    /**
+     * Whether the execution was successful or not.
+     *
+     * If the success value is false, it means that an error has
+     * occurred during the execution.
+     */
+    success: boolean;
   }
 }

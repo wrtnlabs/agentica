@@ -23,11 +23,11 @@ import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { MPSC } from "../utils";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
-import { MPSC } from "../utils";
 
 export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
@@ -86,7 +86,6 @@ export async function call<Model extends ILlmSchema.Model>(
     tool_choice: "auto",
     // parallel_tool_calls: false,
   });
-  
 
   const selectContext: ({
     content: string;
@@ -146,7 +145,6 @@ export async function call<Model extends ILlmSchema.Model>(
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
   const completion = nullableCompletion!;
-  
 
   const executes: AgenticaExecuteEvent<Model>[] = [];
 
@@ -240,6 +238,7 @@ async function correctTypeError<Model extends ILlmSchema.Model>(
         message: `Invalid arguments. The validation failed after ${AgenticaConstant.RETRY} retries.`,
         errors: validateEvent.result.errors,
       },
+      success: false,
     }),
     operation: callEvent.operation,
     toolCall: {
@@ -281,6 +280,7 @@ async function correctJsonError<Model extends ILlmSchema.Model>(
         arguments: parseErrorEvent.arguments,
         errorMessage: parseErrorEvent.errorMessage,
       },
+      success: false,
     }),
     operation: parseErrorEvent.operation,
     toolCall: {
@@ -455,6 +455,7 @@ async function executeFunction<Model extends ILlmSchema.Model>(
       operation: call.operation,
       arguments: call.arguments,
       value,
+      success: true,
     });
   }
   catch (error) {
@@ -468,6 +469,7 @@ async function executeFunction<Model extends ILlmSchema.Model>(
             message: error.message,
           }
         : error,
+      success: false,
     });
   }
 }

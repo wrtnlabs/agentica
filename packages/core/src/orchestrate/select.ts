@@ -17,11 +17,11 @@ import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { MPSC } from "../utils";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
 
 import { selectFunctionFromContext } from "./internal/selectFunctionFromContext";
-import { MPSC } from "../utils";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatSelectFunctionsApplication,
@@ -228,7 +228,7 @@ async function step<Model extends ILlmSchema.Model>(
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
   const completion = nullableCompletion!;
-  
+
   // ----
   // VALIDATION
   // ----

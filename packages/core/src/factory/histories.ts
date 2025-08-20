@@ -325,6 +325,7 @@ export function createExecuteHistory<
   operation: AgenticaOperation<Model>;
   arguments: Record<string, any>;
   value: unknown;
+  success: boolean;
 }): AgenticaExecuteHistory<Model> {
   return {
     type: "execute",
@@ -334,6 +335,7 @@ export function createExecuteHistory<
     operation: props.operation as AgenticaOperation.Class<Model>,
     arguments: props.arguments,
     value: props.value,
+    success: props.success,
     toJSON: () => ({
       type: "execute",
       id: props.id,
@@ -342,6 +344,7 @@ export function createExecuteHistory<
       operation: props.operation.toJSON(),
       arguments: props.arguments,
       value: props.value,
+      success: props.success,
     }),
   };
 }

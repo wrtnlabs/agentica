@@ -134,6 +134,7 @@ function transformExecute<Model extends ILlmSchema.Model>(props: {
      * The property and value have a type mismatch, but it works.
      */
     value: props.history.value as Record<string, unknown>,
+    success: props.history.success,
   });
 }
 
