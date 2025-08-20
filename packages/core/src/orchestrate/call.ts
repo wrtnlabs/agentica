@@ -193,6 +193,7 @@ async function correctTypeError<Model extends ILlmSchema.Model>(
         message: `Invalid arguments. The validation failed after ${AgenticaConstant.RETRY} retries.`,
         errors: validateEvent.result.errors,
       },
+      success: false,
     }),
     operation: callEvent.operation,
     toolCall: {
@@ -234,6 +235,7 @@ async function correctJsonError<Model extends ILlmSchema.Model>(
         arguments: parseErrorEvent.arguments,
         errorMessage: parseErrorEvent.errorMessage,
       },
+      success: false,
     }),
     operation: parseErrorEvent.operation,
     toolCall: {
@@ -408,6 +410,7 @@ async function executeFunction<Model extends ILlmSchema.Model>(
       operation: call.operation,
       arguments: call.arguments,
       value,
+      success: true,
     });
   }
   catch (error) {
@@ -421,6 +424,7 @@ async function executeFunction<Model extends ILlmSchema.Model>(
             message: error.message,
           }
         : error,
+      success: false,
     });
   }
 }

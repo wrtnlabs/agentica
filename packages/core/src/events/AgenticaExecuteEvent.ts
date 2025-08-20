@@ -37,6 +37,7 @@ export namespace AgenticaExecuteEvent {
     operation: Operation;
     arguments: Record<string, unknown>;
     value: Value;
+    success: boolean;
 
     toJSON: () => IAgenticaEventJson.IExecute;
     toHistory: () => History;
