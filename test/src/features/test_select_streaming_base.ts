@@ -1,8 +1,12 @@
-import { Agentica, AgenticaAssistantMessageEvent, IAgenticaController } from "@agentica/core";
-import { TestGlobal } from "../TestGlobal";
+import assert from "node:assert";
+
+import type { AgenticaAssistantMessageEvent, IAgenticaController } from "@agentica/core";
+
+import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
 import typia from "typia";
-import assert from "node:assert";
+
+import { TestGlobal } from "../TestGlobal";
 
 class Weather {
   public getWeather(props: {
@@ -40,7 +44,7 @@ export async function test_select_streaming_base(): Promise<void | false> {
         initialize: null,
         describe: null,
       },
-    }
+    },
   });
 
   let isAssistantMessageStreaming = false;
