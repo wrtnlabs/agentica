@@ -19,7 +19,7 @@ import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { MPSC } from "../utils";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "../utils/StreamUtil";
+import { streamDefaultReaderToAsyncGenerator, StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { selectFunctionFromContext } from "./internal/selectFunctionFromContext";
 
@@ -190,7 +190,7 @@ async function step<Model extends ILlmSchema.Model>(
           continue;
         }
 
-        if (choice.delta.content == null) {
+        if (choice.delta.content == null || choice.delta.content === "") {
           continue;
         }
 
@@ -228,7 +228,20 @@ async function step<Model extends ILlmSchema.Model>(
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
   const completion = nullableCompletion!;
-
+  const emptyAssistantMessages = completion.choices.filter(v => v.message.tool_calls == null && v.message.content === "");
+  if(emptyAssistantMessages.length > 0) {
+    emptyAssistantMessages.forEach(v => {
+    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
+      stream: toAsyncGenerator(v.message.content ?? ""),
+      done: () => true,
+      get: () => v.message.content ?? "",
+      join: async () => {
+        return v.message.content ?? "";
+      },
+      });
+      ctx.dispatch(event);
+    });
+  }
   // ----
   // VALIDATION
   // ----
