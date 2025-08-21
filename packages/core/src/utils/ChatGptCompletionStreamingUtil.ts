@@ -69,7 +69,10 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
 
-  return nullableCompletion!;
+  if (nullableCompletion == null) {
+    throw new Error("StreamUtil.reduce did not produce a ChatCompletion. The stream may have been empty or invalid.");
+  }
+  return nullableCompletion;
 }
 
 export { reduceStreamingWithDispatch };
