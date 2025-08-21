@@ -23,11 +23,11 @@ import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
-import { MPSC } from "../utils";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { streamDefaultReaderToAsyncGenerator, StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
+import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
+import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 
 export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
@@ -87,64 +87,10 @@ export async function call<Model extends ILlmSchema.Model>(
     // parallel_tool_calls: false,
   });
 
-  const selectContext: ({
-    content: string;
-    mpsc: MPSC<string>;
-  })[] = [];
-  const nullableCompletion = await StreamUtil.reduce<OpenAI.ChatCompletionChunk, Promise<OpenAI.ChatCompletion>>(stream, async (accPromise, chunk) => {
-    const acc = await accPromise;
-
-    const registerContext = (
-      choices: OpenAI.ChatCompletionChunk.Choice[],
-    ) => {
-      for (const choice of choices) {
-        /**
-         * @TODO fix it
-         * Sometimes, the complete message arrives along with a finish reason.
-         */
-        if (choice.finish_reason != null) {
-          selectContext[choice.index]?.mpsc.close();
-          continue;
-        }
-
-        if (choice.delta.content == null || choice.delta.content === "") {
-          continue;
-        }
-
-        if (selectContext[choice.index] != null) {
-          selectContext[choice.index]!.content += choice.delta.content;
-          selectContext[choice.index]!.mpsc.produce(choice.delta.content);
-          continue;
-        }
-
-        const mpsc = new MPSC<string>();
-
-        selectContext[choice.index] = {
-          content: choice.delta.content,
-          mpsc,
-        };
-        mpsc.produce(choice.delta.content);
-
-        const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
-          stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
-          done: () => mpsc.done(),
-          get: () => selectContext[choice.index]?.content ?? "",
-          join: async () => {
-            await mpsc.waitClosed();
-            return selectContext[choice.index]!.content;
-          },
-        });
-        ctx.dispatch(event);
-      }
-    };
-    if (acc.object === "chat.completion.chunk") {
-      registerContext([acc, chunk].flatMap(v => v.choices));
-      return ChatGptCompletionMessageUtil.merge([acc, chunk]);
-    }
-    registerContext(chunk.choices);
-    return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
+  const completion = await reduceStreamingWithDispatch(stream, (props) => {
+    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
+    ctx.dispatch(event);
   });
-  const completion = nullableCompletion!;
   const emptyAssistantMessages = completion.choices.filter(v => v.message.tool_calls == null && v.message.content === "");
   if(emptyAssistantMessages.length > 0) {
     emptyAssistantMessages.forEach(v => {
