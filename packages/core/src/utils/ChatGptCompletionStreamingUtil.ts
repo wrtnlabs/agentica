@@ -70,7 +70,12 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
   });
 
   if (nullableCompletion == null) {
-    throw new Error("StreamUtil.reduce did not produce a ChatCompletion. The stream may have been empty or invalid.");
+    throw new Error(
+      "StreamUtil.reduce did not produce a ChatCompletion. Possible causes: the input stream was empty, invalid, or closed prematurely. " +
+      "To debug: check that the stream is properly initialized and contains valid ChatCompletionChunk data. " +
+      "You may also enable verbose logging upstream to inspect the stream contents. " +
+      `Stream locked: ${stream.locked}.`
+    );
   }
   return nullableCompletion;
 }
