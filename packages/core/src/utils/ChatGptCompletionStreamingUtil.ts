@@ -49,7 +49,6 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
         mpsc.produce(choice.delta.content);
 
 
-
         eventProcessor({
           stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
           done: () => mpsc.done(),
