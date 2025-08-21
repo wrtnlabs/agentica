@@ -54,6 +54,10 @@ function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCom
         content: choice.delta.content ?? null,
         refusal: choice.delta.refusal ?? null,
         role: "assistant",
+        ...({
+          // for open router
+          reasoning: (choice.delta as { reasoning?: string }).reasoning ?? null,
+        })
       } satisfies ChatCompletionMessage,
     };
   });
@@ -130,6 +134,16 @@ function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice
     }
     else {
       acc.message.refusal += cur.delta.refusal;
+    }
+  }
+
+  // for open router
+  if ((cur.delta as { reasoning?: string }).reasoning != null) {
+    if ((acc.message as { reasoning?: string }).reasoning == null) {
+      (acc.message as { reasoning?: string }).reasoning = (cur.delta as { reasoning?: string }).reasoning;
+    }
+    else {
+      (acc.message as unknown as { reasoning: string }).reasoning += (cur.delta as { reasoning: string }).reasoning;
     }
   }
 
