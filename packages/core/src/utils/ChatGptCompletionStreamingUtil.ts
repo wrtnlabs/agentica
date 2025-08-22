@@ -1,6 +1,6 @@
 import type { ChatCompletion, ChatCompletionChunk } from "openai/resources";
 
-import { ChatGptCompletionMessageUtil, MPSC, streamDefaultReaderToAsyncGenerator, StreamUtil } from ".";
+import { ChatGptCompletionMessageUtil, MPSC, streamDefaultReaderToAsyncGenerator, StreamUtil, toAsyncGenerator } from ".";
 
 async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletionChunk>, eventProcessor: (props: {
   stream: AsyncGenerator<string, undefined, undefined>;
@@ -19,8 +19,6 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
         // Handle content first, even if finish_reason is present
         if (choice.delta.content != null && choice.delta.content !== "") {
           // Process content logic (moved up from below)
-          // console.log(streamContext);
-          console.log(streamContext.has(choice.index));
           if (streamContext.has(choice.index)) {
             const context = streamContext.get(choice.index)!;
             context.content += choice.delta.content;
@@ -62,7 +60,6 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
     registerContext(chunk.choices);
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   });
-  console.log(nullableCompletion);
 
   if (nullableCompletion == null) {
     throw new Error(
@@ -74,7 +71,18 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
   }
 
   if((nullableCompletion.object as string) === "chat.completion.chunk") {
-    return ChatGptCompletionMessageUtil.merge([nullableCompletion as unknown as ChatCompletionChunk]);
+    const completion = ChatGptCompletionMessageUtil.merge([nullableCompletion as unknown as ChatCompletionChunk]);
+    completion.choices.forEach((choice) => {
+      if(choice.message.content != null && choice.message.content !== "") {
+        eventProcessor({
+          stream: toAsyncGenerator(choice.message.content),
+          done: () => true,
+          get: () => choice.message.content!,
+          join: async () => choice.message.content!,
+        });
+      }
+    });
+    return completion;
   }
   return nullableCompletion;
 }
