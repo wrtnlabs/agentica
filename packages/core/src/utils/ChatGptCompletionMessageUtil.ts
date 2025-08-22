@@ -57,7 +57,7 @@ function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCom
         ...({
           // for open router
           reasoning: (choice.delta as { reasoning?: string }).reasoning ?? null,
-        })
+        }),
       } satisfies ChatCompletionMessage,
     };
   });
