@@ -1,14 +1,14 @@
-import { ChatCompletion, ChatCompletionChunk } from "openai/resources";
+import type { ChatCompletion, ChatCompletionChunk } from "openai/resources";
 
 import { ChatGptCompletionMessageUtil, MPSC, streamDefaultReaderToAsyncGenerator, StreamUtil } from ".";
 
-async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletionChunk>, eventProcessor: (props:  {
+async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletionChunk>, eventProcessor: (props: {
   stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
 }) => void) {
-  const streamContext = new Map<number, { content: string; mpsc: MPSC<string>; }>();
+  const streamContext = new Map<number, { content: string; mpsc: MPSC<string> }>();
 
   const nullableCompletion = await StreamUtil.reduce<ChatCompletionChunk, Promise<ChatCompletion>>(stream, async (accPromise, chunk) => {
     const acc = await accPromise;
@@ -48,7 +48,6 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
         });
         mpsc.produce(choice.delta.content);
 
-
         eventProcessor({
           stream: streamDefaultReaderToAsyncGenerator(mpsc.consumer.getReader()),
           done: () => mpsc.done(),
@@ -70,10 +69,10 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
 
   if (nullableCompletion == null) {
     throw new Error(
-      "StreamUtil.reduce did not produce a ChatCompletion. Possible causes: the input stream was empty, invalid, or closed prematurely. " +
-      "To debug: check that the stream is properly initialized and contains valid ChatCompletionChunk data. " +
-      "You may also enable verbose logging upstream to inspect the stream contents. " +
-      `Stream locked: ${stream.locked}.`
+      "StreamUtil.reduce did not produce a ChatCompletion. Possible causes: the input stream was empty, invalid, or closed prematurely. "
+      + "To debug: check that the stream is properly initialized and contains valid ChatCompletionChunk data. "
+      + "You may also enable verbose logging upstream to inspect the stream contents. "
+      + `Stream locked: ${stream.locked}.`,
     );
   }
   return nullableCompletion;

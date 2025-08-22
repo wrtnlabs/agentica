@@ -23,87 +23,115 @@ import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { __get_retry } from "../utils/__retry";
+import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
+import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
-import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 
 export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   operations: AgenticaOperation<Model>[],
 ): Promise<AgenticaExecuteEvent<Model>[]> {
-  const stream: ReadableStream<OpenAI.ChatCompletionChunk> = await ctx.request("call", {
-    messages: [
-      // COMMON SYSTEM PROMPT
-      {
-        role: "system",
-        content: AgenticaDefaultPrompt.write(ctx.config),
-      } satisfies OpenAI.ChatCompletionSystemMessageParam,
-      // PREVIOUS HISTORIES
-      ...ctx.histories.map(decodeHistory).flat(),
-      // USER INPUT
-      {
-        role: "user",
-        content: ctx.prompt.contents.map(decodeUserMessageContent),
-      },
-      // SYSTEM PROMPT
-      ...(ctx.config?.systemPrompt?.execute === null
-        ? []
-        : [{
+  const _retryFn = __get_retry(ctx.config?.retry ?? AgenticaConstant.RETRY);
+  const retryFn = async (fn: (prevError?: unknown) => Promise<OpenAI.ChatCompletion>) => {
+    return _retryFn(fn).catch((e) => {
+      if (e instanceof AssistantMessageEmptyError) {
+        return Symbol("emptyAssistantMessage");
+      }
+      throw e;
+    });
+  };
+
+  const completion = await retryFn(async (prevError) => {
+    const stream: ReadableStream<OpenAI.ChatCompletionChunk> = await ctx.request("call", {
+      messages: [
+        // COMMON SYSTEM PROMPT
+        {
           role: "system",
-          content: ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
-            ?? AgenticaSystemPrompt.EXECUTE,
-        } satisfies OpenAI.ChatCompletionSystemMessageParam]),
-    ],
-    // STACKED FUNCTIONS
-    tools: operations.map(
-      s =>
-        ({
-          type: "function",
-          function: {
-            name: s.name,
+          content: AgenticaDefaultPrompt.write(ctx.config),
+        } satisfies OpenAI.ChatCompletionSystemMessageParam,
+        // PREVIOUS HISTORIES
+        ...ctx.histories.map(decodeHistory).flat(),
+        // USER INPUT
+        {
+          role: "user",
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
+        },
+        ...(prevError instanceof AssistantMessageEmptyWithReasoningError ? [
+          {
+            role: "assistant",
+            content: prevError.reasoning,
+          } satisfies OpenAI.ChatCompletionMessageParam,
+        ] : []),
+        // SYSTEM PROMPT
+        ...(ctx.config?.systemPrompt?.execute === null
+          ? []
+          : [{
+            role: "system",
+            content: ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory<Model>[])
+              ?? AgenticaSystemPrompt.EXECUTE,
+          } satisfies OpenAI.ChatCompletionSystemMessageParam]),
+      ],
+      // STACKED FUNCTIONS
+      tools: operations.map(
+        s =>
+          ({
+            type: "function",
+            function: {
+              name: s.name,
 
-            description: s.function.description,
-            parameters: (
-              (
-                "separated" in s.function
-                && s.function.separated !== undefined
-              )
-                ? (s.function.separated.llm
-                  ?? ({
-                    type: "object",
-                    properties: {},
-                    required: [],
-                    additionalProperties: false,
-                    $defs: {},
-                  } satisfies IChatGptSchema.IParameters))
+              description: s.function.description,
+              parameters: (
+                (
+                  "separated" in s.function
+                  && s.function.separated !== undefined
+                )
+                  ? (s.function.separated.llm
+                    ?? ({
+                      type: "object",
+                      properties: {},
+                      required: [],
+                      additionalProperties: false,
+                      $defs: {},
+                    } satisfies IChatGptSchema.IParameters))
 
-                : s.function.parameters) as Record<string, any>,
-          },
-        }) as OpenAI.ChatCompletionTool,
-    ),
-    tool_choice: "auto",
-    // parallel_tool_calls: false,
-  });
+                  : s.function.parameters) as Record<string, any>,
+            },
+          }) as OpenAI.ChatCompletionTool,
+      ),
+      tool_choice: "auto",
+      // parallel_tool_calls: false,
+    });
 
-  const completion = await reduceStreamingWithDispatch(stream, (props) => {
-    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
-    ctx.dispatch(event);
-  });
-  const emptyAssistantMessages = completion.choices.filter(v => v.message.tool_calls == null && v.message.content === "");
-  if(emptyAssistantMessages.length > 0) {
-    emptyAssistantMessages.forEach(v => {
-    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
-      stream: toAsyncGenerator(v.message.content ?? ""),
-      done: () => true,
-      get: () => v.message.content ?? "",
-      join: async () => {
-        return v.message.content ?? "";
-      },
-      });
+    const completion = await reduceStreamingWithDispatch(stream, (props) => {
+      const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       ctx.dispatch(event);
     });
+
+    const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+    if (allAssistantMessagesEmpty) {
+      const firstChoice = completion.choices.at(0);
+      if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
+        throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
+      }
+      throw new AssistantMessageEmptyError();
+    }
+    return completion;
+  });
+
+  if (typeof completion === "symbol") {
+    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
+      stream: toAsyncGenerator(""),
+      done: () => true,
+      get: () => "",
+      join: async () => {
+        return "";
+      },
+    });
+    ctx.dispatch(event);
     return [];
   }
 

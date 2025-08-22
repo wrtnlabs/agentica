@@ -17,10 +17,12 @@ import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { __get_retry } from "../utils/__retry";
+import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
+import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
 import { selectFunctionFromContext } from "./internal/selectFunctionFromContext";
-import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 
 const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
   __IChatSelectFunctionsApplication,
@@ -92,100 +94,126 @@ async function step<Model extends ILlmSchema.Model>(
   retry: number,
   failures?: IFailure[],
 ): Promise<void> {
+  const _retryFn = __get_retry(ctx.config?.retry ?? AgenticaConstant.RETRY);
+  const retryFn = async (fn: (prevError?: unknown) => Promise<OpenAI.ChatCompletion>) => {
+    return _retryFn(fn).catch((e) => {
+      if (e instanceof AssistantMessageEmptyError) {
+        return Symbol("emptyAssistantMessage");
+      }
+      throw e;
+    });
+  };
   // ----
   // EXECUTE CHATGPT API
   // ----
-  const completionStream = await ctx.request("select", {
-    messages: [
-      // COMMON SYSTEM PROMPT
-      {
-        role: "system",
-        content: AgenticaDefaultPrompt.write(ctx.config),
-      } satisfies OpenAI.ChatCompletionSystemMessageParam,
-      // CANDIDATE FUNCTIONS
-      {
-        role: "assistant",
-        tool_calls: [
-          {
-            type: "function",
-            id: "getApiFunctions",
-            function: {
-              name: "getApiFunctions",
-              arguments: JSON.stringify({}),
+  const completion = await retryFn(async (prevError) => {
+    const stream = await ctx.request("select", {
+      messages: [
+        // COMMON SYSTEM PROMPT
+        {
+          role: "system",
+          content: AgenticaDefaultPrompt.write(ctx.config),
+        } satisfies OpenAI.ChatCompletionSystemMessageParam,
+        // CANDIDATE FUNCTIONS
+        {
+          role: "assistant",
+          tool_calls: [
+            {
+              type: "function",
+              id: "getApiFunctions",
+              function: {
+                name: "getApiFunctions",
+                arguments: JSON.stringify({}),
+              },
             },
-          },
-        ],
-      },
-      {
-        role: "tool",
-        tool_call_id: "getApiFunctions",
-        content: JSON.stringify(
-          operations.map(op => ({
-            name: op.name,
-            description: op.function.description,
-            ...(op.protocol === "http"
-              ? {
-                  method: op.function.method,
-                  path: op.function.path,
-                  tags: op.function.tags,
-                }
-              : {}),
-          })),
-        ),
-      },
-      // PREVIOUS HISTORIES
-      ...ctx.histories.map(decodeHistory).flat(),
-      // USER INPUT
-      {
-        role: "user",
-        content: ctx.prompt.contents.map(decodeUserMessageContent),
-      },
-      // SYSTEM PROMPT
-      {
-        role: "system",
-        content:
-          ctx.config?.systemPrompt?.select?.(ctx.histories)
-          ?? AgenticaSystemPrompt.SELECT,
-      },
-      // TYPE CORRECTIONS
-      ...emendMessages(failures ?? []),
-    ],
-    // STACK FUNCTIONS
-    tools: [{
-      type: "function",
-      function: {
-        name: CONTAINER.functions[0]!.name,
-        description: CONTAINER.functions[0]!.description,
-        /**
-         * @TODO fix it
-         * The property and value have a type mismatch, but it works.
-         */
-        parameters: CONTAINER.functions[0]!.parameters as unknown as Record<string, unknown>,
-      },
-    } satisfies OpenAI.ChatCompletionTool],
-    tool_choice: retry === 0
-      ? "auto"
-      : "required",
-    // parallel_tool_calls: false,
-  });
+          ],
+        },
+        {
+          role: "tool",
+          tool_call_id: "getApiFunctions",
+          content: JSON.stringify(
+            operations.map(op => ({
+              name: op.name,
+              description: op.function.description,
+              ...(op.protocol === "http"
+                ? {
+                    method: op.function.method,
+                    path: op.function.path,
+                    tags: op.function.tags,
+                  }
+                : {}),
+            })),
+          ),
+        },
+        // PREVIOUS HISTORIES
+        ...ctx.histories.map(decodeHistory).flat(),
+        // USER INPUT
+        {
+          role: "user",
+          content: ctx.prompt.contents.map(decodeUserMessageContent),
+        },
+        // PREVIOUS ERROR
+        ...(prevError instanceof AssistantMessageEmptyWithReasoningError ? [
+          {
+            role: "assistant",
+            content: prevError.reasoning,
+          } satisfies OpenAI.ChatCompletionMessageParam,
+        ] : []),
+        // SYSTEM PROMPT
+        {
+          role: "system",
+          content:
+            ctx.config?.systemPrompt?.select?.(ctx.histories)
+            ?? AgenticaSystemPrompt.SELECT,
+        },
+        // TYPE CORRECTIONS
+        ...emendMessages(failures ?? []),
+      ],
+      // STACK FUNCTIONS
+      tools: [{
+        type: "function",
+        function: {
+          name: CONTAINER.functions[0]!.name,
+          description: CONTAINER.functions[0]!.description,
+          /**
+           * @TODO fix it
+           * The property and value have a type mismatch, but it works.
+           */
+          parameters: CONTAINER.functions[0]!.parameters as unknown as Record<string, unknown>,
+        },
+      } satisfies OpenAI.ChatCompletionTool],
+      tool_choice: retry === 0
+        ? "auto"
+        : "required",
+      // parallel_tool_calls: false,
+    });
 
-  const completion = await reduceStreamingWithDispatch(completionStream, (props) => {
-    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
-    ctx.dispatch(event);
-  });
-  const emptyAssistantMessages = completion.choices.filter(v => v.message.tool_calls == null && v.message.content === "");
-  if(emptyAssistantMessages.length > 0) {
-    emptyAssistantMessages.forEach(v => {
-    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
-      stream: toAsyncGenerator(v.message.content ?? ""),
-      done: () => true,
-      get: () => v.message.content ?? "",
-      join: async () => {
-        return v.message.content ?? "";
-      },
-      });
+    const completion = await reduceStreamingWithDispatch(stream, (props) => {
+      const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       ctx.dispatch(event);
     });
+    const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+    if (allAssistantMessagesEmpty) {
+      const firstChoice = completion.choices.at(0);
+      if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
+        throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
+      }
+      throw new AssistantMessageEmptyError();
+    }
+    return completion;
+  });
+
+  if (typeof completion === "symbol") {
+    const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent({
+      stream: toAsyncGenerator(""),
+      done: () => true,
+      get: () => "",
+      join: async () => {
+        return "";
+      },
+    });
+    ctx.dispatch(event);
+    return;
   }
   // ----
   // VALIDATION
