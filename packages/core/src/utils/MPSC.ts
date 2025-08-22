@@ -7,13 +7,15 @@ export class MPSC<T> {
   public constructor() {
     this.queue = new AsyncQueue<T>();
     this.consumer = new ReadableStream<T>({
-      pull: async (controller) => {
-        const { value, done } = await this.queue.dequeue();
-        if (done === true) {
-          controller.close();
-          return;
+      start: async (controller) => {
+        while (true) {
+          const { value, done } = await this.queue.dequeue();
+          if (done === true) {
+            controller.close();
+            return;
+          }
+          controller.enqueue(value);
         }
-        controller.enqueue(value);
       },
     });
   }

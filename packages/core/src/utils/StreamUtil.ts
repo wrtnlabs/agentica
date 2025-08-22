@@ -34,10 +34,10 @@ async function reduce<T, R = T>(stream: ReadableStream<T>, reducer: (acc: T | R,
   return acc as R;
 }
 
-function from<T>(value: T): ReadableStream<T> {
+function from<T>(...value: T[]): ReadableStream<T> {
   const stream = new ReadableStream<T>({
     start: (controller) => {
-      controller.enqueue(value);
+      value.forEach(v => controller.enqueue(v));
       controller.close();
     },
   });
