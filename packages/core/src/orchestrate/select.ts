@@ -185,8 +185,8 @@ async function step<Model extends ILlmSchema.Model>(
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       ctx.dispatch(event);
     });
-    const hasEmptyAssistantMessages = completion.choices.some(v => v.message.tool_calls != null || v.message.content !== "");
-    if (hasEmptyAssistantMessages) {
+    const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+    if (allAssistantMessagesEmpty) {
       throw new AssistantMessageEmptyError();
     }
     return completion;

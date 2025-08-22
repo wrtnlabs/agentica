@@ -105,8 +105,8 @@ export async function call<Model extends ILlmSchema.Model>(
       ctx.dispatch(event);
     });
 
-    const hasEmptyAssistantMessages = completion.choices.some(v => v.message.tool_calls == null && v.message.content === "");
-    if (hasEmptyAssistantMessages) {
+    const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+    if (allAssistantMessagesEmpty) {
       throw new AssistantMessageEmptyError();
     }
     return completion;
