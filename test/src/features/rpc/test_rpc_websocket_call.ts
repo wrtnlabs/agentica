@@ -95,6 +95,7 @@ export async function test_rpc_websocket_call(): Promise<void | false> {
   await connector.close();
   await server.close();
 
+  console.log(JSON.stringify(events, null, 2));
   TestValidator.equals("events")(
     events.map(e => e.type),
   )([

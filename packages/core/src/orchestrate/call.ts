@@ -24,7 +24,7 @@ import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { __get_retry } from "../utils/__retry";
-import { AssistantMessageEmptyError } from "../utils/AssistantMessageEmptyError";
+import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -36,7 +36,7 @@ export async function call<Model extends ILlmSchema.Model>(
   operations: AgenticaOperation<Model>[],
 ): Promise<AgenticaExecuteEvent<Model>[]> {
   const _retryFn = __get_retry(ctx.config?.retry ?? AgenticaConstant.RETRY);
-  const retryFn = async (fn: () => Promise<OpenAI.ChatCompletion>) => {
+  const retryFn = async (fn: (prevError?: unknown) => Promise<OpenAI.ChatCompletion>) => {
     return _retryFn(fn).catch((e) => {
       if (e instanceof AssistantMessageEmptyError) {
         return Symbol("emptyAssistantMessage");
@@ -45,7 +45,7 @@ export async function call<Model extends ILlmSchema.Model>(
     });
   };
 
-  const completion = await retryFn(async () => {
+  const completion = await retryFn(async (prevError) => {
     const stream: ReadableStream<OpenAI.ChatCompletionChunk> = await ctx.request("call", {
       messages: [
         // COMMON SYSTEM PROMPT
@@ -60,6 +60,12 @@ export async function call<Model extends ILlmSchema.Model>(
           role: "user",
           content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
+        ...(prevError instanceof AssistantMessageEmptyWithReasoningError ? [
+          {
+            role: "assistant",
+            content: prevError.reasoning,
+          } satisfies OpenAI.ChatCompletionMessageParam,
+        ] : []),
         // SYSTEM PROMPT
         ...(ctx.config?.systemPrompt?.execute === null
           ? []
@@ -107,6 +113,10 @@ export async function call<Model extends ILlmSchema.Model>(
 
     const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
     if (allAssistantMessagesEmpty) {
+      const firstChoice = completion.choices.at(0);
+      if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
+        throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as unknown as { reasoning: string }).reasoning);
+      }
       throw new AssistantMessageEmptyError();
     }
     return completion;
