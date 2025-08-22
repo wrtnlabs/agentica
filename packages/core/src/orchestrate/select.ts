@@ -196,7 +196,7 @@ async function step<Model extends ILlmSchema.Model>(
     if (allAssistantMessagesEmpty) {
       const firstChoice = completion.choices.at(0);
       if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
-        throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as unknown as { reasoning: string }).reasoning);
+        throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
       }
       throw new AssistantMessageEmptyError();
     }
