@@ -130,19 +130,22 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     content: string | AgenticaUserMessageContent | Array<AgenticaUserMessageContent>,
   ): Promise<MicroAgenticaHistory<Model>[]> {
     const histories: Array<() => Promise<MicroAgenticaHistory<Model>>> = [];
-    const dispatch = (event: MicroAgenticaEvent<Model>): void => {
-      this.dispatch(event).catch(() => {});
-      if ("toHistory" in event) {
-        if ("join" in event) {
-          histories.push(async () => {
-            await event.join();
-            return event.toHistory();
-          });
-        }
-        else {
-          histories.push(async () => event.toHistory());
+    const dispatch = async (event: MicroAgenticaEvent<Model>): Promise<void> => {
+      try {
+        await this.dispatch(event);
+        if ("toHistory" in event) {
+          if ("join" in event) {
+            histories.push(async () => {
+              await event.join();
+              return event.toHistory();
+            });
+          }
+          else {
+            histories.push(async () => event.toHistory());
+          }
         }
       }
+      catch {}
     };
 
     const prompt: AgenticaUserMessageEvent = createUserMessageEvent({
@@ -155,7 +158,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
             }]
           : [content],
     });
-    dispatch(prompt);
+    void dispatch(prompt).catch(() => {});
 
     const ctx: MicroAgenticaContext<Model> = this.getContext({
       prompt,
@@ -244,7 +247,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public getContext(props: {
     prompt: AgenticaUserMessageEvent;
     usage: AgenticaTokenUsage;
-    dispatch: (event: MicroAgenticaEvent<Model>) => void;
+    dispatch: (event: MicroAgenticaEvent<Model>) => Promise<void>;
   }): MicroAgenticaContext<Model> {
     const request = async (
       source: MicroAgenticaEvent.Source,
@@ -262,7 +265,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
         },
         options: this.props.vendor.options,
       });
-      props.dispatch(event);
+      await props.dispatch(event);
 
       // completion
       const backoffStrategy = this.props.config?.backoffStrategy ?? ((props) => {
@@ -311,7 +314,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       })().catch(() => {});
 
       const [streamForStream, streamForJoin] = streamForEvent.tee();
-      props.dispatch({
+      void props.dispatch({
         id: v4(),
         type: "response",
         source,
@@ -323,7 +326,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
           return ChatGptCompletionMessageUtil.merge(chunks);
         },
         created_at: new Date().toISOString(),
-      });
+      }).catch(() => {});
       return streamForReturn;
     };
     return {

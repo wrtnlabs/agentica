@@ -48,9 +48,8 @@ export async function cancel<Model extends ILlmSchema.Model>(
         {
           ...ctx,
           stack: stacks[i]!,
-          dispatch: (e) => {
+          dispatch: async (e) => {
             events.push(e);
-            return e;
           },
         },
         operations,
@@ -81,7 +80,9 @@ export async function cancel<Model extends ILlmSchema.Model>(
     const cancelled: AgenticaCancelEvent<Model>[]
         = events.filter(e => e.type === "cancel");
     (cancelled.length !== 0 ? cancelled : events)
-      .forEach(ctx.dispatch);
+      .forEach((e) => {
+        void ctx.dispatch(e).catch(() => {});
+      });
   }
 }
 

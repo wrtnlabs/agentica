@@ -155,7 +155,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
       const historyGetters: Array<() => Promise<AgenticaHistory<Model>>> = [];
-      const dispatch = (event: AgenticaEvent<Model>): void => {
+      const dispatch = async (event: AgenticaEvent<Model>): Promise<void> => {
         if ("toHistory" in event) {
           if ("join" in event) {
             historyGetters.push(async () => {

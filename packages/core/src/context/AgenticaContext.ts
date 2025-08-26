@@ -115,7 +115,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    *
    * @param event Event to deliver
    */
-  dispatch: (event: AgenticaEvent<Model>) => void;
+  dispatch: (event: AgenticaEvent<Model>) => Promise<void>;
 
   /**
    * Request to the OpenAI server.
