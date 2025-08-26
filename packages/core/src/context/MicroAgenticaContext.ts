@@ -79,7 +79,7 @@ export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
    *
    * @param event Event to deliver
    */
-  dispatch: (event: MicroAgenticaEvent<Model>) => void;
+  dispatch: (event: MicroAgenticaEvent<Model>) => Promise<void>;
 
   /**
    * Request to the OpenAI server.

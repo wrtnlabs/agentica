@@ -51,9 +51,8 @@ export async function select<Model extends ILlmSchema.Model>(
         {
           ...ctx,
           stack: stacks[i]!,
-          dispatch: (e) => {
+          dispatch: async (e) => {
             events.push(e);
-            return e;
           },
         },
         operations,
@@ -84,7 +83,9 @@ export async function select<Model extends ILlmSchema.Model>(
     const selected: AgenticaSelectEvent<Model>[]
       = events.filter(e => e.type === "select");
     (selected.length !== 0 ? selected : events)
-      .forEach(ctx.dispatch);
+      .forEach((e) => {
+        void ctx.dispatch(e).catch(() => {});
+      });
   }
 }
 
@@ -153,12 +154,14 @@ async function step<Model extends ILlmSchema.Model>(
           content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
         // PREVIOUS ERROR
-        ...(prevError instanceof AssistantMessageEmptyWithReasoningError ? [
+        ...(prevError instanceof AssistantMessageEmptyWithReasoningError
+          ? [
           {
             role: "assistant",
             content: prevError.reasoning,
           } satisfies OpenAI.ChatCompletionMessageParam,
-        ] : []),
+            ]
+          : []),
         // SYSTEM PROMPT
         {
           role: "system",
@@ -190,7 +193,7 @@ async function step<Model extends ILlmSchema.Model>(
 
     const completion = await reduceStreamingWithDispatch(stream, (props) => {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
-      ctx.dispatch(event);
+      void ctx.dispatch(event).catch(() => {});
     });
     const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
     if (allAssistantMessagesEmpty) {
@@ -212,7 +215,7 @@ async function step<Model extends ILlmSchema.Model>(
         return "";
       },
     });
-    ctx.dispatch(event);
+    void ctx.dispatch(event).catch(() => {});
     return;
   }
   // ----

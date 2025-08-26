@@ -60,12 +60,14 @@ export async function call<Model extends ILlmSchema.Model>(
           role: "user",
           content: ctx.prompt.contents.map(decodeUserMessageContent),
         },
-        ...(prevError instanceof AssistantMessageEmptyWithReasoningError ? [
+        ...(prevError instanceof AssistantMessageEmptyWithReasoningError
+          ? [
           {
             role: "assistant",
             content: prevError.reasoning,
           } satisfies OpenAI.ChatCompletionMessageParam,
-        ] : []),
+            ]
+          : []),
         // SYSTEM PROMPT
         ...(ctx.config?.systemPrompt?.execute === null
           ? []
@@ -108,7 +110,7 @@ export async function call<Model extends ILlmSchema.Model>(
 
     const completion = await reduceStreamingWithDispatch(stream, (props) => {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
-      ctx.dispatch(event);
+      void ctx.dispatch(event).catch(() => {});
     });
 
     const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
@@ -131,7 +133,7 @@ export async function call<Model extends ILlmSchema.Model>(
         return "";
       },
     });
-    ctx.dispatch(event);
+    void ctx.dispatch(event).catch(() => {});
     return [];
   }
 
@@ -154,7 +156,7 @@ export async function call<Model extends ILlmSchema.Model>(
           [],
           retry,
         );
-        ctx.dispatch(event);
+        await ctx.dispatch(event);
         executes.push(event);
         if (isAgenticaContext(ctx)) {
           cancelFunctionFromContext(ctx, {
@@ -181,7 +183,7 @@ async function predicate<Model extends ILlmSchema.Model>(
       operation,
       toolCall,
     );
-  ctx.dispatch(call);
+  await ctx.dispatch(call);
   if (call.type === "jsonParseError") {
     return correctJsonError(ctx, call, previousValidationErrors, life - 1);
   }
@@ -194,7 +196,7 @@ async function predicate<Model extends ILlmSchema.Model>(
       operation,
       result: check,
     });
-    ctx.dispatch(event);
+    await ctx.dispatch(event);
     return correctTypeError(
       ctx,
       call,

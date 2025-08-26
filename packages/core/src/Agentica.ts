@@ -150,19 +150,22 @@ export class Agentica<Model extends ILlmSchema.Model> {
     } = {},
   ): Promise<AgenticaHistory<Model>[]> {
     const historyGetters: Array<() => Promise<AgenticaHistory<Model>>> = [];
-    const dispatch = (event: AgenticaEvent<Model>): void => {
-      this.dispatch(event).catch(() => {});
-      if ("toHistory" in event) {
-        if ("join" in event) {
-          historyGetters.push(async () => {
-            await event.join();
-            return event.toHistory();
-          });
-        }
-        else {
-          historyGetters.push(async () => event.toHistory());
+    const dispatch = async (event: AgenticaEvent<Model>): Promise<void> => {
+      try {
+        await this.dispatch(event);
+        if ("toHistory" in event) {
+          if ("join" in event) {
+            historyGetters.push(async () => {
+              await event.join();
+              return event.toHistory();
+            });
+          }
+          else {
+            historyGetters.push(async () => event.toHistory());
+          }
         }
       }
+      catch {}
     };
 
     const prompt: AgenticaUserMessageEvent = createUserMessageEvent({
@@ -175,7 +178,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
             }]
           : [content],
     });
-    dispatch(prompt);
+    void dispatch(prompt).catch(() => {});
 
     await this.executor_(
       this.getContext({
@@ -258,7 +261,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   public getContext(props: {
     prompt: AgenticaUserMessageHistory;
     usage: AgenticaTokenUsage;
-    dispatch: (event: AgenticaEvent<Model>) => void;
+    dispatch: (event: AgenticaEvent<Model>) => Promise<void>;
     abortSignal?: AbortSignal;
   }): AgenticaContext<Model> {
     const request = async (
@@ -280,7 +283,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
           signal: props.abortSignal,
         },
       });
-      props.dispatch(event);
+      await props.dispatch(event);
 
       // completion
       const backoffStrategy = this.props.config?.backoffStrategy ?? ((props) => {
@@ -329,7 +332,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       })().catch(() => {});
 
       const [streamForStream, streamForJoin] = streamForEvent.tee();
-      props.dispatch({
+      void props.dispatch({
         id: v4(),
         type: "response",
         source,
@@ -341,7 +344,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
           return ChatGptCompletionMessageUtil.merge(chunks);
         },
         created_at: new Date().toISOString(),
-      });
+      }).catch(() => {});
       return streamForReturn;
     };
 
@@ -372,7 +375,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
         },
       initialize: async () => {
         this.ready_ = true;
-        props.dispatch(createInitializeEvent());
+        void props.dispatch(createInitializeEvent()).catch(() => {});
       },
     };
   }
