@@ -61,6 +61,7 @@ export const getChatCompletionWithStreamingFunction = <Model extends ILlmSchema.
     completion.toReadableStream() as ReadableStream<Uint8Array>,
     value =>
       ChatGptCompletionMessageUtil.transformCompletionChunk(value),
+    props.abortSignal,
   ).tee();
 
   const [streamForAggregate, streamForReturn] = temporaryStream.tee();
@@ -69,7 +70,7 @@ export const getChatCompletionWithStreamingFunction = <Model extends ILlmSchema.
     const reader = streamForAggregate.getReader();
     while (true) {
       const chunk = await reader.read();
-      if (chunk.done) {
+      if (chunk.done || props.abortSignal?.aborted === true) {
         break;
       }
       if (chunk.value.usage != null) {
@@ -87,11 +88,11 @@ export const getChatCompletionWithStreamingFunction = <Model extends ILlmSchema.
     id: v4(),
     type: "response",
     source,
-    stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
+    stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader(), props.abortSignal),
     body: event.body,
     options: event.options,
     join: async () => {
-      const chunks = await StreamUtil.readAll(streamForJoin);
+      const chunks = await StreamUtil.readAll(streamForJoin, props.abortSignal);
       return ChatGptCompletionMessageUtil.merge(chunks);
     },
     created_at: new Date().toISOString(),

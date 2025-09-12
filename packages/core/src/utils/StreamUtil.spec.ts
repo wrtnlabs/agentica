@@ -149,7 +149,7 @@ describe("streamUtil", () => {
       const stringResult = await StreamUtil.reduce<number, string>(
         stringStream,
         (acc, cur) => acc + cur.toString(),
-        "",
+        { initial: ""},
       );
 
       expect(stringResult).toBe("123");
@@ -160,7 +160,7 @@ describe("streamUtil", () => {
       const sumResult = await StreamUtil.reduce<number, number>(
         sumStream,
         (acc, cur) => acc + cur,
-        0,
+        { initial: 0 },
       );
 
       expect(sumResult).toBe(15);
@@ -171,6 +171,7 @@ describe("streamUtil", () => {
       const noInitialResult = await StreamUtil.reduce<number>(
         noInitialStream,
         (acc, cur) => acc + cur,
+        { initial: 0 },
       );
 
       expect(noInitialResult).toBe(10);
@@ -181,7 +182,7 @@ describe("streamUtil", () => {
       const emptyResult = await StreamUtil.reduce<number, string>(
         emptyStream,
         (acc, cur) => acc + cur.toString(),
-        "initial value",
+        { initial: "initial value" },
       );
 
       expect(emptyResult).toBe("initial value");
@@ -192,6 +193,7 @@ describe("streamUtil", () => {
       const emptyNoInitialResult = await StreamUtil.reduce<number>(
         emptyNoInitialStream,
         (acc, cur) => acc + cur,
+        { initial: 0 },
       );
 
       expect(emptyNoInitialResult).toBeNull();
@@ -202,7 +204,7 @@ describe("streamUtil", () => {
       const stringResult = await StreamUtil.reduce<number, string>(
         stringStream,
         (acc, cur) => acc + cur.toString(),
-        "",
+        { initial: "" },
       );
 
       expect(stringResult).toBe("123");
@@ -213,6 +215,7 @@ describe("streamUtil", () => {
       const noInitialResult = await StreamUtil.reduce<number>(
         noInitialStream,
         (acc, cur) => acc + cur,
+        { initial: 0 },
       );
 
       expect(noInitialResult).toBe(10);
@@ -229,7 +232,7 @@ describe("streamUtil", () => {
           }
           return [...acc, `item${cur}`];
         },
-        [],
+        { initial: [] },
       );
 
       expect(transformResult).toEqual(["item1", "item2", "item3"]);
@@ -240,7 +243,7 @@ describe("streamUtil", () => {
       const emptyResult = await StreamUtil.reduce<number, string>(
         emptyStream,
         (acc, cur) => acc + cur.toString(),
-        "initial",
+        { initial: "initial" },
       );
 
       expect(emptyResult).toBe("initial");
@@ -256,7 +259,7 @@ describe("streamUtil", () => {
       const delayResult = await StreamUtil.reduce<number, number>(
         delayStream,
         (acc, cur) => acc + cur,
-        0,
+        { initial: 0 },
       );
 
       expect(delayResult).toBe(6);
@@ -274,7 +277,7 @@ describe("streamUtil", () => {
             }
             return acc + cur;
           },
-          0,
+          { initial: 0 },
         ),
       ).rejects.toThrow("Test error");
     });
@@ -285,7 +288,7 @@ describe("streamUtil", () => {
       const result = await StreamUtil.reduce<number | null | undefined, number>(
         stream,
         (acc, cur) => (acc ?? 0) + (cur ?? 0),
-        0,
+        { initial: 0 },
       );
 
       expect(result).toBe(9); // 1 + 0 + 3 + 0 + 5 = 9

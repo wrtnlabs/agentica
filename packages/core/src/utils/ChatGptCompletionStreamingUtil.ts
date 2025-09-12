@@ -7,7 +7,7 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
-}) => void) {
+}) => void, abortSignal?: AbortSignal) {
   const streamContext = new Map<number, { content: string; mpsc: MPSC<string> }>();
 
   const nullableCompletion = await StreamUtil.reduce<ChatCompletionChunk, Promise<ChatCompletion>>(stream, async (accPromise, chunk) => {
@@ -59,7 +59,7 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
     }
     registerContext(chunk.choices);
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
-  });
+  }, { abortSignal });
 
   if (nullableCompletion == null) {
     throw new Error(

@@ -111,6 +111,7 @@ export async function call<Model extends ILlmSchema.Model>(
     const completion = await reduceStreamingWithDispatch(stream, (props) => {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       void ctx.dispatch(event).catch(() => {});
+      ctx.abortSignal
     });
 
     const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");

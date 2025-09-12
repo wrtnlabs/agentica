@@ -45,7 +45,7 @@ export async function describe<Model extends ILlmSchema.Model>(
       ...props,
     });
     ctx.dispatch(event);
-  });
+  }, ctx.abortSignal);
 }
 
 export const ChatGptDescribeFunctionAgent = {

@@ -68,6 +68,10 @@ export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
    */
   prompt: AgenticaUserMessageHistory;
 
+  /**
+   * Abort signal.
+   */
+  abortSignal?: AbortSignal;
   // ----
   // HANDLERS
   // ----

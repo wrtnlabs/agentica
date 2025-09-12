@@ -171,7 +171,7 @@ async function step<Model extends ILlmSchema.Model>(
     // parallel_tool_calls: true,
   });
 
-  const chunks = await StreamUtil.readAll(completionStream);
+  const chunks = await StreamUtil.readAll(completionStream, ctx.abortSignal);
   const completion = ChatGptCompletionMessageUtil.merge(chunks);
 
   // ----

@@ -4,12 +4,12 @@
  * Utility functions for streams.
  */
 
-async function readAll<T>(stream: ReadableStream<T>): Promise<T[]> {
+async function readAll<T>(stream: ReadableStream<T>, abortSignal?: AbortSignal): Promise<T[]> {
   const reader = stream.getReader();
   const result: T[] = [];
   while (true) {
     const { done, value } = await reader.read();
-    if (done) {
+    if (done || abortSignal?.aborted === true) {
       break;
     }
     result.push(value);
@@ -17,12 +17,16 @@ async function readAll<T>(stream: ReadableStream<T>): Promise<T[]> {
   return result;
 }
 
-async function reduce<T, R = T>(stream: ReadableStream<T>, reducer: (acc: T | R, cur: T) => R, initial?: R): Promise<R | null> {
+async function reduce<T, R = T>(stream: ReadableStream<T>, reducer: (acc: T | R, cur: T) => R, options: { initial?: R, abortSignal?: AbortSignal }): Promise<R | null> {
   const reader = stream.getReader();
   const iterator = streamDefaultReaderToAsyncGenerator(reader);
-  let acc = (initial ?? null) as R | null | T;
+  let acc = (options.initial ?? null) as R | null | T;
 
   for await (const value of iterator) {
+    if (options.abortSignal?.aborted === true) {
+      break;
+    }
+
     if (acc === null) {
       acc = value;
       continue;
@@ -49,28 +53,28 @@ export async function* toAsyncGenerator<T>(value: T): AsyncGenerator<T, undefine
   yield value;
 }
 
-export async function* streamDefaultReaderToAsyncGenerator<T>(reader: ReadableStreamDefaultReader<T>): AsyncGenerator<Awaited<T>, undefined, undefined> {
+export async function* streamDefaultReaderToAsyncGenerator<T>(reader: ReadableStreamDefaultReader<T>, abortSignal?: AbortSignal): AsyncGenerator<Awaited<T>, undefined, undefined> {
   while (true) {
     const { done, value } = await reader.read();
-    if (done) {
+    if (done || abortSignal?.aborted === true) {
       break;
     }
     yield value;
   }
 }
 
-function transform<T, R>(stream: ReadableStream<T>, transformer: (value: T) => R): ReadableStream<R> {
+function transform<T, R>(stream: ReadableStream<T>, transformer: (value: T) => R, abortSignal?: AbortSignal): ReadableStream<R> {
   const reader = stream.getReader();
 
   return new ReadableStream<R>({
     pull: async (controller) => {
       const { done, value } = await reader.read();
-      if (!done) {
-        controller.enqueue(transformer(value));
-      }
-      else {
+      if (done === true || abortSignal?.aborted === true) {
         controller.close();
+        return;
       }
+      
+      controller.enqueue(transformer(value));
     },
   });
 }
