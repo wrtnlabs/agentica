@@ -1,16 +1,12 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type OpenAI from "openai";
 
 import { Semaphore } from "tstl";
-import { v4 } from "uuid";
 
 import type { AgenticaContext } from "./context/AgenticaContext";
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./context/AgenticaOperationSelection";
-import type { AgenticaEventSource } from "./events";
 import type { AgenticaEvent } from "./events/AgenticaEvent";
-import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { AgenticaUserMessageEvent } from "./events/AgenticaUserMessageEvent";
 import type { AgenticaUserMessageContent } from "./histories";
 import type { AgenticaHistory } from "./histories/AgenticaHistory";
@@ -22,13 +18,11 @@ import type { IAgenticaVendor } from "./structures/IAgenticaVendor";
 
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
-import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createInitializeEvent, createRequestEvent, createUserMessageEvent } from "./factory/events";
+import { createInitializeEvent, createUserMessageEvent } from "./factory/events";
 import { execute } from "./orchestrate/execute";
 import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
-import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
-import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
+import { getChatCompletionWithStreamingFunction } from "./utils/request";
 
 /**
  * Agentica AI chatbot agent.
@@ -264,89 +258,13 @@ export class Agentica<Model extends ILlmSchema.Model> {
     dispatch: (event: AgenticaEvent<Model>) => Promise<void>;
     abortSignal?: AbortSignal;
   }): AgenticaContext<Model> {
-    const request = async (
-      source: AgenticaEventSource,
-      body: Omit<OpenAI.ChatCompletionCreateParamsStreaming, "model" | "stream">,
-    ): Promise<ReadableStream<OpenAI.Chat.Completions.ChatCompletionChunk>> => {
-      const event: AgenticaRequestEvent = createRequestEvent({
-        source,
-        body: {
-          ...body,
-          model: this.props.vendor.model,
-          stream: true,
-          stream_options: {
-            include_usage: true,
-          },
-        },
-        options: {
-          ...this.props.vendor.options,
-          signal: props.abortSignal,
-        },
-      });
-      await props.dispatch(event);
-
-      // completion
-      const backoffStrategy = this.props.config?.backoffStrategy ?? ((props) => {
-        throw props.error;
-      });
-      const completion = await (async () => {
-        let count = 0;
-        while (true) {
-          try {
-            return await this.props.vendor.api.chat.completions.create(
-              event.body,
-              event.options,
-            );
-          }
-          catch (error) {
-            const waiting = backoffStrategy({ count, error });
-            await new Promise(resolve => setTimeout(resolve, waiting));
-            count++;
-          }
-        }
-      })();
-
-      const [streamForEvent, temporaryStream] = StreamUtil.transform(
-        completion.toReadableStream() as ReadableStream<Uint8Array>,
-        value =>
-          ChatGptCompletionMessageUtil.transformCompletionChunk(value),
-      ).tee();
-
-      const [streamForAggregate, streamForReturn] = temporaryStream.tee();
-
-      (async () => {
-        const reader = streamForAggregate.getReader();
-        while (true) {
-          const chunk = await reader.read();
-          if (chunk.done) {
-            break;
-          }
-          if (chunk.value.usage != null) {
-            AgenticaTokenUsageAggregator.aggregate({
-              kind: source,
-              completionUsage: chunk.value.usage,
-              usage: props.usage,
-            });
-          }
-        }
-      })().catch(() => {});
-
-      const [streamForStream, streamForJoin] = streamForEvent.tee();
-      void props.dispatch({
-        id: v4(),
-        type: "response",
-        source,
-        stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
-        body: event.body,
-        options: event.options,
-        join: async () => {
-          const chunks = await StreamUtil.readAll(streamForJoin);
-          return ChatGptCompletionMessageUtil.merge(chunks);
-        },
-        created_at: new Date().toISOString(),
-      }).catch(() => {});
-      return streamForReturn;
-    };
+    const request = getChatCompletionWithStreamingFunction<Model>({
+      vendor: this.props.vendor,
+      config: this.props.config,
+      dispatch: props.dispatch,
+      abortSignal: props.abortSignal,
+      usage: this.token_usage_,
+    });
 
     return {
       // APPLICATION

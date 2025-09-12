@@ -1,14 +1,11 @@
 import type { ILlmSchema } from "@samchon/openapi";
-import type OpenAI from "openai";
 
 import { Semaphore } from "tstl";
-import { v4 } from "uuid";
 
 import type { AgenticaOperation } from "./context/AgenticaOperation";
 import type { AgenticaOperationCollection } from "./context/AgenticaOperationCollection";
 import type { MicroAgenticaContext } from "./context/MicroAgenticaContext";
 import type { AgenticaUserMessageEvent } from "./events";
-import type { AgenticaRequestEvent } from "./events/AgenticaRequestEvent";
 import type { MicroAgenticaEvent } from "./events/MicroAgenticaEvent";
 import type { AgenticaUserMessageContent } from "./histories";
 import type { AgenticaExecuteHistory } from "./histories/AgenticaExecuteHistory";
@@ -20,13 +17,11 @@ import type { IMicroAgenticaProps } from "./structures/IMicroAgenticaProps";
 
 import { AgenticaTokenUsage } from "./context/AgenticaTokenUsage";
 import { AgenticaOperationComposer } from "./context/internal/AgenticaOperationComposer";
-import { AgenticaTokenUsageAggregator } from "./context/internal/AgenticaTokenUsageAggregator";
-import { createRequestEvent, createUserMessageEvent } from "./factory/events";
+import { createUserMessageEvent } from "./factory/events";
 import { call, describe } from "./orchestrate";
 import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
-import { ChatGptCompletionMessageUtil } from "./utils/ChatGptCompletionMessageUtil";
-import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./utils/StreamUtil";
+import { getChatCompletionWithStreamingFunction } from "./utils/request";
 
 /**
  * Micro AI chatbot.
@@ -128,6 +123,9 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    */
   public async conversate(
     content: string | AgenticaUserMessageContent | Array<AgenticaUserMessageContent>,
+    options: {
+      abortSignal?: AbortSignal;
+    } = {},
   ): Promise<MicroAgenticaHistory<Model>[]> {
     const histories: Array<() => Promise<MicroAgenticaHistory<Model>>> = [];
     const dispatch = async (event: MicroAgenticaEvent<Model>): Promise<void> => {
@@ -164,6 +162,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       prompt,
       dispatch,
       usage: this.token_usage_,
+      abortSignal: options.abortSignal,
     });
     const executes: AgenticaExecuteHistory<Model>[] = await call(
       ctx,
@@ -248,87 +247,15 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     prompt: AgenticaUserMessageEvent;
     usage: AgenticaTokenUsage;
     dispatch: (event: MicroAgenticaEvent<Model>) => Promise<void>;
+    abortSignal?: AbortSignal;
   }): MicroAgenticaContext<Model> {
-    const request = async (
-      source: MicroAgenticaEvent.Source,
-      body: Omit<OpenAI.ChatCompletionCreateParamsStreaming, "model" | "stream">,
-    ): Promise<ReadableStream<OpenAI.Chat.Completions.ChatCompletionChunk>> => {
-      const event: AgenticaRequestEvent = createRequestEvent({
-        source,
-        body: {
-          ...body,
-          model: this.props.vendor.model,
-          stream: true,
-          stream_options: {
-            include_usage: true,
-          },
-        },
-        options: this.props.vendor.options,
-      });
-      await props.dispatch(event);
-
-      // completion
-      const backoffStrategy = this.props.config?.backoffStrategy ?? ((props) => {
-        throw props.error;
-      });
-      const completion = await (async () => {
-        let count = 0;
-        while (true) {
-          try {
-            return await this.props.vendor.api.chat.completions.create(
-              event.body,
-              event.options,
-            );
-          }
-          catch (error) {
-            const waiting = backoffStrategy({ count, error });
-            await new Promise(resolve => setTimeout(resolve, waiting));
-            count++;
-          }
-        }
-      })();
-
-      const [streamForEvent, temporaryStream] = StreamUtil.transform(
-        completion.toReadableStream() as ReadableStream<Uint8Array>,
-        value =>
-          ChatGptCompletionMessageUtil.transformCompletionChunk(value),
-      ).tee();
-
-      const [streamForAggregate, streamForReturn] = temporaryStream.tee();
-
-      void (async () => {
-        const reader = streamForAggregate.getReader();
-        while (true) {
-          const chunk = await reader.read();
-          if (chunk.done) {
-            break;
-          }
-          if (chunk.value.usage != null) {
-            AgenticaTokenUsageAggregator.aggregate({
-              kind: source,
-              completionUsage: chunk.value.usage,
-              usage: props.usage,
-            });
-          }
-        }
-      })().catch(() => {});
-
-      const [streamForStream, streamForJoin] = streamForEvent.tee();
-      void props.dispatch({
-        id: v4(),
-        type: "response",
-        source,
-        stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader()),
-        body: event.body,
-        options: event.options,
-        join: async () => {
-          const chunks = await StreamUtil.readAll(streamForJoin);
-          return ChatGptCompletionMessageUtil.merge(chunks);
-        },
-        created_at: new Date().toISOString(),
-      }).catch(() => {});
-      return streamForReturn;
-    };
+    const request = getChatCompletionWithStreamingFunction<Model>({
+      vendor: this.props.vendor,
+      config: this.props.config,
+      dispatch: props.dispatch,
+      abortSignal: props.abortSignal,
+      usage: this.token_usage_,
+    });
     return {
       operations: this.operations_,
       config: this.props.config,
