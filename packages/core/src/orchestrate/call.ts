@@ -35,7 +35,7 @@ export async function call<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   operations: AgenticaOperation<Model>[],
 ): Promise<AgenticaExecuteEvent<Model>[]> {
-  const _retryFn = __get_retry(ctx.config?.retry ?? AgenticaConstant.RETRY);
+  const _retryFn = __get_retry(1);
   const retryFn = async (fn: (prevError?: unknown) => Promise<OpenAI.ChatCompletion>) => {
     return _retryFn(fn).catch((e) => {
       if (e instanceof AssistantMessageEmptyError) {
@@ -111,7 +111,7 @@ export async function call<Model extends ILlmSchema.Model>(
     const completion = await reduceStreamingWithDispatch(stream, (props) => {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       void ctx.dispatch(event).catch(() => {});
-      ctx.abortSignal
+      ctx.abortSignal;
     });
 
     const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");

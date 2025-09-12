@@ -95,7 +95,7 @@ async function step<Model extends ILlmSchema.Model>(
   retry: number,
   failures?: IFailure[],
 ): Promise<void> {
-  const _retryFn = __get_retry(ctx.config?.retry ?? AgenticaConstant.RETRY);
+  const _retryFn = __get_retry(1);
   const retryFn = async (fn: (prevError?: unknown) => Promise<OpenAI.ChatCompletion>) => {
     return _retryFn(fn).catch((e) => {
       if (e instanceof AssistantMessageEmptyError) {
