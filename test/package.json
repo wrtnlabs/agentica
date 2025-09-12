@@ -1,6 +1,6 @@
 {
   "name": "@agentica/test",
-  "version": "0.32.3-dev.3",
+  "version": "0.32.3",
   "private": true,
   "description": "Test program of Agentica",
   "author": "Wrtn Technologies",
