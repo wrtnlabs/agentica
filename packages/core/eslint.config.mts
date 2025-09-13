@@ -15,5 +15,6 @@ export default wrtnlabs({
     "ts/no-unsafe-assignment": "off",
     "ts/no-unsafe-call": "off",
     "ts/no-unsafe-return": "off",
+    "eslint-comments/no-unlimited-disable": "off",
   },
 });

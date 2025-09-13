@@ -119,6 +119,8 @@ export namespace IAgenticaEventJson {
      * Validation result as a failure.
      */
     result: IValidation.IFailure;
+
+    life: number;
   }
 
   export interface IJsonParseError extends IBase<"jsonParseError"> {
@@ -138,6 +140,8 @@ export namespace IAgenticaEventJson {
      * Error message of the JSON parse error.
      */
     errorMessage: string;
+
+    life: number;
   }
 
   /**
