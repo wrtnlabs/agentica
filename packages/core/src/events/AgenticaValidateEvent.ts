@@ -29,5 +29,7 @@ export interface AgenticaValidateEvent<
    */
   result: IValidation.IFailure;
 
+  life: number;
+
   toJSON: () => IAgenticaEventJson.IValidate;
 }

@@ -9,4 +9,5 @@ export interface AgenticaJsonParseErrorEvent<Model extends ILlmSchema.Model>
   operation: AgenticaOperation<Model>;
   arguments: string;
   errorMessage: string;
+  life: number;
 }

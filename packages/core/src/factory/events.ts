@@ -118,6 +118,7 @@ export function createJsonParseErrorEvent<Model extends ILlmSchema.Model>(props:
   operation: AgenticaOperation<Model>;
   arguments: string;
   errorMessage: string;
+  life: number;
 }): AgenticaJsonParseErrorEvent<Model> {
   const created_at: string = new Date().toISOString();
   return {
@@ -127,6 +128,7 @@ export function createJsonParseErrorEvent<Model extends ILlmSchema.Model>(props:
     operation: props.operation,
     arguments: props.arguments,
     errorMessage: props.errorMessage,
+    life: props.life,
   };
 }
 
@@ -134,6 +136,7 @@ export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
   id: string;
   operation: AgenticaOperation<Model>;
   result: IValidation.IFailure;
+  life: number;
 }): AgenticaValidateEvent<Model> {
   const created_at: string = new Date().toISOString();
   return {
@@ -142,12 +145,14 @@ export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
     created_at,
     operation: props.operation,
     result: props.result,
+    life: props.life,
     toJSON: () => ({
       type: "validate",
       id: props.id,
       created_at,
       operation: props.operation.toJSON(),
       result: props.result,
+      life: props.life,
     }),
   };
 }

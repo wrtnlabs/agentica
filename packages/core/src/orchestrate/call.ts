@@ -111,7 +111,6 @@ export async function call<Model extends ILlmSchema.Model>(
     const completion = await reduceStreamingWithDispatch(stream, (props) => {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       void ctx.dispatch(event).catch(() => {});
-      ctx.abortSignal;
     });
 
     const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
@@ -183,6 +182,7 @@ async function predicate<Model extends ILlmSchema.Model>(
     = parseArguments(
       operation,
       toolCall,
+      life,
     );
   await ctx.dispatch(call);
   if (call.type === "jsonParseError") {
@@ -196,6 +196,7 @@ async function predicate<Model extends ILlmSchema.Model>(
       id: toolCall.id,
       operation,
       result: check,
+      life,
     });
     await ctx.dispatch(event);
     return correctTypeError(
@@ -293,6 +294,7 @@ async function correctJsonError<Model extends ILlmSchema.Model>(
 function parseArguments<Model extends ILlmSchema.Model>(
   operation: AgenticaOperation<Model>,
   toolCall: OpenAI.ChatCompletionMessageToolCall,
+  life: number,
 ): AgenticaCallEvent<Model> | AgenticaJsonParseErrorEvent<Model> {
   try {
     const data: Record<string, unknown> = JSON.parse(toolCall.function.arguments);
@@ -308,6 +310,7 @@ function parseArguments<Model extends ILlmSchema.Model>(
       operation,
       arguments: toolCall.function.arguments,
       errorMessage: error instanceof Error ? error.message : String(error),
+      life,
     });
   }
 }
