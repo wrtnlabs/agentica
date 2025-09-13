@@ -17,6 +17,7 @@ import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
+import { JsonUtil } from "../utils/JsonUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
@@ -185,7 +186,7 @@ async function step<Model extends ILlmSchema.Model>(
           continue;
         }
 
-        const input: object = JSON.parse(tc.function.arguments) as object;
+        const input: object = JsonUtil.parse(tc.function.arguments) as object;
         const validation: IValidation<__IChatFunctionReference.IProps>
           = typia.validate<__IChatFunctionReference.IProps>(input);
         if (validation.success === false) {
