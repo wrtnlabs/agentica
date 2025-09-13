@@ -20,6 +20,7 @@ import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
+import { JsonUtil } from "../utils/JsonUtil";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
 import { selectFunctionFromContext } from "./internal/selectFunctionFromContext";
@@ -228,7 +229,7 @@ async function step<Model extends ILlmSchema.Model>(
         if (tc.function.name !== "selectFunctions") {
           continue;
         }
-        const input: object = JSON.parse(tc.function.arguments) as object;
+        const input: object = JsonUtil.parse(tc.function.arguments) as object;
         const validation: IValidation<__IChatFunctionReference.IProps>
           = typia.validate<__IChatFunctionReference.IProps>(input);
         if (validation.success === false) {

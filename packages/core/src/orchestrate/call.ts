@@ -27,6 +27,7 @@ import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
+import { JsonUtil } from "../utils/JsonUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
@@ -297,7 +298,7 @@ function parseArguments<Model extends ILlmSchema.Model>(
   life: number,
 ): AgenticaCallEvent<Model> | AgenticaJsonParseErrorEvent<Model> {
   try {
-    const data: Record<string, unknown> = JSON.parse(toolCall.function.arguments);
+    const data: Record<string, unknown> = JsonUtil.parse(toolCall.function.arguments);
     return createCallEvent({
       id: toolCall.id,
       operation,

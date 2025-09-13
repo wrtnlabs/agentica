@@ -8,11 +8,12 @@ import type {
 // import typia from "typia";
 import { ByteArrayUtil } from "./ByteArrayUtil";
 import { ChatGptTokenUsageAggregator } from "./ChatGptTokenUsageAggregator";
+import { JsonUtil } from "./JsonUtil";
 
 function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
   const str
       = source instanceof Uint8Array ? ByteArrayUtil.toUtf8(source) : source;
-  const result: ChatCompletionChunk = JSON.parse(str) as ChatCompletionChunk;
+  const result: ChatCompletionChunk = JsonUtil.parse(str) as ChatCompletionChunk;
   // const valid = typia.validate<ChatCompletionChunk>(result);
   // if (valid.success === false) {
   //   console.error("Invalid ChatCompletionChunk", valid.errors);
