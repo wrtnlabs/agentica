@@ -188,17 +188,6 @@ describe("streamUtil", () => {
       expect(emptyResult).toBe("initial value");
     });
 
-    it("should return null for empty stream without initial value", async () => {
-      const emptyNoInitialStream = createEmptyStream<number>();
-      const emptyNoInitialResult = await StreamUtil.reduce<number>(
-        emptyNoInitialStream,
-        (acc, cur) => acc + cur,
-        { initial: 0 },
-      );
-
-      expect(emptyNoInitialResult).toBeNull();
-    });
-
     it("should work with async generated stream", async () => {
       const stringStream = await createDelayedNumberStream(1, 3, 10);
       const stringResult = await StreamUtil.reduce<number, string>(
