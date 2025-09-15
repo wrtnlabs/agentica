@@ -29,10 +29,10 @@ export function correctMissingLastBrace(input: string): string {
     return trans ? trans(updated, ch, i) : updated;
   }, initial);
 
-  // 문자열 미닫힘이면 원문 그대로 반환 (수정하지 않음)
+  // Return original string if string is not closed (do not modify)
   if (scanned.s !== "OUT") return input;
 
-  // 남은 오픈 괄호 → 끝에 닫힘 삽입 (후입선출)
+  // Insert closing braces at the end for remaining open braces (LIFO)
   const withTail = scanned.stack.length === 0
     ? scanned
     : ((): ParseState => {
@@ -47,7 +47,7 @@ export function correctMissingLastBrace(input: string): string {
   return applyEditsImmutable(input, withTail.edits);
 }
 
-// 에디트 적용은 불변적으로 처리
+// Apply edits immutably
 function applyEditsImmutable(src: string, edits: ReadonlyArray<Edit>): string {
   const sorted = [...edits].sort((a, b) => a.index - b.index);
 
@@ -93,16 +93,16 @@ const withEdit = (ps: ParseState, edit: Edit): ParseState =>
 const popOrFix = (ps: ParseState, closer: BraceClose, idx: number): ParseState =>
   ((): ParseState => {
     if (ps.stack.length === 0) {
-      // 여분 닫힘 → 삭제
+      // Extra closing brace → delete
       return withEdit(ps, { op: "delete", index: idx });
     }
     const top = ps.stack[ps.stack.length - 1];
     if (top !== undefined && top.type !== openOf[closer]) {
-      // 종류 불일치 → 기대값으로 교체 + pop
+      // Type mismatch → replace with expected value + pop
       const expected = closeOf[top.type];
       return withEdit({ ...ps, stack: ps.stack.slice(0, -1) }, { op: "replace", index: idx, text: expected });
     }
-    // 정상 매칭 → pop
+    // Normal matching → pop
     return { ...ps, stack: ps.stack.slice(0, -1) };
   })();
 
@@ -129,8 +129,6 @@ const table: Table = {
     NEWLINE:(ps) => ({ ...ps, s: "IN" }),
   },
 };
-
-
 
 type StateName = "OUT" | "IN" | "ESC";
 type BraceOpen = "{" | "[";
