@@ -6,7 +6,6 @@ export const JsonUtil = {
 
 function parse(str: string) {
   const corrected = pipe(removeEmptyObjectPrefix, addMissingBraces, removeTrailingCommas)(str);
-  console.log(corrected);
   return JSON.parse(corrected);
 }
 
