@@ -1,6 +1,6 @@
 {
   "name": "create-agentica",
-  "version": "0.32.8",
+  "version": "0.32.9",
   "description": "alias of agentica cli",
   "type": "module",
   "bin": "./index.js",
