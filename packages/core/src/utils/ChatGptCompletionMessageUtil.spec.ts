@@ -124,8 +124,8 @@ describe("chatGptCompletionMessageUtil", () => {
       };
 
       const result = ChatGptCompletionMessageUtil.accumulate(origin, chunk);
-      expect(result.choices[0]?.message.tool_calls?.[0]?.function.name).toBe("test_function");
-      expect(result.choices[0]?.message.tool_calls?.[0]?.function.arguments).toBe("{\"arg\": \"value\"}{\"arg2\": \"value2\"}");
+      expect(result.choices[0]?.message.tool_calls?.filter(tc => tc.type === "function")[0]?.function.name).toBe("test_function");
+      expect(result.choices[0]?.message.tool_calls?.filter(tc => tc.type === "function")[0]?.function.arguments).toBe("{\"arg\": \"value\"}{\"arg2\": \"value2\"}");
     });
 
     it("should handle usage aggregation", () => {
@@ -292,7 +292,7 @@ describe("chatGptCompletionMessageUtil", () => {
       };
 
       const result = ChatGptCompletionMessageUtil.mergeToolCalls(acc, cur);
-      expect(result.function.arguments).toBe("{\"arg\": \"value\"}{\"arg2\": \"value2\"}");
+      expect(result.type === "function" ? result.function.arguments : "custom").toBe("{\"arg\": \"value\"}{\"arg2\": \"value2\"}");
     });
 
     it("should merge tool call function name", () => {
@@ -314,7 +314,7 @@ describe("chatGptCompletionMessageUtil", () => {
       };
 
       const result = ChatGptCompletionMessageUtil.mergeToolCalls(acc, cur);
-      expect(result.function.name).toBe("test_function");
+      expect(result.type === "function" ? result.function.name : "custom").toBe("test_function");
     });
   });
 });
