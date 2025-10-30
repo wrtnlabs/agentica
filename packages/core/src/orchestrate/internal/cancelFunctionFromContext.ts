@@ -31,5 +31,5 @@ export function cancelFunctionFromContext<Model extends ILlmSchema.Model>(
       reason: reference.reason,
     }),
   });
-  ctx.dispatch(event);
+  void ctx.dispatch(event).catch(() => {});
 }

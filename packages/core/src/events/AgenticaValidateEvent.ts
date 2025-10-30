@@ -17,7 +17,7 @@ export interface AgenticaValidateEvent<
   /**
    * ID of the tool calling.
    */
-  id: string;
+  call_id: string;
 
   /**
    * Target operation to call.

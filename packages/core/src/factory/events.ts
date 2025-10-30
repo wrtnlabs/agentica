@@ -114,16 +114,18 @@ export function createCallEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 export function createJsonParseErrorEvent<Model extends ILlmSchema.Model>(props: {
-  id: string;
+  call_id: string;
   operation: AgenticaOperation<Model>;
   arguments: string;
   errorMessage: string;
   life: number;
 }): AgenticaJsonParseErrorEvent<Model> {
+  const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
     type: "jsonParseError",
-    id: props.id,
+    id,
+    call_id: props.call_id,
     created_at,
     operation: props.operation,
     arguments: props.arguments,
@@ -133,22 +135,25 @@ export function createJsonParseErrorEvent<Model extends ILlmSchema.Model>(props:
 }
 
 export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
-  id: string;
+  call_id: string;
   operation: AgenticaOperation<Model>;
   result: IValidation.IFailure;
   life: number;
 }): AgenticaValidateEvent<Model> {
+  const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
     type: "validate",
-    id: props.id,
+    id,
+    call_id: props.call_id,
     created_at,
     operation: props.operation,
     result: props.result,
     life: props.life,
     toJSON: () => ({
       type: "validate",
-      id: props.id,
+      id,
+      call_id: props.call_id,
       created_at,
       operation: props.operation.toJSON(),
       result: props.result,
@@ -158,6 +163,7 @@ export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
 }
 
 export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
+  call_id: string;
   operation: AgenticaOperation<Model>;
   arguments: Record<string, unknown>;
   value: unknown;
@@ -169,6 +175,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
     type: "execute",
     id,
     created_at,
+    call_id: props.call_id,
     protocol: props.operation.protocol as "class",
     operation: props.operation as AgenticaOperation.Class<Model>,
     arguments: props.arguments,
@@ -178,6 +185,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
       type: "execute",
       id,
       created_at,
+      call_id: props.call_id,
       protocol: props.operation.protocol as "class",
       operation: props.operation.toJSON(),
       arguments: props.arguments,
@@ -318,6 +326,7 @@ export function createRequestEvent(props: {
 }
 
 export function createResponseEvent(props: {
+  request_id: string;
   source: AgenticaEventSource;
   body: OpenAI.ChatCompletionCreateParamsStreaming;
   options?: OpenAI.RequestOptions | undefined;
@@ -329,6 +338,7 @@ export function createResponseEvent(props: {
   return {
     type: "response",
     id,
+    request_id: props.request_id,
     created_at,
     source: props.source,
     body: props.body,

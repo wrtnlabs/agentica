@@ -17,7 +17,7 @@ async function readAll<T>(stream: ReadableStream<T>, abortSignal?: AbortSignal):
   return result;
 }
 
-async function reduce<T, R = T>(stream: ReadableStream<T>, reducer: (acc: T | R, cur: T) => R, options: { initial?: R, abortSignal?: AbortSignal }): Promise<R | null> {
+async function reduce<T, R = T>(stream: ReadableStream<T>, reducer: (acc: T | R, cur: T) => R, options: { initial?: R; abortSignal?: AbortSignal }): Promise<R | null> {
   const reader = stream.getReader();
   const iterator = streamDefaultReaderToAsyncGenerator(reader);
   let acc = (options.initial ?? null) as R | null | T;
@@ -73,7 +73,7 @@ function transform<T, R>(stream: ReadableStream<T>, transformer: (value: T) => R
         controller.close();
         return;
       }
-      
+
       controller.enqueue(transformer(value));
     },
   });

@@ -34,5 +34,5 @@ export function selectFunctionFromContext<
   const event: AgenticaSelectEvent<Model> = createSelectEvent({
     selection,
   });
-  ctx.dispatch(event);
+  void ctx.dispatch(event).catch(() => {});
 }

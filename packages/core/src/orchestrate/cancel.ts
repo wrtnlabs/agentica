@@ -182,7 +182,7 @@ async function step<Model extends ILlmSchema.Model>(
     const failures: IFailure[] = [];
     for (const choice of completion.choices) {
       for (const tc of choice.message.tool_calls ?? []) {
-        if (tc.function.name !== "cancelFunctions") {
+        if (tc.type !== "function" || tc.function.name !== "cancelFunctions") {
           continue;
         }
 

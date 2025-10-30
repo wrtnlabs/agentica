@@ -90,11 +90,6 @@ export namespace IAgenticaEventJson {
    */
   export interface ICall extends IBase<"call"> {
     /**
-     * ID of the tool calling.
-     */
-    id: string;
-
-    /**
      * Target operation to call.
      */
     operation: IAgenticaOperationJson;
@@ -111,6 +106,11 @@ export namespace IAgenticaEventJson {
 
   export interface IValidate extends IBase<"validate"> {
     /**
+     * ID of the tool calling.
+     */
+    call_id: string;
+
+    /**
      * Target operation to call.
      */
     operation: IAgenticaOperationJson;
@@ -124,6 +124,11 @@ export namespace IAgenticaEventJson {
   }
 
   export interface IJsonParseError extends IBase<"jsonParseError"> {
+    /**
+     * ID of the tool calling.
+     */
+    call_id: string;
+
     /**
      * Target operation to call.
      */
@@ -151,7 +156,7 @@ export namespace IAgenticaEventJson {
     /**
      * ID of the tool calling.
      */
-    id: string;
+    call_id: string;
 
     /**
      * Target operation had called.

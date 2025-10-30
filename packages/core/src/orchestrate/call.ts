@@ -174,7 +174,7 @@ export async function call<Model extends ILlmSchema.Model>(
 async function predicate<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
   operation: AgenticaOperation<Model>,
-  toolCall: OpenAI.ChatCompletionMessageToolCall,
+  toolCall: OpenAI.ChatCompletionMessageFunctionToolCall,
   previousValidationErrors: AgenticaValidateEvent<Model>[],
   life: number,
 ): Promise<AgenticaExecuteEvent<Model>> {
@@ -187,14 +187,14 @@ async function predicate<Model extends ILlmSchema.Model>(
     );
   await ctx.dispatch(call);
   if (call.type === "jsonParseError") {
-    return correctJsonError(ctx, call, previousValidationErrors, life - 1);
+    return correctJsonError(ctx, toolCall, call, previousValidationErrors, life - 1);
   }
 
   // CHECK TYPE VALIDATION
   const check: IValidation<unknown> = operation.function.validate(call.arguments);
   if (check.success === false) {
     const event: AgenticaValidateEvent<Model> = createValidateEvent({
-      id: toolCall.id,
+      call_id: toolCall.id,
       operation,
       result: check,
       life,
@@ -225,6 +225,7 @@ async function correctTypeError<Model extends ILlmSchema.Model>(
 ): Promise<AgenticaExecuteEvent<Model>> {
   return correctError<Model>(ctx, {
     giveUp: () => createExecuteEvent({
+      call_id: callEvent.id,
       operation: callEvent.operation,
       arguments: callEvent.arguments,
       value: {
@@ -260,12 +261,14 @@ async function correctTypeError<Model extends ILlmSchema.Model>(
 
 async function correctJsonError<Model extends ILlmSchema.Model>(
   ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
+  toolCall: OpenAI.ChatCompletionMessageFunctionToolCall,
   parseErrorEvent: AgenticaJsonParseErrorEvent<Model>,
   previousValidationErrors: AgenticaValidateEvent<Model>[],
   life: number,
 ): Promise<AgenticaExecuteEvent<Model>> {
   return correctError<Model>(ctx, {
     giveUp: () => createExecuteEvent({
+      call_id: toolCall.id,
       operation: parseErrorEvent.operation,
       arguments: {},
       value: {
@@ -294,7 +297,7 @@ async function correctJsonError<Model extends ILlmSchema.Model>(
 
 function parseArguments<Model extends ILlmSchema.Model>(
   operation: AgenticaOperation<Model>,
-  toolCall: OpenAI.ChatCompletionMessageToolCall,
+  toolCall: OpenAI.ChatCompletionMessageFunctionToolCall,
   life: number,
 ): AgenticaCallEvent<Model> | AgenticaJsonParseErrorEvent<Model> {
   try {
@@ -307,7 +310,7 @@ function parseArguments<Model extends ILlmSchema.Model>(
   }
   catch (error) {
     return createJsonParseErrorEvent({
-      id: toolCall.id,
+      call_id: toolCall.id,
       operation,
       arguments: toolCall.function.arguments,
       errorMessage: error instanceof Error ? error.message : String(error),
@@ -366,7 +369,7 @@ async function correctError<Model extends ILlmSchema.Model>(
               name: props.operation.name,
               arguments: props.toolCall.arguments,
             },
-          } satisfies OpenAI.ChatCompletionMessageToolCall,
+          } satisfies OpenAI.ChatCompletionMessageFunctionToolCall,
         ],
       } satisfies OpenAI.ChatCompletionAssistantMessageParam,
       {
@@ -412,7 +415,9 @@ async function correctError<Model extends ILlmSchema.Model>(
   const chunks: OpenAI.ChatCompletionChunk[] = await StreamUtil.readAll(stream);
   const completion: OpenAI.ChatCompletion = ChatGptCompletionMessageUtil.merge(chunks);
 
-  const toolCall: OpenAI.ChatCompletionMessageToolCall | undefined = completion.choices[0]?.message.tool_calls?.find(
+  const toolCall: OpenAI.ChatCompletionMessageFunctionToolCall | undefined = completion.choices[0]?.message.tool_calls?.filter(
+    tc => tc.type === "function",
+  ).find(
     s => s.function.name === props.operation.name,
   );
   return toolCall === undefined
@@ -448,6 +453,7 @@ async function executeFunction<Model extends ILlmSchema.Model>(
       }
     })();
     return createExecuteEvent({
+      call_id: call.id,
       operation: call.operation,
       arguments: call.arguments,
       value,
@@ -456,6 +462,7 @@ async function executeFunction<Model extends ILlmSchema.Model>(
   }
   catch (error) {
     return createExecuteEvent({
+      call_id: call.id,
       operation: call.operation,
       arguments: call.arguments,
       value: error instanceof Error

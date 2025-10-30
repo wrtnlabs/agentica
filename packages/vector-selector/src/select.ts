@@ -86,13 +86,13 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
           get: () => v.message.content as string,
           join: async () => (v.message.content as string),
         });
-        ctx.dispatch(event);
+        void ctx.dispatch(event).catch(() => {});
       }
     });
   }
 
   const failures = toolCalls.reduce<IFailure[]>((acc, cur) => {
-    cur.message.tool_calls?.forEach((tc) => {
+    cur.message.tool_calls?.filter(tc => tc.type === "function").forEach((tc) => {
       const errors: string[] = [];
       const arg = JSON.parse(tc.function.arguments) as Partial<{ reason: string; function_name: string }>[];
       if (!Array.isArray(arg)) {
@@ -147,7 +147,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   }
 
   toolCalls.forEach((v) => {
-    v.message.tool_calls!.forEach((tc) => {
+    v.message.tool_calls!.filter(tc => tc.type === "function").forEach((tc) => {
       const arg = JSON.parse(tc.function.arguments) as {
         function_list: {
           reason: string;
@@ -166,11 +166,11 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
             operation,
           });
         ctx.stack.push(selection);
-        ctx.dispatch(
+        void ctx.dispatch(
           factory.createSelectEvent({
             selection,
           }),
-        );
+        ).catch(() => {});
       });
     });
   });

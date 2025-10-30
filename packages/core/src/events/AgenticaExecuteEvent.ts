@@ -33,7 +33,7 @@ export namespace AgenticaExecuteEvent {
     Value,
   > extends AgenticaEventBase<"execute"> {
     protocol: Protocol;
-    id: string;
+    call_id: string;
     operation: Operation;
     arguments: Record<string, unknown>;
     value: Value;

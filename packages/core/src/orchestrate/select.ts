@@ -226,7 +226,7 @@ async function step<Model extends ILlmSchema.Model>(
     const failures: IFailure[] = [];
     for (const choice of completion.choices) {
       for (const tc of choice.message.tool_calls ?? []) {
-        if (tc.function.name !== "selectFunctions") {
+        if (tc.type !== "function" || tc.function.name !== "selectFunctions") {
           continue;
         }
         const input: object = JsonUtil.parse(tc.function.arguments) as object;

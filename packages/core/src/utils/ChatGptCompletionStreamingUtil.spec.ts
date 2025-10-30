@@ -1,5 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { ChatCompletionChunk } from "openai/resources";
+
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import { reduceStreamingWithDispatch } from "./ChatGptCompletionStreamingUtil";
 import { StreamUtil } from "./StreamUtil";
 
@@ -95,7 +97,7 @@ describe("reduceStreamingWithDispatch", () => {
       expect(result).toBeDefined();
       expect(result.object).toBe("chat.completion");
       expect(eventProcessor).toHaveBeenCalledTimes(1);
-      
+
       const eventCall = eventProcessor.mock.calls[0]?.[0];
       expect(eventCall.get()).toBe("Hello World!");
     });
@@ -142,7 +144,7 @@ describe("reduceStreamingWithDispatch", () => {
 
       expect(result).toBeDefined();
       expect(eventProcessor).toHaveBeenCalledTimes(1);
-      
+
       const eventCall = eventProcessor.mock.calls[0]?.[0];
       expect(eventCall.get()).toBe("Hello");
     });
@@ -201,7 +203,7 @@ describe("reduceStreamingWithDispatch", () => {
 
       expect(result).toBeDefined();
       expect(eventProcessor).toHaveBeenCalledTimes(2);
-      
+
       const firstCall = eventProcessor.mock.calls[0]?.[0];
       const secondCall = eventProcessor.mock.calls[1]?.[0];
       expect(firstCall.get()).toBe("Choice 1 continued");
@@ -252,7 +254,7 @@ describe("reduceStreamingWithDispatch", () => {
 
       expect(result).toBeDefined();
       expect(eventProcessor).toHaveBeenCalledTimes(1);
-      
+
       const eventCall = eventProcessor.mock.calls[0]?.[0];
       expect(eventCall.get()).toBe("Hello World");
       expect(eventCall.done()).toBe(true);
@@ -372,7 +374,7 @@ describe("reduceStreamingWithDispatch", () => {
       const eventProcessor = vi.fn();
 
       await expect(reduceStreamingWithDispatch(stream, eventProcessor)).rejects.toThrow(
-        "StreamUtil.reduce did not produce a ChatCompletion"
+        "StreamUtil.reduce did not produce a ChatCompletion",
       );
     });
 
@@ -477,432 +479,432 @@ describe("reduceStreamingWithDispatch", () => {
 
       expect(result).toBeDefined();
       expect(eventProcessor).toHaveBeenCalledTimes(1);
-      
-             const eventCall = eventProcessor.mock.calls[0]?.[0];
-       expect(eventCall.get()).toBe("Hello World");
-     });
-   });
 
-   describe("edge cases and exceptions", () => {
-     it("should handle null delta content", async () => {
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: null },
-               finish_reason: null,
-             },
-           ],
-         },
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: "Hello" },
-               finish_reason: "stop",
-             },
-           ],
-         },
-       ];
+      const eventCall = eventProcessor.mock.calls[0]?.[0];
+      expect(eventCall.get()).toBe("Hello World");
+    });
+  });
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           chunks.forEach(chunk => controller.enqueue(chunk));
-           controller.close();
-         },
-       });
+  describe("edge cases and exceptions", () => {
+    it("should handle null delta content", async () => {
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: null },
+              finish_reason: null,
+            },
+          ],
+        },
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: "Hello" },
+              finish_reason: "stop",
+            },
+          ],
+        },
+      ];
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          chunks.forEach(chunk => controller.enqueue(chunk));
+          controller.close();
+        },
+      });
 
-       expect(result).toBeDefined();
-       expect(eventProcessor).toHaveBeenCalledTimes(1);
-       
-       const eventCall = eventProcessor.mock.calls[0]?.[0];
-       expect(eventCall.get()).toBe("Hello");
-     });
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
 
-     it("should handle missing delta object", async () => {
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: {},
-               finish_reason: null,
-             },
-           ],
-         },
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: "Hello" },
-               finish_reason: "stop",
-             },
-           ],
-         },
-       ];
+      expect(result).toBeDefined();
+      expect(eventProcessor).toHaveBeenCalledTimes(1);
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           chunks.forEach(chunk => controller.enqueue(chunk));
-           controller.close();
-         },
-       });
+      const eventCall = eventProcessor.mock.calls[0]?.[0];
+      expect(eventCall.get()).toBe("Hello");
+    });
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+    it("should handle missing delta object", async () => {
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: {},
+              finish_reason: null,
+            },
+          ],
+        },
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: "Hello" },
+              finish_reason: "stop",
+            },
+          ],
+        },
+      ];
 
-       expect(result).toBeDefined();
-       expect(eventProcessor).toHaveBeenCalledTimes(1);
-       
-       const eventCall = eventProcessor.mock.calls[0]?.[0];
-       expect(eventCall.get()).toBe("Hello");
-     });
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          chunks.forEach(chunk => controller.enqueue(chunk));
+          controller.close();
+        },
+      });
 
-     it("should handle chunks with no choices", async () => {
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [],
-         },
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: "Hello" },
-               finish_reason: "stop",
-             },
-           ],
-         },
-       ];
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           chunks.forEach(chunk => controller.enqueue(chunk));
-           controller.close();
-         },
-       });
+      expect(result).toBeDefined();
+      expect(eventProcessor).toHaveBeenCalledTimes(1);
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+      const eventCall = eventProcessor.mock.calls[0]?.[0];
+      expect(eventCall.get()).toBe("Hello");
+    });
 
-       expect(result).toBeDefined();
-       expect(eventProcessor).toHaveBeenCalledTimes(1);
-       
-       const eventCall = eventProcessor.mock.calls[0]?.[0];
-       expect(eventCall.get()).toBe("Hello");
-     });
+    it("should handle chunks with no choices", async () => {
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [],
+        },
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: "Hello" },
+              finish_reason: "stop",
+            },
+          ],
+        },
+      ];
 
-     it("should handle very large content chunks", async () => {
-       const largeContent = "x".repeat(10000);
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: largeContent },
-               finish_reason: "stop",
-             },
-           ],
-         },
-       ];
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          chunks.forEach(chunk => controller.enqueue(chunk));
+          controller.close();
+        },
+      });
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           chunks.forEach(chunk => controller.enqueue(chunk));
-           controller.close();
-         },
-       });
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+      expect(result).toBeDefined();
+      expect(eventProcessor).toHaveBeenCalledTimes(1);
 
-       expect(result).toBeDefined();
-       // Now single chunk with content should trigger eventProcessor
-       expect(eventProcessor).toHaveBeenCalledOnce();
-       
-       const eventCall = eventProcessor.mock.calls[0]?.[0];
-       expect(eventCall.get()).toBe(largeContent);
-     });
+      const eventCall = eventProcessor.mock.calls[0]?.[0];
+      expect(eventCall.get()).toBe("Hello");
+    });
 
-     it("should handle rapid consecutive chunks", async () => {
-       const chunks: ChatCompletionChunk[] = Array.from({ length: 100 }, (_, i) => ({
-         id: "test-id",
-         object: "chat.completion.chunk" as const,
-         created: 1234567890,
-         model: "gpt-3.5-turbo",
-         choices: [
-           {
-             index: 0,
-             delta: { content: i.toString() },
-             finish_reason: i === 99 ? "stop" as const : null,
-           },
-         ],
-       }));
+    it("should handle very large content chunks", async () => {
+      const largeContent = "x".repeat(10000);
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: largeContent },
+              finish_reason: "stop",
+            },
+          ],
+        },
+      ];
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           chunks.forEach(chunk => controller.enqueue(chunk));
-           controller.close();
-         },
-       });
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          chunks.forEach(chunk => controller.enqueue(chunk));
+          controller.close();
+        },
+      });
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
 
-       expect(result).toBeDefined();
-       expect(eventProcessor).toHaveBeenCalledTimes(1);
-       
-       const eventCall = eventProcessor.mock.calls[0]?.[0];
-       const expectedContent = Array.from({ length: 100 }, (_, i) => i.toString()).join("");
-       expect(eventCall.get()).toBe(expectedContent);
-     });
+      expect(result).toBeDefined();
+      // Now single chunk with content should trigger eventProcessor
+      expect(eventProcessor).toHaveBeenCalledOnce();
 
-     it("should handle out-of-order choice indices", async () => {
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 2,
-               delta: { content: "Third" },
-               finish_reason: null,
-             },
-             {
-               index: 0,
-               delta: { content: "First" },
-               finish_reason: null,
-             },
-             {
-               index: 1,
-               delta: { content: "Second" },
-               finish_reason: null,
-             },
-           ],
-         },
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: " content" },
-               finish_reason: "stop",
-             },
-             {
-               index: 1,
-               delta: { content: " content" },
-               finish_reason: "stop",
-             },
-             {
-               index: 2,
-               delta: { content: " content" },
-               finish_reason: "stop",
-             },
-           ],
-         },
-       ];
+      const eventCall = eventProcessor.mock.calls[0]?.[0];
+      expect(eventCall.get()).toBe(largeContent);
+    });
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           chunks.forEach(chunk => controller.enqueue(chunk));
-           controller.close();
-         },
-       });
+    it("should handle rapid consecutive chunks", async () => {
+      const chunks: ChatCompletionChunk[] = Array.from({ length: 100 }, (_, i) => ({
+        id: "test-id",
+        object: "chat.completion.chunk" as const,
+        created: 1234567890,
+        model: "gpt-3.5-turbo",
+        choices: [
+          {
+            index: 0,
+            delta: { content: i.toString() },
+            finish_reason: i === 99 ? "stop" as const : null,
+          },
+        ],
+      }));
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          chunks.forEach(chunk => controller.enqueue(chunk));
+          controller.close();
+        },
+      });
 
-       expect(result).toBeDefined();
-       expect(eventProcessor).toHaveBeenCalledTimes(3);
-       
-       const calls = eventProcessor.mock.calls.map(call => call[0]);
-       expect(calls[0].get()).toBe("Third content");
-       expect(calls[1].get()).toBe("First content");
-       expect(calls[2].get()).toBe("Second content");
-     });
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
 
-     it("should handle mixed finish reasons", async () => {
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: "Hello" },
-               finish_reason: null,
-             },
-             {
-               index: 1,
-               delta: { content: "World" },
-               finish_reason: null,
-             },
-           ],
-         },
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: " there" },
-               finish_reason: "stop",
-             },
-             {
-               index: 1,
-               delta: { content: "!" },
-               finish_reason: "length",
-             },
-           ],
-         },
-       ];
+      expect(result).toBeDefined();
+      expect(eventProcessor).toHaveBeenCalledTimes(1);
 
-       const stream = StreamUtil.from(...chunks);
+      const eventCall = eventProcessor.mock.calls[0]?.[0];
+      const expectedContent = Array.from({ length: 100 }, (_, i) => i.toString()).join("");
+      expect(eventCall.get()).toBe(expectedContent);
+    });
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+    it("should handle out-of-order choice indices", async () => {
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 2,
+              delta: { content: "Third" },
+              finish_reason: null,
+            },
+            {
+              index: 0,
+              delta: { content: "First" },
+              finish_reason: null,
+            },
+            {
+              index: 1,
+              delta: { content: "Second" },
+              finish_reason: null,
+            },
+          ],
+        },
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: " content" },
+              finish_reason: "stop",
+            },
+            {
+              index: 1,
+              delta: { content: " content" },
+              finish_reason: "stop",
+            },
+            {
+              index: 2,
+              delta: { content: " content" },
+              finish_reason: "stop",
+            },
+          ],
+        },
+      ];
 
-       expect(result).toBeDefined();
-       expect(eventProcessor).toHaveBeenCalledTimes(2);
-       
-       const firstCall = eventProcessor.mock.calls[0]?.[0];
-       const secondCall = eventProcessor.mock.calls[1]?.[0];
-       expect(firstCall.get()).toBe("Hello there");
-       expect(secondCall.get()).toBe("World!");
-       await firstCall.join();
-       await secondCall.join();
-       expect(firstCall.done()).toBe(true);
-       expect(secondCall.done()).toBe(true);
-     });
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          chunks.forEach(chunk => controller.enqueue(chunk));
+          controller.close();
+        },
+      });
 
-     it("should handle Unicode and special characters", async () => {
-       const specialContent = "Hello 🌍! 안녕하세요 مرحبا 🚀 ñáéíóú";
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: specialContent },
-               finish_reason: "stop",
-             },
-           ],
-         },
-       ];
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
 
-       const stream = StreamUtil.from(...chunks);
+      expect(result).toBeDefined();
+      expect(eventProcessor).toHaveBeenCalledTimes(3);
 
-       const eventProcessor = vi.fn();
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+      const calls = eventProcessor.mock.calls.map(call => call[0]);
+      expect(calls[0].get()).toBe("Third content");
+      expect(calls[1].get()).toBe("First content");
+      expect(calls[2].get()).toBe("Second content");
+    });
 
-       expect(result).toBeDefined();
-       // Now single chunk with content should trigger eventProcessor
-       expect(eventProcessor).toHaveBeenCalledOnce();
-       
-       const eventCall = eventProcessor.mock.calls[0]?.[0];
-       expect(eventCall.get()).toBe(specialContent);
-     });
+    it("should handle mixed finish reasons", async () => {
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: "Hello" },
+              finish_reason: null,
+            },
+            {
+              index: 1,
+              delta: { content: "World" },
+              finish_reason: null,
+            },
+          ],
+        },
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: " there" },
+              finish_reason: "stop",
+            },
+            {
+              index: 1,
+              delta: { content: "!" },
+              finish_reason: "length",
+            },
+          ],
+        },
+      ];
 
-     it("should handle stream reader errors gracefully", async () => {
-       const chunks: ChatCompletionChunk[] = [
-         {
-           id: "test-id",
-           object: "chat.completion.chunk",
-           created: 1234567890,
-           model: "gpt-3.5-turbo",
-           choices: [
-             {
-               index: 0,
-               delta: { content: "Hello" },
-               finish_reason: null,
-             },
-           ],
-         },
-       ];
+      const stream = StreamUtil.from(...chunks);
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           controller.enqueue(chunks[0]);
-           // Simulate an error in the stream
-           controller.error(new Error("Stream error"));
-         },
-       });
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
 
-       const eventProcessor = vi.fn();
+      expect(result).toBeDefined();
+      expect(eventProcessor).toHaveBeenCalledTimes(2);
 
-       await expect(reduceStreamingWithDispatch(stream, eventProcessor))
-         .rejects.toThrow("Stream error");
-     });
+      const firstCall = eventProcessor.mock.calls[0]?.[0];
+      const secondCall = eventProcessor.mock.calls[1]?.[0];
+      expect(firstCall.get()).toBe("Hello there");
+      expect(secondCall.get()).toBe("World!");
+      await firstCall.join();
+      await secondCall.join();
+      expect(firstCall.done()).toBe(true);
+      expect(secondCall.done()).toBe(true);
+    });
 
-     it("should handle completely malformed chunks gracefully", async () => {
-       const malformedChunk = {
-         // Missing required fields
-         object: "chat.completion.chunk",
-         choices: [
-           {
-             // Missing index
-             delta: { content: "Hello" },
-             finish_reason: null,
-           },
-         ],
-       } as any;
+    it("should handle Unicode and special characters", async () => {
+      const specialContent = "Hello 🌍! 안녕하세요 مرحبا 🚀 ñáéíóú";
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: specialContent },
+              finish_reason: "stop",
+            },
+          ],
+        },
+      ];
 
-       const stream = new ReadableStream<ChatCompletionChunk>({
-         start(controller) {
-           controller.enqueue(malformedChunk);
-           controller.close();
-         },
-       });
+      const stream = StreamUtil.from(...chunks);
 
-       const eventProcessor = vi.fn();
-       
-       // Should not throw, but should handle gracefully
-       const result = await reduceStreamingWithDispatch(stream, eventProcessor);
-       expect(result).toBeDefined();
-     });
-   });
- });
- 
+      const eventProcessor = vi.fn();
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+
+      expect(result).toBeDefined();
+      // Now single chunk with content should trigger eventProcessor
+      expect(eventProcessor).toHaveBeenCalledOnce();
+
+      const eventCall = eventProcessor.mock.calls[0]?.[0];
+      expect(eventCall.get()).toBe(specialContent);
+    });
+
+    it("should handle stream reader errors gracefully", async () => {
+      const chunks: ChatCompletionChunk[] = [
+        {
+          id: "test-id",
+          object: "chat.completion.chunk",
+          created: 1234567890,
+          model: "gpt-3.5-turbo",
+          choices: [
+            {
+              index: 0,
+              delta: { content: "Hello" },
+              finish_reason: null,
+            },
+          ],
+        },
+      ];
+
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          controller.enqueue(chunks[0]);
+          // Simulate an error in the stream
+          controller.error(new Error("Stream error"));
+        },
+      });
+
+      const eventProcessor = vi.fn();
+
+      await expect(reduceStreamingWithDispatch(stream, eventProcessor))
+        .rejects
+        .toThrow("Stream error");
+    });
+
+    it("should handle completely malformed chunks gracefully", async () => {
+      const malformedChunk = {
+        // Missing required fields
+        object: "chat.completion.chunk",
+        choices: [
+          {
+            // Missing index
+            delta: { content: "Hello" },
+            finish_reason: null,
+          },
+        ],
+      } as any;
+
+      const stream = new ReadableStream<ChatCompletionChunk>({
+        start(controller) {
+          controller.enqueue(malformedChunk);
+          controller.close();
+        },
+      });
+
+      const eventProcessor = vi.fn();
+
+      // Should not throw, but should handle gracefully
+      const result = await reduceStreamingWithDispatch(stream, eventProcessor);
+      expect(result).toBeDefined();
+    });
+  });
+});
