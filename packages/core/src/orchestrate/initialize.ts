@@ -65,7 +65,7 @@ export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaCo
 
   const completion = await reduceStreamingWithDispatch(completionStream, (props) => {
     const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
-    ctx.dispatch(event);
+    void ctx.dispatch(event).catch(() => {});
   }, ctx.abortSignal);
 
   if (completion === null) {

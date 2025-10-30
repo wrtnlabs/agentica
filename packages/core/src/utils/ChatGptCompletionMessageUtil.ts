@@ -2,6 +2,7 @@ import type {
   ChatCompletion,
   ChatCompletionChunk,
   ChatCompletionMessage,
+  ChatCompletionMessageFunctionToolCall,
   ChatCompletionMessageToolCall,
 } from "openai/resources";
 
@@ -101,7 +102,7 @@ function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
 
   // post-process
   result.choices.forEach((choice) => {
-    choice.message.tool_calls?.forEach((toolCall) => {
+    choice.message.tool_calls?.filter(tc => tc.type === "function").forEach((toolCall) => {
       if (toolCall.function.arguments === "") {
         toolCall.function.arguments = "{}";
       }
@@ -154,7 +155,7 @@ function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice
 
     cur.delta.tool_calls.forEach((toolCall) => {
       const existingToolCall = toolCalls[toolCall.index];
-      if (existingToolCall != null) {
+      if (existingToolCall != null && existingToolCall.type === "function") {
         toolCalls[toolCall.index] = mergeToolCalls(
           existingToolCall,
           toolCall,
@@ -176,8 +177,8 @@ function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice
   return acc;
 }
 
-function mergeToolCalls(acc: ChatCompletionMessageToolCall, cur: ChatCompletionChunk.Choice.Delta.ToolCall): ChatCompletionMessageToolCall {
-  if (cur.function != null) {
+function mergeToolCalls(acc: ChatCompletionMessageFunctionToolCall, cur: ChatCompletionChunk.Choice.Delta.ToolCall): ChatCompletionMessageToolCall {
+  if (cur.function != null && cur.type === "function") {
     acc.function.arguments += cur.function.arguments ?? "";
     acc.function.name += cur.function.name ?? "";
   }

@@ -44,7 +44,7 @@ export async function describe<Model extends ILlmSchema.Model>(
       executes: histories,
       ...props,
     });
-    ctx.dispatch(event);
+    void ctx.dispatch(event).catch(() => {});
   }, ctx.abortSignal);
 }
 

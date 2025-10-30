@@ -42,10 +42,12 @@ export async function test_json_parse_error_correction(): Promise<void | false> 
     const jsonParseErrorEvent: AgenticaJsonParseErrorEvent<"chatgpt"> = {
       type: "jsonParseError",
       id: v4(),
+      call_id: event.id,
       created_at: new Date().toISOString(),
       operation: event.operation,
       arguments: JSON.stringify(event.arguments).slice(0, -1),
       errorMessage: "Unexpected token '}' in JSON at last position",
+      life: 2,
     };
     for (const key of Object.keys(event.arguments)) {
       delete (event as Record<string, any>)[key];

@@ -23,7 +23,8 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
             const context = streamContext.get(choice.index)!;
             context.content += choice.delta.content;
             context.mpsc.produce(choice.delta.content);
-          } else {
+          }
+          else {
             const mpsc = new MPSC<string>();
 
             streamContext.set(choice.index, {
@@ -43,7 +44,7 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
             });
           }
         }
-        
+
         // Handle finish_reason after content processing
         if (choice.finish_reason != null) {
           const context = streamContext.get(choice.index);
@@ -70,10 +71,10 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
     );
   }
 
-  if((nullableCompletion.object as string) === "chat.completion.chunk") {
+  if ((nullableCompletion.object as string) === "chat.completion.chunk") {
     const completion = ChatGptCompletionMessageUtil.merge([nullableCompletion as unknown as ChatCompletionChunk]);
     completion.choices.forEach((choice) => {
-      if(choice.message.content != null && choice.message.content !== "") {
+      if (choice.message.content != null && choice.message.content !== "") {
         eventProcessor({
           stream: toAsyncGenerator(choice.message.content),
           done: () => true,

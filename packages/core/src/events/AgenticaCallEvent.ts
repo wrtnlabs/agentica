@@ -13,11 +13,6 @@ import type { AgenticaEventBase } from "./AgenticaEventBase";
 export interface AgenticaCallEvent<Model extends ILlmSchema.Model>
   extends AgenticaEventBase<"call"> {
   /**
-   * ID of the tool calling.
-   */
-  id: string;
-
-  /**
    * Target operation to call.
    */
   operation: AgenticaOperation<Model>;

@@ -149,7 +149,7 @@ describe("streamUtil", () => {
       const stringResult = await StreamUtil.reduce<number, string>(
         stringStream,
         (acc, cur) => acc + cur.toString(),
-        { initial: ""},
+        { initial: "" },
       );
 
       expect(stringResult).toBe("123");

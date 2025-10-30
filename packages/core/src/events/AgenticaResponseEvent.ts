@@ -4,6 +4,8 @@ import type { AgenticaEventBase } from "./AgenticaEventBase";
 import type { AgenticaEventSource } from "./AgenticaEventSource";
 
 export interface AgenticaResponseEvent extends AgenticaEventBase<"response"> {
+  request_id: string;
+
   /**
    * The source agent of the response.
    */

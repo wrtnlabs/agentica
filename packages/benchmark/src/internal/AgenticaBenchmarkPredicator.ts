@@ -112,7 +112,7 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
     tc => tc.type === "function" && tc.function.name === consent.name,
   )?.[0];
 
-  if (toolCall === undefined) {
+  if (toolCall === undefined || toolCall.type !== "function") {
     return null;
   }
 

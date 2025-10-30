@@ -34,7 +34,7 @@ export async function extractQuery<SchemaModel extends ILlmSchema.Model>(ctx: Ag
 
   const chunks = await utils.StreamUtil.readAll(completionStream);
   const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
-  const queries = completion.choices[0]?.message.tool_calls?.flatMap((v) => {
+  const queries = completion.choices[0]?.message.tool_calls?.filter(tc => tc.type === "function").flatMap((v) => {
     const arg = JSON.parse(v.function.arguments) as Partial<FromSchema<typeof Tools.extract_query.function.parameters>>;
     if (!Array.isArray(arg.query_list)) {
       return [];
