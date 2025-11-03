@@ -178,13 +178,11 @@ function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice
 }
 
 function mergeToolCalls(acc: ChatCompletionMessageFunctionToolCall, cur: ChatCompletionChunk.Choice.Delta.ToolCall): ChatCompletionMessageToolCall {
-  if (cur.function != null && cur.type === "function") {
+  if (cur.function != null) {
     acc.function.arguments += cur.function.arguments ?? "";
     acc.function.name += cur.function.name ?? "";
   }
-
   acc.id += cur.id ?? "";
-
   return acc;
 }
 

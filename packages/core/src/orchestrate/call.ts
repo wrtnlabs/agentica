@@ -85,13 +85,10 @@ export async function call<Model extends ILlmSchema.Model>(
             type: "function",
             function: {
               name: s.name,
-
               description: s.function.description,
               parameters: (
-                (
-                  "separated" in s.function
-                  && s.function.separated !== undefined
-                )
+                "separated" in s.function
+                && s.function.separated !== undefined
                   ? (s.function.separated.llm
                     ?? ({
                       type: "object",
@@ -100,7 +97,6 @@ export async function call<Model extends ILlmSchema.Model>(
                       additionalProperties: false,
                       $defs: {},
                     } satisfies IChatGptSchema.IParameters))
-
                   : s.function.parameters) as Record<string, any>,
             },
           }) as OpenAI.ChatCompletionTool,
@@ -414,7 +410,6 @@ async function correctError<Model extends ILlmSchema.Model>(
   });
   const chunks: OpenAI.ChatCompletionChunk[] = await StreamUtil.readAll(stream);
   const completion: OpenAI.ChatCompletion = ChatGptCompletionMessageUtil.merge(chunks);
-
   const toolCall: OpenAI.ChatCompletionMessageFunctionToolCall | undefined = completion.choices[0]?.message.tool_calls?.filter(
     tc => tc.type === "function",
   ).find(
