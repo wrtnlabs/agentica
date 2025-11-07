@@ -17,11 +17,11 @@ catalogs:
   typescript:
     ts-node: ^10.9.2
     ts-patch: ^3.3.0
-    typescript: ~5.9.2
+    typescript: ~5.9.3
   typia:
     "@ryoppippi/unplugin-typia": ^2.6.4
-    "@samchon/openapi": ^4.7.2
-    typia: ^9.7.2
+    "@samchon/openapi": ^5.0.0
+    typia: ^10.0.0
   vite:
     vitest: ^3.0.9
 onlyBuiltDependencies:
