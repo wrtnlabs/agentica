@@ -1,7 +1,7 @@
 {
   "name": "agentica",
   "type": "module",
-  "version": "0.33.2",
+  "version": "0.34.0",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
