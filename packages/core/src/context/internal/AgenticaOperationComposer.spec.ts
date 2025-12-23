@@ -1,4 +1,4 @@
-import type { IChatGptSchema, IHttpLlmFunction, ILlmFunction, IMcpLlmFunction, IValidation } from "@samchon/openapi";
+import type { IHttpLlmFunction, ILlmFunction, ILlmSchema, IMcpLlmFunction, IValidation } from "@samchon/openapi";
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory";
@@ -17,7 +17,7 @@ const client = new Client({
 });
 
 // test helper functions
-function createMockHttpFunction(name: string, method: "get" | "post" | "patch" | "put" | "delete", path: string): IHttpLlmFunction<any> {
+function createMockHttpFunction(name: string, method: "get" | "post" | "patch" | "put" | "delete", path: string): IHttpLlmFunction {
   return {
     name,
     method,
@@ -38,41 +38,55 @@ function createMockHttpFunction(name: string, method: "get" | "post" | "patch" |
       comment: () => "OK",
       operation: () => ({}),
     }),
-    parameters: {},
+    parameters: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+      required: [],
+      $defs: {},
+    } satisfies ILlmSchema.IParameters,
     output: {},
   };
 }
 
-function createMockHttpController(name: string, functions: IHttpLlmFunction<any>[]): IAgenticaController.IHttp<any> {
+function createMockHttpController(name: string, functions: IHttpLlmFunction[]): IAgenticaController.IHttp {
   return {
     name,
     protocol: "http",
     connection: { host: "https://example.com" },
     application: {
-      model: "chatgpt",
-      options: {},
       functions,
+      config: {
+        reference: true,
+        strict: false,
+        separate: null,
+        maxLength: 64,
+        equals: false,
+      },
       errors: [],
     },
   };
 }
 
-function createMockClassController(name: string, functions: ILlmFunction<any>[]): IAgenticaController.IClass<any> {
+function createMockClassController(name: string, functions: ILlmFunction[]): IAgenticaController.IClass {
   return {
     name,
     protocol: "class",
     application: {
-      model: "chatgpt",
-      options: {},
       functions,
+      config: {
+        reference: true,
+        strict: false,
+        separate: null,
+        validate: null,
+      },
     },
     execute: {},
   };
 }
 
-async function createMockMcpController(name: string, functions: IMcpLlmFunction<"chatgpt">[]): Promise<IAgenticaController.IMcp<"chatgpt">> {
+async function createMockMcpController(name: string, functions: IMcpLlmFunction[]): Promise<IAgenticaController.IMcp> {
   const controller = await assertMcpController({
-    model: "chatgpt",
     name,
     client,
   });
@@ -112,7 +126,13 @@ describe("a AgenticaOperationComposer", () => {
         {
           name: "function3",
           validate: () => ({ success: true, data: {} } as IValidation<unknown>),
-          parameters: {},
+          parameters: {
+            type: "object",
+            properties: {},
+            additionalProperties: false,
+            required: [],
+            $defs: {},
+          } satisfies ILlmSchema.IParameters,
           output: {},
         },
       ]);
@@ -126,7 +146,7 @@ describe("a AgenticaOperationComposer", () => {
             additionalProperties: false,
             required: [],
             $defs: {},
-          } satisfies IChatGptSchema.IParameters,
+          } satisfies ILlmSchema.IParameters,
           validate: (data: unknown) => ({
             success: true,
             data,
@@ -154,7 +174,7 @@ describe("a AgenticaOperationComposer", () => {
         createMockHttpFunction("function5", "patch", "/api/function5"),
       ]);
 
-      const config: IAgenticaConfig<any> = {
+      const config: IAgenticaConfig = {
         capacity: 2,
       };
 
@@ -186,7 +206,13 @@ describe("a AgenticaOperationComposer", () => {
         {
           name: "function1",
           validate: () => ({ success: true, data: {} } as IValidation<unknown>),
-          parameters: {},
+          parameters: {
+            type: "object",
+            properties: {},
+            additionalProperties: false,
+            required: [],
+            $defs: {},
+          } satisfies ILlmSchema.IParameters,
           output: {},
         },
       ]);
@@ -224,11 +250,11 @@ describe("a AgenticaOperationComposer", () => {
     });
 
     it("should throw error for unsupported protocol", () => {
-      const mockController: IAgenticaController.IHttp<any> = {
+      const mockController: IAgenticaController.IHttp = {
         name: "unsupportedController",
         protocol: "unsupported" as unknown as "http",
         connection: { host: "https://example.com" },
-        application: { } as unknown as IAgenticaController.IHttp<any>["application"],
+        application: { } as unknown as IAgenticaController.IHttp["application"],
       };
 
       expect(() => getOperations({ controllers: [mockController], naming: (func, idx) => `_${idx}_${func}` })).toThrow("Unsupported protocol: unsupported");
@@ -257,7 +283,13 @@ describe("a AgenticaOperationComposer", () => {
         {
           name: "function1",
           validate: () => ({ success: true, data: {} } as IValidation<unknown>),
-          parameters: {},
+          parameters: {
+            type: "object",
+            properties: {},
+            additionalProperties: false,
+            required: [],
+            $defs: {},
+          } satisfies ILlmSchema.IParameters,
           output: {},
         },
       ]);

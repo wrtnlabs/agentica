@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
@@ -10,12 +8,11 @@ import type { AgenticaEventBase } from "./AgenticaEventBase";
  *
  * @author Samchon
  */
-export interface AgenticaCallEvent<Model extends ILlmSchema.Model>
-  extends AgenticaEventBase<"call"> {
+export interface AgenticaCallEvent extends AgenticaEventBase<"call"> {
   /**
    * Target operation to call.
    */
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
 
   /**
    * Arguments of the function calling.

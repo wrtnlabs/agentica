@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaContext } from "../../context/AgenticaContext";
 import type { AgenticaOperation } from "../../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../../context/AgenticaOperationSelection";
@@ -12,26 +10,24 @@ import { createOperationSelection } from "../../factory/operations";
 /**
  * @internal
  */
-export function selectFunctionFromContext<
-  Model extends ILlmSchema.Model,
->(
-  ctx: AgenticaContext<Model>,
+export function selectFunctionFromContext(
+  ctx: AgenticaContext,
   reference: __IChatFunctionReference,
 ): void {
-  const operation: AgenticaOperation<Model> | undefined
+  const operation: AgenticaOperation | undefined
     = ctx.operations.flat.get(reference.name);
   if (operation === undefined) {
     return;
   }
 
-  const selection: AgenticaOperationSelection<Model>
+  const selection: AgenticaOperationSelection
     = createOperationSelection({
       operation,
       reason: reference.reason,
     });
   ctx.stack.push(selection);
 
-  const event: AgenticaSelectEvent<Model> = createSelectEvent({
+  const event: AgenticaSelectEvent = createSelectEvent({
     selection,
   });
   void ctx.dispatch(event).catch(() => {});

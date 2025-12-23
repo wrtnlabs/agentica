@@ -5,7 +5,6 @@ import type {
   IHttpResponse,
   ILlmApplication,
   ILlmFunction,
-  ILlmSchema,
   IMcpLlmApplication,
 } from "@samchon/openapi";
 
@@ -25,10 +24,10 @@ import type {
  *
  * @author Samchon
  */
-export type IAgenticaController<Model extends ILlmSchema.Model> =
-  | IAgenticaController.IHttp<Model>
-  | IAgenticaController.IClass<Model>
-  | IAgenticaController.IMcp<Model>;
+export type IAgenticaController =
+  | IAgenticaController.IHttp
+  | IAgenticaController.IClass
+  | IAgenticaController.IMcp;
 
 export namespace IAgenticaController {
   /**
@@ -37,8 +36,7 @@ export namespace IAgenticaController {
    * You can make it by {@link validateHttpLlmApplication} function with
    * the Swagger or OpenAPI document.
    */
-  export interface IHttp<Model extends ILlmSchema.Model>
-    extends IBase<"http", IHttpLlmApplication<Model>> {
+  export interface IHttp extends IBase<"http", IHttpLlmApplication> {
     /**
      * Connection to the server.
      *
@@ -61,12 +59,12 @@ export namespace IAgenticaController {
       /**
        * Application schema.
        */
-      application: IHttpLlmApplication<Model>;
+      application: IHttpLlmApplication;
 
       /**
        * Function schema.
        */
-      function: IHttpLlmFunction<Model>;
+      function: IHttpLlmFunction;
 
       /**
        * Arguments of the function calling.
@@ -89,8 +87,7 @@ export namespace IAgenticaController {
    *
    * - https://typia.io/docs/llm/application
    */
-  export interface IClass<Model extends ILlmSchema.Model>
-    extends IBase<"class", ILlmApplication<Model>> {
+  export interface IClass extends IBase<"class", ILlmApplication> {
     /**
      * Executor of the class function.
      *
@@ -104,12 +101,12 @@ export namespace IAgenticaController {
         /**
          * Target application schema.
          */
-        application: ILlmApplication<Model>;
+        application: ILlmApplication;
 
         /**
          * Target function schema.
          */
-        function: ILlmFunction<Model>;
+        function: ILlmFunction;
 
         /**
          * Arguments of the function calling.
@@ -121,7 +118,7 @@ export namespace IAgenticaController {
   /**
    * MCP Server controller.
    */
-  export interface IMcp<Model extends ILlmSchema.Model> extends IBase<"mcp", IMcpLlmApplication<Model>> {
+  export interface IMcp extends IBase<"mcp", IMcpLlmApplication> {
     /**
      * MCP client for connection.
      *

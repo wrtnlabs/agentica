@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaTokenUsage } from "../context/AgenticaTokenUsage";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 import type { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
@@ -29,12 +27,7 @@ import type { IAgenticaVendor } from "./IAgenticaVendor";
  *
  * @author Samchon
  */
-export interface IAgenticaProps<Model extends ILlmSchema.Model> {
-  /**
-   * LLM schema model.
-   */
-  model: Model;
-
+export interface IAgenticaProps {
   /**
    * LLM service vendor.
    */
@@ -43,7 +36,7 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
   /**
    * Controllers serving functions to call.
    */
-  controllers: IAgenticaController<Model>[];
+  controllers: IAgenticaController[];
 
   /**
    * Configuration of agent.
@@ -60,7 +53,7 @@ export interface IAgenticaProps<Model extends ILlmSchema.Model> {
    * - `systemPrompt`: default prompts written in markdown
    *   - https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts
    */
-  config?: IAgenticaConfig<Model>;
+  config?: IAgenticaConfig;
 
   /**
    * Prompt histories.

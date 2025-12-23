@@ -36,8 +36,7 @@ async function main(): Promise<void> {
   }
 
   // GET LLM APPLICATION SCHEMA
-  const application: IHttpLlmApplication<"chatgpt"> = HttpLlm.application({
-    model: "chatgpt",
+  const application: IHttpLlmApplication = HttpLlm.application({
     document: OpenApi.convert(
       typia.json.assertParse<
         SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument
@@ -47,9 +46,6 @@ async function main(): Promise<void> {
         ),
       ),
     ),
-    options: {
-      reference: true,
-    },
   });
   application.functions = application.functions.filter(f =>
     f.path.startsWith("/shoppings/customers"),
@@ -77,8 +73,7 @@ async function main(): Promise<void> {
   );
 
   // COMPOSE CHAT AGENT
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       api: new OpenAI({
         apiKey: TestGlobal.env.CHATGPT_API_KEY,
@@ -154,7 +149,7 @@ async function main(): Promise<void> {
       );
     }
     else {
-      const histories: AgenticaHistory<"chatgpt">[]
+      const histories: AgenticaHistory[]
         = await agent.conversate(content);
       for (const h of histories.slice(1)) {
         if (h.type === "assistantMessage") {

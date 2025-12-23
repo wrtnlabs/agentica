@@ -1,5 +1,4 @@
 import type { IAgenticaController, MicroAgentica } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaRpcService } from "./IAgenticaRpcService";
 import type { IMicroAgenticaRpcListener } from "./IMicroAgenticaRpcListener";
@@ -47,14 +46,14 @@ import type { IMicroAgenticaRpcListener } from "./IMicroAgenticaRpcListener";
  *
  * @author Samchon
  */
-export class MicroAgenticaRpcService<Model extends ILlmSchema.Model>
-implements IAgenticaRpcService<Model> {
+export class MicroAgenticaRpcService
+implements IAgenticaRpcService {
   /**
    * Initializer Constructor.
    *
    * @param props Properties to construct the RPC service
    */
-  public constructor(private readonly props: MicroAgenticaRpcService.IProps<Model>) {
+  public constructor(private readonly props: MicroAgenticaRpcService.IProps) {
     const { agent, listener } = props;
 
     // ESSENTIAL LISTENERS
@@ -94,19 +93,19 @@ implements IAgenticaRpcService<Model> {
   /**
    * @inheritDoc
    */
-  public async getControllers(): Promise<IAgenticaController<Model>[]> {
-    return this.props.agent.getControllers() as IAgenticaController<Model>[];
+  public async getControllers(): Promise<IAgenticaController[]> {
+    return this.props.agent.getControllers() as IAgenticaController[];
   }
 }
 export namespace MicroAgenticaRpcService {
   /**
    * Properties to construct the RPC service.
    */
-  export interface IProps<Model extends ILlmSchema.Model> {
+  export interface IProps {
     /**
      * AI agent to be controlled.
      */
-    agent: MicroAgentica<Model>;
+    agent: MicroAgentica;
 
     /**
      * Listener to be notified.

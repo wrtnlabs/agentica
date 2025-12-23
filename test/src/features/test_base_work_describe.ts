@@ -35,20 +35,19 @@ export async function test_base_work_describe(): Promise<void | false> {
   }
 
   // 이벤트 추적을 위한 변수들
-  const events: AgenticaEvent<"chatgpt">[] = [];
+  const events: AgenticaEvent[] = [];
   let functionCalled = false;
 
   // 계산기 컨트롤러 생성
-  const calculatorController: IAgenticaController<"chatgpt"> = {
+  const calculatorController: IAgenticaController = {
     protocol: "class",
     name: "calculator",
-    application: typia.llm.application<Calculator, "chatgpt">(),
+    application: typia.llm.application<Calculator>(),
     execute: new Calculator(),
   };
 
   // Agentica 인스턴스 생성
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({

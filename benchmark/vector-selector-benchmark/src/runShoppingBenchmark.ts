@@ -3,16 +3,16 @@ import type { ILlmSchema, OpenApi } from "@samchon/openapi";
 
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
 
-export interface ShoppingBenchmarkConfig<Model extends ILlmSchema.Model> {
-  agent: Agentica<Model>;
+export interface ShoppingBenchmarkConfig {
+  agent: Agentica;
 }
 
-export async function runShoppingBenchmark<Model extends ILlmSchema.Model>({ agent }: ShoppingBenchmarkConfig<Model>): Promise<AgenticaSelectBenchmark<Model>> {
+export async function runShoppingBenchmark({ agent }: ShoppingBenchmarkConfig): Promise<AgenticaSelectBenchmark> {
   // DO BENCHMARK
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): AgenticaOperation<Model> => {
+  ): AgenticaOperation => {
     const found = agent
       .getOperations()
       .find(
@@ -27,7 +27,7 @@ export async function runShoppingBenchmark<Model extends ILlmSchema.Model>({ age
     return found;
   };
 
-  const benchmark: AgenticaSelectBenchmark<Model> = new AgenticaSelectBenchmark(
+  const benchmark: AgenticaSelectBenchmark = new AgenticaSelectBenchmark(
     {
       agent,
       config: {

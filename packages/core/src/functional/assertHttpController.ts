@@ -1,4 +1,4 @@
-import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmSchema, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
 
 import { HttpLlm, OpenApi } from "@samchon/openapi";
 import typia from "typia";
@@ -22,18 +22,11 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
  * @throws {@link TypeGuardError} when the given document is invalid
  * @author Samchon
  */
-export function assertHttpController<
-  Model extends ILlmSchema.Model,
->(props: {
+export function assertHttpController(props: {
   /**
    * Name of the controller.
    */
   name: string;
-
-  /**
-   * Target LLM model.
-   */
-  model: Model;
 
   /**
    * Swagger/OpenAPI document.
@@ -55,7 +48,7 @@ export function assertHttpController<
   /**
    * Options for the LLM function calling schema composition.
    */
-  options?: Partial<IHttpLlmApplication.IOptions<Model>>;
+  config?: Partial<IHttpLlmApplication.IConfig>;
 
   /**
    * Executor of the API function.
@@ -72,12 +65,12 @@ export function assertHttpController<
     /**
      * Application schema.
      */
-    application: IHttpLlmApplication<Model>;
+    application: IHttpLlmApplication;
 
     /**
      * Function schema.
      */
-    function: IHttpLlmFunction<Model>;
+    function: IHttpLlmFunction;
 
     /**
      * Arguments of the function calling.
@@ -91,7 +84,7 @@ export function assertHttpController<
      */
     arguments: object;
   }) => Promise<IHttpResponse>;
-}): IAgenticaController.IHttp<Model> {
+}): IAgenticaController.IHttp {
   const document = OpenApi.convert(typia.assert<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
@@ -102,9 +95,8 @@ export function assertHttpController<
     protocol: "http",
     name: props.name,
     application: HttpLlm.application({
-      model: props.model,
       document,
-      options: props.options,
+      config: props.config,
     }),
     execute: props.execute,
     connection: props.connection,

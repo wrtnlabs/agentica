@@ -1,4 +1,4 @@
-import type { ILlmSchema, IMcpLlmApplication, IMcpTool, IValidation } from "@samchon/openapi";
+import type { IMcpLlmApplication, IMcpTool, IValidation } from "@samchon/openapi";
 
 import { McpLlm } from "@samchon/openapi";
 import typia from "typia";
@@ -20,14 +20,11 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
  * @returns MCP LLM application instance
  * @author SunRabbit
  */
-export async function validateMcpController<
-  Model extends ILlmSchema.Model,
->(props: {
+export async function validateMcpController(props: {
   name: string;
-  client: IAgenticaController.IMcp<Model>["client"];
-  model: Model;
-  options?: Partial<IMcpLlmApplication.IOptions<Model>>;
-}): Promise<IValidation<IAgenticaController.IMcp<Model>>> {
+  client: IAgenticaController.IMcp["client"];
+  config?: Partial<IMcpLlmApplication.IConfig>;
+}): Promise<IValidation<IAgenticaController.IMcp>> {
   // for peerDependencies
   const { ListToolsResultSchema } = await import("@modelcontextprotocol/sdk/types.js");
 
@@ -38,11 +35,9 @@ export async function validateMcpController<
     return inspect;
   }
 
-  const application: IMcpLlmApplication<Model> = McpLlm.application<Model>({
-    model: props.model,
+  const application: IMcpLlmApplication = McpLlm.application({
     tools: typia.assert<Array<IMcpTool>>(tools),
   });
-
   return {
     success: true,
     data: {

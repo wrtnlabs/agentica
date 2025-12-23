@@ -1,4 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import type { AgenticaEvent } from "../events/AgenticaEvent";
@@ -41,7 +40,7 @@ import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
  *
  * @author Samchon
  */
-export interface AgenticaContext<Model extends ILlmSchema.Model> {
+export interface AgenticaContext {
   // ----
   // APPLICATION
   // ----
@@ -52,7 +51,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    * groups composed by the divide and conquer rule for the
    * efficient operation selection if configured.
    */
-  operations: AgenticaOperationCollection<Model>;
+  operations: AgenticaOperationCollection;
 
   /**
    * Configuration of the agent.
@@ -62,7 +61,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    *
    * @todo Write detaily after supporting the agent customization feature
    */
-  config: IAgenticaConfig<Model> | undefined;
+  config: IAgenticaConfig | undefined;
 
   // ----
   // STATES
@@ -70,14 +69,14 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
   /**
    * Prompt histories.
    */
-  histories: AgenticaHistory<Model>[];
+  histories: AgenticaHistory[];
 
   /**
    * Stacked operations.
    *
    * In other words, list of candidate operations for the LLM function calling.
    */
-  stack: AgenticaOperationSelection<Model>[];
+  stack: AgenticaOperationSelection[];
 
   /**
    * The user input history.
@@ -115,7 +114,7 @@ export interface AgenticaContext<Model extends ILlmSchema.Model> {
    *
    * @param event Event to deliver
    */
-  dispatch: (event: AgenticaEvent<Model>) => Promise<void>;
+  dispatch: (event: AgenticaEvent) => Promise<void>;
 
   /**
    * Request to the OpenAI server.

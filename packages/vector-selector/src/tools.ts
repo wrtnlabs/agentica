@@ -94,6 +94,6 @@ a specific function to call, the others would be eliminated.
 } as const satisfies Record<
   string,
   NonNullable<
-    Parameters<AgenticaContext<"chatgpt">["request"]>[1]["tools"]
+    Parameters<AgenticaContext["request"]>[1]["tools"]
   >[number]
 >;

@@ -4,8 +4,6 @@
  *
  * @author Wrtn Technologies
  */
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { IAgenticaBenchmarkExpected } from "./IAgenticaBenchmarkExpected";
 
 /**
@@ -22,9 +20,7 @@ import type { IAgenticaBenchmarkExpected } from "./IAgenticaBenchmarkExpected";
  *
  * @author Samchon
  */
-export interface IAgenticaCallBenchmarkScenario<
-  Model extends ILlmSchema.Model,
-> {
+export interface IAgenticaCallBenchmarkScenario {
   /**
    * Name of the scenario.
    *
@@ -45,5 +41,5 @@ export interface IAgenticaCallBenchmarkScenario<
    * the user's {@link text} conversation for the LLM
    * (Large Language Model) function calling.
    */
-  expected: IAgenticaBenchmarkExpected<Model>;
+  expected: IAgenticaBenchmarkExpected;
 }

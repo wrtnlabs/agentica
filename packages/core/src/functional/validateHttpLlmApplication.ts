@@ -1,6 +1,5 @@
 import type {
   IHttpLlmApplication,
-  ILlmSchema,
   OpenApiV3,
   OpenApiV3_1,
   SwaggerV2,
@@ -31,14 +30,7 @@ import typia from "typia";
  * @author Samchon
  * @deprecated Use {@link validateHttpController} instead.
  */
-export function validateHttpLlmApplication<
-  Model extends ILlmSchema.Model,
->(props: {
-  /**
-   * Target LLM model.
-   */
-  model: Model;
-
+export function validateHttpLlmApplication(props: {
   /**
    * Swagger/OpenAPI document.
    */
@@ -52,8 +44,8 @@ export function validateHttpLlmApplication<
   /**
    * Options for the LLM function calling schema composition.
    */
-  options?: Partial<IHttpLlmApplication.IOptions<Model>>;
-}): IValidation<IHttpLlmApplication<Model>> {
+  config?: Partial<IHttpLlmApplication.IConfig>;
+}): IValidation<IHttpLlmApplication> {
   const inspect: IValidation<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
@@ -71,9 +63,8 @@ export function validateHttpLlmApplication<
   return {
     success: true,
     data: HttpLlm.application({
-      model: props.model,
       document: OpenApi.convert(inspect.data),
-      options: props.options,
+      config: props.config,
     }),
   };
 }

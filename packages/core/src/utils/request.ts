@@ -1,4 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import { v4 } from "uuid";
@@ -13,9 +12,9 @@ import { createRequestEvent } from "../factory";
 import { ChatGptCompletionMessageUtil } from "./ChatGptCompletionMessageUtil";
 import { streamDefaultReaderToAsyncGenerator, StreamUtil } from "./StreamUtil";
 
-export function getChatCompletionWithStreamingFunction<Model extends ILlmSchema.Model>(props: {
+export function getChatCompletionWithStreamingFunction(props: {
   vendor: IAgenticaVendor;
-  config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model>;
+  config?: IAgenticaConfig | IMicroAgenticaConfig;
   dispatch: (event: AgenticaRequestEvent | AgenticaResponseEvent) => Promise<void>;
   abortSignal?: AbortSignal;
   usage: AgenticaTokenUsage;

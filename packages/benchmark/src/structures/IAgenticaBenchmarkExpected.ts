@@ -5,7 +5,6 @@
  * @author Wrtn Technologies
  */
 import type { AgenticaOperation } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 /**
  * Expected operation determinant.
@@ -19,22 +18,22 @@ import type { ILlmSchema } from "@samchon/openapi";
  *
  * @author Samchon
  */
-export type IAgenticaBenchmarkExpected<Model extends ILlmSchema.Model> =
-  | IAgenticaBenchmarkExpected.IAllOf<Model>
-  | IAgenticaBenchmarkExpected.IAnyOf<Model>
-  | IAgenticaBenchmarkExpected.IArray<Model>
-  | IAgenticaBenchmarkExpected.IStandalone<Model>;
+export type IAgenticaBenchmarkExpected =
+  | IAgenticaBenchmarkExpected.IAllOf
+  | IAgenticaBenchmarkExpected.IAnyOf
+  | IAgenticaBenchmarkExpected.IArray
+  | IAgenticaBenchmarkExpected.IStandalone;
 
 export namespace IAgenticaBenchmarkExpected {
   /**
    * All of them must meet the condition, but sequence is not important.
    */
-  export interface IAllOf<Model extends ILlmSchema.Model> {
+  export interface IAllOf {
     type: "allOf";
     allOf: Array<
       Exclude<
-        IAgenticaBenchmarkExpected<Model>,
-        IAgenticaBenchmarkExpected.IAllOf<Model>
+        IAgenticaBenchmarkExpected,
+        IAgenticaBenchmarkExpected.IAllOf
       >
     >;
   }
@@ -42,12 +41,12 @@ export namespace IAgenticaBenchmarkExpected {
   /**
    * At least one of them must meet the condition.
    */
-  export interface IAnyOf<Model extends ILlmSchema.Model> {
+  export interface IAnyOf {
     type: "anyOf";
     anyOf: Array<
       Exclude<
-        IAgenticaBenchmarkExpected<Model>,
-        IAgenticaBenchmarkExpected.IAnyOf<Model>
+        IAgenticaBenchmarkExpected,
+        IAgenticaBenchmarkExpected.IAnyOf
       >
     >;
   }
@@ -55,12 +54,12 @@ export namespace IAgenticaBenchmarkExpected {
   /**
    * All of them must meet the condition, and sequence is important.
    */
-  export interface IArray<Model extends ILlmSchema.Model> {
+  export interface IArray {
     type: "array";
     items: Array<
       Exclude<
-        IAgenticaBenchmarkExpected<Model>,
-        IAgenticaBenchmarkExpected.IArray<Model>
+        IAgenticaBenchmarkExpected,
+        IAgenticaBenchmarkExpected.IArray
       >
     >;
   }
@@ -68,8 +67,8 @@ export namespace IAgenticaBenchmarkExpected {
   /**
    * Standalone operation.
    */
-  export interface IStandalone<Model extends ILlmSchema.Model> {
+  export interface IStandalone {
     type: "standalone";
-    operation: AgenticaOperation<Model>;
+    operation: AgenticaOperation;
   }
 }

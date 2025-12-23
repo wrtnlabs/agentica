@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaUserMessageHistory } from "../histories";
 import type { AgenticaAssistantMessageHistory } from "../histories/AgenticaAssistantMessageHistory";
@@ -17,10 +15,10 @@ import { createOperationSelection } from "../factory/operations";
 /**
  * @internal
  */
-export function transformHistory<Model extends ILlmSchema.Model>(props: {
-  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+export function transformHistory(props: {
+  operations: Map<string, Map<string, AgenticaOperation>>;
   history: IAgenticaHistoryJson;
-}): AgenticaHistory<Model> {
+}): AgenticaHistory {
   // USER
   if (props.history.type === "userMessage") {
     return transformUserMessage({
@@ -83,10 +81,10 @@ function transformUserMessage(props: {
   return createUserMessageHistory(props.history);
 }
 
-function transformSelect<Model extends ILlmSchema.Model>(props: {
-  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+function transformSelect(props: {
+  operations: Map<string, Map<string, AgenticaOperation>>;
   history: IAgenticaHistoryJson.ISelect;
-}): AgenticaSelectHistory<Model> {
+}): AgenticaSelectHistory {
   return createSelectHistory({
     id: props.history.id,
     created_at: props.history.created_at,
@@ -100,10 +98,10 @@ function transformSelect<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-function transformCancel<Model extends ILlmSchema.Model>(props: {
-  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+function transformCancel(props: {
+  operations: Map<string, Map<string, AgenticaOperation>>;
   history: IAgenticaHistoryJson.ICancel;
-}): AgenticaCancelHistory<Model> {
+}): AgenticaCancelHistory {
   return createCancelHistory({
     id: props.history.id,
     created_at: props.history.created_at,
@@ -117,10 +115,10 @@ function transformCancel<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-function transformExecute<Model extends ILlmSchema.Model>(props: {
-  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+function transformExecute(props: {
+  operations: Map<string, Map<string, AgenticaOperation>>;
   history: IAgenticaHistoryJson.IExecute;
-}): AgenticaExecuteHistory<Model> {
+}): AgenticaExecuteHistory {
   return createExecuteHistory({
     id: props.history.id,
     created_at: props.history.created_at,
@@ -138,10 +136,10 @@ function transformExecute<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-function transformDescribe<Model extends ILlmSchema.Model>(props: {
-  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+function transformDescribe(props: {
+  operations: Map<string, Map<string, AgenticaOperation>>;
   history: IAgenticaHistoryJson.IDescribe;
-}): AgenticaDescribeHistory<Model> {
+}): AgenticaDescribeHistory {
   return createDescribeHistory({
     id: props.history.id,
     created_at: props.history.created_at,
@@ -155,14 +153,14 @@ function transformDescribe<Model extends ILlmSchema.Model>(props: {
   });
 }
 
-function findOperation<Model extends ILlmSchema.Model>(props: {
-  operations: Map<string, Map<string, AgenticaOperation<Model>>>;
+function findOperation(props: {
+  operations: Map<string, Map<string, AgenticaOperation>>;
   input: {
     controller: string;
     function: string;
   };
-}): AgenticaOperation<Model> {
-  const found: AgenticaOperation<Model> | undefined = props.operations
+}): AgenticaOperation {
+  const found: AgenticaOperation | undefined = props.operations
     .get(props.input.controller)
     ?.get(props.input.function);
   if (found === undefined) {

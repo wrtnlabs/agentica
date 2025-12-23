@@ -36,13 +36,12 @@ export async function test_benchmark_select_pg_vector_selector(): Promise<
   };
 
   const selectorExecute = BootAgenticaVectorSelector({
-    strategy: configurePostgresStrategy<"chatgpt">({
+    strategy: configurePostgresStrategy({
       host: `http://localhost:${TestGlobal.connectorHivePort}`,
     }),
   });
 
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
@@ -54,7 +53,6 @@ export async function test_benchmark_select_pg_vector_selector(): Promise<
         protocol: "http",
         name: "shopping",
         application: HttpLlm.application({
-          model: "chatgpt",
           document: await fetch(
             "https://shopping-be.wrtn.ai/editor/swagger.json",
           ).then(async res => res.json() as Promise<OpenApi.IDocument>),
@@ -72,9 +70,8 @@ export async function test_benchmark_select_pg_vector_selector(): Promise<
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): AgenticaOperation<"chatgpt"> => {
-    const found = agent
-      .getOperations()
+  ): AgenticaOperation => {
+    const found = agent.getOperations()
       .find(
         op =>
           op.protocol === "http"
@@ -86,7 +83,7 @@ export async function test_benchmark_select_pg_vector_selector(): Promise<
     }
     return found;
   };
-  const benchmark: AgenticaSelectBenchmark<"chatgpt">
+  const benchmark: AgenticaSelectBenchmark
     = new AgenticaSelectBenchmark({
       agent,
       config: {

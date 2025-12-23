@@ -10,8 +10,7 @@ export async function test_base_work(): Promise<void | false> {
     return false;
   }
 
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
@@ -20,7 +19,7 @@ export async function test_base_work(): Promise<void | false> {
     },
     controllers: [],
   });
-  const result: AgenticaHistory<"chatgpt">[]
+  const result: AgenticaHistory[]
     = await agent.conversate("What your role?");
   if (
     result[0]?.type === "userMessage"

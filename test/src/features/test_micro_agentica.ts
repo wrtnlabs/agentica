@@ -1,5 +1,4 @@
 import type { MicroAgenticaHistory } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import { MicroAgentica } from "@agentica/core";
 import OpenAI from "openai";
@@ -13,8 +12,7 @@ export async function test_micro_agentica(): Promise<void | false> {
     return false;
   }
 
-  const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
-    model: "chatgpt",
+  const agent: MicroAgentica = new MicroAgentica({
     vendor: {
       api: new OpenAI({
         apiKey: TestGlobal.chatgptApiKey,
@@ -25,7 +23,7 @@ export async function test_micro_agentica(): Promise<void | false> {
       {
         protocol: "class",
         name: "bbs",
-        application: typia.llm.application<BbsArticleService, "chatgpt">(),
+        application: typia.llm.application<BbsArticleService>(),
         execute: new BbsArticleService(),
       },
     ],
@@ -61,6 +59,6 @@ export async function test_micro_agentica(): Promise<void | false> {
   }
 }
 
-function predicate<Model extends ILlmSchema.Model>(histories: MicroAgenticaHistory<Model>[]): boolean {
+function predicate(histories: MicroAgenticaHistory[]): boolean {
   return histories.some(h => h.type === "execute" || h.type === "describe");
 }

@@ -24,14 +24,13 @@ export async function test_select_streaming_base(): Promise<void | false> {
     return false;
   }
 
-  const controller: IAgenticaController<"chatgpt"> = {
+  const controller: IAgenticaController = {
     protocol: "class",
     name: "weather",
-    application: typia.llm.application<Weather, "chatgpt">(),
+    application: typia.llm.application<Weather>(),
     execute: new Weather(),
   };
   const agent = new Agentica({
-    model: "chatgpt",
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({

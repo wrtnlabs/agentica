@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaContext } from "../../context/AgenticaContext";
 import type { AgenticaOperationSelection } from "../../context/AgenticaOperationSelection";
 import type { __IChatFunctionReference } from "../../context/internal/__IChatFunctionReference";
@@ -11,8 +9,8 @@ import { createOperationSelection } from "../../factory/operations";
 /**
  * @internal
  */
-export function cancelFunctionFromContext<Model extends ILlmSchema.Model>(
-  ctx: AgenticaContext<Model>,
+export function cancelFunctionFromContext(
+  ctx: AgenticaContext,
   reference: __IChatFunctionReference,
 ): void {
   const index: number = ctx.stack.findIndex(
@@ -22,10 +20,10 @@ export function cancelFunctionFromContext<Model extends ILlmSchema.Model>(
     return;
   }
 
-  const item: AgenticaOperationSelection<Model> = ctx.stack[index]!;
+  const item: AgenticaOperationSelection = ctx.stack[index]!;
   ctx.stack.splice(index, 1);
 
-  const event: AgenticaCancelEvent<Model> = createCancelEvent({
+  const event: AgenticaCancelEvent = createCancelEvent({
     selection: createOperationSelection({
       operation: item.operation,
       reason: reference.reason,

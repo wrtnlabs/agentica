@@ -5,7 +5,6 @@
  * @author Wrtn Technologies
  */
 import type { AgenticaTokenUsage } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaSelectBenchmarkEvent } from "../structures/IAgenticaSelectBenchmarkEvent";
 import type { IAgenticaSelectBenchmarkResult } from "../structures/IAgenticaSelectBenchmarkResult";
@@ -21,7 +20,7 @@ export const AgenticaSelectBenchmarkReporter = {
   markdown,
 };
 
-export function markdown<Model extends ILlmSchema.Model>(result: IAgenticaSelectBenchmarkResult<Model>): Record<string, string> {
+export function markdown(result: IAgenticaSelectBenchmarkResult): Record<string, string> {
   const iterator = [
     ["./README.md", writeIndex(result)],
     ...result.experiments
@@ -38,8 +37,8 @@ export function markdown<Model extends ILlmSchema.Model>(result: IAgenticaSelect
   return Object.fromEntries(iterator);
 }
 
-function writeIndex<Model extends ILlmSchema.Model>(result: IAgenticaSelectBenchmarkResult<Model>): string {
-  const events: IAgenticaSelectBenchmarkEvent<Model>[] = result.experiments
+function writeIndex(result: IAgenticaSelectBenchmarkResult): string {
+  const events: IAgenticaSelectBenchmarkEvent[] = result.experiments
     .map(r => r.events)
     .flat();
   const average: number
@@ -98,7 +97,7 @@ function writeIndex<Model extends ILlmSchema.Model>(result: IAgenticaSelectBench
   ].join("\n");
 }
 
-function writeExperimentIndex<Model extends ILlmSchema.Model>(exp: IAgenticaSelectBenchmarkResult.IExperiment<Model>): string {
+function writeExperimentIndex(exp: IAgenticaSelectBenchmarkResult.IExperiment): string {
   const aggregate: AgenticaTokenUsage.IComponent = exp.usage.aggregate;
   return [
     `# ${exp.scenario.name}`,
@@ -154,7 +153,7 @@ function writeExperimentIndex<Model extends ILlmSchema.Model>(exp: IAgenticaSele
   ].join("\n");
 }
 
-function writeExperimentEvent<Model extends ILlmSchema.Model>(event: IAgenticaSelectBenchmarkEvent<Model>, index: number): string {
+function writeExperimentEvent(event: IAgenticaSelectBenchmarkEvent, index: number): string {
   return [
     `# ${index + 1}. ${event.type}`,
     `## Summary`,

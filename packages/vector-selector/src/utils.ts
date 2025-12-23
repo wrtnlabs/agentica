@@ -1,5 +1,4 @@
 import type { AgenticaContext } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 import type { GreaterThan, Integer } from "type-fest";
 
 import { sha256 } from "@noble/hashes/sha2";
@@ -115,7 +114,7 @@ export function uniqBy<T, K>(array: T[], selector: (item: T) => K): T[] {
  * @param ctx - The Agentica context to generate a hash from
  * @returns A hash of the Agentica context
  */
-export function generateHashFromCtx<SchemaModel extends ILlmSchema.Model>(ctx: AgenticaContext<SchemaModel>): string {
+export function generateHashFromCtx(ctx: AgenticaContext): string {
   const target = JSON.stringify(ctx.operations.array);
   const bytes = utf8ToBytes(target);
   const hash = sha256(bytes);

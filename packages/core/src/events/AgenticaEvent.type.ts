@@ -12,7 +12,7 @@ checks([
     Pass
   >(),
   check<
-    Exclude<AgenticaHistory.Type, "systemMessage"> extends keyof AgenticaEvent.Mapper<any> ? true : false,
+    Exclude<AgenticaHistory.Type, "systemMessage"> extends keyof AgenticaEvent.Mapper ? true : false,
     true,
     Pass
   >(),

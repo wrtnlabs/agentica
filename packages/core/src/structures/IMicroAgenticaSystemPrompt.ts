@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaJsonParseErrorEvent } from "../events/AgenticaJsonParseErrorEvent";
 import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
@@ -26,7 +24,7 @@ import type { IMicroAgenticaConfig } from "./IMicroAgenticaConfig";
  *
  * @author Samchon
  */
-export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
+export interface IMicroAgenticaSystemPrompt {
   /**
    * Common system prompt that would be used in every situation.
    *
@@ -41,7 +39,7 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns The common system prompt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/common.md
    */
-  common?: (config?: IMicroAgenticaConfig<Model> | undefined) => string;
+  common?: (config?: IMicroAgenticaConfig | undefined) => string;
 
   /**
    * Execute system prompt.
@@ -72,7 +70,7 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns execute system prompt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/execute.md
    */
-  execute?: null | ((histories: MicroAgenticaHistory<Model>[]) => string);
+  execute?: null | ((histories: MicroAgenticaHistory[]) => string);
 
   /**
    * Validation feedback system prompt.
@@ -106,7 +104,7 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns validation feedback system prompt
    * @default Built-in validation feedback prompt optimized for typia IValidation.IFailure processing
    */
-  validate?: (events: AgenticaValidateEvent<Model>[]) => string;
+  validate?: (events: AgenticaValidateEvent[]) => string;
 
   /**
    * JSON parsing error system prompt.
@@ -137,7 +135,7 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns JSON parse error system prompt
    * @default Built-in JSON parse error prompt optimized for syntax correction
    */
-  jsonParseError?: (event: AgenticaJsonParseErrorEvent<Model>) => string;
+  jsonParseError?: (event: AgenticaJsonParseErrorEvent) => string;
 
   /**
    * Describe system prompt.
@@ -167,5 +165,5 @@ export interface IMicroAgenticaSystemPrompt<Model extends ILlmSchema.Model> {
    * @returns describe system prompt
    * @default https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts/describe.md
    */
-  describe?: (histories: AgenticaExecuteHistory<Model>[]) => string;
+  describe?: (histories: AgenticaExecuteHistory[]) => string;
 }

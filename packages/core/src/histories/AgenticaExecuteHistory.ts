@@ -1,4 +1,4 @@
-import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
+import type { IHttpResponse } from "@samchon/openapi";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
@@ -10,25 +10,23 @@ import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
  *
  * @author Samchon
  */
-export type AgenticaExecuteHistory<Model extends ILlmSchema.Model> =
-  | AgenticaExecuteHistory.Class<Model>
-  | AgenticaExecuteHistory.Http<Model>;
+export type AgenticaExecuteHistory =
+  | AgenticaExecuteHistory.Class
+  | AgenticaExecuteHistory.Http;
 export namespace AgenticaExecuteHistory {
   /**
    * Class protocol case.
    */
-  export interface Class<Model extends ILlmSchema.Model>
-    extends Base<"class", AgenticaOperation.Class<Model>, unknown> {}
+  export interface Class extends Base<"class", AgenticaOperation.Class, unknown> {}
 
   /**
    * HTTP protocol case.
    */
-  export interface Http<Model extends ILlmSchema.Model>
-    extends Base<"http", AgenticaOperation.Http<Model>, IHttpResponse> {}
+  export interface Http extends Base<"http", AgenticaOperation.Http, IHttpResponse> {}
 
   interface Base<
     Protocol extends "http" | "class",
-    Operation extends AgenticaOperation<any>,
+    Operation extends AgenticaOperation,
     Value,
   > extends AgenticaHistoryBase<"execute", IAgenticaHistoryJson.IExecute> {
     /**

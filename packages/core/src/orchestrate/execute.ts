@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaExecuteEvent } from "../events";
 import type { IAgenticaExecutor } from "../structures/IAgenticaExecutor";
@@ -10,8 +8,8 @@ import { describe } from "./describe";
 import { initialize } from "./initialize";
 import { select } from "./select";
 
-export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgenticaExecutor<Model>> | null) {
-  return async (ctx: AgenticaContext<Model>): Promise<void> => {
+export function execute(executor: Partial<IAgenticaExecutor> | null) {
+  return async (ctx: AgenticaContext): Promise<void> => {
     // FUNCTIONS ARE NOT LISTED YET
     if (ctx.ready() === false) {
       if (executor?.initialize !== true && typeof executor?.initialize !== "function") {
@@ -43,7 +41,7 @@ export function execute<Model extends ILlmSchema.Model>(executor: Partial<IAgent
     // FUNCTION CALLING LOOP
     while (true) {
       // EXECUTE FUNCTIONS
-      const executes: AgenticaExecuteEvent<Model>[] = await (
+      const executes: AgenticaExecuteEvent[] = await (
         executor?.call ?? call
       )(ctx, ctx.stack.map(s => s.operation));
 

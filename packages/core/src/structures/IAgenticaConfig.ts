@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaContext } from "../context/AgenticaContext";
 
 import type { IAgenticaExecutor } from "./IAgenticaExecutor";
@@ -22,7 +20,7 @@ import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
  *
  * @author Samchon
  */
-export interface IAgenticaConfig<Model extends ILlmSchema.Model> {
+export interface IAgenticaConfig {
   /**
    * Agent executor.
    *
@@ -38,8 +36,8 @@ export interface IAgenticaConfig<Model extends ILlmSchema.Model> {
    * @default ChatGptAgent.execute
    */
   executor?:
-    | Partial<IAgenticaExecutor<Model>>
-    | ((ctx: AgenticaContext<Model>) => Promise<void>);
+    | Partial<IAgenticaExecutor>
+    | ((ctx: AgenticaContext) => Promise<void>);
 
   /**
    * System prompt messages.
@@ -47,7 +45,7 @@ export interface IAgenticaConfig<Model extends ILlmSchema.Model> {
    * System prompt messages if you want to customize the system prompt
    * messages for each situation.
    */
-  systemPrompt?: IAgenticaSystemPrompt<Model>;
+  systemPrompt?: IAgenticaSystemPrompt;
 
   /**
    * Locale of the A.I. chatbot.

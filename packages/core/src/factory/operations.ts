@@ -1,12 +1,10 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../context/AgenticaOperationSelection";
 
-export function createOperationSelection<Model extends ILlmSchema.Model>(props: {
-  operation: AgenticaOperation<Model>;
+export function createOperationSelection(props: {
+  operation: AgenticaOperation;
   reason: string;
-}): AgenticaOperationSelection<Model> {
+}): AgenticaOperationSelection {
   return {
     operation: props.operation,
     reason: props.reason,

@@ -5,7 +5,6 @@
  * @author Wrtn Technologies
  */
 import type { AgenticaTokenUsage } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaCallBenchmarkEvent } from "../structures/IAgenticaCallBenchmarkEvent";
 import type { IAgenticaCallBenchmarkResult } from "../structures/IAgenticaCallBenchmarkResult";
@@ -19,9 +18,9 @@ export const AgenticaCallBenchmarkReporter = {
   markdown,
 };
 
-export function markdown<Model extends ILlmSchema.Model>(result: IAgenticaCallBenchmarkResult<Model>): Record<string, string> {
+export function markdown(result: IAgenticaCallBenchmarkResult): Record<string, string> {
   return Object.fromEntries([
-    ["./README.md", writeIndex<Model>(result)],
+    ["./README.md", writeIndex(result)],
     ...result.experiments
       .map<[string, string][]>(exp => [
         [`./${exp.scenario.name}/README.md`, writeExperimentIndex(exp)],
@@ -34,8 +33,8 @@ export function markdown<Model extends ILlmSchema.Model>(result: IAgenticaCallBe
   ]);
 }
 
-function writeIndex<Model extends ILlmSchema.Model>(result: IAgenticaCallBenchmarkResult<Model>): string {
-  const events: IAgenticaCallBenchmarkEvent<Model>[] = result.experiments
+function writeIndex(result: IAgenticaCallBenchmarkResult): string {
+  const events: IAgenticaCallBenchmarkEvent[] = result.experiments
     .map(r => r.events)
     .flat();
   const average: number
@@ -84,7 +83,7 @@ function writeIndex<Model extends ILlmSchema.Model>(result: IAgenticaCallBenchma
   ].join("\n");
 }
 
-function writeExperimentIndex<Model extends ILlmSchema.Model>(exp: IAgenticaCallBenchmarkResult.IExperiment<Model>): string {
+function writeExperimentIndex(exp: IAgenticaCallBenchmarkResult.IExperiment): string {
   return [
     `# ${exp.scenario.name}`,
     "## Summary",
@@ -123,7 +122,7 @@ function writeExperimentIndex<Model extends ILlmSchema.Model>(exp: IAgenticaCall
   ].join("\n");
 }
 
-function writeExperimentEvent<Model extends ILlmSchema.Model>(event: IAgenticaCallBenchmarkEvent<Model>, index: number): string {
+function writeExperimentEvent(event: IAgenticaCallBenchmarkEvent, index: number): string {
   return [
     `# ${index + 1}. ${event.type}`,
     "## Summary",
@@ -181,7 +180,7 @@ function writeExperimentEvent<Model extends ILlmSchema.Model>(event: IAgenticaCa
   ].join("\n");
 }
 
-function drawStatus<Model extends ILlmSchema.Model>(events: IAgenticaCallBenchmarkEvent<Model>[], success: (e: IAgenticaCallBenchmarkEvent<Model>) => boolean): string {
+function drawStatus(events: IAgenticaCallBenchmarkEvent[], success: (e: IAgenticaCallBenchmarkEvent) => boolean): string {
   const count: number = Math.floor(
     (events.filter(success).length / events.length) * 10,
   );

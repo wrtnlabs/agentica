@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaAssistantMessageEvent } from "./AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "./AgenticaCallEvent";
 import type { AgenticaCancelEvent } from "./AgenticaCancelEvent";
@@ -23,32 +21,32 @@ import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
  *
  * @author Samchon
  */
-export type AgenticaEvent<Model extends ILlmSchema.Model> =
+export type AgenticaEvent =
   | AgenticaUserMessageEvent
   | AgenticaAssistantMessageEvent
   | AgenticaInitializeEvent
-  | AgenticaSelectEvent<Model>
-  | AgenticaCallEvent<Model>
-  | AgenticaCancelEvent<Model>
-  | AgenticaExecuteEvent<Model>
-  | AgenticaDescribeEvent<Model>
-  | AgenticaValidateEvent<Model>
-  | AgenticaJsonParseErrorEvent<Model>
+  | AgenticaSelectEvent
+  | AgenticaCallEvent
+  | AgenticaCancelEvent
+  | AgenticaExecuteEvent
+  | AgenticaDescribeEvent
+  | AgenticaValidateEvent
+  | AgenticaJsonParseErrorEvent
   | AgenticaRequestEvent
   | AgenticaResponseEvent;
 export namespace AgenticaEvent {
-  export type Type = AgenticaEvent<any>["type"];
-  export interface Mapper<Model extends ILlmSchema.Model> {
+  export type Type = AgenticaEvent["type"];
+  export interface Mapper {
     userMessage: AgenticaUserMessageEvent;
     assistantMessage: AgenticaAssistantMessageEvent;
-    select: AgenticaSelectEvent<Model>;
+    select: AgenticaSelectEvent;
     initialize: AgenticaInitializeEvent;
-    call: AgenticaCallEvent<Model>;
-    cancel: AgenticaCancelEvent<Model>;
-    execute: AgenticaExecuteEvent<Model>;
-    describe: AgenticaDescribeEvent<Model>;
-    validate: AgenticaValidateEvent<Model>;
-    jsonParseError: AgenticaJsonParseErrorEvent<Model>;
+    call: AgenticaCallEvent;
+    cancel: AgenticaCancelEvent;
+    execute: AgenticaExecuteEvent;
+    describe: AgenticaDescribeEvent;
+    validate: AgenticaValidateEvent;
+    jsonParseError: AgenticaJsonParseErrorEvent;
     request: AgenticaRequestEvent;
     response: AgenticaResponseEvent;
   }
