@@ -155,7 +155,7 @@ export async function call(
         await ctx.dispatch(event);
         executes.push(event);
         if (isAgenticaContext(ctx)) {
-          cancelFunctionFromContext(ctx as AgenticaContext, {
+          cancelFunctionFromContext(ctx as unknown as AgenticaContext, {
             name: event.operation.name,
             reason: "completed",
           });

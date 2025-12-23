@@ -245,10 +245,10 @@ describe("generateHashFromCtx", () => {
       messages: [],
       state: {},
       ready: true,
-      dispatch: () => {},
+      dispatch: async () => {},
       request: async () => Promise.resolve({}),
       initialize: async () => Promise.resolve(),
-    } as unknown as AgenticaContext<any>;
+    } as unknown as AgenticaContext;
 
     const hash1 = generateHashFromCtx(ctx);
     const hash2 = generateHashFromCtx(ctx);
@@ -272,7 +272,7 @@ describe("generateHashFromCtx", () => {
       dispatch: () => {},
       request: async () => Promise.resolve({}),
       initialize: async () => Promise.resolve(),
-    } as unknown as AgenticaContext<any>;
+    } as unknown as AgenticaContext;
 
     const ctx2 = {
       operations: {
@@ -290,7 +290,7 @@ describe("generateHashFromCtx", () => {
       dispatch: () => {},
       request: async () => Promise.resolve({}),
       initialize: async () => Promise.resolve(),
-    } as unknown as AgenticaContext<any>;
+    } as unknown as AgenticaContext;
 
     const hash1 = generateHashFromCtx(ctx1);
     const hash2 = generateHashFromCtx(ctx2);
@@ -314,7 +314,7 @@ describe("generateHashFromCtx", () => {
       dispatch: () => {},
       request: async () => Promise.resolve({}),
       initialize: async () => Promise.resolve(),
-    } as unknown as AgenticaContext<any>;
+    } as unknown as AgenticaContext;
 
     const hash = generateHashFromCtx(ctx);
     expect(typeof hash).toBe("string");
@@ -348,7 +348,7 @@ describe("generateHashFromCtx", () => {
       dispatch: () => {},
       request: async () => Promise.resolve({}),
       initialize: async () => Promise.resolve(),
-    } as unknown as AgenticaContext<any>;
+    } as unknown as AgenticaContext;
 
     const hash = generateHashFromCtx(ctx);
     expect(typeof hash).toBe("string");

@@ -41,7 +41,7 @@ async function main(): Promise<void> {
       typia.json.assertParse<
         SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument
       >(
-        await fetch(`https://shopping-be.wrtn.ai/editor/swagger.json`).then(
+        await fetch(`https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json`).then(
           async r => r.text(),
         ),
       ),

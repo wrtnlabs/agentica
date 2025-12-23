@@ -29,7 +29,7 @@ export async function test_benchmark_select(): Promise<void | false> {
         name: "shopping",
         application: HttpLlm.application({
           document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
+            "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json",
           ).then(async res => res.json() as Promise<OpenApi.IDocument>),
         }),
         connection: {

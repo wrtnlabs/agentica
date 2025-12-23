@@ -29,7 +29,7 @@ export async function plainAgentica(props: {
   );
 
   // CREATE AI AGENT
-  const document = await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(async res => res.json() as Promise<unknown>);
+  const document = await fetch("https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json").then(async res => res.json() as Promise<unknown>);
   const agent = new Agentica({
     vendor: props.vendor,
     controllers: [
