@@ -31,12 +31,10 @@ export async function plainAgentica(props: {
   // CREATE AI AGENT
   const document = await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(async res => res.json() as Promise<unknown>);
   const agent = new Agentica({
-    model: "chatgpt",
     vendor: props.vendor,
     controllers: [
       assertHttpController({
         name: "shopping",
-        model: "chatgpt",
         document,
         connection,
       }),

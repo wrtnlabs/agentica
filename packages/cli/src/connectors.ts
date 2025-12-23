@@ -125,7 +125,7 @@ export function generateConnectorsArrayCode(services: Service[]): string {
       return `{
 name: "${serviceName} Connector",
 protocol: "class",
-application: typia.llm.application<${serviceName}Service, "chatgpt">(),
+application: typia.llm.application<${serviceName}Service>(),
 execute: new ${serviceName}Service(),
 }`;
     })

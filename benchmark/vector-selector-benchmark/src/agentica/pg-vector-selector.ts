@@ -42,7 +42,7 @@ export async function pgVectorSelectorAgentica(props: {
   );
 
   const selectorExecute = BootAgenticaVectorSelector({
-    strategy: configurePostgresStrategy<"chatgpt">({
+    strategy: configurePostgresStrategy({
       host: props.connectorHiveUrl,
     }),
   });
@@ -50,12 +50,10 @@ export async function pgVectorSelectorAgentica(props: {
   // CREATE AI AGENT
   const document = await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(async res => res.json() as Promise<unknown>);
   const agent = new Agentica({
-    model: "chatgpt",
     vendor: props.vendor,
     controllers: [
       assertHttpController({
         name: "shopping",
-        model: "chatgpt",
         document,
         connection,
       }),

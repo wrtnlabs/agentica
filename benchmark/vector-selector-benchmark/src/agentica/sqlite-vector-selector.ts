@@ -34,7 +34,7 @@ export async function sqliteVectorSelectorAgentica(props: {
   );
 
   const selectorExecute = BootAgenticaVectorSelector({
-    strategy: configureSqliteStrategy<"chatgpt">({
+    strategy: configureSqliteStrategy({
       db: props.db,
       cohereApiKey: props.cohereApiKey,
     }),
@@ -43,12 +43,10 @@ export async function sqliteVectorSelectorAgentica(props: {
   // CREATE AI AGENT
   const document = await fetch("https://shopping-be.wrtn.ai/editor/swagger.json").then(async res => res.json() as Promise<unknown>);
   const agent = new Agentica({
-    model: "chatgpt",
     vendor: props.vendor,
     controllers: [
       assertHttpController({
         name: "shopping",
-        model: "chatgpt",
         document,
         connection,
       }),
@@ -80,7 +78,7 @@ export async function sqliteVectorSelectorAgentica(props: {
       }),
     },
     usage: AgenticaTokenUsage.zero(),
-    dispatch: () => {},
+    dispatch: async () => {},
   });
   // warmming
   await selectorExecute(ctxForWarmming);

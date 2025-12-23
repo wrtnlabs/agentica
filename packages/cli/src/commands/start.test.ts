@@ -94,7 +94,7 @@ describe("start command integration test", () => {
         const indexTs = await readFile(resolve(destinationDirectory, "src/index.ts"), "utf-8");
         expect(indexTs).toContain(`import { GoogleMapService } from "@wrtnlabs/connector-google-map";`);
         expect(indexTs).toContain(`name: "GoogleMap Connector",`);
-        expect(indexTs).toContain(`application: typia.llm.application<GoogleMapService, "chatgpt">(),`);
+        expect(indexTs).toContain(`application: typia.llm.application<GoogleMapService>(),`);
         expect(indexTs).toContain(`execute: new GoogleMapService(),`);
       });
     });
@@ -154,7 +154,7 @@ describe("start command integration test", () => {
         const indexTs = await readFile(resolve(destinationDirectory, "src/index.ts"), "utf-8");
         expect(indexTs).toContain(`import { GoogleMapService } from "@wrtnlabs/connector-google-map";`);
         expect(indexTs).toContain(`name: "GoogleMap Connector",`);
-        expect(indexTs).toContain(`application: typia.llm.application<GoogleMapService, "chatgpt">(),`);
+        expect(indexTs).toContain(`application: typia.llm.application<GoogleMapService>(),`);
         expect(indexTs).toContain(`execute: new GoogleMapService(),`);
       });
     });
@@ -214,7 +214,7 @@ describe("start command integration test", () => {
         const indexTs = await readFile(resolve(destinationDirectory, "src/controllers/chat/ChatController.ts"), "utf-8");
         expect(indexTs).toContain(`import { GoogleMapService } from "@wrtnlabs/connector-google-map";`);
         expect(indexTs).toContain(`name: "GoogleMap Connector",`);
-        expect(indexTs).toContain(`application: typia.llm.application<GoogleMapService, "chatgpt">(),`);
+        expect(indexTs).toContain(`application: typia.llm.application<GoogleMapService>(),`);
         expect(indexTs).toContain(`execute: new GoogleMapService(),`);
       });
     });
