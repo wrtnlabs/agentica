@@ -58,7 +58,7 @@
     "rehype-stringify": "^10.0.1",
     "remark-mermaid-plugin": "^1.0.2",
     "typia": "catalog:typia",
-    "uuid": "^11.0.5"
+    "uuid": "catalog:libs"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
