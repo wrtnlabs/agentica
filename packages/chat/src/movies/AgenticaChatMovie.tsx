@@ -13,7 +13,6 @@ import type {
 import type {
   Theme,
 } from "@mui/material";
-import type { ILlmSchema } from "@samchon/openapi";
 import type { ReactElement } from "react";
 
 import {
@@ -42,10 +41,10 @@ import { AgenticaChatSideMovie } from "./sides/AgenticaChatSideMovie";
 
 const SIDE_WIDTH = 450;
 
-export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
+export function AgenticaChatMovie({
   agent,
   title,
-}: AgenticaChatMovie.IProps<Model>) {
+}: AgenticaChatMovie.IProps) {
   // ----
   // VARIABLES
   // ----
@@ -59,7 +58,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   // STATES
   const [error, setError] = useState<Error | null>(null);
   const [text, setText] = useState("");
-  const [histories, setHistories] = useState<AgenticaHistory<Model>[]>(
+  const [histories, setHistories] = useState<AgenticaHistory[]>(
     agent.getHistories().slice(),
   );
   const [tokenUsage, setTokenUsage] = useState<AgenticaTokenUsage>(
@@ -68,7 +67,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   const [height, setHeight] = useState(122);
   const [enabled, setEnabled] = useState(true);
   const [selections, setSelections] = useState<
-    AgenticaOperationSelection<Model>[]
+    AgenticaOperationSelection[]
   >([]);
   const [openSide, setOpenSide] = useState(false);
 
@@ -83,18 +82,18 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     await event.join(); // @todo Jaxtyn: streaming
     setHistories(prev => [...prev, event.toHistory()]);
   };
-  const handleDescribe = async (event: AgenticaDescribeEvent<Model>) => {
+  const handleDescribe = async (event: AgenticaDescribeEvent) => {
     await event.join(); // @todo Jaxtyn: streaming
     setHistories(prev => [...prev, event.toHistory()]);
   };
-  const handleSelect = (evevnt: AgenticaSelectEvent<Model>) => {
+  const handleSelect = (evevnt: AgenticaSelectEvent) => {
     setHistories(prev => [...prev, evevnt.toHistory()]);
     setSelections(prev => [...prev, evevnt.selection]);
   };
-  const handleValidate = (event: AgenticaValidateEvent<Model>) => {
+  const handleValidate = (event: AgenticaValidateEvent) => {
     console.error(event);
   };
-  const handleJsonParseError = (event: AgenticaJsonParseErrorEvent<Model>) => {
+  const handleJsonParseError = (event: AgenticaJsonParseErrorEvent) => {
     console.error(event);
   };
 
@@ -184,7 +183,7 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
     setTokenUsage(agent.getTokenUsage());
     setEnabled(true);
 
-    const selections: AgenticaOperationSelection<Model>[] = agent
+    const selections: AgenticaOperationSelection[] = agent
       .getHistories()
       .filter(h => h.type === "select")
       .map(h => h.selection);
@@ -274,7 +273,6 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
         onClick={isMobile ? () => setOpenSide(false) : undefined}
       >
         <AgenticaChatSideMovie
-          model={agent.getOperations()[0].controller.application.model}
           vendor={agent.getVendor()}
           config={agent.getConfig()}
           usage={tokenUsage}
@@ -376,8 +374,8 @@ export function AgenticaChatMovie<Model extends ILlmSchema.Model>({
   );
 }
 export namespace AgenticaChatMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    agent: Agentica<Model> | MicroAgentica<Model>;
+  export interface IProps {
+    agent: Agentica | MicroAgentica;
     title?: string;
   }
 }

@@ -1,16 +1,13 @@
 import type { AgenticaExecuteHistory } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import { Typography } from "@mui/material";
 import React from "react";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export function AgenticaChatExecuteMessageMovie<
-  Model extends ILlmSchema.Model,
->({
+export function AgenticaChatExecuteMessageMovie({
   execute,
-}: AgenticaChatExecuteMessageMovie.IProps<Model>) {
+}: AgenticaChatExecuteMessageMovie.IProps) {
   return (
     <React.Fragment>
       <Typography variant="h5">
@@ -37,12 +34,12 @@ export function AgenticaChatExecuteMessageMovie<
   );
 }
 export namespace AgenticaChatExecuteMessageMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    execute: AgenticaExecuteHistory<Model>;
+  export interface IProps {
+    execute: AgenticaExecuteHistory;
   }
 }
 
-function getTitle<Model extends ILlmSchema.Model>(exec: AgenticaExecuteHistory<Model>) {
+function getTitle(exec: AgenticaExecuteHistory) {
   return exec.operation.protocol === "http"
     ? `${exec.operation.function.method.toUpperCase()} ${exec.operation.function.path}`
     : exec.operation.function.name;

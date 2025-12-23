@@ -1,4 +1,4 @@
-import type { IHttpConnection, ILlmSchema } from "@samchon/openapi";
+import type { IHttpConnection } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import { Agentica } from "@agentica/core";
@@ -23,11 +23,10 @@ function ShoppingChatApplicationSkeleton() {
 }
 
 export function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
-  const [agent, setAgent] = useState<null | Agentica<ILlmSchema.Model>>(null);
+  const [agent, setAgent] = useState<null | Agentica>(null);
   useEffect(() => {
     (async () => {
       const application = HttpLlm.application({
-        model: props.schemaModel,
         document: OpenApi.convert(
           await fetch(
             "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/customer.swagger.json",
@@ -36,8 +35,7 @@ export function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
             .then(v => typia.assert<Parameters<typeof OpenApi.convert>[0]>(v)),
         ),
       });
-      const agent: Agentica<ILlmSchema.Model> = new Agentica({
-        model: props.schemaModel,
+      const agent: Agentica = new Agentica({
         vendor: {
           api: props.api,
           model: props.vendorModel,
@@ -66,7 +64,6 @@ export namespace ShoppingChatApplication {
   export interface IProps {
     api: OpenAI;
     vendorModel: string;
-    schemaModel: ILlmSchema.Model;
     connection: IHttpConnection;
     name: string;
     mobile: string;

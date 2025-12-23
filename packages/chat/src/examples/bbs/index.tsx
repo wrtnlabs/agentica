@@ -39,7 +39,6 @@ function Application() {
                 })
               }
               vendorModel={config.vendorModel}
-              schemaModel={config.schemaModel}
               locale={locale}
             />
           )
@@ -83,7 +82,6 @@ function Application() {
                 disabled={
                   config.apiKey.length === 0
                   || config.vendorModel.length === 0
-                  || config.schemaModel.length === 0
                   || locale.length === 0
                 }
                 onClick={() => setStart(true)}

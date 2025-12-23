@@ -1,5 +1,5 @@
 import type { IAgenticaVendor } from "@agentica/core";
-import type { IHttpConnection, ILlmSchema, OpenApi } from "@samchon/openapi";
+import type { IHttpConnection, OpenApi } from "@samchon/openapi";
 import type { ReactElement } from "react";
 
 import { Agentica } from "@agentica/core";
@@ -39,8 +39,7 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
     || document === null
     || host.length === 0
     || config.apiKey.length === 0
-    || config.vendorModel.length === 0
-    || config.schemaModel.length === 0;
+    || config.vendorModel.length === 0;
 
   // HANDLERS
   const handleError = (error: string) => {
@@ -73,15 +72,13 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
         }),
         model: config.vendorModel,
       };
-      const agent: Agentica<ILlmSchema.Model> = new Agentica({
-        model: config.schemaModel,
+      const agent: Agentica = new Agentica({
         vendor,
         controllers: [
           {
             protocol: "http",
             name: "main",
             application: HttpLlm.application({
-              model: config.schemaModel,
               document,
             }),
             connection: {

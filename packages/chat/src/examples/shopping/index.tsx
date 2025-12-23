@@ -60,7 +60,6 @@ function Application() {
         dangerouslyAllowBrowser: true,
       }),
       vendorModel: config.vendorModel,
-      schemaModel: config.schemaModel,
       connection,
       name,
       mobile,
@@ -146,7 +145,6 @@ function Application() {
                   progress
                   || config.apiKey.length === 0
                   || config.vendorModel.length === 0
-                  || config.schemaModel.length === 0
                   || locale.length === 0
                   || name.length === 0
                   || mobile.length === 0

@@ -1,5 +1,4 @@
 import type { AgenticaDescribeHistory } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -16,11 +15,9 @@ import { MarkdownViewer } from "../../components/MarkdownViewer";
 
 import { AgenticaChatExecuteMessageMovie } from "./AgenticaChatExecuteMessageMovie";
 
-export function AgenticaChatDescribeMessageMovie<
-  Model extends ILlmSchema.Model,
->({
+export function AgenticaChatDescribeMessageMovie({
   history,
-}: AgenticaChatDescribeMessageMovie.IProps<Model>) {
+}: AgenticaChatDescribeMessageMovie.IProps) {
   const [expanded, setExpanded] = useState(false);
   return (
     <Card
@@ -60,7 +57,7 @@ export function AgenticaChatDescribeMessageMovie<
   );
 }
 export namespace AgenticaChatDescribeMessageMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    history: AgenticaDescribeHistory<Model>;
+  export interface IProps {
+    history: AgenticaDescribeHistory;
   }
 }

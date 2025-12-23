@@ -1,5 +1,4 @@
 import type { AgenticaHistory } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaChatAssistantMessageMovie } from "./AgenticaChatAssistantMessageMovie";
 import { AgenticaChatDescribeMessageMovie } from "./AgenticaChatDescribeMessageMovie";
@@ -7,9 +6,9 @@ import { AgenticaChatSelectMessageMovie } from "./AgenticaChatSelectMessageMovie
 import { AgenticaChatSystemMessageMovie } from "./AgenticaChatSystemMessageMovie";
 import { AgenticaChatUserMessageMovie } from "./AgenticaChatUserMessageMovie";
 
-export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
+export function AgenticaChatMessageMovie({
   prompt,
-}: AgenticaChatMessageMovie.IProps<Model>) {
+}: AgenticaChatMessageMovie.IProps) {
   if (prompt.type === "assistantMessage") {
     return <AgenticaChatAssistantMessageMovie prompt={prompt} />;
   }
@@ -38,7 +37,7 @@ export function AgenticaChatMessageMovie<Model extends ILlmSchema.Model>({
   return null;
 }
 export namespace AgenticaChatMessageMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    prompt: AgenticaHistory<Model>;
+  export interface IProps {
+    prompt: AgenticaHistory;
   }
 }

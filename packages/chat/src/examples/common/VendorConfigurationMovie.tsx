@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import { FormControlLabel, Radio, RadioGroup, TextField } from "@mui/material";
 import { useState } from "react";
 
@@ -11,11 +9,9 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
       : "manual",
   );
   const [vendorModel, setVendorModel] = useState(props.config.vendorModel);
-  const [schemaModel, setSchemaModel] = useState<ILlmSchema.Model>(props.config.schemaModel);
   const [baseURL, setBaseURL] = useState<string | undefined>(props.config.baseURL);
 
   const getConfig = (): VendorConfigurationMovie.IConfig => ({
-    schemaModel,
     vendorModel,
     apiKey,
     baseURL,
@@ -43,19 +39,15 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
     if (value === "gpt-4o" || value === "gpt-4o-mini") {
       config.vendorModel = value;
       config.baseURL = undefined;
-      config.schemaModel = "chatgpt";
       setBaseURL(undefined);
       setVendorModel(value);
-      setSchemaModel("chatgpt");
     }
     else {
       config.vendorModel = "qwen/qwen3-30b-a3b";
       config.baseURL = "http://localhost:1234/v1";
-      config.schemaModel = "chatgpt";
       config.apiKey = "Local LLM does not require an API key";
       setVendorModel(config.vendorModel);
       setBaseURL(config.baseURL);
-      setSchemaModel(config.schemaModel);
       setApiKey(config.apiKey);
     }
     props.onChange(config);
@@ -65,13 +57,6 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
     const config: VendorConfigurationMovie.IConfig = getConfig();
     config.vendorModel = str;
     setVendorModel(str);
-    props.onChange(config);
-  };
-
-  const handleSchemaModel = (str: ILlmSchema.Model) => {
-    const config: VendorConfigurationMovie.IConfig = getConfig();
-    config.schemaModel = str;
-    setSchemaModel(str);
     props.onChange(config);
   };
 
@@ -125,44 +110,6 @@ export function VendorConfigurationMovie(props: VendorConfigurationMovie.IProps)
                 onChange={e => handleVendorModel(e.target.value)}
               />
               <br />
-              <RadioGroup
-                title="Schema Model"
-                defaultValue={schemaModel}
-                onChange={(_, value) => handleSchemaModel(value as ILlmSchema.Model)}
-                style={{ paddingLeft: 15 }}
-              >
-                <FormControlLabel
-                  control={<Radio />}
-                  label="OpenAI ChatGPT"
-                  value="chatgpt"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label="Anthropic Claude"
-                  value="claude"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label="Google Gemini"
-                  value="gemini"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label="Meta Llama"
-                  value="llama"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label="OpenAPI v3.0"
-                  value="3.0"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label="OpenAPI v3.1"
-                  value="3.1"
-                />
-              </RadioGroup>
-              <br />
             </>
           )
         : null}
@@ -176,7 +123,6 @@ export namespace VendorConfigurationMovie {
     onChange: (config: IConfig) => void;
   }
   export interface IConfig {
-    schemaModel: ILlmSchema.Model;
     vendorModel: string;
     apiKey: string;
     baseURL?: string | undefined;
@@ -184,7 +130,6 @@ export namespace VendorConfigurationMovie {
 
   export function defaultConfig(): IConfig {
     return {
-      schemaModel: "chatgpt",
       vendorModel: "gpt-4o-mini",
       apiKey: "",
       baseURL: undefined,
