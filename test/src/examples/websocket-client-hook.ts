@@ -1,12 +1,12 @@
 import process from "node:process";
 
 import type { IAgenticaRpcListener, IAgenticaRpcService } from "@agentica/rpc";
-import type { ILlamaSchema, ILlmFunction } from "@samchon/openapi";
+import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
 import type { Driver } from "tgrid";
 
 import { WebSocketConnector } from "tgrid";
 
-async function fillArguments(_param: ILlamaSchema.IParameters): Promise<Record<string, any>> {
+async function fillArguments(_param: ILlmSchema.IParameters): Promise<Record<string, any>> {
   return {};
 }
 
@@ -14,7 +14,7 @@ async function main() {
   const connector: WebSocketConnector<
     null,
     IAgenticaRpcListener,
-    IAgenticaRpcService<"llama">
+    IAgenticaRpcService
   > = new WebSocketConnector(null, {
     userMessage: async () => {},
     assistantMessage: async (evt) => {
@@ -26,7 +26,7 @@ async function main() {
     call: async (event) => {
       // @TODO Omg... I'm not sure how to fix it.
       // eslint-disable-next-line ts/no-use-before-define
-      const func: ILlmFunction<"llama"> | undefined = controllers
+      const func: ILlmFunction | undefined = controllers
         .find(c => c.name === event.operation.controller)
         ?.application
         .functions
@@ -41,7 +41,7 @@ async function main() {
   });
   await connector.connect("ws://localhost:3001");
 
-  const driver: Driver<IAgenticaRpcService<"llama">> = connector.getDriver();
+  const driver: Driver<IAgenticaRpcService> = connector.getDriver();
   const controllers = await driver.getControllers();
   await driver.conversate("I wanna create an article with file uploading.");
 

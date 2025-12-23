@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { IAgenticaConfig } from "../../structures/IAgenticaConfig";
 import type { IAgenticaController } from "../../structures/IAgenticaController";
 import type { IMicroAgenticaConfig } from "../../structures/IMicroAgenticaConfig";
@@ -16,10 +14,10 @@ import { __map_take } from "../../utils/__map_take";
  *
  * @internal
  */
-export function compose<Model extends ILlmSchema.Model>(props: {
-  controllers: IAgenticaController<Model>[];
-  config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model> | undefined;
-}): AgenticaOperationCollection<Model> {
+export function compose(props: {
+  controllers: IAgenticaController[];
+  config?: IAgenticaConfig | IMicroAgenticaConfig | undefined;
+}): AgenticaOperationCollection {
   const unique: boolean = (props.controllers.length === 1 || (() => {
     const names = props.controllers.map(
 
@@ -28,12 +26,12 @@ export function compose<Model extends ILlmSchema.Model>(props: {
     return new Set(names).size === names.length;
   })());
 
-  const array: AgenticaOperation<Model>[] = getOperations({
+  const array: AgenticaOperation[] = getOperations({
     controllers: props.controllers,
     naming: (func: string, controllerIndex: number) => unique ? func : `_${controllerIndex}_${func}`,
   });
-  const capacity: number | undefined = (props.config as IAgenticaConfig<Model>)?.capacity;
-  const divided: AgenticaOperation<Model>[][] | undefined
+  const capacity: number | undefined = (props.config as IAgenticaConfig)?.capacity;
+  const divided: AgenticaOperation[][] | undefined
       = capacity !== undefined && array.length > capacity
         ? divide({
             array,
@@ -41,8 +39,8 @@ export function compose<Model extends ILlmSchema.Model>(props: {
           })
         : undefined;
 
-  const flat: Map<string, AgenticaOperation<Model>> = new Map();
-  const group: Map<string, Map<string, AgenticaOperation<Model>>> = new Map();
+  const flat: Map<string, AgenticaOperation> = new Map();
+  const group: Map<string, Map<string, AgenticaOperation>> = new Map();
   for (const item of array) {
     flat.set(item.name, item);
     __map_take(group, item.controller.name, () => new Map()).set(
@@ -61,10 +59,10 @@ export function compose<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-export function getOperations<Model extends ILlmSchema.Model>(props: {
-  controllers: IAgenticaController<Model>[];
+export function getOperations(props: {
+  controllers: IAgenticaController[];
   naming: (func: string, controllerIndex: number) => string;
-}): AgenticaOperation<Model>[] {
+}): AgenticaOperation[] {
   return props.controllers.flatMap((controller, idx) => {
     switch (controller.protocol) {
       case "http":{
@@ -84,11 +82,11 @@ export function getOperations<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-export function toHttpOperations<Model extends ILlmSchema.Model>(props: {
-  controller: IAgenticaController.IHttp<Model>;
+export function toHttpOperations(props: {
+  controller: IAgenticaController.IHttp;
   index: number;
   naming: (func: string, controllerIndex: number) => string;
-}): AgenticaOperation<Model>[] {
+}): AgenticaOperation[] {
   return props.controller.application.functions.map(func => ({
     protocol: "http",
     controller: props.controller,
@@ -106,11 +104,11 @@ export function toHttpOperations<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-export function toClassOperations<Model extends ILlmSchema.Model>(props: {
-  controller: IAgenticaController.IClass<Model>;
+export function toClassOperations(props: {
+  controller: IAgenticaController.IClass;
   index: number;
   naming: (func: string, controllerIndex: number) => string;
-}): AgenticaOperation<Model>[] {
+}): AgenticaOperation[] {
   return props.controller.application.functions.map(func => ({
     protocol: "class",
     controller: props.controller,
@@ -128,11 +126,11 @@ export function toClassOperations<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-export function toMcpOperations<Model extends ILlmSchema.Model>(props: {
-  controller: IAgenticaController.IMcp<Model>;
+export function toMcpOperations(props: {
+  controller: IAgenticaController.IMcp;
   index: number;
   naming: (func: string, controllerIndex: number) => string;
-}): AgenticaOperation<Model>[] {
+}): AgenticaOperation[] {
   return props.controller.application.functions.map(func => ({
     protocol: "mcp",
     controller: props.controller,

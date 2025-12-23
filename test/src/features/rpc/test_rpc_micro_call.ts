@@ -21,8 +21,7 @@ export async function test_rpc_micro_call(): Promise<void | false> {
     return false;
   }
 
-  const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
-    model: "chatgpt",
+  const agent: MicroAgentica = new MicroAgentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
@@ -33,7 +32,7 @@ export async function test_rpc_micro_call(): Promise<void | false> {
       {
         protocol: "class",
         name: "bbs",
-        application: typia.llm.application<BbsArticleService, "chatgpt">(),
+        application: typia.llm.application<BbsArticleService>(),
         execute: new BbsArticleService(),
       },
     ],
@@ -42,7 +41,7 @@ export async function test_rpc_micro_call(): Promise<void | false> {
   const port: number = randint(30_001, 65_001);
   const server: WebSocketServer<
     null,
-    IAgenticaRpcService<"chatgpt">,
+    IAgenticaRpcService,
     IMicroAgenticaRpcListener
   > = new WebSocketServer();
   await server.open(port, async (acceptor) => {
@@ -58,7 +57,7 @@ export async function test_rpc_micro_call(): Promise<void | false> {
   const connector: WebSocketConnector<
     null,
     IMicroAgenticaRpcListener,
-    IAgenticaRpcService<"chatgpt">
+    IAgenticaRpcService
   > = new WebSocketConnector(null, {
     describe: async (evt) => {
       events.push(evt);
@@ -75,7 +74,7 @@ export async function test_rpc_micro_call(): Promise<void | false> {
   });
   await connector.connect(`ws://localhost:${port}`);
 
-  const driver: Driver<IAgenticaRpcService<"chatgpt">> = connector.getDriver();
+  const driver: Driver<IAgenticaRpcService> = connector.getDriver();
   await driver.conversate("What can you do?");
   await driver.conversate(`
     Create an article like below:

@@ -1,4 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
@@ -12,9 +11,9 @@ import { createDescribeEvent } from "../factory/events";
 import { decodeHistory } from "../factory/histories";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 
-export async function describe<Model extends ILlmSchema.Model>(
-  ctx: AgenticaContext<Model> | MicroAgenticaContext<Model>,
-  histories: AgenticaExecuteHistory<Model>[],
+export async function describe(
+  ctx: AgenticaContext | MicroAgenticaContext,
+  histories: AgenticaExecuteHistory[],
 ): Promise<void> {
   if (histories.length === 0) {
     return;
@@ -40,7 +39,7 @@ export async function describe<Model extends ILlmSchema.Model>(
   });
 
   await reduceStreamingWithDispatch(completionStream, (props) => {
-    const event: AgenticaDescribeEvent<Model> = createDescribeEvent({
+    const event: AgenticaDescribeEvent = createDescribeEvent({
       executes: histories,
       ...props,
     });

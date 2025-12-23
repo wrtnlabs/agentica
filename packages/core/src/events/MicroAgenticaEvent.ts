@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaAssistantMessageEvent } from "./AgenticaAssistantMessageEvent";
 import type { AgenticaCallEvent } from "./AgenticaCallEvent";
 import type { AgenticaDescribeEvent } from "./AgenticaDescribeEvent";
@@ -20,28 +18,28 @@ import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
  *
  * @author Samchon
  */
-export type MicroAgenticaEvent<Model extends ILlmSchema.Model> =
+export type MicroAgenticaEvent =
   | AgenticaUserMessageEvent
   | AgenticaAssistantMessageEvent
-  | AgenticaCallEvent<Model>
-  | AgenticaExecuteEvent<Model>
-  | AgenticaDescribeEvent<Model>
+  | AgenticaCallEvent
+  | AgenticaExecuteEvent
+  | AgenticaDescribeEvent
   | AgenticaRequestEvent
   | AgenticaResponseEvent
-  | AgenticaValidateEvent<Model>
-  | AgenticaJsonParseErrorEvent<Model>;
+  | AgenticaValidateEvent
+  | AgenticaJsonParseErrorEvent;
 export namespace MicroAgenticaEvent {
-  export type Type = MicroAgenticaEvent<any>["type"];
-  export interface Mapper<Model extends ILlmSchema.Model> {
+  export type Type = MicroAgenticaEvent["type"];
+  export interface Mapper {
     userMessage: AgenticaUserMessageEvent;
     assistantMessage: AgenticaAssistantMessageEvent;
-    call: AgenticaCallEvent<Model>;
-    execute: AgenticaExecuteEvent<Model>;
-    describe: AgenticaDescribeEvent<Model>;
+    call: AgenticaCallEvent;
+    execute: AgenticaExecuteEvent;
+    describe: AgenticaDescribeEvent;
     request: AgenticaRequestEvent;
     response: AgenticaResponseEvent;
-    validate: AgenticaValidateEvent<Model>;
-    jsonParseError: AgenticaJsonParseErrorEvent<Model>;
+    validate: AgenticaValidateEvent;
+    jsonParseError: AgenticaJsonParseErrorEvent;
   }
   export type Source = "call" | "describe";
 }

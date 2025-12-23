@@ -1,5 +1,4 @@
 import type { AgenticaOperationSelection } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -12,9 +11,9 @@ import React from "react";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export function AgenticaChatFunctionStackSideMovie<
-  Model extends ILlmSchema.Model,
->(props: AgenticaChatFunctionStackSideMovie.IProps<Model>) {
+export function AgenticaChatFunctionStackSideMovie(
+  props: AgenticaChatFunctionStackSideMovie.IProps
+) {
   return (
     <React.Fragment>
       <Typography variant="h5"> Function Stack </Typography>
@@ -43,7 +42,7 @@ export function AgenticaChatFunctionStackSideMovie<
   );
 }
 export namespace AgenticaChatFunctionStackSideMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    selections: AgenticaOperationSelection<Model>[];
+  export interface IProps {
+    selections: AgenticaOperationSelection[];
   }
 }

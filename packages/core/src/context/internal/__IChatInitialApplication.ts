@@ -11,5 +11,5 @@ export interface __IChatInitialApplication {
    * Also, user just wants to list up every remote API functions that can be
    * called from the backend server, utilize this function too.
    */
-  getApiFunctions: (props: object) => Promise<Array<IHttpLlmFunction<"chatgpt">>>;
+  getApiFunctions: (props: object) => Promise<Array<IHttpLlmFunction>>;
 }

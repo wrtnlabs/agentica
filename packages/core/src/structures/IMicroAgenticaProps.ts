@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { AgenticaTokenUsage } from "../context/AgenticaTokenUsage";
 import type { IAgenticaTokenUsageJson } from "../json/IAgenticaTokenUsageJson";
 import type { IMicroAgenticaHistoryJson } from "../json/IMicroAgenticaHistoryJson";
@@ -29,12 +27,7 @@ import type { IMicroAgenticaConfig } from "./IMicroAgenticaConfig";
  *
  * @author Samchon
  */
-export interface IMicroAgenticaProps<Model extends ILlmSchema.Model> {
-  /**
-   * LLM schema model.
-   */
-  model: Model;
-
+export interface IMicroAgenticaProps {
   /**
    * LLM service vendor.
    */
@@ -43,7 +36,7 @@ export interface IMicroAgenticaProps<Model extends ILlmSchema.Model> {
   /**
    * Controllers serving functions to call.
    */
-  controllers: IAgenticaController<Model>[];
+  controllers: IAgenticaController[];
 
   /**
    * Configuration of agent.
@@ -60,7 +53,7 @@ export interface IMicroAgenticaProps<Model extends ILlmSchema.Model> {
    * - `systemPrompt`: default prompts written in markdown
    *   - https://github.com/wrtnlabs/agentica/tree/main/packages/core/prompts
    */
-  config?: IMicroAgenticaConfig<Model>;
+  config?: IMicroAgenticaConfig;
 
   /**
    * Prompt histories.

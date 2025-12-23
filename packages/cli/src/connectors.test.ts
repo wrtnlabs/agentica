@@ -49,7 +49,7 @@ describe("generateConnectorsArrayCode", () => {
     expect(result).toBe(`{
 name: "Chatgpt Connector",
 protocol: "class",
-application: typia.llm.application<ChatgptService, "chatgpt">(),
+application: typia.llm.application<ChatgptService>(),
 execute: new ChatgptService(),
 }`);
   });
@@ -59,7 +59,7 @@ execute: new ChatgptService(),
     expect(result).toBe(`{
 name: "AwsS3 Connector",
 protocol: "class",
-application: typia.llm.application<AwsS3Service, "chatgpt">(),
+application: typia.llm.application<AwsS3Service>(),
 execute: new AwsS3Service(),
 }`);
   });
@@ -69,13 +69,13 @@ execute: new AwsS3Service(),
     expect(result).toBe(`{
 name: "Chatgpt Connector",
 protocol: "class",
-application: typia.llm.application<ChatgptService, "chatgpt">(),
+application: typia.llm.application<ChatgptService>(),
 execute: new ChatgptService(),
 },
 {
 name: "Openai Connector",
 protocol: "class",
-application: typia.llm.application<OpenaiService, "chatgpt">(),
+application: typia.llm.application<OpenaiService>(),
 execute: new OpenaiService(),
 }`);
   });
@@ -120,7 +120,7 @@ describe("insertCodeIntoAgenticaStarter", () => {
     const connectorCode = `{
 name: "Chatgpt Connector",
 protocol: "class",
-application: typia.llm.application<ChatgptService, "chatgpt">(),
+application: typia.llm.application<ChatgptService>(),
 execute: new ChatgptService(),
 }`;
     const result = insertCodeIntoAgenticaStarter({ content, importCode, connectorCode });
@@ -129,7 +129,7 @@ import { ChatgptService } from "@wrtnlabs/connector-chatgpt";
 {
 name: "Chatgpt Connector",
 protocol: "class",
-application: typia.llm.application<ChatgptService, "chatgpt">(),
+application: typia.llm.application<ChatgptService>(),
 execute: new ChatgptService(),
 }
 `);

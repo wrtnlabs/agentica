@@ -52,13 +52,12 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
 
   // CREATE AI AGENT
   const selectorExecute = BootAgenticaVectorSelector({
-    strategy: configurePostgresStrategy<"chatgpt">({
+    strategy: configurePostgresStrategy({
       host: `http://localhost:${TestGlobal.connectorHivePort}`,
     }),
   });
   const newAgentica = async () =>
-    new Agentica<"chatgpt">({
-      model: "chatgpt",
+    new Agentica({
       vendor: {
         model: "gpt-4o-mini",
         api: new OpenAI({
@@ -70,9 +69,8 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
           protocol: "http",
           name: "shopping",
           application: HttpLlm.application({
-            model: "chatgpt",
             document: await fetch(
-              "https://shopping-be.wrtn.ai/editor/swagger.json",
+              "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json",
             ).then(async res => res.json() as Promise<OpenApi.IDocument>),
           }),
           connection,
@@ -95,7 +93,7 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): AgenticaOperation<"chatgpt"> => {
+  ): AgenticaOperation => {
     const found = agent
       .getOperations()
       .find(

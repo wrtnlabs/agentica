@@ -14,8 +14,7 @@ export async function test_json_parse_error_correction(): Promise<void | false> 
     return false;
   }
 
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
@@ -26,20 +25,20 @@ export async function test_json_parse_error_correction(): Promise<void | false> 
       {
         protocol: "class",
         name: "bbs",
-        application: typia.llm.application<BbsArticleService, "chatgpt">(),
+        application: typia.llm.application<BbsArticleService>(),
         execute: new BbsArticleService(),
       },
     ],
   });
 
   let polluted: boolean = false;
-  let executeEvent: AgenticaExecuteEvent<"chatgpt"> | null = null;
+  let executeEvent: AgenticaExecuteEvent | null = null;
 
   agent.on("call", (event) => {
     if (polluted === true) {
       return;
     }
-    const jsonParseErrorEvent: AgenticaJsonParseErrorEvent<"chatgpt"> = {
+    const jsonParseErrorEvent: AgenticaJsonParseErrorEvent = {
       type: "jsonParseError",
       id: v4(),
       call_id: event.id,

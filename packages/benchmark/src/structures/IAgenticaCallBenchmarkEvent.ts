@@ -5,7 +5,6 @@
  * @author Wrtn Technologies
  */
 import type { AgenticaHistory, AgenticaTokenUsage } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaCallBenchmarkScenario } from "./IAgenticaCallBenchmarkScenario";
 
@@ -31,10 +30,10 @@ import type { IAgenticaCallBenchmarkScenario } from "./IAgenticaCallBenchmarkSce
  *
  * @author Samchon
  */
-export type IAgenticaCallBenchmarkEvent<Model extends ILlmSchema.Model> =
-  | IAgenticaCallBenchmarkEvent.ISuccess<Model>
-  | IAgenticaCallBenchmarkEvent.IFailure<Model>
-  | IAgenticaCallBenchmarkEvent.IError<Model>;
+export type IAgenticaCallBenchmarkEvent =
+  | IAgenticaCallBenchmarkEvent.ISuccess
+  | IAgenticaCallBenchmarkEvent.IFailure
+  | IAgenticaCallBenchmarkEvent.IError;
 export namespace IAgenticaCallBenchmarkEvent {
   /**
    * Success event type.
@@ -42,8 +41,8 @@ export namespace IAgenticaCallBenchmarkEvent {
    * The `success` event type represents that the benchmark
    * testing is fully meet the expected scenario.
    */
-  export interface ISuccess<Model extends ILlmSchema.Model>
-    extends IEventBase<"success", Model> {
+  export interface ISuccess
+    extends IEventBase<"success"> {
     /**
      * Whether succeeded to function selection.
      */
@@ -62,8 +61,8 @@ export namespace IAgenticaCallBenchmarkEvent {
    * or `caller` agents have not selected or called following the
    * expected scenario in the benchmark testing.
    */
-  export interface IFailure<Model extends ILlmSchema.Model>
-    extends IEventBase<"failure", Model> {
+  export interface IFailure
+    extends IEventBase<"failure"> {
     /**
      * Whether succeeded to function selection.
      */
@@ -75,15 +74,15 @@ export namespace IAgenticaCallBenchmarkEvent {
     call: boolean;
   }
 
-  export interface IError<Model extends ILlmSchema.Model>
-    extends IEventBase<"error", Model> {
+  export interface IError
+    extends IEventBase<"error"> {
     /**
      * Error occurred during the benchmark.
      */
     error: unknown;
   }
 
-  interface IEventBase<Type extends string, Model extends ILlmSchema.Model> {
+  interface IEventBase<Type extends string> {
     /**
      * Discriminant type.
      */
@@ -92,14 +91,14 @@ export namespace IAgenticaCallBenchmarkEvent {
     /**
      * Expected scenario.
      */
-    scenario: IAgenticaCallBenchmarkScenario<Model>;
+    scenario: IAgenticaCallBenchmarkScenario;
 
     /**
      * Prompt histories.
      *
      * List of prompts occurred during the benchmark testing.
      */
-    prompts: AgenticaHistory<Model>[];
+    prompts: AgenticaHistory[];
 
     /**
      * Usage of the token during the benchmark.

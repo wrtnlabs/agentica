@@ -1,5 +1,4 @@
 import type { Agentica } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
 
 /**
@@ -38,18 +37,18 @@ import { AgenticaCallBenchmarkReporter } from "./internal/AgenticaCallBenchmarkR
  *
  * @author Samchon
  */
-export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
-  private agent_: Agentica<Model>;
-  private scenarios_: IAgenticaCallBenchmarkScenario<Model>[];
+export class AgenticaCallBenchmark {
+  private agent_: Agentica;
+  private scenarios_: IAgenticaCallBenchmarkScenario[];
   private config_: AgenticaCallBenchmark.IConfig;
-  private result_: IAgenticaCallBenchmarkResult<Model> | null;
+  private result_: IAgenticaCallBenchmarkResult | null;
 
   /**
    * Initializer Constructor.
    *
    * @param props Properties of the selection benchmark
    */
-  public constructor(props: AgenticaCallBenchmark.IProps<Model>) {
+  public constructor(props: AgenticaCallBenchmark.IProps) {
     this.agent_ = props.agent;
     this.scenarios_ = props.scenarios.slice();
     this.config_ = {
@@ -77,16 +76,16 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
    * @returns Results of the function calling benchmark
    */
   public async execute(
-    listener?: (event: IAgenticaCallBenchmarkEvent<Model>) => void,
-  ): Promise<IAgenticaCallBenchmarkResult<Model>> {
+    listener?: (event: IAgenticaCallBenchmarkEvent) => void,
+  ): Promise<IAgenticaCallBenchmarkResult> {
     const started_at: Date = new Date();
     const semaphore: Semaphore = new Semaphore(this.config_.simultaneous);
     const task = this.scenarios_.map(async (scenario) => {
-      const events: IAgenticaCallBenchmarkEvent<Model>[]
+      const events: IAgenticaCallBenchmarkEvent[]
         = await Promise.all(
           Array.from({ length: this.config_.repeat }).map(async () => {
             await semaphore.acquire();
-            const e: IAgenticaCallBenchmarkEvent<Model>
+            const e: IAgenticaCallBenchmarkEvent
               = await this.step(scenario);
             await semaphore.release();
 
@@ -106,7 +105,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
           .reduce((acc, cur) => AgenticaTokenUsage.plus(acc, cur), AgenticaTokenUsage.zero()),
       };
     });
-    const experiments: IAgenticaCallBenchmarkResult.IExperiment<Model>[]
+    const experiments: IAgenticaCallBenchmarkResult.IExperiment[]
       = await Promise.all(task);
     return (this.result_ = {
       experiments,
@@ -144,9 +143,9 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
   }
 
   private async step(
-    scenario: IAgenticaCallBenchmarkScenario<Model>,
-  ): Promise<IAgenticaCallBenchmarkEvent<Model>> {
-    const agent: Agentica<Model> = this.agent_.clone();
+    scenario: IAgenticaCallBenchmarkScenario,
+  ): Promise<IAgenticaCallBenchmarkEvent> {
+    const agent: Agentica = this.agent_.clone();
     const started_at: Date = new Date();
     const success = () =>
       AgenticaBenchmarkPredicator.success({
@@ -157,7 +156,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
           .map(p => p.operation),
         strict: false,
       });
-    const out = (): IAgenticaCallBenchmarkEvent<Model> => {
+    const out = (): IAgenticaCallBenchmarkEvent => {
       const select = AgenticaBenchmarkPredicator.success({
         expected: scenario.expected,
         operations: agent
@@ -176,7 +175,7 @@ export class AgenticaCallBenchmark<Model extends ILlmSchema.Model> {
         usage: agent.getTokenUsage(),
         started_at,
         completed_at: new Date(),
-      } satisfies IAgenticaCallBenchmarkEvent.IFailure<Model>;
+      } satisfies IAgenticaCallBenchmarkEvent.IFailure;
     };
 
     try {
@@ -216,16 +215,16 @@ export namespace AgenticaCallBenchmark {
   /**
    * Properties of the {@link AgenticaCallBenchmark} constructor.
    */
-  export interface IProps<Model extends ILlmSchema.Model> {
+  export interface IProps {
     /**
      * AI agent instance.
      */
-    agent: Agentica<Model>;
+    agent: Agentica;
 
     /**
      * List of scenarios what you expect.
      */
-    scenarios: IAgenticaCallBenchmarkScenario<Model>[];
+    scenarios: IAgenticaCallBenchmarkScenario[];
 
     /**
      * Configuration for the benchmark.

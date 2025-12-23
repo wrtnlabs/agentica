@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import { Semaphore } from "tstl";
 
 import type { AgenticaOperation } from "./context/AgenticaOperation";
@@ -53,13 +51,13 @@ import { getChatCompletionWithStreamingFunction } from "./utils/request";
  *
  * @author Samchon
  */
-export class MicroAgentica<Model extends ILlmSchema.Model> {
-  private readonly operations_: AgenticaOperationCollection<Model>;
-  private readonly histories_: MicroAgenticaHistory<Model>[];
+export class MicroAgentica {
+  private readonly operations_: AgenticaOperationCollection;
+  private readonly histories_: MicroAgenticaHistory[];
   private readonly token_usage_: AgenticaTokenUsage;
   private readonly listeners_: Map<
     string,
-    Set<(event: MicroAgenticaEvent<Model>) => Promise<void>>
+    Set<(event: MicroAgenticaEvent) => Promise<void>>
   >;
 
   private readonly semaphore_: Semaphore | null;
@@ -72,7 +70,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    *
    * @param props Properties to construct the micro agent
    */
-  public constructor(private readonly props: IMicroAgenticaProps<Model>) {
+  public constructor(private readonly props: IMicroAgenticaProps) {
     this.operations_ = AgenticaOperationComposer.compose({
       controllers: props.controllers,
       config: props.config,
@@ -81,8 +79,8 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       transformHistory({
         operations: this.operations_.group,
         history: input,
-      }),
-    ) as MicroAgenticaHistory<Model>[];
+      }) as MicroAgenticaHistory,
+    );
     this.token_usage_ = this.props.tokenUsage !== undefined
       ? this.props.tokenUsage instanceof AgenticaTokenUsage
         ? this.props.tokenUsage
@@ -99,8 +97,8 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   /**
    * @internal
    */
-  public clone(): MicroAgentica<Model> {
-    return new MicroAgentica<Model>({
+  public clone(): MicroAgentica {
+    return new MicroAgentica({
       ...this.props,
       histories: this.props.histories?.slice(),
     });
@@ -126,9 +124,9 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     options: {
       abortSignal?: AbortSignal;
     } = {},
-  ): Promise<MicroAgenticaHistory<Model>[]> {
-    const histories: Array<() => Promise<MicroAgenticaHistory<Model>>> = [];
-    const dispatch = async (event: MicroAgenticaEvent<Model>): Promise<void> => {
+  ): Promise<MicroAgenticaHistory[]> {
+    const histories: Array<() => Promise<MicroAgenticaHistory>> = [];
+    const dispatch = async (event: MicroAgenticaEvent): Promise<void> => {
       try {
         await this.dispatch(event);
         if ("toHistory" in event) {
@@ -158,13 +156,13 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     });
     void dispatch(prompt).catch(() => {});
 
-    const ctx: MicroAgenticaContext<Model> = this.getContext({
+    const ctx: MicroAgenticaContext = this.getContext({
       prompt,
       dispatch,
       usage: this.token_usage_,
       abortSignal: options.abortSignal,
     });
-    const executes: AgenticaExecuteHistory<Model>[] = await call(
+    const executes: AgenticaExecuteHistory[] = await call(
       ctx,
       this.operations_.array,
     );
@@ -174,7 +172,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       await describe(ctx, executes);
     }
 
-    const completed: MicroAgenticaHistory<Model>[] = await Promise.all(
+    const completed: MicroAgenticaHistory[] = await Promise.all(
       histories.map(async h => h()),
     );
     this.histories_.push(...completed);
@@ -184,7 +182,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   /**
    * Get configuration.
    */
-  public getConfig(): IMicroAgenticaConfig<Model> | undefined {
+  public getConfig(): IMicroAgenticaConfig | undefined {
     return this.props.config;
   }
 
@@ -203,7 +201,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    *
    * @returns List of operations
    */
-  public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
+  public getOperations(): ReadonlyArray<AgenticaOperation> {
     return this.operations_.array;
   }
 
@@ -213,7 +211,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    * Get list of controllers, which are the collection of functions that
    * the agent can execute.
    */
-  public getControllers(): ReadonlyArray<IAgenticaController<Model>> {
+  public getControllers(): ReadonlyArray<IAgenticaController> {
     return this.props.controllers;
   }
 
@@ -224,7 +222,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    *
    * @returns List of chat histories
    */
-  public getHistories(): MicroAgenticaHistory<Model>[] {
+  public getHistories(): MicroAgenticaHistory[] {
     return this.histories_;
   }
 
@@ -246,10 +244,10 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public getContext(props: {
     prompt: AgenticaUserMessageEvent;
     usage: AgenticaTokenUsage;
-    dispatch: (event: MicroAgenticaEvent<Model>) => Promise<void>;
+    dispatch: (event: MicroAgenticaEvent) => Promise<void>;
     abortSignal?: AbortSignal;
-  }): MicroAgenticaContext<Model> {
-    const request = getChatCompletionWithStreamingFunction<Model>({
+  }): MicroAgenticaContext {
+    const request = getChatCompletionWithStreamingFunction({
       vendor: this.props.vendor,
       config: this.props.config,
       dispatch: props.dispatch,
@@ -291,13 +289,13 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public on<Type extends MicroAgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: MicroAgenticaEvent.Mapper<Model>[Type],
+      event: MicroAgenticaEvent.Mapper[Type],
     ) => void | Promise<void>,
   ): this {
     /**
      * @TODO remove `as`
      */
-    __map_take(this.listeners_, type, () => new Set()).add(listener as (event: MicroAgenticaEvent<Model>) => Promise<void>);
+    __map_take(this.listeners_, type, () => new Set()).add(listener as (event: MicroAgenticaEvent) => Promise<void>);
     return this;
   }
 
@@ -312,7 +310,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public off<Type extends MicroAgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: MicroAgenticaEvent.Mapper<Model>[Type],
+      event: MicroAgenticaEvent.Mapper[Type],
     ) => void | Promise<void>,
   ): this {
     const set = this.listeners_.get(type);
@@ -320,7 +318,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
       /**
        * @TODO remove `as`
        */
-      set.delete(listener as (event: MicroAgenticaEvent<Model>) => Promise<void>);
+      set.delete(listener as (event: MicroAgenticaEvent) => Promise<void>);
       if (set.size === 0) {
         this.listeners_.delete(type);
       }
@@ -328,7 +326,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
     return this;
   }
 
-  private async dispatch<Event extends MicroAgenticaEvent<Model>>(
+  private async dispatch<Event extends MicroAgenticaEvent>(
     event: Event,
   ): Promise<void> {
     const set = this.listeners_.get(event.type);

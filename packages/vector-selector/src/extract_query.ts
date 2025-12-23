@@ -1,12 +1,11 @@
 import type { AgenticaContext } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 import type { FromSchema } from "json-schema-to-ts";
 
 import { factory, utils } from "@agentica/core";
 
 import { Tools } from "./tools";
 
-export async function extractQuery<SchemaModel extends ILlmSchema.Model>(ctx: AgenticaContext<SchemaModel>) {
+export async function extractQuery(ctx: AgenticaContext) {
   const completionStream = await ctx.request("select", {
     messages: [
       {
@@ -20,7 +19,7 @@ export async function extractQuery<SchemaModel extends ILlmSchema.Model>(ctx: Ag
         ].join("\n"),
       },
       ...ctx.histories
-        .map(factory.decodeHistory<SchemaModel>)
+        .map(factory.decodeHistory)
         .flat(),
       {
         role: "user",

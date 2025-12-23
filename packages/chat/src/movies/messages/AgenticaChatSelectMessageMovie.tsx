@@ -1,5 +1,4 @@
 import type { AgenticaOperationSelection } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import GradingIcon from "@mui/icons-material/Grading";
 import {
@@ -14,9 +13,9 @@ import { useState } from "react";
 
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
-export function AgenticaChatSelectMessageMovie<Model extends ILlmSchema.Model>({
+export function AgenticaChatSelectMessageMovie({
   selection,
-}: AgenticaChatSelectMessageMovie.IProps<Model>) {
+}: AgenticaChatSelectMessageMovie.IProps) {
   const [expanded, setExpanded] = useState(false);
   return (
     <Card
@@ -67,7 +66,7 @@ export function AgenticaChatSelectMessageMovie<Model extends ILlmSchema.Model>({
   );
 }
 export namespace AgenticaChatSelectMessageMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    selection: AgenticaOperationSelection<Model>;
+  export interface IProps {
+    selection: AgenticaOperationSelection;
   }
 }

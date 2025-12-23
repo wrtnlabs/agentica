@@ -4,12 +4,13 @@ import type {
   IAgenticaRpcListener,
   IAgenticaRpcService,
 } from "@agentica/rpc";
+import type { ILlmSchema } from "@samchon/openapi";
 
 import { Agentica } from "@agentica/core";
 import {
   AgenticaRpcService,
 } from "@agentica/rpc";
-import { LlamaTypeChecker } from "@samchon/openapi";
+import { LlmTypeChecker } from "@samchon/openapi";
 import OpenAI from "openai";
 import { WebSocketServer } from "tgrid";
 import typia from "typia";
@@ -17,12 +18,11 @@ import typia from "typia";
 async function main(): Promise<void> {
   const server: WebSocketServer<
     null,
-    IAgenticaRpcService<"llama">,
+    IAgenticaRpcService,
     IAgenticaRpcListener
   > = new WebSocketServer();
   await server.open(3_001, async (acceptor) => {
-    const agent: Agentica<"llama"> = new Agentica({
-      model: "llama",
+    const agent: Agentica = new Agentica({
       vendor: {
         api: new OpenAI(),
         model: "llama-3.3-70b",
@@ -31,17 +31,18 @@ async function main(): Promise<void> {
         {
           name: "bbs",
           protocol: "class",
-          application: typia.llm.application<BbsArticleService, "llama">({
-            separate: schema =>
-              LlamaTypeChecker.isString(schema)
-              && schema.format === "uri"
-              && schema.contentMediaType !== undefined,
+          application: typia.llm.application<BbsArticleService>({
+            separate: (schema: ILlmSchema) => {
+              return LlmTypeChecker.isString(schema) === true
+                && schema.format === "uri"
+                && schema.contentMediaType !== undefined;
+            },
           }),
           execute: new BbsArticleService(),
         },
       ],
     });
-    const service: AgenticaRpcService<"llama"> = new AgenticaRpcService({
+    const service: AgenticaRpcService = new AgenticaRpcService({
       agent,
       listener: acceptor.getDriver(),
     });

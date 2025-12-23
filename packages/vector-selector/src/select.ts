@@ -1,5 +1,4 @@
 import type { AgenticaAssistantMessageEvent, AgenticaContext, AgenticaOperationSelection } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import { AgenticaDefaultPrompt, AgenticaSystemPrompt, factory, utils } from "@agentica/core";
 
@@ -14,8 +13,8 @@ interface IFailure {
   };
 }
 
-export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props: {
-  ctx: AgenticaContext<SchemaModel>;
+export async function selectFunction(props: {
+  ctx: AgenticaContext;
   toolList: object[];
   prevFailures?: IFailure[];
   restRetry?: number;
@@ -45,7 +44,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         tool_call_id: "getApiFunctions",
         content: JSON.stringify(toolList),
       },
-      ...ctx.histories.flatMap(factory.decodeHistory<SchemaModel>),
+      ...ctx.histories.flatMap(factory.decodeHistory),
       {
         role: "user",
         content: ctx.prompt.contents.map(factory.decodeUserMessageContent),
@@ -160,7 +159,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
         if (operation === undefined) {
           return;
         }
-        const selection: AgenticaOperationSelection<SchemaModel>
+        const selection: AgenticaOperationSelection
           = factory.createOperationSelection({
             reason: v.reason,
             operation,
@@ -176,7 +175,7 @@ export async function selectFunction<SchemaModel extends ILlmSchema.Model>(props
   });
 }
 
-function emendMessages<SchemaModel extends ILlmSchema.Model>(failures: IFailure[]): ReturnType<typeof factory.decodeHistory<SchemaModel>> {
+function emendMessages(failures: IFailure[]): ReturnType<typeof factory.decodeHistory> {
   return failures
     .flatMap(f => [
       {
@@ -205,5 +204,5 @@ function emendMessages<SchemaModel extends ILlmSchema.Model>(failures: IFailure[
           "Correct it at the next function calling.",
         ].join("\n"),
       },
-    ]) satisfies ReturnType<typeof factory.decodeHistory<SchemaModel>>;
+    ]) satisfies ReturnType<typeof factory.decodeHistory>;
 }

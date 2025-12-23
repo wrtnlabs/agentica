@@ -1,5 +1,4 @@
 import type { AgenticaContext, AgenticaOperation } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 import type { Database } from "better-sqlite3";
 import type { Cohere } from "cohere-ai";
 
@@ -17,7 +16,7 @@ export interface IAgenticaSqliteVectorSelectorStrategyProps {
 
 const retry = getRetry(3);
 const hashMemo = new Map<object, string>();
-export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(props: IAgenticaSqliteVectorSelectorStrategyProps): IAgenticaVectorSelectorStrategy<SchemaModel> {
+export function configureSqliteStrategy(props: IAgenticaSqliteVectorSelectorStrategyProps): IAgenticaVectorSelectorStrategy {
   const { db, cohereApiKey } = props;
   load(db);
 
@@ -51,7 +50,7 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
   }
   // it's memoized to avoid generating the same hash for the same context
   // if you know react, it's like useMemo
-  const getHash = (ctx: AgenticaContext<SchemaModel>) => {
+  const getHash = (ctx: AgenticaContext) => {
     if (hashMemo.has(ctx)) {
       return hashMemo.get(ctx)!;
     }
@@ -63,7 +62,7 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
   // embed each operation in the context.opersation.array
   async function embedOperation(props: {
     hash: string;
-    operation: AgenticaOperation<SchemaModel>;
+    operation: AgenticaOperation;
   }): Promise<void> {
     const name = props.operation.function.name;
 
@@ -77,7 +76,7 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
   }
 
   async function embedContext(props: {
-    ctx: AgenticaContext<SchemaModel>;
+    ctx: AgenticaContext;
     setEmbedded: () => void;
   }): Promise<void> {
     const hash = getHash(props.ctx);
@@ -96,7 +95,7 @@ export function configureSqliteStrategy<SchemaModel extends ILlmSchema.Model>(pr
     props.setEmbedded();
   }
 
-  async function searchTool(ctx: AgenticaContext<SchemaModel>, query: string): Promise<{
+  async function searchTool(ctx: AgenticaContext, query: string): Promise<{
     name: string;
     description: string | undefined;
   }[]> {

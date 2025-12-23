@@ -1,4 +1,4 @@
-import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmSchema, IValidation, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, IValidation, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
 
 import { HttpLlm, OpenApi } from "@samchon/openapi";
 import typia from "typia";
@@ -22,18 +22,11 @@ import type { IAgenticaController } from "../structures/IAgenticaController";
  * @returns Validation result of the HTTP controller composition
  * @author Samchon
  */
-export function validateHttpController<
-  Model extends ILlmSchema.Model,
->(props: {
+export function validateHttpController(props: {
   /**
    * Name of the controller.
    */
   name: string;
-
-  /**
-   * Target LLM model.
-   */
-  model: Model;
 
   /**
    * Swagger/OpenAPI document.
@@ -55,7 +48,7 @@ export function validateHttpController<
   /**
    * Options for the LLM function calling schema composition.
    */
-  options?: Partial<IHttpLlmApplication.IOptions<Model>>;
+  config?: Partial<IHttpLlmApplication.IConfig>;
 
   /**
    * Executor of the API function.
@@ -72,12 +65,12 @@ export function validateHttpController<
     /**
      * Application schema.
      */
-    application: IHttpLlmApplication<Model>;
+    application: IHttpLlmApplication;
 
     /**
      * Function schema.
      */
-    function: IHttpLlmFunction<Model>;
+    function: IHttpLlmFunction;
 
     /**
      * Arguments of the function calling.
@@ -91,7 +84,7 @@ export function validateHttpController<
      */
     arguments: object;
   }) => Promise<IHttpResponse>;
-}): IValidation<IAgenticaController.IHttp<Model>> {
+}): IValidation<IAgenticaController.IHttp> {
   const inspect = typia.validate<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
@@ -107,9 +100,8 @@ export function validateHttpController<
       protocol: "http",
       name: props.name,
       application: HttpLlm.application({
-        model: props.model,
         document: OpenApi.convert(inspect.data),
-        options: props.options,
+        config: props.config,
       }),
       execute: props.execute,
       connection: props.connection,

@@ -1,31 +1,30 @@
 import type { AgenticaContext } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import { extractQuery } from "./extract_query";
 import { selectFunction } from "./select";
 import { uniqBy } from "./utils";
 
-export interface IAgenticaVectorSelectorBootProps<SchemaModel extends ILlmSchema.Model> {
-  strategy: IAgenticaVectorSelectorStrategy<SchemaModel>;
+export interface IAgenticaVectorSelectorBootProps {
+  strategy: IAgenticaVectorSelectorStrategy;
 }
-export interface IAgenticaVectorSelectorStrategy<SchemaModel extends ILlmSchema.Model> {
-  searchTool: (ctx: AgenticaContext<SchemaModel>, query: string) => Promise<{
+export interface IAgenticaVectorSelectorStrategy {
+  searchTool: (ctx: AgenticaContext, query: string) => Promise<{
     name: string;
     description: string | undefined;
   }[]>;
   embedContext: (
     props: {
-      ctx: AgenticaContext<SchemaModel>;
+      ctx: AgenticaContext;
       setEmbedded: () => void;
     }
   ) => Promise<void>;
 }
 
-export function BootAgenticaVectorSelector<SchemaModel extends ILlmSchema.Model>(props: IAgenticaVectorSelectorBootProps<SchemaModel>) {
-  const { isEmbedded, setEmbedded } = useEmbeddedContext<SchemaModel>();
+export function BootAgenticaVectorSelector(props: IAgenticaVectorSelectorBootProps) {
+  const { isEmbedded, setEmbedded } = useEmbeddedContext();
   const { searchTool, embedContext } = props.strategy;
   const selectorExecute = async (
-    ctx: AgenticaContext<SchemaModel>,
+    ctx: AgenticaContext,
   ): Promise<void> => {
     if (!isEmbedded(ctx)) {
       await embedContext({ ctx, setEmbedded: () => setEmbedded(ctx) });
@@ -56,12 +55,12 @@ export function BootAgenticaVectorSelector<SchemaModel extends ILlmSchema.Model>
   return selectorExecute;
 }
 
-export function useEmbeddedContext<SchemaModel extends ILlmSchema.Model>() {
+export function useEmbeddedContext() {
   const set = new Set<string>();
   return {
-    isEmbedded: (ctx: AgenticaContext<SchemaModel>) =>
+    isEmbedded: (ctx: AgenticaContext) =>
       set.has(JSON.stringify(ctx.operations.array)),
-    setEmbedded: (ctx: AgenticaContext<SchemaModel>) => {
+    setEmbedded: (ctx: AgenticaContext) => {
       set.add(JSON.stringify(ctx.operations.array));
     },
   } as const;

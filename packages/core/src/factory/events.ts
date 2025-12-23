@@ -1,4 +1,4 @@
-import type { ILlmSchema, IValidation } from "@samchon/openapi";
+import type { IValidation } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import { v4 } from "uuid";
@@ -45,9 +45,9 @@ export function createInitializeEvent(): AgenticaInitializeEvent {
   };
 }
 
-export function createSelectEvent<Model extends ILlmSchema.Model>(props: {
-  selection: AgenticaOperationSelection<Model>;
-}): AgenticaSelectEvent<Model> {
+export function createSelectEvent(props: {
+  selection: AgenticaOperationSelection;
+}): AgenticaSelectEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
@@ -69,9 +69,9 @@ export function createSelectEvent<Model extends ILlmSchema.Model>(props: {
   };
 }
 
-export function createCancelEvent<Model extends ILlmSchema.Model>(props: {
-  selection: AgenticaOperationSelection<Model>;
-}): AgenticaCancelEvent<Model> {
+export function createCancelEvent(props: {
+  selection: AgenticaOperationSelection;
+}): AgenticaCancelEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
@@ -91,11 +91,11 @@ export function createCancelEvent<Model extends ILlmSchema.Model>(props: {
 /* -----------------------------------------------------------
   FUNCTION CALLS
 ----------------------------------------------------------- */
-export function createCallEvent<Model extends ILlmSchema.Model>(props: {
+export function createCallEvent(props: {
   id: string;
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
   arguments: Record<string, any>;
-}): AgenticaCallEvent<Model> {
+}): AgenticaCallEvent {
   const created_at: string = new Date().toISOString();
   return {
     type: "call",
@@ -113,13 +113,13 @@ export function createCallEvent<Model extends ILlmSchema.Model>(props: {
   };
 }
 
-export function createJsonParseErrorEvent<Model extends ILlmSchema.Model>(props: {
+export function createJsonParseErrorEvent(props: {
   call_id: string;
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
   arguments: string;
   errorMessage: string;
   life: number;
-}): AgenticaJsonParseErrorEvent<Model> {
+}): AgenticaJsonParseErrorEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
@@ -134,12 +134,12 @@ export function createJsonParseErrorEvent<Model extends ILlmSchema.Model>(props:
   };
 }
 
-export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
+export function createValidateEvent(props: {
   call_id: string;
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
   result: IValidation.IFailure;
   life: number;
-}): AgenticaValidateEvent<Model> {
+}): AgenticaValidateEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
@@ -162,13 +162,13 @@ export function createValidateEvent<Model extends ILlmSchema.Model>(props: {
   };
 }
 
-export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
+export function createExecuteEvent(props: {
   call_id: string;
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
   arguments: Record<string, unknown>;
   value: unknown;
   success: boolean;
-}): AgenticaExecuteEvent<Model> {
+}): AgenticaExecuteEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {
@@ -177,7 +177,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
     created_at,
     call_id: props.call_id,
     protocol: props.operation.protocol as "class",
-    operation: props.operation as AgenticaOperation.Class<Model>,
+    operation: props.operation as AgenticaOperation.Class,
     arguments: props.arguments,
     value: props.value as any,
     success: props.success,
@@ -197,7 +197,7 @@ export function createExecuteEvent<Model extends ILlmSchema.Model>(props: {
         id,
         created_at,
         ...props,
-      }) as AgenticaExecuteHistory.Class<Model>,
+      }) as AgenticaExecuteHistory.Class,
   };
 }
 
@@ -264,13 +264,13 @@ export function createAssistantMessageEvent(props: {
   };
 }
 
-export function createDescribeEvent<Model extends ILlmSchema.Model>(props: {
-  executes: AgenticaExecuteHistory<Model>[];
+export function createDescribeEvent(props: {
+  executes: AgenticaExecuteHistory[];
   stream: AsyncGenerator<string, undefined, undefined>;
   done: () => boolean;
   get: () => string;
   join: () => Promise<string>;
-}): AgenticaDescribeEvent<Model> {
+}): AgenticaDescribeEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
   return {

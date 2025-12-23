@@ -5,13 +5,12 @@
  * @author Wrtn Technologies
  */
 import type { AgenticaHistory } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 export const AgenticaPromptReporter = {
   markdown,
 };
 
-function markdown<Model extends ILlmSchema.Model>(p: AgenticaHistory<Model>): string {
+function markdown(p: AgenticaHistory): string {
   if (p.type === "userMessage") {
     return [`### User Input`, p.contents, ""].join("\n");
   }

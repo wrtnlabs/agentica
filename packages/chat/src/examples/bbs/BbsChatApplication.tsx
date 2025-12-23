@@ -1,4 +1,3 @@
-import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import { MicroAgentica } from "@agentica/core";
@@ -8,18 +7,10 @@ import { AgenticaChatApplication } from "../../AgenticaChatApplication";
 
 import { BbsArticleService } from "./BbsArticleService";
 
-const applications = {
-  "chatgpt": typia.llm.application<BbsArticleService, "chatgpt">(),
-  "claude": typia.llm.application<BbsArticleService, "claude">(),
-  "gemini": typia.llm.application<BbsArticleService, "gemini">(),
-  "3.0": typia.llm.application<BbsArticleService, "3.0">(),
-  "3.1": typia.llm.application<BbsArticleService, "3.1">(),
-};
 
 export function BbsChatApplication(props: BbsChatApplication.IProps) {
   const service: BbsArticleService = new BbsArticleService();
-  const agent: MicroAgentica<ILlmSchema.Model> = new MicroAgentica({
-    model: "chatgpt",
+  const agent: MicroAgentica = new MicroAgentica({
     vendor: {
       api: props.api,
       model: props.vendorModel,
@@ -28,7 +19,7 @@ export function BbsChatApplication(props: BbsChatApplication.IProps) {
       {
         protocol: "class",
         name: "bbs",
-        application: applications[props.schemaModel] as ILlmApplication<ILlmSchema.Model>,
+        application: typia.llm.application<BbsArticleService>(),
         execute: service,
       },
     ],
@@ -43,7 +34,6 @@ export namespace BbsChatApplication {
   export interface IProps {
     api: OpenAI;
     vendorModel: string;
-    schemaModel: ILlmSchema.Model;
     locale?: string;
     timezone?: string;
   }

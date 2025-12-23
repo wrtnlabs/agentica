@@ -5,7 +5,6 @@ import type {
   AgenticaHistory,
   AgenticaOperationSelection,
 } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 import type { tags } from "typia";
 
 /**
@@ -42,19 +41,19 @@ import { AgenticaSelectBenchmarkReporter } from "./internal/AgenticaSelectBenchm
  *
  * @author Samchon
  */
-export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
-  private agent_: Agentica<Model>;
-  private scenarios_: IAgenticaSelectBenchmarkScenario<Model>[];
+export class AgenticaSelectBenchmark {
+  private agent_: Agentica;
+  private scenarios_: IAgenticaSelectBenchmarkScenario[];
   private config_: AgenticaSelectBenchmark.IConfig;
-  private histories_: AgenticaHistory<Model>[];
-  private result_: IAgenticaSelectBenchmarkResult<Model> | null;
+  private histories_: AgenticaHistory[];
+  private result_: IAgenticaSelectBenchmarkResult | null;
 
   /**
    * Initializer Constructor.
    *
    * @param props Properties of the selection benchmark
    */
-  public constructor(props: AgenticaSelectBenchmark.IProps<Model>) {
+  public constructor(props: AgenticaSelectBenchmark.IProps) {
     this.agent_ = props.agent;
     this.scenarios_ = props.scenarios.slice();
     this.config_ = {
@@ -82,18 +81,18 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
    * @returns Results of the function selection benchmark
    */
   public async execute(
-    listener?: (event: IAgenticaSelectBenchmarkEvent<Model>) => void,
-  ): Promise<IAgenticaSelectBenchmarkResult<Model>> {
+    listener?: (event: IAgenticaSelectBenchmarkEvent) => void,
+  ): Promise<IAgenticaSelectBenchmarkResult> {
     const started_at: Date = new Date();
     const semaphore: Semaphore = new Semaphore(this.config_.simultaneous);
-    const experiments: IAgenticaSelectBenchmarkResult.IExperiment<Model>[]
+    const experiments: IAgenticaSelectBenchmarkResult.IExperiment[]
       = await Promise.all(
         this.scenarios_.map(async (scenario) => {
-          const events: IAgenticaSelectBenchmarkEvent<Model>[]
+          const events: IAgenticaSelectBenchmarkEvent[]
             = await Promise.all(
               Array.from({ length: this.config_.repeat }).map(async () => {
                 await semaphore.acquire();
-                const e: IAgenticaSelectBenchmarkEvent<Model>
+                const e: IAgenticaSelectBenchmarkEvent
                   = await this.step(scenario);
                 await semaphore.release();
                 if (listener !== undefined) {
@@ -149,13 +148,13 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
   }
 
   private async step(
-    scenario: IAgenticaSelectBenchmarkScenario<Model>,
-  ): Promise<IAgenticaSelectBenchmarkEvent<Model>> {
+    scenario: IAgenticaSelectBenchmarkScenario,
+  ): Promise<IAgenticaSelectBenchmarkEvent> {
     const started_at: Date = new Date();
     try {
       const usage: AgenticaTokenUsage = AgenticaTokenUsage.zero();
-      const historyGetters: Array<() => Promise<AgenticaHistory<Model>>> = [];
-      const dispatch = async (event: AgenticaEvent<Model>): Promise<void> => {
+      const historyGetters: Array<() => Promise<AgenticaHistory>> = [];
+      const dispatch = async (event: AgenticaEvent): Promise<void> => {
         if ("toHistory" in event) {
           if ("join" in event) {
             historyGetters.push(async () => {
@@ -168,7 +167,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
           }
         }
       };
-      const context: AgenticaContext<Model> = this.agent_.getContext({
+      const context: AgenticaContext = this.agent_.getContext({
         prompt: factory.createUserMessageHistory({
           id: v4(),
           created_at: started_at.toISOString(),
@@ -190,11 +189,11 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         stack: [],
         ready: () => true,
       });
-      const histories: AgenticaHistory<Model>[]
+      const histories: AgenticaHistory[]
         = await Promise.all(
           historyGetters.map(async g => g()),
         );
-      const selected: AgenticaOperationSelection<Model>[] = histories
+      const selected: AgenticaOperationSelection[] = histories
         .filter(p => p.type === "select")
         .map(p => p.selection);
       return {
@@ -213,8 +212,8 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         started_at,
         completed_at: new Date(),
       } satisfies
-      | IAgenticaSelectBenchmarkEvent.ISuccess<Model>
-      | IAgenticaSelectBenchmarkEvent.IFailure<Model>;
+      | IAgenticaSelectBenchmarkEvent.ISuccess
+      | IAgenticaSelectBenchmarkEvent.IFailure;
     }
     catch (error) {
       return {
@@ -223,7 +222,7 @@ export class AgenticaSelectBenchmark<Model extends ILlmSchema.Model> {
         error,
         started_at,
         completed_at: new Date(),
-      } satisfies IAgenticaSelectBenchmarkEvent.IError<Model>;
+      } satisfies IAgenticaSelectBenchmarkEvent.IError;
     }
   }
 }
@@ -231,16 +230,16 @@ export namespace AgenticaSelectBenchmark {
   /**
    * Properties of the {@link AgenticaSelectBenchmark} constructor.
    */
-  export interface IProps<Model extends ILlmSchema.Model> {
+  export interface IProps {
     /**
      * AI agent instance.
      */
-    agent: Agentica<Model>;
+    agent: Agentica;
 
     /**
      * List of scenarios what you expect.
      */
-    scenarios: IAgenticaSelectBenchmarkScenario<Model>[];
+    scenarios: IAgenticaSelectBenchmarkScenario[];
 
     /**
      * Configuration for the benchmark.

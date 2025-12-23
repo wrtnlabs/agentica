@@ -1,4 +1,4 @@
-import type { ILlmApplication, ILlmSchema } from "@samchon/openapi";
+import type { ILlmApplication } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { IValidation } from "typia";
 
@@ -25,9 +25,8 @@ import { toAsyncGenerator } from "../utils/StreamUtil";
 
 import { selectFunctionFromContext } from "./internal/selectFunctionFromContext";
 
-const CONTAINER: ILlmApplication<"chatgpt"> = typia.llm.application<
-  __IChatSelectFunctionsApplication,
-  "chatgpt"
+const CONTAINER: ILlmApplication = typia.llm.application<
+  __IChatSelectFunctionsApplication
 >();
 
 interface IFailure {
@@ -36,16 +35,16 @@ interface IFailure {
   validation: IValidation.IFailure;
 }
 
-export async function select<Model extends ILlmSchema.Model>(
-  ctx: AgenticaContext<Model>,
+export async function select(
+  ctx: AgenticaContext,
 ): Promise<void> {
   if (ctx.operations.divided === undefined) {
     return step(ctx, ctx.operations.array, 0);
   }
 
-  const stacks: AgenticaOperationSelection<Model>[][]
+  const stacks: AgenticaOperationSelection[][]
     = ctx.operations.divided.map(() => []);
-  const events: AgenticaEvent<Model>[] = [];
+  const events: AgenticaEvent[] = [];
   await Promise.all(
     ctx.operations.divided.map(async (operations, i) =>
       step(
@@ -81,7 +80,7 @@ export async function select<Model extends ILlmSchema.Model>(
     );
   }
   else {
-    const selected: AgenticaSelectEvent<Model>[]
+    const selected: AgenticaSelectEvent[]
       = events.filter(e => e.type === "select");
     (selected.length !== 0 ? selected : events)
       .forEach((e) => {
@@ -90,9 +89,9 @@ export async function select<Model extends ILlmSchema.Model>(
   }
 }
 
-async function step<Model extends ILlmSchema.Model>(
-  ctx: AgenticaContext<Model>,
-  operations: AgenticaOperation<Model>[],
+async function step(
+  ctx: AgenticaContext,
+  operations: AgenticaOperation[],
   retry: number,
   failures?: IFailure[],
 ): Promise<void> {

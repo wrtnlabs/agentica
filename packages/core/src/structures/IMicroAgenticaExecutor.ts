@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { MicroAgenticaContext } from "../context/MicroAgenticaContext";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
 
@@ -17,7 +15,7 @@ import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory
  *
  * @author Samchon
  */
-export interface IMicroAgenticaExecutor<Model extends ILlmSchema.Model> {
+export interface IMicroAgenticaExecutor {
   /**
    * Function caller agent.
    *
@@ -43,7 +41,7 @@ export interface IMicroAgenticaExecutor<Model extends ILlmSchema.Model> {
    *          agent is the most general topic which can be universally
    *          applied to all domain fields.
    */
-  call: (ctx: MicroAgenticaContext<Model>) => Promise<AgenticaExecuteHistory<Model>[]>;
+  call: (ctx: MicroAgenticaContext) => Promise<AgenticaExecuteHistory[]>;
 
   /**
    * Describer agent of the function calling result.
@@ -62,7 +60,7 @@ export interface IMicroAgenticaExecutor<Model extends ILlmSchema.Model> {
     | boolean
     | null
     | ((
-      ctx: MicroAgenticaContext<Model>,
-      executes: AgenticaExecuteHistory<Model>[],
+      ctx: MicroAgenticaContext,
+      executes: AgenticaExecuteHistory[],
     ) => Promise<void>);
 }

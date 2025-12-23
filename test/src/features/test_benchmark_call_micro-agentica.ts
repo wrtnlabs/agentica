@@ -39,8 +39,7 @@ export async function test_benchmark_call(): Promise<void | false> {
   );
 
   // CREATE AI AGENT
-  const agent = new MicroAgentica({
-    model: "chatgpt",
+  const agent: MicroAgentica = new MicroAgentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
@@ -52,9 +51,8 @@ export async function test_benchmark_call(): Promise<void | false> {
         protocol: "http",
         name: "shopping",
         application: HttpLlm.application({
-          model: "chatgpt",
           document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
+            "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json",
           ).then(async res => res.json() as Promise<OpenApi.IDocument>),
         }),
         connection,
@@ -66,7 +64,7 @@ export async function test_benchmark_call(): Promise<void | false> {
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): AgenticaOperation<"chatgpt"> => {
+  ): AgenticaOperation => {
     const found = agent
       .getOperations()
       .find(

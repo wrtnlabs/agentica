@@ -1,4 +1,4 @@
-import type { IHttpResponse, ILlmSchema } from "@samchon/openapi";
+import type { IHttpResponse } from "@samchon/openapi";
 import type OpenAI from "openai";
 import type { tags } from "typia";
 
@@ -18,7 +18,7 @@ import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 /**
  * @internal
  */
-export function decodeHistory<Model extends ILlmSchema.Model>(history: AgenticaHistory<Model>): OpenAI.ChatCompletionMessageParam[] {
+export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMessageParam[] {
   // NO NEED TO DECODE DESCRIBE
   if (history.type === "describe") {
     return [];
@@ -245,12 +245,12 @@ export function createSystemMessageHistory(props: {
 /**
  * @internal
  */
-export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
+export function createDescribeHistory(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
-  executes: AgenticaExecuteHistory<Model>[];
+  executes: AgenticaExecuteHistory[];
   text: string;
-}): AgenticaDescribeHistory<Model> {
+}): AgenticaDescribeHistory {
   return {
     type: "describe",
     id: props.id,
@@ -273,11 +273,11 @@ export function createDescribeHistory<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
+export function createSelectHistory(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
-  selection: AgenticaOperationSelection<Model>;
-}): AgenticaSelectHistory<Model> {
+  selection: AgenticaOperationSelection;
+}): AgenticaSelectHistory {
   return {
     type: "select",
     id: props.id,
@@ -295,11 +295,11 @@ export function createSelectHistory<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
+export function createCancelHistory(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
-  selection: AgenticaOperationSelection<Model>;
-}): AgenticaCancelHistory<Model> {
+  selection: AgenticaOperationSelection;
+}): AgenticaCancelHistory {
   return {
     type: "cancel",
     id: props.id,
@@ -317,22 +317,20 @@ export function createCancelHistory<Model extends ILlmSchema.Model>(props: {
 /**
  * @internal
  */
-export function createExecuteHistory<
-  Model extends ILlmSchema.Model,
->(props: {
+export function createExecuteHistory(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
   arguments: Record<string, any>;
   value: unknown;
   success: boolean;
-}): AgenticaExecuteHistory<Model> {
+}): AgenticaExecuteHistory {
   return {
     type: "execute",
     protocol: props.operation.protocol as "class",
     id: props.id,
     created_at: props.created_at,
-    operation: props.operation as AgenticaOperation.Class<Model>,
+    operation: props.operation as AgenticaOperation.Class,
     arguments: props.arguments,
     value: props.value,
     success: props.success,

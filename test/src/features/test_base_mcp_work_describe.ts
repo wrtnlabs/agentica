@@ -15,7 +15,7 @@ export async function test_base_mcp_work_describe(): Promise<void | false> {
   }
 
   // for trace event
-  const events: AgenticaEvent<"chatgpt">[] = [];
+  const events: AgenticaEvent[] = [];
   let functionCalled = false;
 
   const server = await createServer({
@@ -32,15 +32,13 @@ export async function test_base_mcp_work_describe(): Promise<void | false> {
   await client.connect(clientTransport);
   await server.connect(serverTransport);
 
-  const calculatorController: IAgenticaController<"chatgpt"> = await assertMcpController({
+  const calculatorController: IAgenticaController = await assertMcpController({
     name: "calculator",
-    model: "chatgpt",
     client,
   });
 
   // Agentica instance
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({

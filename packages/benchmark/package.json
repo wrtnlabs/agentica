@@ -54,7 +54,7 @@
     "openai": "catalog:libs",
     "tstl": "catalog:libs",
     "typia": "catalog:typia",
-    "uuid": "^11.1.0"
+    "uuid": "catalog:libs"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",

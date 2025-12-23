@@ -1,4 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import type { MicroAgenticaEvent } from "../events/MicroAgenticaEvent";
@@ -29,7 +28,7 @@ import type { AgenticaOperationCollection } from "./AgenticaOperationCollection"
  *
  * @author Samchon
  */
-export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
+export interface MicroAgenticaContext {
   // ----
   // APPLICATION
   // ----
@@ -40,7 +39,7 @@ export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
    * groups composed by the divide and conquer rule for the
    * efficient operation selection if configured.
    */
-  operations: AgenticaOperationCollection<Model>;
+  operations: AgenticaOperationCollection;
 
   /**
    * Configuration of the agent.
@@ -50,7 +49,7 @@ export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
    *
    * @todo Write detaily after supporting the agent customization feature
    */
-  config: IMicroAgenticaConfig<Model> | undefined;
+  config: IMicroAgenticaConfig | undefined;
 
   // ----
   // STATES
@@ -58,7 +57,7 @@ export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
   /**
    * Prompt histories.
    */
-  histories: MicroAgenticaHistory<Model>[];
+  histories: MicroAgenticaHistory[];
 
   /**
    * Text prompt of the user.
@@ -83,7 +82,7 @@ export interface MicroAgenticaContext<Model extends ILlmSchema.Model> {
    *
    * @param event Event to deliver
    */
-  dispatch: (event: MicroAgenticaEvent<Model>) => Promise<void>;
+  dispatch: (event: MicroAgenticaEvent) => Promise<void>;
 
   /**
    * Request to the OpenAI server.

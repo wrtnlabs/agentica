@@ -9,7 +9,6 @@ import type {
   AgenticaOperationSelection,
   AgenticaTokenUsage,
 } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import type { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmarkScenario";
 
@@ -35,10 +34,10 @@ import type { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmar
  *
  * @author Samchon
  */
-export type IAgenticaSelectBenchmarkEvent<Model extends ILlmSchema.Model> =
-  | IAgenticaSelectBenchmarkEvent.ISuccess<Model>
-  | IAgenticaSelectBenchmarkEvent.IFailure<Model>
-  | IAgenticaSelectBenchmarkEvent.IError<Model>;
+export type IAgenticaSelectBenchmarkEvent =
+  | IAgenticaSelectBenchmarkEvent.ISuccess
+  | IAgenticaSelectBenchmarkEvent.IFailure
+  | IAgenticaSelectBenchmarkEvent.IError;
 export namespace IAgenticaSelectBenchmarkEvent {
   /**
    * Success event type.
@@ -46,8 +45,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
    * The `success` event type represents that the benchmark testing is
    * fully meet the expected scenario.
    */
-  export interface ISuccess<Model extends ILlmSchema.Model>
-    extends IEventBase<"success", Model> {
+  export interface ISuccess extends IEventBase<"success"> {
     /**
      * Usage of the token during the benchmark.
      */
@@ -56,7 +54,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Selected operations in the benchmark.
      */
-    selected: AgenticaOperationSelection<Model>[];
+    selected: AgenticaOperationSelection[];
 
     /**
      * Prompt messages from the assistant.
@@ -70,8 +68,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
    * The `failure` event type represents that the `selector` had not
    * selected the expected scenario in the benchmark testing.
    */
-  export interface IFailure<Model extends ILlmSchema.Model>
-    extends IEventBase<"failure", Model> {
+  export interface IFailure extends IEventBase<"failure"> {
     /**
      * Usage of the token during the benchmark.
      */
@@ -80,7 +77,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Selected operations in the benchmark.
      */
-    selected: AgenticaOperationSelection<Model>[];
+    selected: AgenticaOperationSelection[];
 
     /**
      * Prompt messages from the assistant.
@@ -94,15 +91,14 @@ export namespace IAgenticaSelectBenchmarkEvent {
    * The `error` event type repsents that an error had been occurred
    * during the benchmark testing.
    */
-  export interface IError<Model extends ILlmSchema.Model>
-    extends IEventBase<"error", Model> {
+  export interface IError extends IEventBase<"error"> {
     /**
      * Error occurred during the benchmark.
      */
     error: unknown;
   }
 
-  interface IEventBase<Type extends string, Model extends ILlmSchema.Model> {
+  interface IEventBase<Type extends string> {
     /**
      * Discriminant type.
      */
@@ -111,7 +107,7 @@ export namespace IAgenticaSelectBenchmarkEvent {
     /**
      * Expected scenario.
      */
-    scenario: IAgenticaSelectBenchmarkScenario<Model>;
+    scenario: IAgenticaSelectBenchmarkScenario;
 
     /**
      * When the benchmark testing started.

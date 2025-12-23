@@ -10,7 +10,7 @@ async function main() {
   const connector: WebSocketConnector<
     null,
     IAgenticaRpcListener,
-    IAgenticaRpcService<"chatgpt">
+    IAgenticaRpcService
   > = new WebSocketConnector(null, {
     // and configuring IAgenticaRpcListener instance
     //
@@ -35,7 +35,7 @@ async function main() {
   await connector.connect("ws://localhost:3001");
 
   // Call the server's functions remotely (Remote Procedure Call)
-  const driver: Driver<IAgenticaRpcService<"chatgpt">> = connector.getDriver();
+  const driver: Driver<IAgenticaRpcService> = connector.getDriver();
   await driver.conversate("Hello, what you can do?");
 
   // Disconnect after your job

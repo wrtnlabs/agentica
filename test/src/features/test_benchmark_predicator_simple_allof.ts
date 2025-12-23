@@ -10,8 +10,7 @@ export async function test_benchmark_predicator_simple_allof(): Promise<void> {
   // ----
   // PREPARATIONS
   // ----
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: null!,
@@ -21,9 +20,8 @@ export async function test_benchmark_predicator_simple_allof(): Promise<void> {
         protocol: "http",
         name: "shopping",
         application: HttpLlm.application({
-          model: "chatgpt",
           document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
+            "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json",
           ).then(async res => res.json() as Promise<OpenApi.IDocument>),
         }),
         connection: {
@@ -36,7 +34,7 @@ export async function test_benchmark_predicator_simple_allof(): Promise<void> {
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): AgenticaOperation<"chatgpt"> => {
+  ): AgenticaOperation => {
     const found = agent
       .getOperations()
       .find(

@@ -13,8 +13,7 @@ export async function test_bug_openrouter_streaming(): Promise<void | false> {
     return false;
   }
 
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       api: new OpenAI({
         apiKey: TestGlobal.env.OPENROUTER_API_KEY,
@@ -26,13 +25,13 @@ export async function test_bug_openrouter_streaming(): Promise<void | false> {
       {
         protocol: "class",
         name: "bbs",
-        application: typia.llm.application<BbsArticleService, "chatgpt">(),
+        application: typia.llm.application<BbsArticleService>(),
         execute: new BbsArticleService(),
       },
     ],
   });
 
-  const histories: AgenticaHistory<"chatgpt">[] = await agent.conversate(`
+  const histories: AgenticaHistory[] = await agent.conversate(`
     I will create a new article.
 
     Title is "Introduce typia, superfast runtime validator", and thumbnail URL is https://typia.io/logo.png

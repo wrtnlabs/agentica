@@ -9,9 +9,8 @@ import { TestGlobal } from "../TestGlobal";
 import type { IWrtnWebSearchApplication } from "./internal/IWrtnWebSearchApplication";
 
 async function main(): Promise<void> {
-  const application: ILlmApplication<"chatgpt", IWrtnWebSearchApplication> = typia.llm.application<IWrtnWebSearchApplication, "chatgpt">();
-  const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
-    model: "chatgpt",
+  const application: ILlmApplication<IWrtnWebSearchApplication> = typia.llm.application<IWrtnWebSearchApplication>();
+  const agent: MicroAgentica = new MicroAgentica({
     controllers: [
       {
         protocol: "class",

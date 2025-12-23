@@ -1,5 +1,4 @@
 import type { AgenticaUserMessageContent, IAgenticaController } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 /**
  * RPC interface of AI agent service.
@@ -14,7 +13,7 @@ import type { ILlmSchema } from "@samchon/openapi";
  *
  * @author Samchon
  */
-export interface IAgenticaRpcService<Model extends ILlmSchema.Model> {
+export interface IAgenticaRpcService {
   /**
    * Conversate with the AI agent.
    *
@@ -41,5 +40,5 @@ export interface IAgenticaRpcService<Model extends ILlmSchema.Model> {
    * Get controllers, collection of functions that would be
    * called by the AI chatbot.
    */
-  getControllers: () => Promise<IAgenticaController<Model>[]>;
+  getControllers: () => Promise<IAgenticaController[]>;
 }

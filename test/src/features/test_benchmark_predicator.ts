@@ -11,8 +11,7 @@ export async function test_benchmark_predicator(): Promise<void> {
   // ----
   // PREPARATIONS
   // ----
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: null!,
@@ -22,9 +21,8 @@ export async function test_benchmark_predicator(): Promise<void> {
         protocol: "http",
         name: "shopping",
         application: HttpLlm.application({
-          model: "chatgpt",
           document: await fetch(
-            "https://shopping-be.wrtn.ai/editor/swagger.json",
+            "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json",
           ).then(async res => res.json() as Promise<OpenApi.IDocument>),
         }),
         connection: {
@@ -37,7 +35,7 @@ export async function test_benchmark_predicator(): Promise<void> {
   const find = (
     method: OpenApi.Method,
     path: string,
-  ): AgenticaOperation<"chatgpt"> => {
+  ): AgenticaOperation => {
     const found = agent
       .getOperations()
       .find(
@@ -121,27 +119,21 @@ export async function test_benchmark_predicator(): Promise<void> {
     AgenticaBenchmarkPredicator.success({
       expected: {
         type: "array",
-
         items: [
           {
-            type: "array",
-            items: [
-              {
-                type: "standalone",
-                operation: find("patch", "/shoppings/customers/sales"),
-              },
-              {
-                type: "standalone",
-                operation: find("get", "/shoppings/customers/sales/{id}"),
-              },
-            ],
-          } satisfies IAgenticaBenchmarkExpected.IArray<"chatgpt">,
-          /**
-           * It is incorrect type, but it is not a problem because it just test code
-           * Code that tests overlapping arrays, but is not allowed as a type.
-           */
-        ] as unknown as IAgenticaBenchmarkExpected.IAllOf<"chatgpt">[],
-      },
+            type: "standalone",
+            operation: find("patch", "/shoppings/customers/sales"),
+          },
+          {
+            type: "standalone",
+            operation: find("get", "/shoppings/customers/sales/{id}"),
+          },
+        ],
+      } satisfies IAgenticaBenchmarkExpected.IArray,
+      /**
+       * It is incorrect type, but it is not a problem because it just test code
+       * Code that tests overlapping arrays, but is not allowed as a type.
+       */
       operations: [
         find("patch", "/shoppings/customers/sales"),
         find("get", "/shoppings/customers/sales/{id}"),

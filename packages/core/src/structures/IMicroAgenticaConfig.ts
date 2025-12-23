@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { IMicroAgenticaExecutor } from "./IMicroAgenticaExecutor";
 import type { IMicroAgenticaSystemPrompt } from "./IMicroAgenticaSystemPrompt";
 
@@ -13,7 +11,7 @@ import type { IMicroAgenticaSystemPrompt } from "./IMicroAgenticaSystemPrompt";
  *
  * @author Samchon
  */
-export interface IMicroAgenticaConfig<Model extends ILlmSchema.Model> {
+export interface IMicroAgenticaConfig {
   /**
    * Agent executor.
    *
@@ -31,7 +29,7 @@ export interface IMicroAgenticaConfig<Model extends ILlmSchema.Model> {
    */
   executor?:
     | undefined
-    | Partial<IMicroAgenticaExecutor<Model>>;
+    | Partial<IMicroAgenticaExecutor>;
 
   /**
    * System prompt messages.
@@ -39,7 +37,7 @@ export interface IMicroAgenticaConfig<Model extends ILlmSchema.Model> {
    * System prompt messages if you want to customize the system prompt
    * messages for each situation.
    */
-  systemPrompt?: IMicroAgenticaSystemPrompt<Model>;
+  systemPrompt?: IMicroAgenticaSystemPrompt;
 
   /**
    * Locale of the A.I. chatbot.

@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import { Semaphore } from "tstl";
 
 import type { AgenticaContext } from "./context/AgenticaContext";
@@ -51,17 +49,17 @@ import { getChatCompletionWithStreamingFunction } from "./utils/request";
  *
  * @author Samchon
  */
-export class Agentica<Model extends ILlmSchema.Model> {
+export class Agentica {
   // THE OPERATIONS
-  private readonly operations_: AgenticaOperationCollection<Model>;
+  private readonly operations_: AgenticaOperationCollection;
 
   // STACK
-  private readonly stack_: AgenticaOperationSelection<Model>[];
-  private readonly histories_: AgenticaHistory<Model>[];
-  private readonly listeners_: Map<string, Set<(event: AgenticaEvent<Model>) => Promise<void> | void>>;
+  private readonly stack_: AgenticaOperationSelection[];
+  private readonly histories_: AgenticaHistory[];
+  private readonly listeners_: Map<string, Set<(event: AgenticaEvent) => Promise<void> | void>>;
 
   // STATUS
-  private readonly executor_: (ctx: AgenticaContext<Model>) => Promise<void>;
+  private readonly executor_: (ctx: AgenticaContext) => Promise<void>;
   private readonly semaphore_: Semaphore | null;
   private readonly token_usage_: AgenticaTokenUsage;
   private ready_: boolean;
@@ -74,7 +72,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    *
    * @param props Properties to construct the agent
    */
-  public constructor(private readonly props: IAgenticaProps<Model>) {
+  public constructor(private readonly props: IAgenticaProps) {
     // OPERATIONS
     this.operations_ = AgenticaOperationComposer.compose({
       controllers: props.controllers,
@@ -112,7 +110,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   /**
    * @internal
    */
-  public clone(): Agentica<Model> {
+  public clone(): Agentica {
     return new Agentica({
       ...this.props,
       histories: this.props.histories?.slice(),
@@ -142,9 +140,9 @@ export class Agentica<Model extends ILlmSchema.Model> {
     options: {
       abortSignal?: AbortSignal;
     } = {},
-  ): Promise<AgenticaHistory<Model>[]> {
-    const historyGetters: Array<() => Promise<AgenticaHistory<Model>>> = [];
-    const dispatch = async (event: AgenticaEvent<Model>): Promise<void> => {
+  ): Promise<AgenticaHistory[]> {
+    const historyGetters: Array<() => Promise<AgenticaHistory>> = [];
+    const dispatch = async (event: AgenticaEvent): Promise<void> => {
       try {
         await this.dispatch(event);
         if ("toHistory" in event) {
@@ -183,7 +181,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
       }),
     );
 
-    const completed: AgenticaHistory<Model>[] = await Promise.all(
+    const completed: AgenticaHistory[] = await Promise.all(
       historyGetters.map(async h => h()),
     );
     this.histories_.push(...completed);
@@ -193,7 +191,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   /**
    * Get configuration.
    */
-  public getConfig(): IAgenticaConfig<Model> | undefined {
+  public getConfig(): IAgenticaConfig | undefined {
     return this.props.config;
   }
 
@@ -210,7 +208,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    * Get list of controllers, which are the collection of functions that
    * the "Super AI Chatbot" can execute.
    */
-  public getControllers(): ReadonlyArray<IAgenticaController<Model>> {
+  public getControllers(): ReadonlyArray<IAgenticaController> {
     return this.props.controllers;
   }
 
@@ -222,7 +220,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    *
    * @returns List of operations
    */
-  public getOperations(): ReadonlyArray<AgenticaOperation<Model>> {
+  public getOperations(): ReadonlyArray<AgenticaOperation> {
     return this.operations_.array;
   }
 
@@ -233,7 +231,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
    *
    * @returns List of chat histories
    */
-  public getHistories(): AgenticaHistory<Model>[] {
+  public getHistories(): AgenticaHistory[] {
     return this.histories_;
   }
 
@@ -255,10 +253,10 @@ export class Agentica<Model extends ILlmSchema.Model> {
   public getContext(props: {
     prompt: AgenticaUserMessageHistory;
     usage: AgenticaTokenUsage;
-    dispatch: (event: AgenticaEvent<Model>) => Promise<void>;
+    dispatch: (event: AgenticaEvent) => Promise<void>;
     abortSignal?: AbortSignal;
-  }): AgenticaContext<Model> {
-    const request = getChatCompletionWithStreamingFunction<Model>({
+  }): AgenticaContext {
+    const request = getChatCompletionWithStreamingFunction({
       vendor: this.props.vendor,
       config: this.props.config,
       dispatch: props.dispatch,
@@ -312,13 +310,13 @@ export class Agentica<Model extends ILlmSchema.Model> {
   public on<Type extends AgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: AgenticaEvent.Mapper<Model>[Type],
+      event: AgenticaEvent.Mapper[Type],
     ) => void | Promise<void>,
   ): this {
     /**
      * @TODO remove `as`
      */
-    __map_take(this.listeners_, type, () => new Set()).add(listener as (event: AgenticaEvent<Model>) => void | Promise<void>);
+    __map_take(this.listeners_, type, () => new Set()).add(listener as (event: AgenticaEvent) => void | Promise<void>);
     return this;
   }
 
@@ -333,7 +331,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
   public off<Type extends AgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: AgenticaEvent.Mapper<Model>[Type],
+      event: AgenticaEvent.Mapper[Type],
     ) => void | Promise<void>,
   ): this {
     const set = this.listeners_.get(type);
@@ -341,7 +339,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     /**
      * @TODO remove `as`
      */
-      set.delete(listener as (event: AgenticaEvent<Model>) => void | Promise<void>);
+      set.delete(listener as (event: AgenticaEvent) => void | Promise<void>);
       if (set.size === 0) {
         this.listeners_.delete(type);
       }
@@ -349,7 +347,7 @@ export class Agentica<Model extends ILlmSchema.Model> {
     return this;
   }
 
-  private async dispatch<Event extends AgenticaEvent<Model>>(
+  private async dispatch<Event extends AgenticaEvent>(
     event: Event,
   ): Promise<void> {
     const set = this.listeners_.get(event.type);

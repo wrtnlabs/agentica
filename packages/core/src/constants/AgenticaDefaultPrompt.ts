@@ -1,5 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
-
 import { is_node } from "tstl";
 
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
@@ -24,9 +22,9 @@ const getTimezone = new Singleton(
   () => Intl.DateTimeFormat().resolvedOptions().timeZone,
 );
 
-export function write<Model extends ILlmSchema.Model>(config?: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model>): string {
+export function write(config?: IAgenticaConfig | IMicroAgenticaConfig): string {
   if (config?.systemPrompt?.common !== undefined) {
-    return (config.systemPrompt as IMicroAgenticaSystemPrompt<Model>).common!(config as unknown as IMicroAgenticaConfig<Model>);
+    return (config.systemPrompt as IMicroAgenticaSystemPrompt).common!(config as unknown as IMicroAgenticaConfig);
   }
 
   const locale: string = config?.locale ?? getLocale.get();

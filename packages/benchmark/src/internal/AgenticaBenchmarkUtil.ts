@@ -4,8 +4,6 @@
  *
  * @author Wrtn Technologies
  */
-import type { ILlmSchema } from "@samchon/openapi";
-
 import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
 export const AgenticaBenchmarkUtil = {
@@ -31,7 +29,7 @@ function errorToJson<T>(error: T): T | ({
   return error;
 }
 
-function expectedToJson<Model extends ILlmSchema.Model>(expected: IAgenticaBenchmarkExpected<Model>): any {
+function expectedToJson(expected: IAgenticaBenchmarkExpected): any {
   if (expected.type === "standalone") {
     return {
       type: expected.type,

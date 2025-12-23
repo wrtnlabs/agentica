@@ -301,14 +301,13 @@ describe("reduceStreamingWithDispatch", () => {
       const streamedContent: string[] = [];
       await new Promise(async (resolve) => {
         const eventProcessor = vi.fn(({ stream: contentStream }) => {
-          (async () => {
+          void (async () => {
             for await (const content of contentStream) {
-              streamedContent.push(content);
+              streamedContent.push(content as string);
             }
             resolve(true);
-          })();
+          })().catch(() => {});
         });
-
         await reduceStreamingWithDispatch(stream, eventProcessor);
       });
       expect(streamedContent).toEqual(["Hello", " World"]);
@@ -895,7 +894,7 @@ describe("reduceStreamingWithDispatch", () => {
 
       const stream = new ReadableStream<ChatCompletionChunk>({
         start(controller) {
-          controller.enqueue(malformedChunk);
+          controller.enqueue(malformedChunk as ChatCompletionChunk);
           controller.close();
         },
       });

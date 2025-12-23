@@ -5,14 +5,13 @@ import type {
   IAgenticaVendor,
   IMicroAgenticaConfig,
 } from "@agentica/core";
-import type { ILlmSchema } from "@samchon/openapi";
 
 import { Typography } from "@mui/material";
 
 import { AgenticaChatFunctionStackSideMovie } from "./AgenticaChatFunctionStackSideMovie";
 import { AgenticaChatTokenUsageSideMovie } from "./AgenticaChatTokenUsageSideMovie";
 
-export function AgenticaChatSideMovie<Model extends ILlmSchema.Model>(props: AgenticaChatSideMovie.IProps<Model>) {
+export function AgenticaChatSideMovie(props: AgenticaChatSideMovie.IProps) {
   return (
     <div
       style={{
@@ -45,11 +44,6 @@ export function AgenticaChatSideMovie<Model extends ILlmSchema.Model>(props: Age
           {props.vendor.model}
         </li>
         <li>
-          Schema Model:
-          {" "}
-          {props.model}
-        </li>
-        <li>
           Locale:
           {" "}
           {props.config?.locale ?? navigator.language}
@@ -71,12 +65,11 @@ export function AgenticaChatSideMovie<Model extends ILlmSchema.Model>(props: Age
   );
 }
 export namespace AgenticaChatSideMovie {
-  export interface IProps<Model extends ILlmSchema.Model> {
-    model: Model;
+  export interface IProps {
     vendor: IAgenticaVendor;
-    config: IAgenticaConfig<Model> | IMicroAgenticaConfig<Model> | undefined;
+    config: IAgenticaConfig | IMicroAgenticaConfig | undefined;
     usage: AgenticaTokenUsage;
-    selections: AgenticaOperationSelection<Model>[];
+    selections: AgenticaOperationSelection[];
     error: Error | null;
   }
 }

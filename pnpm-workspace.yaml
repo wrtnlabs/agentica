@@ -8,9 +8,10 @@ useNodeVersion: 22.15.0
 engineStrict: true
 catalogs:
   libs:
-    openai: ^6.7.0
+    openai: ^6.15.0
     tstl: ^3.0.0
     type-fest: ^4.37.0
+    uuid: ^13.0.0
   mcp:
     "@modelcontextprotocol/sdk": ^1.12.0
     "@wrtnlabs/calculator-mcp": ^0.2.1
@@ -20,8 +21,8 @@ catalogs:
     typescript: ~5.9.3
   typia:
     "@ryoppippi/unplugin-typia": ^2.6.4
-    "@samchon/openapi": ^5.0.1
-    typia: ^10.0.2
+    "@samchon/openapi": ^6.0.0
+    typia: ^11.0.0
   vite:
     vitest: ^3.0.9
 onlyBuiltDependencies:

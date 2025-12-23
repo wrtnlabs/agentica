@@ -69,7 +69,7 @@
     "better-sqlite3": "^11.9.1",
     "cohere-ai": "^7.17.1",
     "sqlite-vec": "0.1.7-alpha.2",
-    "uuid": "^11.1.0"
+    "uuid": "catalog:libs"
   },
   "devDependencies": {
     "@agentica/core": "workspace:^",

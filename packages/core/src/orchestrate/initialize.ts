@@ -1,4 +1,4 @@
-import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
+import type { ILlmFunction } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import typia from "typia";
@@ -13,12 +13,11 @@ import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 
-const FUNCTION: ILlmFunction<"chatgpt"> = typia.llm.application<
-  __IChatInitialApplication,
-  "chatgpt"
+const FUNCTION: ILlmFunction = typia.llm.application<
+  __IChatInitialApplication
 >().functions[0]!;
 
-export async function initialize<Model extends ILlmSchema.Model>(ctx: AgenticaContext<Model>): Promise<void> {
+export async function initialize(ctx: AgenticaContext): Promise<void> {
   // ----
   // EXECUTE CHATGPT API
   // ----

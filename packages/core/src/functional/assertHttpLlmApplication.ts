@@ -1,6 +1,5 @@
 import type {
   IHttpLlmApplication,
-  ILlmSchema,
   OpenApiV3,
   OpenApiV3_1,
   SwaggerV2,
@@ -30,14 +29,7 @@ import typia from "typia";
  * @author Samchon
  * @deprecated Use {@link assertHttpController} instead.
  */
-export function assertHttpLlmApplication<
-  Model extends ILlmSchema.Model,
->(props: {
-  /**
-   * Target LLM model.
-   */
-  model: Model;
-
+export function assertHttpLlmApplication(props: {
   /**
    * Swagger/OpenAPI document.
    */
@@ -51,16 +43,15 @@ export function assertHttpLlmApplication<
   /**
    * Options for the LLM function calling schema composition.
    */
-  options?: Partial<IHttpLlmApplication.IOptions<Model>>;
-}): IHttpLlmApplication<Model> {
+  config?: Partial<IHttpLlmApplication.IConfig>;
+}): IHttpLlmApplication {
   return HttpLlm.application({
-    model: props.model,
     document: OpenApi.convert(typia.assert<
       | SwaggerV2.IDocument
       | OpenApiV3.IDocument
       | OpenApiV3_1.IDocument
       | OpenApi.IDocument
     >(props.document)),
-    options: props.options,
+    config: props.config,
   });
 }

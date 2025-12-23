@@ -25,8 +25,7 @@ async function main(): Promise<void> {
   }
 
   // COMPOSE CHAT AGENT
-  const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
-    model: "chatgpt",
+  const agent: MicroAgentica = new MicroAgentica({
     vendor: {
       api: new OpenAI({
         apiKey: TestGlobal.env.CHATGPT_API_KEY,
@@ -38,7 +37,7 @@ async function main(): Promise<void> {
         : undefined,
     },
     controllers: [
-      typia.llm.controller<BbsArticleService, "chatgpt">(
+      typia.llm.controller<BbsArticleService>(
         "bbs",
         new BbsArticleService(),
       ),
@@ -90,7 +89,7 @@ async function main(): Promise<void> {
       );
     }
     else {
-      const histories: AgenticaHistory<"chatgpt">[]
+      const histories: AgenticaHistory[]
         = await agent.conversate(content);
       for (const h of histories.slice(1)) {
         if (h.type === "userMessage") {

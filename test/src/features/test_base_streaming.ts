@@ -17,8 +17,7 @@ export async function test_base_streaming(): Promise<void | false> {
   }
 
   // Create a new Agentica instance
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
@@ -63,7 +62,7 @@ export async function test_base_streaming(): Promise<void | false> {
   });
 
   // Execute the conversation
-  const result: AgenticaHistory<"chatgpt">[] = await agent.conversate(
+  const result: AgenticaHistory[] = await agent.conversate(
     "Explain what streaming is in 3 short sentences.",
   );
 

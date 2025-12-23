@@ -41,23 +41,22 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   }
 
   // Variables for event tracking
-  const events: AgenticaEvent<"chatgpt">[] = [];
+  const events: AgenticaEvent[] = [];
   let functionCalled = false;
   const streamContentPieces: string[] = [];
   let describeEventReceived = false;
   let describeStreamProcessed = false;
   let describeJoinResult: string | undefined;
   // Create calculator controller
-  const calculatorController: IAgenticaController<"chatgpt"> = {
+  const calculatorController: IAgenticaController = {
     protocol: "class",
     name: "calculator",
-    application: typia.llm.application<Calculator, "chatgpt">(),
+    application: typia.llm.application<Calculator>(),
     execute: new Calculator(),
   };
 
   // Create Agentica instance
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
@@ -122,7 +121,7 @@ export async function test_base_streaming_describe(): Promise<void | false> {
   const b = 3412342134;
 
   // Start conversation - induce function call while requesting additional explanation
-  const result: AgenticaHistory<"chatgpt">[] = await agent.conversate(
+  const result: AgenticaHistory[] = await agent.conversate(
     `Please add ${a} and ${b}. And briefly explain what addition is. Use calculator.`,
   );
 

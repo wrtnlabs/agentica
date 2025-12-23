@@ -1,4 +1,3 @@
-import type { ILlmSchema } from "@samchon/openapi";
 import type { IValidation } from "typia";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
@@ -11,9 +10,7 @@ import type { AgenticaEventBase } from "./AgenticaEventBase";
  *
  * @author Samchon
  */
-export interface AgenticaValidateEvent<
-  Model extends ILlmSchema.Model,
-> extends AgenticaEventBase<"validate"> {
+export interface AgenticaValidateEvent extends AgenticaEventBase<"validate"> {
   /**
    * ID of the tool calling.
    */
@@ -22,7 +19,7 @@ export interface AgenticaValidateEvent<
   /**
    * Target operation to call.
    */
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
 
   /**
    * Validation result as a failure.

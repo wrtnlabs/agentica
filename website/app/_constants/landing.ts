@@ -240,7 +240,7 @@ import typia from "typia";
 const agent = new Agentica({
   controllers: [ 
    await fetch(
-     "https://shopping-be.wrtn.ai/editor/swagger.json", 
+     "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json", 
    ).then(r => r.json()),
    typia.llm.application<ShoppingCounselor>(),
    typia.llm.application<ShoppingPolicy>(),

@@ -6,7 +6,7 @@
  */
 
 import type { Agentica, AgenticaHistory, AgenticaOperation, MicroAgentica } from "@agentica/core";
-import type { ILlmFunction, ILlmSchema } from "@samchon/openapi";
+import type { ILlmFunction } from "@samchon/openapi";
 import type OpenAI from "openai";
 
 import typia from "typia";
@@ -50,8 +50,8 @@ interface IConsentProps {
   reply: string;
 }
 
-async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | MicroAgentica<Model>): Promise<string | null> {
-  const last: AgenticaHistory<Model> | undefined = agent
+async function isNext(agent: Agentica | MicroAgentica): Promise<string | null> {
+  const last: AgenticaHistory | undefined = agent
     .getHistories()
     .at(-1);
 
@@ -67,9 +67,8 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
     return null;
   }
 
-  const consent: ILlmFunction<"chatgpt"> = typia.llm.application<
-    IPredicatorApplication,
-    "chatgpt"
+  const consent: ILlmFunction = typia.llm.application<
+    IPredicatorApplication
   >().functions[0]!;
   const result: OpenAI.ChatCompletion = await llmVendor.api.chat.completions.create(
     {
@@ -128,18 +127,18 @@ async function isNext<Model extends ILlmSchema.Model>(agent: Agentica<Model> | M
  * @returns `true` if the called operations match the expected operations,
  * otherwise `false`.
  */
-export function success<Model extends ILlmSchema.Model>(props: {
+export function success(props: {
   /**
    * Expected operations to be called.
    *
    * For 'allOf' within an 'array', the next expected element starts checking from the element that follows the last called element in 'allOf'.
    */
-  expected: IAgenticaBenchmarkExpected<Model>;
+  expected: IAgenticaBenchmarkExpected;
 
   /**
    * Specified operations.
    */
-  operations: Array<AgenticaOperation<Model>>;
+  operations: Array<AgenticaOperation>;
 
   /**
    * If it's `false`, check the array and let it go even if there's something wrong between them.
@@ -151,7 +150,7 @@ export function success<Model extends ILlmSchema.Model>(props: {
   return successInner(props).result;
 }
 
-function successInner<Model extends ILlmSchema.Model>(props: Parameters<typeof success<Model>>[0]):
+function successInner(props: Parameters<typeof success>[0]):
   | {
     result: true;
     take: number;
@@ -160,8 +159,8 @@ function successInner<Model extends ILlmSchema.Model>(props: Parameters<typeof s
     result: false;
   } {
   const call = (
-    expected: IAgenticaBenchmarkExpected<Model>,
-    overrideOperations?: Array<AgenticaOperation<Model>>,
+    expected: IAgenticaBenchmarkExpected,
+    overrideOperations?: Array<AgenticaOperation>,
   ) =>
     successInner({
       expected,

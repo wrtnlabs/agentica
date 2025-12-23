@@ -27,10 +27,10 @@
     "dotenv": "^16.4.7",
     "dotenv-expand": "^12.0.1",
     "openai": "catalog:libs",
-    "tgrid": "^1.1.0",
+    "tgrid": "^1.2.1",
     "tstl": "catalog:libs",
     "typia": "catalog:typia",
-    "uuid": "^11.1.0"
+    "uuid": "catalog:libs"
   },
   "devDependencies": {
     "@types/uuid": "^10.0.0",
