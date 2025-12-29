@@ -28,6 +28,7 @@ import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageU
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { JsonUtil } from "../utils/JsonUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
+import { stringifyValidateFailure } from "../utils/stringifyValidateFailure";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
 
@@ -234,7 +235,18 @@ async function correctTypeError(
     toolCall: {
       id: callEvent.id,
       arguments: JSON.stringify(callEvent.arguments),
-      result: JSON.stringify(validateEvent.result.errors),
+      result: [
+        "🚨 VALIDATION FAILURE: Your function arguments do not conform to the required schema.",
+        "",
+        "The validation errors below represent computed absolute truth from rigorous type validation.",
+        "Each error is marked with ❌ comments showing the exact location, expected type, and actual value.",
+        "",
+        "You must fix ALL errors to achieve 100% schema compliance.",
+        "",
+        "```json",
+        stringifyValidateFailure(validateEvent.result),
+        "```",
+      ].join("\n"),
     },
     systemPrompt: ctx.config?.systemPrompt?.validate?.(previousValidationErrors.slice(0, -1))
       ?? [
