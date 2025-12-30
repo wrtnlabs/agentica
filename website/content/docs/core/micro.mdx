@@ -20,7 +20,8 @@ import AgenticaEventSnippet from "../../snippets/AgenticaEventSnippet.mdx";
   <Tabs.Tab>
 ```typescript filename="src/main.ts" showLineNumbers
 import { MicroAgentica, MicroAgenticaHistory } from "@agentica/core";
-import OpenAI from "@agentica/openai";
+import OpenAI from "openai";
+import typia from "typia";
 import { v4 } from "uuid";
 
 export const main = async (id: string): Promise<void> => {
@@ -35,7 +36,7 @@ export const main = async (id: string): Promise<void> => {
         protocol: "class",
         name: "bbs",
         application: typia.llm.application<BbsArticleService>(),
-        execute: new MicroAgenticaHistory(),
+        execute: new BbsArticleService(),
       }
     ],
     histories: await getPrompts(id),
@@ -56,7 +57,7 @@ export const main = async (id: string): Promise<void> => {
 
   // CONVERSATION & ARCHIVING
   const prompts: MicroAgenticaHistory[] = await agent.conversate(
-    "I wanna buy Mackbook Pro."
+    "I wanna buy MacBook Pro."
   );
   await archiveHistories(id, prompts);
 };
@@ -105,13 +106,14 @@ If your number of functions is less than 8, `MicroAgentica` is recommended. As t
   defaultIndex={1}>
   <Tabs.Tab>
 ```typescript filename="src/main.chatgpt.ts" showLineNumbers {12-18, 23}
-import { 
+import {
   IAgenticaController,
   IAgenticaVendor,
   IMicroAgenticaProps,
   MicroAgentica
 } from "@agentica/core";
 import OpenAI from "openai";
+import typia from "typia";
 
 import { BbsArticleService } from "./services/BbsArticleService";
 
@@ -124,8 +126,8 @@ const agent: MicroAgentica = new MicroAgentica({
   } satisfies IAgenticaVendor,
   controllers: [
     {
-      protocol: "http",
-      name: "class",
+      protocol: "class",
+      name: "bbs",
       application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
     } satisfies IAgenticaController,
@@ -136,13 +138,14 @@ await agent.conversate("I wanna buy MacBook Pro");
   </Tabs.Tab>
   <Tabs.Tab>
 ```typescript filename="src/main.llama.ts" showLineNumbers {12-19, 24}
-import { 
+import {
   IAgenticaController,
   IAgenticaVendor,
   IMicroAgenticaProps,
   MicroAgentica
 } from "@agentica/core";
 import OpenAI from "openai";
+import typia from "typia";
 
 import { BbsArticleService } from "./services/BbsArticleService";
 
@@ -156,8 +159,8 @@ const agent: MicroAgentica = new MicroAgentica({
   } satisfies IAgenticaVendor,
   controllers: [
     {
-      protocol: "http",
-      name: "class",
+      protocol: "class",
+      name: "bbs",
       application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
     } satisfies IAgenticaController,
@@ -207,7 +210,7 @@ flowchart
   - [`IClaudeSchema`](/api/types/_samchon_openapi.IClaudeSchema-1.html): Anthropic Claude
   - [`IGeminiSchema`](/api/types/_samchon_openapi.IGeminiSchema-1.html): Google Gemini
   - [`ILlamaSchema`](/api/types/_samchon_openapi.ILlamaSchema-1.html): Meta Llama
-- Midldle layer schemas
+- Middle layer schemas
   - [`ILlmSchemaV3`](/api/types/_samchon_openapi.ILlmSchemaV3-1.html): middle layer based on OpenAPI v3.0 specification
   - [`ILlmSchemaV3_1`](/api/types/_samchon_openapi.ILlmSchemaV3_1-1.html): middle layer based on OpenAPI v3.1 specification
 
@@ -373,4 +376,4 @@ When you call `MicroAgentica.conversate()` function, the agent will start the [#
 
 If you want to archive the conversation state of current agent, store the returned prompts to your database with serialization to `IMicroAgenticaHistoryJson` format by calling `MicroAgenticaHistory.toJSON()` function. And then restore the conversation state by assigning the prompt histories to the `IMicroAgenticaProps.histories` property creating a new `Agentica` instance.
 
-By the way, waiting for the compleltion of internal agents' orchestration nand giving prompt results to the user at once is not a good choice in the UX (User Experience) perspective. In that case, it would better to deliver the events to the user step by step with streaming. Enroll event listeners by calling `MicroAgentica.on()` function, and deliver it to the user.
+By the way, waiting for the completion of internal agents' orchestration and giving prompt results to the user at once is not a good choice in the UX (User Experience) perspective. In that case, it would better to deliver the events to the user step by step with streaming. Enroll event listeners by calling `MicroAgentica.on()` function, and deliver it to the user.

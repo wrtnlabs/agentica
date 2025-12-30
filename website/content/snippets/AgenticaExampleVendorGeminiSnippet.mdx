@@ -1,14 +1,15 @@
 ```typescript filename="src/main.gemini.ts" showLineNumbers {13-19, 24}
-import { 
+import {
   Agentica,
   IAgenticaController,
   IAgenticaProps,
   IAgenticaVendor
 } from "@agentica/core";
 import OpenAI from "openai";
- 
+import typia from "typia";
+
 import { BbsArticleService } from "./services/BbsArticleService";
- 
+
 const agent: Agentica = new Agentica({
   vendor: {
     model: "google/gemini-pro-1.5",
@@ -19,8 +20,8 @@ const agent: Agentica = new Agentica({
   } satisfies IAgenticaVendor,
   controllers: [
     {
-      protocol: "http",
-      name: "class",
+      protocol: "class",
+      name: "bbs",
       application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
     } satisfies IAgenticaController,

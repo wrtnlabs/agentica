@@ -5,7 +5,7 @@ title: Agentica > Guide Documents > Core Library > Function Controllers > MCP Pr
 ## Overview
 
 ```typescript filename="src/main.ts" showLineNumbers copy
-import { Agentica, assertMcpController } from "@wrtnlabs/agentica";
+import { Agentica, assertMcpController } from "@agentica/core";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
@@ -25,8 +25,8 @@ await client.connect(new StdioClientTransport({
 
 const agent = new Agentica({
   vendor: {
-    api: new OpenAI({ apiKey: "*****"})
-    model: "gpt-4o-mini"
+    api: new OpenAI({ apiKey: "*****" }),
+    model: "gpt-4o-mini",
   },
   controllers: [
     await assertMcpController({

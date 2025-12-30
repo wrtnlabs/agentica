@@ -1,22 +1,22 @@
 ```typescript filename="@agentica/core/AgenticaOperationSelection" showLineNumbers
 /**
- * Nestia agent operation selection.
+ * Agentica agent operation selection.
  *
  * `AgenticaOperationSelection` is a type represents an operation
- * which has been selected by the A.I. chatbot of {@link Agentica}
+ * which has been selected by the AI chatbot of {@link Agentica}
  * class for the LLM (Large Language Model) function calling with
  * detailed {@link reason} of the selection (or cancellation).
  *
  * @author Samchon
  */
-export interface AgenticaOperationSelection<Model extends ILlmSchema.Model> {
+export interface AgenticaOperationSelection {
   /**
    * Target operation.
    *
    * Operation that has been selected to prepare LLM function calling,
    * or canceled due to no more required.
    */
-  operation: AgenticaOperation<Model>;
+  operation: AgenticaOperation;
 
   /**
    * The reason of the function selection or cancellation.

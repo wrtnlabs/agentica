@@ -1,58 +1,32 @@
 ```typescript filename="@agentica/core/AgenticaEvent" showLineNumbers
-export type AgenticaEvent = 
-  | AgenticaEvent.Initialize
-  | AgenticaEvent.Select
-  | AgenticaEvent.Call
-  | AgenticaEvent.Execute
-  | AgenticaEvent.Describe;
+export type AgenticaEvent =
+  | AgenticaUserMessageEvent
+  | AgenticaAssistantMessageEvent
+  | AgenticaInitializeEvent
+  | AgenticaSelectEvent
+  | AgenticaCallEvent
+  | AgenticaCancelEvent
+  | AgenticaExecuteEvent
+  | AgenticaDescribeEvent
+  | AgenticaValidateEvent
+  | AgenticaJsonParseErrorEvent
+  | AgenticaRequestEvent
+  | AgenticaResponseEvent;
 export namespace AgenticaEvent {
-  export interface Text extends Base<"text"> {
-    role: "user" | "assistant"
-    stream: ReadableStream<string>;
-    join(): Promise<string>;
-  }
-  
-  export interface Initialize extends Base<"initialize"> {}
-  export interface Select<Model extends ILlmSchema.Model> 
-    extends Base<"select"> {
-    selection: AgenticaOperationSelection<Model>;
-  }
-  export interface Call<Model extends ILlmSchema.Model> 
-    extends Base<"call"> {
-    id: string;
-    operation: AgenticaOperation<Model>;
-    arguments: Record<string, any>;
-  }
-  export interface Execute<Model extends ILlmSchema.Model> 
-    extends Base<"execute"> {
-    id: string;
-    operation: AgenticaOperation<Model>;
-    arguments: Record<string, any>;
-    value: any;
-  }
-  export interface Describe<Model extends ILlmSchema.Model> 
-    extends Base<"describe"> {
-    executes: AgenticaHistory.Execute<Model>[];
-    stream: ReadableStream<string>;
-    join(): Promise<string>;
-  }
-
-  export interface Request extends Base<"request"> {
-    source: AgenticaEventSource;
-    body: OpenAI.ChatCompletionCreateParamsStreaming;
-    options?: OpenAI.RequestOptions | undefined;
-  }
-  export interface Response extends Base<"response"> {
-    source: AgenticaEventSource;
-    body: OpenAI.ChatCompletionCreateResponse;
-    options?: OpenAI.RequestOptions | undefined;
-    stream: ReadableStream<OpenAI.ChatCompletionChunk>;
-    options?: OpenAI.RequestOptions | undefined;
-    join(): Promise<OpenAI.ChatCompletion>;
-  }
-  
-  interface Base<Type extends string> {
-    type: Type;
+  export type Type = AgenticaEvent["type"];
+  export interface Mapper {
+    userMessage: AgenticaUserMessageEvent;
+    assistantMessage: AgenticaAssistantMessageEvent;
+    select: AgenticaSelectEvent;
+    initialize: AgenticaInitializeEvent;
+    call: AgenticaCallEvent;
+    cancel: AgenticaCancelEvent;
+    execute: AgenticaExecuteEvent;
+    describe: AgenticaDescribeEvent;
+    validate: AgenticaValidateEvent;
+    jsonParseError: AgenticaJsonParseErrorEvent;
+    request: AgenticaRequestEvent;
+    response: AgenticaResponseEvent;
   }
 }
 ```

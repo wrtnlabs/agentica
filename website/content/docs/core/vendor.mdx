@@ -18,7 +18,7 @@ import OpenApiDiagramSnippet from "../../snippets/OpenApiDiagramSnippet.mdx";
     "Claude",
     "Gemini",
   ]}
-  defaultIndex={4}>
+  defaultIndex={0}>
   <Tabs.Tab>
     <AgenticaExampleVendorChatGptSnippet />
   </Tabs.Tab>
@@ -46,7 +46,7 @@ In that case, configure `IAgenticaVendor.api.baseURL` and `IAgenticaVendor.model
   - [`IClaudeSchema`](/api/types/_samchon_openapi.IClaudeSchema-1.html): Anthropic Claude
   - [`IGeminiSchema`](/api/types/_samchon_openapi.IGeminiSchema-1.html): Google Gemini
   - [`ILlamaSchema`](/api/types/_samchon_openapi.ILlamaSchema-1.html): Meta Llama
-- Midldle layer schemas
+- Middle layer schemas
   - [`ILlmSchemaV3`](/api/types/_samchon_openapi.ILlmSchemaV3-1.html): middle layer based on OpenAPI v3.0 specification
   - [`ILlmSchemaV3_1`](/api/types/_samchon_openapi.ILlmSchemaV3_1-1.html): middle layer based on OpenAPI v3.1 specification
 
@@ -61,7 +61,7 @@ Besides, Anthropic Claude, HF DeepSeek, and Meta Llama are following the standar
   "Claude",
   "Llama",
   <code>ILlmSchemaV3_1</code>,
-  <code>src/main.mistra.ts</code>,
+  <code>src/main.mistral.ts</code>,
 ]}>
   <Tabs.Tab>
     <RemoteSource 

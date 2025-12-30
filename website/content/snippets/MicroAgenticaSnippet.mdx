@@ -20,7 +20,7 @@
  * - [Multi-agent orchestration of `@agentica`](https://wrtnlabs.io/agentica/docs/concepts/function-calling/#orchestration-strategy)
  * - Internal agents of `MicroAgentica`
  *   - executor
- *   - describier
+ *   - describer
  * - Internal agents of {@link Agentica}
  *   - initializer
  *   - **selector**
@@ -29,26 +29,14 @@
  *
  * @author Samchon
  */
-export class MicroAgentica<Model extends ILlmSchema.Model> {
+export class MicroAgentica {
   /**
    * Initializer Constructor.
    *
    * @param props Properties to construct the micro agent
    */
-  public constructor(private readonly props: IMicroAgenticaProps<Model>);
-  /**
-   * @internal
-   */
-  public clone(): MicroAgentica<Model> {
-    return new MicroAgentica<Model>({
-      ...this.props,
-      histories: this.props.histories?.slice(),
-    });
-  }
+  public constructor(private readonly props: IMicroAgenticaProps);
 
-  /* -----------------------------------------------------------
-    ACCESSORS
-  ----------------------------------------------------------- */
   /**
    * Conversate with the micro agent.
    *
@@ -56,13 +44,13 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    *
    * When the user's conversation implies the AI chatbot to execute a
    * function calling, the returned chat prompts will contain the
-   * function callinng information like {@link AgenticaExecuteHistory}
+   * function calling information like {@link AgenticaExecuteHistory}
    *
    * @param content The content to talk
    * @returns List of newly created histories
    */
-  public async conversate(content: string): Promise<MicroAgenticaHistory<Model>[]>;
-  
+  public async conversate(content: string): Promise<MicroAgenticaHistory[]>;
+
   /**
    * Add an event listener.
    *
@@ -74,7 +62,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public on<Type extends MicroAgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: MicroAgenticaEvent.Mapper<Model>[Type],
+      event: MicroAgenticaEvent.Mapper[Type],
     ) => void | Promise<void>,
   ): this;
 
@@ -89,7 +77,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
   public off<Type extends MicroAgenticaEvent.Type>(
     type: Type,
     listener: (
-      event: MicroAgenticaEvent.Mapper<Model>[Type],
+      event: MicroAgenticaEvent.Mapper[Type],
     ) => void | Promise<void>,
   ): this;
 
@@ -100,7 +88,7 @@ export class MicroAgentica<Model extends ILlmSchema.Model> {
    *
    * @returns List of chat histories
    */
-  public getHistories(): MicroAgenticaHistory<Model>[];
+  public getHistories(): MicroAgenticaHistory[];
 
   /**
    * Get token usage of the AI chatbot.

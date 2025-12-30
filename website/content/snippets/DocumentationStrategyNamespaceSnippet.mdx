@@ -97,7 +97,7 @@ Information of the article to create.
   </Tabs.Tab>
 </Tabs>
 
-[`typia.llm.application<App, Model>()`](https://typia.io/docs/llm/application) and [`HttpLlm.application()`](https://github.com/samchon/openapi) function copy the parent namespaced type description comment to the children types. `@agentica` calls this comment writing strategy as namespace documentation, and it is recommended for the efficient documentation.
+[`typia.llm.application<App>()`](https://typia.io/docs/llm/application) and [`HttpLlm.application()`](https://github.com/samchon/openapi) function copy the parent namespaced type description comment to the children types. `@agentica` calls this comment writing strategy as namespace documentation, and it is recommended for the efficient documentation.
 
 As you can see from the above example, `BbsArticleService` has many CRUD functions about the `IBbsArticle` namespaced type. By the way, the above `IBbsArticle.ICreate` and `IBbsArticle.IUpdate` types are not repeating same description comments about the `IBbsArticle` type. Instead, just writing the short description comment about them, and just compose the LLM function calling application schema.
 
