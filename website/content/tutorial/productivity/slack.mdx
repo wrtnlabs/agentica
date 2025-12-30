@@ -47,7 +47,6 @@ import { SlackService } from "@wrtnlabs/connector-slack";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -58,7 +57,7 @@ export const agent = new Agentica({
     {
       name: "Slack Connector",
       protocol: "class",
-      application: typia.llm.application<SlackService, "chatgpt">(),
+      application: typia.llm.application<SlackService>(),
       execute: new SlackService(),
     },
   ],

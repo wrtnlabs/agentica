@@ -39,8 +39,7 @@ import { RedditService } from "@wrtnlabs/connector-reddit";
 
 dotenv.config();
 
-const agent: Agentica<"chatgpt"> = new Agentica({
-  model: "chatgpt",
+const agent: Agentica = new Agentica({
   vendor: {
     api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
     model: "gpt-4o-mini",
@@ -49,7 +48,7 @@ const agent: Agentica<"chatgpt"> = new Agentica({
     {
       name: "Reddit Connector",
       protocol: "class",
-      application: typia.llm.application<RedditService, "chatgpt">(),
+      application: typia.llm.application<RedditService>(),
       execute: new RedditService({
         secret: process.env.REDDIT_SECRET!,
         clientSecret: process.env.REDDIT_CLIENT_SECRET!,

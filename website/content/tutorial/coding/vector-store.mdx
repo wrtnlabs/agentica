@@ -38,7 +38,6 @@ const selector = new AgenticaOpenAIVectorStoreSelector({
 });
 
 export const RagAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -48,8 +47,7 @@ export const RagAgent = new Agentica({
       protocol: "class",
       name: "vectorStore",
       application: typia.llm.application<
-        AgenticaOpenAIVectorStoreSelector,
-        "chatgpt"
+        AgenticaOpenAIVectorStoreSelector
       >(),
       execute: selector,
     },

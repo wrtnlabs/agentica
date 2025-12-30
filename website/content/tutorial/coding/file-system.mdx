@@ -118,7 +118,6 @@ class FsClass {
 }
 
 export const FileSystemAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -127,7 +126,7 @@ export const FileSystemAgent = new Agentica({
     {
       name: "File Connector",
       protocol: "class",
-      application: typia.llm.application<FsClass, "chatgpt">(),
+      application: typia.llm.application<FsClass>(),
       execute: new FsClass(),
     },
   ],

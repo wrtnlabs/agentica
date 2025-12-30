@@ -44,7 +44,6 @@ import { GmailService } from "@wrtnlabs/connector-gmail";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -55,7 +54,7 @@ export const agent = new Agentica({
     {
       name: "Gmail Connector",
       protocol: "class",
-      application: typia.llm.application<GmailService, "chatgpt">(),
+      application: typia.llm.application<GmailService>(),
       execute: new GmailService(),
     },
   ],
@@ -109,7 +108,6 @@ You can restrict available functions using TypeScript’s `Pick` utility. For ex
 
 ```typescript
 export const GmailAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -126,8 +124,7 @@ export const GmailAgent = new Agentica({
           | "deleteMailList"
           | "sendEmail"
           | "hardDelete"
-        >,
-        "chatgpt"
+        >
       >(),
       execute: new GmailService({
         clientId: process.env.GMAIL_CLIENT_ID!,

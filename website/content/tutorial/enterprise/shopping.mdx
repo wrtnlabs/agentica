@@ -33,7 +33,6 @@ import { Agentica, assertHttpController } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     model: "gpt-4o-mini",
     api: new OpenAI({ apiKey: "********" }),
@@ -41,7 +40,6 @@ const agent = new Agentica({
   controllers: [
     assertHttpController({
       name: "shopping",
-      model: "chatgpt",
       document: await fetch(
         "https://shopping-be.wrtn.ai/editor/swagger.json",
       ).then((res) => res.json()),
@@ -90,7 +88,6 @@ console.log(connection.headers?.Authorization);
 
 // Agentica with authenticated connection
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     model: "gpt-4o-mini",
     api: new OpenAI({ apiKey: "********" }),
@@ -98,7 +95,6 @@ const agent = new Agentica({
   controllers: [
     assertHttpController({
       name: "shopping",
-      model: "chatgpt",
       document: await fetch(
         "https://shopping-be.wrtn.ai/editor/swagger.json",
       ).then((res) => res.json()),

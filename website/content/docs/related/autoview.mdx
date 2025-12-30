@@ -51,7 +51,6 @@ const agent: AutoViewAgent = new AutoViewAgent({
   inputSchema: {
     parameters: typia.llm.parameters<
       IMember, 
-      "chatgpt", 
       { reference: true }
     >(),
   },
@@ -65,9 +64,9 @@ await fs.promises.writeFile(
 );
 ```
 
-To generate frontend code from a TypeScript type, utilize the [`typia.llm.parameters<Schema, Model, Config>()`](https://typia.io/docs/llm/parameters/) function.
+To generate frontend code from a TypeScript type, utilize the [`typia.llm.parameters<Schema>()`](https://typia.io/docs/llm/parameters/) function.
 
-Create an `AutoViewAgent` instance with [`typia.llm.parameters<Schema, Model>()`](https://typia.io/docs/llm/parameters/) specifying the `IMember` type, then call the `AutoViewAgent.generate()` function. The TypeScript code will be generated and available in the `IAutoViewResult.transformTsCode` property.
+Create an `AutoViewAgent` instance with [`typia.llm.parameters<Schema>()`](https://typia.io/docs/llm/parameters/) specifying the `IMember` type, then call the `AutoViewAgent.generate()` function. The TypeScript code will be generated and available in the `IAutoViewResult.transformTsCode` property.
 
 After code generation, save it to your desired location for future use. This is how `@autoview` uses AI to generate TypeScript frontend code from a TypeScript type.
 
@@ -88,7 +87,6 @@ interface IMember {
 const $defs: Record<string, IChatGptSchema> = {};
 const schema: IChatGptSchema = typia.llm.schema<
   Array<IMember>,
-  "chatgpt",
   { reference: true }
 >({ $defs });
 
@@ -113,9 +111,9 @@ await fs.promises.writeFile(
 );
 ```
 
-Note that the [`typia.llm.parameters<Schema, Model, Config>()`](https://typia.io/docs/llm/parameters/) function only supports static object types without dynamic keys. If you need to generate frontend code for non-object types like `Array<IMember>`, you must use the [`typia.llm.schema<Schema, Model, Config>()`](https://typia.io/docs/llm/schema/) function instead.
+Note that the [`typia.llm.parameters<Schema>()`](https://typia.io/docs/llm/parameters/) function only supports static object types without dynamic keys. If you need to generate frontend code for non-object types like `Array<IMember>`, you must use the [`typia.llm.schema<Schema>()`](https://typia.io/docs/llm/schema/) function instead.
 
-When generating a schema with the [`typia.llm.schema<Schema, Model, Config>()`](https://typia.io/docs/llm/schema/) function, it's crucial to pre-define and assign a `$defs` variable of type `Record<string, IChatGptSchema>`.
+When generating a schema with the [`typia.llm.schema<Schema>()`](https://typia.io/docs/llm/schema/) function, it's crucial to pre-define and assign a `$defs` variable of type `Record<string, ILlmSchema>`.
 
 ### 2.3. Swagger/OpenAPI
 ```typescript
@@ -125,14 +123,13 @@ import fs from "fs";
 import OpenAI from "openai";
 import typia, { tags } from "typia";
 
-const app: IHttpLlmApplication<"chatgpt"> = HttpLlm.application({
-  model: "chatgpt",
+const app: IHttpLlmApplication = HttpLlm.application({
   document,
   options: {
     reference: true,
   },
 });
-const func: IHttpLlmFunction<"chatgpt"> | undefined = app.functions.find(
+const func: IHttpLlmFunction | undefined = app.functions.find(
   (func) =>
     func.path === "/shoppings/customers/sales/{id}" && 
     func.method === "get",

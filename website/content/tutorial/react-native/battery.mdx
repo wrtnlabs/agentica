@@ -52,7 +52,7 @@ import {IAgenticaController} from '@agentica/core';
 import * as Battery from 'expo-battery';
 import typia from 'typia';
 
-export const BatteryController: IAgenticaController<'chatgpt'> = {
+export const BatteryController: IAgenticaController = {
   protocol: 'class',
   name: 'battery',
   execute: async props =>
@@ -61,8 +61,7 @@ export const BatteryController: IAgenticaController<'chatgpt'> = {
     Pick<
       typeof Battery,
       'getBatteryLevelAsync' | 'getBatteryStateAsync' | 'getPowerStateAsync'
-    >,
-    'chatgpt'
+    >
   >(),
 };
 ```
@@ -147,12 +146,12 @@ namespace Calculator {
 2. You need to declare the Controller to apply it to Agentica.
 
 ```tsx
-export const CalculatorController: IAgenticaController<'chatgpt'> = {
+export const CalculatorController: IAgenticaController = {
   protocol: 'class',
   name: 'calculator',
   execute: async props =>
     (Calculator as any)[props.function.name](props.arguments),
-  application: typia.llm.application<typeof Calculator, 'chatgpt'>(),
+  application: typia.llm.application<typeof Calculator>(),
 };
 ```
 
@@ -160,7 +159,6 @@ export const CalculatorController: IAgenticaController<'chatgpt'> = {
 
 ```tsx
 new MicroAgentica({
-  model: 'chatgpt',
   vendor: {
     /**
      * @warning

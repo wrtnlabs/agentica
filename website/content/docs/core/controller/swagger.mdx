@@ -18,7 +18,6 @@ import OpenAI from "openai";
 import typia from "typia";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -26,7 +25,6 @@ const agent = new Agentica({
   controllers: [
     assertHttpController({
       name: "shopping",
-      model: "chatgpt",
       document: await fetch(
         "https://shopping-be.wrtn.ai/editor/swagger.json",
       ).then((r) => r.json()),
@@ -93,7 +91,6 @@ import OpenAI from "openai";
 import typia from "typia";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -101,7 +98,6 @@ const agent = new Agentica({
   controllers: [
     assertHttpController({
       name: "shopping",
-      model: "chatgpt",
       document: await fetch(
         "https://shopping-be.wrtn.ai/editor/swagger.json",
       ).then((r) => r.json()),

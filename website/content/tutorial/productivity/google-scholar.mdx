@@ -39,8 +39,7 @@ import { GoogleScholarService } from "@wrtnlabs/connector-google-scholar";
 
 dotenv.config();
 
-const agent: Agentica<"chatgpt"> = new Agentica({
-  model: "chatgpt",
+const agent: Agentica = new Agentica({
   vendor: {
     api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
     model: "gpt-4o-mini",
@@ -49,7 +48,7 @@ const agent: Agentica<"chatgpt"> = new Agentica({
     {
       name: "Google Scholar Connector",
       protocol: "class",
-      application: typia.llm.application<GoogleScholarService, "chatgpt">(),
+      application: typia.llm.application<GoogleScholarService>(),
       execute: new GoogleScholarService({
         serpApiKey: process.env.SERP_API_KEY!,
       }),
@@ -71,7 +70,7 @@ This code instantly sets up your Google Scholar Agent, ready to perform intellig
 Your Google Scholar Agent will:
 
 - **Process Google Scholar Data:** Use the `GoogleScholarService` connector.
-- **Leverage OpenAI's GPT Model:** Use the `chatgpt` model.
+- **Leverage OpenAI's GPT Model:** Use OpenAI's GPT model via the OpenAI SDK.
 - **Maintain Security:** Store your API keys in a `.env` file.
 - **Securely Manage Credentials:** Use the `dotenv` package to manage your API keys.
 

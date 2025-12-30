@@ -38,7 +38,6 @@ import { YoutubeSearchService } from "@wrtnlabs/connector-youtube-search";
 dotenv.config();
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
     model: "gpt-4o-mini",
@@ -47,7 +46,7 @@ const agent = new Agentica({
     {
       name: "Youtube Search Connector",
       protocol: "class",
-      application: typia.llm.application<YoutubeSearchService, "chatgpt">(),
+      application: typia.llm.application<YoutubeSearchService>(),
       execute: new YoutubeSearchService({
         serpApiKey: process.env.SERP_API_KEY!,
         googleApiKey: process.env.GOOGLE_API_KEY!,

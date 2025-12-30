@@ -33,12 +33,11 @@ import { AgenticaVectorSelector } from "@agentica/vector-selector";
 import typia from "typia";
 
 // Initialize the vector selector
-const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
+const selectorExecute = AgenticaVectorSelector.boot({
   // Configuration options
 });
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     model: "gpt-4o-mini",
     api: new OpenAI({
@@ -69,7 +68,7 @@ await agent.conversate("I wanna buy MacBook Pro");
 For basic usage, you can initialize the vector selector with minimal configuration:
 
 ```typescript copy
-const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
+const selectorExecute = AgenticaVectorSelector.boot({
   // Basic configuration options
 });
 ```
@@ -79,7 +78,7 @@ const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
 For more advanced use cases, you can configure additional options:
 
 ```typescript copy
-const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
+const selectorExecute = AgenticaVectorSelector.boot({
   // Advanced configuration options
   experimental: {
     select_prompt: "Custom prompt for function selection",
@@ -138,7 +137,7 @@ const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
     }
 
     const selectorExecute = BootAgenticaVectorSelector({
-      strategy: configurePostgresStrategy<"chatgpt">({
+      strategy: configurePostgresStrategy({
         host: connectorHiveUrl,
       }),
     });
@@ -173,7 +172,7 @@ const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
     const db = new Database("vector-store.sqlite");
 
     const selectorExecute = BootAgenticaVectorSelector({
-      strategy: configureSqliteStrategy<"chatgpt">({
+      strategy: configureSqliteStrategy({
         db: db,
         cohereApiKey: process.env.COHERE_API_KEY,
       }),
@@ -212,9 +211,9 @@ const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
     import { IAgenticaVectorSelectorStrategy } from "@agentica/vector-selector";
     import type { AgenticaContext } from "@agentica/core";
 
-    class CustomVectorSelector implements IAgenticaVectorSelectorStrategy<"chatgpt"> {
+    class CustomVectorSelector implements IAgenticaVectorSelectorStrategy {
       async searchTool(
-        ctx: AgenticaContext<"chatgpt">,
+        ctx: AgenticaContext,
         query: string
       ): Promise<{
         name: string;
@@ -226,7 +225,7 @@ const selectorExecute = AgenticaVectorSelector.boot<"chatgpt">({
       }
 
       async embedContext(props: {
-        ctx: AgenticaContext<"chatgpt">;
+        ctx: AgenticaContext;
         setEmbedded: () => void;
       }): Promise<void> {
         // Implement your custom context embedding logic here

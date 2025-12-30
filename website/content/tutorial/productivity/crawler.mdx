@@ -40,7 +40,6 @@ import { WebCrawlerService } from "@wrtnlabs/connector-web-crawler";
 dotenv.config();
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY! }),
     model: "gpt-4o-mini",
@@ -49,7 +48,7 @@ const agent = new Agentica({
     {
       name: "Web Crawler Connector",
       protocol: "class",
-      application: typia.llm.application<WebCrawlerService, "chatgpt">(),
+      application: typia.llm.application<WebCrawlerService>(),
       execute: new WebCrawlerService({
         zenRowsApiKey: process.env.ZENROWS_API_KEY!,
       }),

@@ -49,7 +49,7 @@ import { Driver, WebSocketConnector } from "tgrid";
 const connector: WebSocketConnector<
   null,
   IAgenticaRpcListener,
-  IAgenticaRpcService<"chatgpt">
+  IAgenticaRpcService
 > = new WebSocketConnector(null, {
   // and configuring IAgenticaRpcListener instance
   // server will call these functions remotely 
@@ -72,7 +72,7 @@ const connector: WebSocketConnector<
 await connector.connect("ws://localhost:3001");
 
 // Call the server's functions remotely (Remote Procedure Call)
-const driver: Driver<IAgenticaRpcService<"chatgpt">> = connector.getDriver();
+const driver: Driver<IAgenticaRpcService> = connector.getDriver();
 await driver.conversate("Hello, what you can do?");
 
 // Disconnect after your job
@@ -126,7 +126,7 @@ const fillArguments = async (
 const connector: WebSocketConnector<
   null,
   IAgenticaRpcListener,
-  IAgenticaRpcService<"llama">
+  IAgenticaRpcService
 > = new WebSocketConnector(null, {
   text: async (evt) => {
     console.log(evt.role, evt.text);
@@ -135,7 +135,7 @@ const connector: WebSocketConnector<
     console.log("describer", evt.text);
   },
   call: async (event) => {
-    const func: ILlmFunction<"llama"> | undefined = controllers
+    const func: ILlmFunction | undefined = controllers
       .find((c) => c.name === event.operation.controller)
       ?.application.functions.find(
         (f) => f.name === event.operation.function,
@@ -146,7 +146,7 @@ const connector: WebSocketConnector<
 });
 await connector.connect("ws://localhost:3001");
 
-const driver: Driver<IAgenticaRpcService<"llama">> = connector.getDriver();
+const driver: Driver<IAgenticaRpcService> = connector.getDriver();
 const controllers = await driver.getControllers();
 await driver.conversate("I wanna create an article with file uploading.");
 
@@ -168,12 +168,11 @@ import typia from "typia";
 
 const server: WebSocketServer<
   null,
-  IAgenticaRpcService<"llama">,
+  IAgenticaRpcService,
   IAgenticaRpcListener
 > = new WebSocketServer();
 await server.open(3_001, async (acceptor) => {
-  const agent: Agentica<"llama"> = new Agentica({
-    model: "llama",
+  const agent: Agentica = new Agentica({
     vendor: {
       api: new OpenAI({
         apiKey: "********",
@@ -185,7 +184,7 @@ await server.open(3_001, async (acceptor) => {
       {
         name: "bbs",
         protocol: "class",
-        application: typia.llm.application<BbsArticleService, "llama">({
+        application: typia.llm.application<BbsArticleService>({
           separate: (schema) =>
             LlamaTypeChecker.isString(schema) &&
             schema.format === "uri" &&
@@ -195,7 +194,7 @@ await server.open(3_001, async (acceptor) => {
       },
     ],
   });
-  const service: AgenticaRpcService<"llama"> = new AgenticaRpcService({
+  const service: AgenticaRpcService = new AgenticaRpcService({
     agent,
     listener: acceptor.getDriver(),
   });

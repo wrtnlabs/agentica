@@ -88,13 +88,13 @@ export class ChatController {
     @WebSocketRoute.Acceptor()
     acceptor: WebSocketAcceptor<
       null, // header
-      AgenticaRpcService<"chatgpt">,
+      AgenticaRpcService,
       IAgenticaRpcListener
     >,
   ): Promise<void> {
-    const agent: Agentica<"chatgpt"> = new Agentica({ ... });
+    const agent: Agentica = new Agentica({ ... });
     const listener: Driver<IAgenticaRpcListener> = acceptor.getDriver();
-    const service: AgenticaRpcService<"chatgpt"> = 
+    const service: AgenticaRpcService = 
       new AgenticaRpcService({
         agent,
         listener,
@@ -267,7 +267,7 @@ export namespace start {
   };
   export type Header = undefined;
   export type Provider = IAgenticaRpcListener;
-  export type Listener = IAgenticaRpcService<"chatgpt">;
+  export type Listener = IAgenticaRpcService;
 
   export const path = () => "/chat";
 }

@@ -46,7 +46,6 @@ import { NotionService } from "@wrtnlabs/connector-notion";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -57,7 +56,7 @@ export const agent = new Agentica({
     {
       name: "Notion Connector",
       protocol: "class",
-      application: typia.llm.application<NotionService, "chatgpt">(),
+      application: typia.llm.application<NotionService>(),
       execute: new NotionService(),
     },
   ],

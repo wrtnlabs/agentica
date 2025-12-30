@@ -1,16 +1,16 @@
 ```typescript filename="src/main.claude.ts" showLineNumbers {13-19, 24}
-import { 
+import {
   Agentica,
   IAgenticaController,
   IAgenticaProps,
   IAgenticaVendor
 } from "@agentica/core";
 import OpenAI from "openai";
- 
+import typia from "typia";
+
 import { BbsArticleService } from "./services/BbsArticleService";
- 
-const agent: Agentica<"claude"> = new Agentica({
-  model: "claude",
+
+const agent: Agentica = new Agentica({
   vendor: {
     model: "anthropic/claude-3.5-sonnet",
     api: new OpenAI({
@@ -20,12 +20,12 @@ const agent: Agentica<"claude"> = new Agentica({
   } satisfies IAgenticaVendor,
   controllers: [
     {
-      protocol: "http",
-      name: "class",
-      application: typia.llm.application<BbsArticleService, "claude">(),
+      protocol: "class",
+      name: "bbs",
+      application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
-    } satisfies IAgenticaController<"claude">,
+    } satisfies IAgenticaController,
   ]
-} satisfies IAgenticaProps<"claude">);
+} satisfies IAgenticaProps);
 await agent.conversate("I wanna buy MacBook Pro");
 ```

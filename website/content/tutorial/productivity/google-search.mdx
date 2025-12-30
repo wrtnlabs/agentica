@@ -40,7 +40,6 @@ import { GoogleSearchService } from "@wrtnlabs/connector-google-search";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -51,7 +50,7 @@ export const agent = new Agentica({
     {
       name: "GoogleSearch Connector",
       protocol: "class",
-      application: typia.llm.application<GoogleSearchService, "chatgpt">(),
+      application: typia.llm.application<GoogleSearchService>(),
       execute: new GoogleSearchService(),
     },
   ],

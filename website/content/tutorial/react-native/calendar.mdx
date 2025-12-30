@@ -53,13 +53,13 @@ import * as Calendar from 'expo-calendar';
  * Controller for handling calendar operations.
  * Implements the IAgenticaController interface for ChatGPT integration.
  */
-export const CalendarController: IAgenticaController<'chatgpt'> = {
+export const CalendarController: IAgenticaController = {
   protocol: 'class',
   name: 'calendar',
   execute: async props => {
     return (WRAPPED_CALENDAR as any)[props.function.name](props.arguments);
   },
-  application: typia.llm.application<typeof WRAPPED_CALENDAR, 'chatgpt'>(),
+  application: typia.llm.application<typeof WRAPPED_CALENDAR>(),
 };
 
 /**
@@ -337,12 +337,12 @@ namespace Calculator {
 2. You need to declare the Controller to apply it to Agentica.
 
 ```tsx
-export const CalculatorController: IAgenticaController<'chatgpt'> = {
+export const CalculatorController: IAgenticaController = {
   protocol: 'class',
   name: 'calculator',
   execute: async props =>
     (Calculator as any)[props.function.name](props.arguments),
-  application: typia.llm.application<typeof Calculator, 'chatgpt'>(),
+  application: typia.llm.application<typeof Calculator>(),
 };
 ```
 
@@ -350,7 +350,6 @@ export const CalculatorController: IAgenticaController<'chatgpt'> = {
 
 ```tsx
 new MicroAgentica({
-  model: 'chatgpt',
   vendor: {
     /**
      * @warning

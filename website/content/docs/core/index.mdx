@@ -26,14 +26,12 @@ import typia from "typia";
 
 const main = async (): Promise<void> => {
   const agent = new Agentica({
-    model: "chatgpt",
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
       model: "gpt-4o-mini",
     },
     controllers: [
       assertHttpController({
-        model: "chatgpt",
         name: "shopping",
         document: await fetch(
           "https://shopping-be.wrtn.ai/editor/swagger.json",
@@ -49,27 +47,27 @@ const main = async (): Promise<void> => {
         protocol: "class",
         name: "counselor",
         application: 
-          typia.llm.application<ShoppingCounselor, "chatgpt">(),
+          typia.llm.application<ShoppingCounselor>(),
         execute: new ShoppingCounselor(),
       },
       {
         protocol: "class",
         name: "policy",
         application: 
-          typia.llm.application<ShoppingPolicy, "chatgpt">(),
+          typia.llm.application<ShoppingPolicy>(),
         execute: new ShoppingPolicy(),
       },
       {
         protocol: "class",
         name: "rag",
         application: 
-          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
+          typia.llm.application<ShoppingSearchRag>(),
         execute: new ShoppingSearchRag(),
       },
     ],
     config: {
       executor: {
-        select: AgenticaPgVectorSelector.boot<"chatgpt">(
+        select: AgenticaPgVectorSelector.boot(
           'https://your-connector-hive-server.com'
         ),
       },
@@ -153,7 +151,7 @@ When creating an `Agentica` class instance, you have to specify the LLM service 
 
 `Agentica` is utilizing OpenAI SDK, but it does not mean that you can use only OpenAI's GPT model in the `Agentica`. The OpenAI SDK is just a connection tool to the LLM vendor's API, and you can use other LLM vendors by configuring its `api.baseURL` and `vendor` properties.
 
-For example, if you want to use Llama instead of GPT, you can do it like below. Instead, as LLM schema models are different by the vendor, you have to define more property `IAgenticaProps.model` and you also have to make LLM function calling schema following the vendor's specification.
+For example, if you want to use Llama instead of GPT, you can do it like below. Just configure the `vendor.api.baseURL` property to point to your LLM vendor's API endpoint.
 
 <Tabs 
   items={['OpenAI GPT', 'Meta Llama']} 
@@ -170,8 +168,7 @@ import OpenAI from "openai";
 
 import { BbsArticleService } from "./services/BbsArticleService";
 
-const agent: Agentica<"chatgpt"> = new Agentica({
-  model: "chatgpt",
+const agent: Agentica = new Agentica({
   vendor: {
     model: "gpt-4o-mini",
     api: new OpenAI({
@@ -182,11 +179,11 @@ const agent: Agentica<"chatgpt"> = new Agentica({
     {
       protocol: "class",
       name: "bbs",
-      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
-    } satisfies IAgenticaController<"chatgpt">,
+    } satisfies IAgenticaController,
   ]
-} satisfies IAgenticaProps<"chatgpt">);
+} satisfies IAgenticaProps);
 await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
@@ -202,8 +199,7 @@ import OpenAI from "openai";
 
 import { BbsArticleService } from "./services/BbsArticleService";
 
-const agent: Agentica<"llama"> = new Agentica({
-  model: "llama",
+const agent: Agentica = new Agentica({
   vendor: {
     model: "llama3.3-70b",
     api: new OpenAI({
@@ -215,11 +211,11 @@ const agent: Agentica<"llama"> = new Agentica({
     {
       protocol: "class",
       name: "bbs",
-      application: typia.llm.application<BbsArticleService, "llama">(),
+      application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
-    } satisfies IAgenticaController<"llama">,
+    } satisfies IAgenticaController,
   ]
-} satisfies IAgenticaProps<"llama">);
+} satisfies IAgenticaProps);
 await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
@@ -230,7 +226,7 @@ In `@agentica/core`, there is a concept of controller, a set LLM function callin
 
 When you're using HTTP server controller, create LLM application schema from `assertHttpController()` or `validateHttpController()` function. These functions will validate whether the target Swagger/OpenAPI document is correct or not. And then, configure connection information to the HTTP server with destination URL and headers. 
 
-Otherwise you want to serve the function calling from a TypeScript class, create LLM application schema from `typia.llm.application<Class, Model>()` function. And provide the class instance for the actual function calling.
+Otherwise you want to serve the function calling from a TypeScript class, create LLM application schema from `typia.llm.application<Class>()` function. And provide the class instance for the actual function calling.
 
 For reference, `IAgenticaController.name` must be unique, because it is used to identify the controller in the agent. Also, if number of your controller functions are too many, it would better to configure `executor.selector` as vector selector of plugin. If you don't do it, too much LLM token costs would be consumed.
 
@@ -241,7 +237,6 @@ import typia from "typia";
 
 const main = async (): Promise<void> => {
   const agent = new Agentica({
-    model: "chatgpt",
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
       model: "gpt-4o-mini",
@@ -249,7 +244,6 @@ const main = async (): Promise<void> => {
     controllers: [
       assertHttpController({
         name: "shopping",
-        model: "chatgpt",
         document: await fetch(
           "https://shopping-be.wrtn.ai/editor/swagger.json",
         ).then((r) => r.json()),
@@ -264,27 +258,27 @@ const main = async (): Promise<void> => {
         protocol: "class",
         name: "counselor",
         application: 
-          typia.llm.application<ShoppingCounselor, "chatgpt">(),
+          typia.llm.application<ShoppingCounselor>(),
         execute: new ShoppingCounselor(),
       },
       {
         protocol: "class",
         name: "policy",
         application: 
-          typia.llm.application<ShoppingPolicy, "chatgpt">(),
+          typia.llm.application<ShoppingPolicy>(),
         execute: new ShoppingPolicy(),
       },
       {
         protocol: "class",
         name: "rag",
         application: 
-          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
+          typia.llm.application<ShoppingSearchRag>(),
         execute: new ShoppingSearchRag(),
       },
     ],
     config: {
       executor: {
-        select: AgenticaPgVectorSelector.boot<"chatgpt">(
+        select: AgenticaPgVectorSelector.boot(
           'https://your-connector-hive-server.com'
         ),
       },
@@ -395,7 +389,7 @@ When you want to restore the agent, you can do it by creating a new `Agentica` i
 import { Agentica, IAgenticaHistoryJson } from "@agentica/core";
 
 const histories: IAgenticaHistoryJson[] = await getHistories();
-const agent: Agentica<"chatgpt"> = new Agentica({
+const agent: Agentica = new Agentica({
   ...,
   histories,
 });

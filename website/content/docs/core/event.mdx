@@ -20,7 +20,6 @@ import { Agentica } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -98,7 +97,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -120,7 +118,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -155,7 +152,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -179,7 +175,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -224,7 +219,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -246,7 +240,6 @@ import { Agentica, IAgenticaConfig, IAgenticaExecutor } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -284,7 +277,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -337,7 +329,6 @@ import { ChatGptTypeChecker, HttpLlm, IChatGptSchema } from "@samchon/openapi";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -346,8 +337,7 @@ const agent = new Agentica({
     {
       type: "http",
       application: HttpLlm.application({
-        model: "chatgpt",
-        document: await fetch(
+      document: await fetch(
           "https://shopping-be.wrtn.ai/editor/swagger.json"
         ),
         options: {
@@ -397,7 +387,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -446,7 +435,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -479,7 +467,6 @@ import { Agentica, AgenticaEvent } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
