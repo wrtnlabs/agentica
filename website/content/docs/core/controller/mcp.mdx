@@ -24,7 +24,6 @@ await client.connect(new StdioClientTransport({
 }));
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "*****"})
     model: "gpt-4o-mini"
@@ -32,7 +31,6 @@ const agent = new Agentica({
   controllers: [
     await assertMcpController({
       name: "calculator",
-      model: "chatgpt",
       client,
     }),
   ],

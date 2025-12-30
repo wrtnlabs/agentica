@@ -30,7 +30,6 @@ dotenv.config();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const GoogleShoppingAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -39,7 +38,7 @@ export const GoogleShoppingAgent = new Agentica({
     {
       name: "Google Shopping Connector",
       protocol: "class",
-      application: typia.llm.application<GoogleShoppingService, "chatgpt">(),
+      application: typia.llm.application<GoogleShoppingService>(),
       execute: new GoogleShoppingService({
         apiKey: process.env.SERP_API_KEY!,
       }),
@@ -79,7 +78,6 @@ For example, in the following code, only these six functions are available:
 
 ```typescript
 export const GoogleShoppingAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -89,8 +87,7 @@ export const GoogleShoppingAgent = new Agentica({
       name: "Google Shopping Connector",
       protocol: "class",
       application: typia.llm.application<
-        Pick<GoogleShoppingService, "aliExpress" | "iherb">,
-        "chatgpt"
+        Pick<GoogleShoppingService, "aliExpress" | "iherb">
       >(),
       execute: new GoogleShoppingService({
         apiKey: process.env.SERP_API_KEY!,

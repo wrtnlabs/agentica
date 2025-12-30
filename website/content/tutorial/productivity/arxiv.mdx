@@ -44,7 +44,6 @@ import { ArxivSearchService } from "@wrtnlabs/connector-arxiv-search";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -55,7 +54,7 @@ export const agent = new Agentica({
     {
       name: "ArxivSearch Connector",
       protocol: "class",
-      application: typia.llm.application<ArxivSearchService, "chatgpt">(),
+      application: typia.llm.application<ArxivSearchService>(),
       execute: new ArxivSearchService(),
     },
   ],

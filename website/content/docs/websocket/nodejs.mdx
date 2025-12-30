@@ -60,13 +60,13 @@ import { Driver, WebSocketServer } from "tgrid";
 
 const server: WebSocketServer<
   null,
-  IAgenticaRpcService<"chatgpt">,
+  IAgenticaRpcService,
   IAgenticaRpcListener
 > = new WebSocketServer();
 await server.open(3_001, async (acceptor) => {
-  const agent: Agentica<"chatgpt"> = new Agentica({ ... });
+  const agent: Agentica = new Agentica({ ... });
   const listener: Driver<IAgenticaRpcListener> = acceptor.getDriver();
-  const service: AgenticaRpcService<"chatgpt"> = 
+  const service: AgenticaRpcService = 
     new AgenticaRpcService({
       agent,
       listener,

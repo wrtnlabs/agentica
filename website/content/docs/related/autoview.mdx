@@ -51,7 +51,6 @@ const agent: AutoViewAgent = new AutoViewAgent({
   inputSchema: {
     parameters: typia.llm.parameters<
       IMember, 
-      "chatgpt", 
       { reference: true }
     >(),
   },
@@ -88,7 +87,6 @@ interface IMember {
 const $defs: Record<string, IChatGptSchema> = {};
 const schema: IChatGptSchema = typia.llm.schema<
   Array<IMember>,
-  "chatgpt",
   { reference: true }
 >({ $defs });
 
@@ -125,14 +123,13 @@ import fs from "fs";
 import OpenAI from "openai";
 import typia, { tags } from "typia";
 
-const app: IHttpLlmApplication<"chatgpt"> = HttpLlm.application({
-  model: "chatgpt",
+const app: IHttpLlmApplication = HttpLlm.application({
   document,
   options: {
     reference: true,
   },
 });
-const func: IHttpLlmFunction<"chatgpt"> | undefined = app.functions.find(
+const func: IHttpLlmFunction | undefined = app.functions.find(
   (func) =>
     func.path === "/shoppings/customers/sales/{id}" && 
     func.method === "get",

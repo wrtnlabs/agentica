@@ -25,8 +25,7 @@ import { v4 } from "uuid";
 
 export const main = async (id: string): Promise<void> => {
   // CONSTRUCTION
-  const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
-    model: "chatgpt",
+  const agent: MicroAgentica = new MicroAgentica({
     vendor: {
       api: new OpenAI({ apiKey: "********" }),
       model: "gpt-4o-mini",
@@ -35,7 +34,7 @@ export const main = async (id: string): Promise<void> => {
       {
         protocol: "class",
         name: "bbs",
-        application: typia.llm.application<BbsArticleService, "chatgpt">(),
+        application: typia.llm.application<BbsArticleService>(),
         execute: new MicroAgenticaHistory(),
       }
     ],
@@ -116,8 +115,7 @@ import OpenAI from "openai";
 
 import { BbsArticleService } from "./services/BbsArticleService";
 
-const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
-  model: "chatgpt",
+const agent: MicroAgentica = new MicroAgentica({
   vendor: {
     model: "gpt-4o-mini",
     api: new OpenAI({
@@ -128,11 +126,11 @@ const agent: MicroAgentica<"chatgpt"> = new MicroAgentica({
     {
       protocol: "http",
       name: "class",
-      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
-    } satisfies IAgenticaController<"chatgpt">,
+    } satisfies IAgenticaController,
   ]
-} satisfies IMicroAgenticaProps<"chatgpt">);
+} satisfies IMicroAgenticaProps);
 await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
@@ -148,8 +146,7 @@ import OpenAI from "openai";
 
 import { BbsArticleService } from "./services/BbsArticleService";
 
-const agent: MicroAgentica<"llama"> = new MicroAgentica({
-  model: "llama",
+const agent: MicroAgentica = new MicroAgentica({
   vendor: {
     model: "llama3.3-70b",
     api: new OpenAI({
@@ -161,11 +158,11 @@ const agent: MicroAgentica<"llama"> = new MicroAgentica({
     {
       protocol: "http",
       name: "class",
-      application: typia.llm.application<BbsArticleService, "llama">(),
+      application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
-    } satisfies IAgenticaController<"llama">,
+    } satisfies IAgenticaController,
   ]
-} satisfies IMicroAgenticaProps<"llama">);
+} satisfies IMicroAgenticaProps);
 await agent.conversate("I wanna buy MacBook Pro");
 ```
   </Tabs.Tab>
@@ -187,7 +184,7 @@ When creating `MicroAgentica` instance, you have to specify the LLM service vend
 
 `MicroAgentica` is utilizing OpenAI SDK (`npm i openai`) for LLM (Large Language Model) service interaction. However, it does not mean that you can use only OpenAI's GPT models in the `MicroAgentica`. The OpenAI SDK is just a connection tool to the LLM vendor's API, and as the most of modern LLMs are following the OpenAI's API design, you can use other LLM vendors like Claude, Gemini or Llama too.
 
-In that case, configure `IAgenticaVendor.api.baseURL` and `IAgenticaVendor.model` properties to the LLM vendor's API endpoint and model name. For example, if you want to use Meta Llama instead of OpenAI GPT, you can do it like below. Instead, as LLM schema models are different between vendors, you have to change the `IMicroAgenticaProps.model` property to the vendor's model name "llama".
+In that case, configure `IAgenticaVendor.api.baseURL` and `IAgenticaVendor.model` properties to the LLM vendor's API endpoint and model name. For example, if you want to use Meta Llama instead of OpenAI GPT, you can do it like below.
 
 ```mermaid
 flowchart
@@ -229,7 +226,6 @@ import { MicroAgentica } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new MicroAgentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -295,7 +291,6 @@ import OpenAI from "openai";
 
 export const main = async (id: string): Promise<void> => {
   const agent = new MicroAgentica({
-    model: "chatgpt",
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
       model: "gpt-4o-mini",
@@ -343,7 +338,6 @@ import typia from "typia";
 
 export const main = async (id: string): Promise<void> => {
   const agent = new MicroAgentica({
-    model: "chatgpt",
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
       model: "gpt-4o-mini",

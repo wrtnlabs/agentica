@@ -40,7 +40,6 @@ import { GoogleImageService } from "@wrtnlabs/connector-google-image";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -51,7 +50,7 @@ export const agent = new Agentica({
     {
       name: "GoogleImage Connector",
       protocol: "class",
-      application: typia.llm.application<GoogleImageService, "chatgpt">(),
+      application: typia.llm.application<GoogleImageService>(),
       execute: new GoogleImageService(),
     },
   ],

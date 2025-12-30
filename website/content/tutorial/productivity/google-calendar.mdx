@@ -40,7 +40,6 @@ import { GoogleCalendarService } from "@wrtnlabs/connector-google-calendar";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -51,7 +50,7 @@ export const agent = new Agentica({
     {
       name: "GoogleCalendar Connector",
       protocol: "class",
-      application: typia.llm.application<GoogleCalendarService, "chatgpt">(),
+      application: typia.llm.application<GoogleCalendarService>(),
       execute: new GoogleCalendarService(),
     },
   ],
@@ -106,7 +105,6 @@ You can also restrict the available functions using TypeScript’s `Pick` utilit
 
 ```typescript
 export const GoogleCalendarAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -124,8 +122,7 @@ export const GoogleCalendarAgent = new Agentica({
           | "createEvent"
           | "updateEvent"
           | "deleteEvent"
-        >,
-        "chatgpt"
+        >
       >(),
       execute: new GoogleCalendarService({
         clientId: process.env.GOOGLE_CALENDAR_CLIENT_ID!,

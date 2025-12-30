@@ -9,8 +9,7 @@ import OpenAI from "openai";
  
 import { BbsArticleService } from "./services/BbsArticleService";
  
-const agent: Agentica<"claude"> = new Agentica({
-  model: "claude",
+const agent: Agentica = new Agentica({
   vendor: {
     model: "anthropic/claude-3.5-sonnet",
     api: new OpenAI({
@@ -22,10 +21,10 @@ const agent: Agentica<"claude"> = new Agentica({
     {
       protocol: "http",
       name: "class",
-      application: typia.llm.application<BbsArticleService, "claude">(),
+      application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
-    } satisfies IAgenticaController<"claude">,
+    } satisfies IAgenticaController,
   ]
-} satisfies IAgenticaProps<"claude">);
+} satisfies IAgenticaProps);
 await agent.conversate("I wanna buy MacBook Pro");
 ```

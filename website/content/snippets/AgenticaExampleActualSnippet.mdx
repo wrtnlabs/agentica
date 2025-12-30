@@ -4,7 +4,6 @@ import typia from "typia";
 
 const main = async (): Promise<void> => {
   const agent = new Agentica({
-    model: "chatgpt",
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
       model: "gpt-4o-mini",
@@ -12,7 +11,6 @@ const main = async (): Promise<void> => {
     controllers: [
       assertHttpController({
         name: "shopping",
-        model: "chatgpt",
         document: await fetch(
           "https://shopping-be.wrtn.ai/editor/swagger.json",
         ).then(r => r.json()),
@@ -27,21 +25,21 @@ const main = async (): Promise<void> => {
         protocol: "class",
         name: "counselor",
         application: 
-          typia.llm.application<ShoppingCounselor, "chatgpt">(),
+          typia.llm.application<ShoppingCounselor>(),
         execute: new ShoppingCounselor(),
       },
       {
         protocol: "class",
         name: "policy",
         application: 
-          typia.llm.application<ShoppingPolicy, "chatgpt">(),
+          typia.llm.application<ShoppingPolicy>(),
         execute: new ShoppingPolicy(),
       },
       {
         protocol: "class",
         name: "rag",
         application: 
-          typia.llm.application<ShoppingSearchRag, "chatgpt">(),
+          typia.llm.application<ShoppingSearchRag>(),
         execute: new ShoppingSearchRag(),
       },
     ],

@@ -83,8 +83,7 @@ const rmdir = async (str: string) => {
 
 const main = async (): Promise<void> => {
   // CREATE AI AGENT
-  const agent: Agentica<"chatgpt"> = new Agentica({
-    model: "chatgpt",
+  const agent: Agentica = new Agentica({
     vendor: {
       api: new OpenAI({ apiKey: "********" }),
       model: "gpt-4o-mini",
@@ -94,8 +93,7 @@ const main = async (): Promise<void> => {
         protocol: "http",
         name: "shopping",
         application: HttpLlm.application({
-          model: "chatgpt",
-          document: await fetch(
+      document: await fetch(
             "https://shopping-be.wrtn.ai/editor/swagger.json",
           ).then((res) => res.json()),
         }),
@@ -122,7 +120,7 @@ const main = async (): Promise<void> => {
     if (!found) throw new Error(`Operation not found: ${method} ${path}`);
     return found;
   };
-  const benchmark: AgenticaSelectBenchmark<"chatgpt"> = 
+  const benchmark: AgenticaSelectBenchmark = 
     new AgenticaSelectBenchmark({
       agent,
       config: {
@@ -182,7 +180,7 @@ const main = async (): Promise<void> => {
             ],
           },
         },
-      ] satisfies IAgenticaSelectBenchmarkScenario<"chatgpt">[],
+      ] satisfies IAgenticaSelectBenchmarkScenario[],
     });
   await benchmark.execute();
 

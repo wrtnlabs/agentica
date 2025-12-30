@@ -29,7 +29,6 @@ import OpenAI from "openai";
 import typia from "typia";
 
 const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
     model: "gpt-4o-mini",
@@ -38,9 +37,9 @@ const agent = new Agentica({
     {
       protocol: "class",
       name: "bbs",
-      application: typia.llm.application<BbsArticleService, "chatgpt">(),
+      application: typia.llm.application<BbsArticleService>(),
       execute: new BbsArticleService(),
-    } satisfies IAgenticaController.IClass<"chatgpt">,
+    } satisfies IAgenticaController.IClass,
   ],
 });
 await agent.conversate("What you can do?");
@@ -58,7 +57,7 @@ TypeScript Class Functions for LLM Function Calling.
 
 In `@agentica/core`, there is a concept of controller, a set of LLM (Large Language Model) function calling schemas, and executor for actual function calling. And `@agentica/core` supports three protocol types of the controllers; HTTP Restful API, MCP (Model Context Protocol), and <u>TypeScript class</u>.
 
-When you want to serve functions from a TypeScript class, create an LLM application schema from `typia.llm.application<Class, Model>()` function. And provide the class instance for the actual function calling.
+When you want to serve functions from a TypeScript class, create an LLM application schema from `typia.llm.application<Class>()` function. And provide the class instance for the actual function calling.
 
 If you compose a TypeScript class controller of above `BbsArticleService` class, you can start conversation with the `BbsArticleService` class like below demonstration video.
 
@@ -175,13 +174,13 @@ If there're relationships between some functions, like prerequisite or postrequi
   </Tabs.Tab>
 </Tabs>
 
-`typia.llm.application<Class, Model>()` embeds [#Validation Feedback Strategy](/docs/concepts/function-calling/#validation-feedback).
+`typia.llm.application<Class>()` embeds [#Validation Feedback Strategy](/docs/concepts/function-calling/#validation-feedback).
 
 You know what? LLM (Large Language Model) like OpenAI takes a lot of mistakes when commposing arguments in the function calling. Even though `number` like simple type is defined in the parameters schema, LLM often fills it just by a `string` typed value.
 
 To correct such LLM function calling mistakes, `@agentica` is running a validation feedback strategy which informs the validation errors to the AI agent, so that induce the AI agent to correct the mistakes at the next trial.
 
-And when you compose LLM function calling schemas from the [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application) function, [`ILlmFunction.validate()`](/api/interfaces/_samchon_openapi.ILlmFunction-1.html#validate) functions for each parameters are constructed at the same time, and they are used for the validation feedback correcting mistakes of the LLM function calling.
+And when you compose LLM function calling schemas from the [`typia.llm.application<Class>()`](https://typia.io/docs/llm/application) function, [`ILlmFunction.validate()`](/api/interfaces/_samchon_openapi.ILlmFunction-1.html#validate) functions for each parameters are constructed at the same time, and they are used for the validation feedback correcting mistakes of the LLM function calling.
 
 > Name | Status
 > :----|:-------
@@ -210,9 +209,8 @@ And when you compose LLM function calling schemas from the [`typia.llm.applicati
 import { ILlmApplication } from "@samchon/openapi";
 import typia, { tags } from "typia";
 
-const app: ILlmApplication<"chatgpt"> = typia.llm.application<
-  BbsArticleController,
-  "chatgpt"
+const app: ILlmApplication = typia.llm.application<
+  BbsArticleController
 >();
 console.log(app);
 
@@ -251,13 +249,11 @@ interface BbsArticleController {
 > - BbsArticleController.erase: unknown
 >   - LLM application's function ("erase")'s parameter must be an object type.
 > 
-> 4 const app: ILlmApplication<"chatgpt"> = typia.llm.application<
+> 4 const app: ILlmApplication = typia.llm.application<
 >                                           ~~~~~~~~~~~~~~~~~~~~~~
-> 5   BbsArticleController,
+> 5   BbsArticleController
 >   ~~~~~~~~~~~~~~~~~~~~~~~
-> 6   "chatgpt"
->   ~~~~~~~~~~~
-> 7 >();
+> 6 >();
 >   ~~~
 > ```
 

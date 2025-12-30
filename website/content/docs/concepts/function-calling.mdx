@@ -53,11 +53,11 @@ import { ILlmFunction, IValidation } from "typia";
 
 export const correctFunctionCall = (p: {
   call: FunctionCall;
-  functions: Array<ILlmFunction<"chatgpt">>;
+  functions: Array<ILlmFunction>;
   retry: (reason: string, errors?: IValidation.IError[]) => Promise<unknown>;
 }): Promise<unknown> => {
   // FIND FUNCTION
-  const func: ILlmFunction<"chatgpt"> | undefined =
+  const func: ILlmFunction | undefined =
     p.functions.find((f) => f.name === p.call.name);
   if (func === undefined) {
     // never happened in my experience
@@ -91,7 +91,7 @@ In my experience, OpenAI `gpt-4o-mini` (`8b` parameters) is taking about 30% of 
 
 The key concept of validation feedback strategy is, let LLM function calling to construct invalid typed arguments first, and informing detailed type errors to the LLM, so that induce LLM to emend the wrong typed arguments at the next turn.
 
-And `@agentica` has adopted [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.application<Class, Model>()`](https://typia.io/docs/llm/application/#application) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.
+And `@agentica` has adopted [`typia.validate<T>()`](https://typia.io/docs/validators/validate) and [`typia.llm.application<Class>()`](https://typia.io/docs/llm/application/#application) functions. They construct validation logic by analyzing TypeScript source codes and types in the compilation level, so that detailed and accurate than any other validators like below.
 
 Such validation feedback strategy and combination with `typia` runtime validator, `@agentica` has achieved the most ideal LLM function calling. By such strategy, 70% success rate of the 1st function calling trial has been increased to 95% success rate of the 2nd function calling trial. And reached to near by 100% at the 3rd trial.
 

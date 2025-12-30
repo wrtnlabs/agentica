@@ -49,12 +49,12 @@ import {IAgenticaController} from '@agentica/core';
 import typia from 'typia';
 import * as SMS from 'expo-sms';
 
-export const SMSController: IAgenticaController<'chatgpt'> = {
+export const SMSController: IAgenticaController = {
   protocol: 'class',
   name: 'sms',
   execute: async props =>
     (WRAPPED_SMS as any)[props.function.name](props.arguments),
-  application: typia.llm.application<typeof WRAPPED_SMS, 'chatgpt'>(),
+  application: typia.llm.application<typeof WRAPPED_SMS>(),
 };
 
 namespace WRAPPED_SMS {
@@ -187,12 +187,12 @@ namespace Calculator {
 2. You need to declare the Controller to apply it to Agentica.
 
 ```tsx
-export const CalculatorController: IAgenticaController<'chatgpt'> = {
+export const CalculatorController: IAgenticaController = {
   protocol: 'class',
   name: 'calculator',
   execute: async props =>
     (Calculator as any)[props.function.name](props.arguments),
-  application: typia.llm.application<typeof Calculator, 'chatgpt'>(),
+  application: typia.llm.application<typeof Calculator>(),
 };
 ```
 
@@ -200,7 +200,6 @@ export const CalculatorController: IAgenticaController<'chatgpt'> = {
 
 ```tsx
 new MicroAgentica({
-  model: 'chatgpt',
   vendor: {
     /**
      * @warning

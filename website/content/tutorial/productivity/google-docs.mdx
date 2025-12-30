@@ -40,7 +40,6 @@ import { GoogleDocsService } from "@wrtnlabs/connector-google-docs";
 dotenv.config();
 
 export const agent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!,
@@ -51,7 +50,7 @@ export const agent = new Agentica({
     {
       name: "Google Docs Connector",
       protocol: "class",
-      application: typia.llm.application<GoogleDocsService, "chatgpt">(),
+      application: typia.llm.application<GoogleDocsService>(),
       execute: new GoogleDocsService(),
     },
   ],
@@ -104,7 +103,6 @@ You can restrict available functions using TypeScript’s `Pick` utility. For ex
 
 ```typescript
 export const GoogleDocsAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -114,8 +112,7 @@ export const GoogleDocsAgent = new Agentica({
       name: "Google Docs Connector",
       protocol: "class",
       application: typia.llm.application<
-        Pick<GoogleDocsService, "write" | "clear" | "readDocs" | "update">,
-        "chatgpt"
+        Pick<GoogleDocsService, "write" | "clear" | "readDocs" | "update">
       >(),
       execute: new GoogleDocsService({
         clientId: process.env.GOOGLE_DOCS_CLIENT_ID!,

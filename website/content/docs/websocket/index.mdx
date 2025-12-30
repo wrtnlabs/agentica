@@ -26,8 +26,8 @@ import { Driver, WebSocketConnector } from "tgrid";
 
 const connector: WebSocketConnector<
   null,
-  IAgenticaRpcListener<"chatgpt">,
-  IAgenticaRpcService<"chatgpt">
+  IAgenticaRpcListener,
+  IAgenticaRpcService
 > = new WebSocketConnector(null, {
   text: async (evt) => {
     console.log(evt.role, evt.text);
@@ -38,7 +38,7 @@ const connector: WebSocketConnector<
 });
 await connector.connect("ws://localhost:3001");
 
-const driver: Driver<IAgenticaRpcService<"chatgpt">> = 
+const driver: Driver<IAgenticaRpcService> = 
   connector.getDriver();
 await driver.conversate("Hello, what you can do?");
 ```
@@ -55,12 +55,12 @@ import { WebSocketServer } from "tgrid";
 
 const server: WebSocketServer<
   null,
-  IAgenticaRpcService<"chatgpt">,
-  IAgenticaRpcListener<"chatgpt">
+  IAgenticaRpcService,
+  IAgenticaRpcListener
 > = new WebSocketServer();
 await server.open(3_001, async (acceptor) => {
-  const agent: Agentica<"chatgpt"> = new Agentica({ ... });
-  const service: AgenticaRpcService<"chatgpt"> = 
+  const agent: Agentica = new Agentica({ ... });
+  const service: AgenticaRpcService = 
     new AgenticaRpcService({
       agent,
       listener: acceptor.getDriver(),
@@ -84,12 +84,12 @@ export class ChatController {
     @WebSocketRoute.Acceptor()
     acceptor: WebSocketAcceptor<
       null, // header
-      AgenticaRpcService<"chatgpt">,
-      IAgenticaRpcListener<"chatgpt">
+      AgenticaRpcService,
+      IAgenticaRpcListener
     >,
   ): Promise<void> {
-    const agent: Agentica<"chatgpt"> = new Agentica({ ... });
-    const service: AgenticaRpcService<"chatgpt"> = 
+    const agent: Agentica = new Agentica({ ... });
+    const service: AgenticaRpcService = 
       new AgenticaRpcService({
         agent,
         listener: acceptor.getDriver(),
@@ -270,8 +270,8 @@ interface IAuthorizationHeader {
 
 const connector: WebSocketConnector<
   IAuthorizationHeader,
-  IAgenticaRpcListener<"chatgpt">,
-  IAgenticaRpcService<"chatgpt">
+  IAgenticaRpcListener,
+  IAgenticaRpcService
 > = new WebSocketConnector(
   {
     Authorization: "Bearer ********",
@@ -287,7 +287,7 @@ const connector: WebSocketConnector<
 );
 await connector.connect("ws://localhost:3001");
 
-const driver: Driver<IAgenticaRpcService<"chatgpt">> = 
+const driver: Driver<IAgenticaRpcService> = 
   connector.getDriver();
 await driver.conversate("Hello, what you can do?");
 ```
@@ -306,7 +306,7 @@ import { authorizeToken } from "./internal/authorizeToken";
 
 const server: WebSocketServer<
   IAuthorizationHeader,
-  IAgenticaRpcService<"chatgpt">,
+  IAgenticaRpcService,
   IAgenticaRpcListener
 > = new WebSocketServer();
 await server.open(3_001, async (acceptor) => {
@@ -316,9 +316,9 @@ await server.open(3_001, async (acceptor) => {
     await acceptor.reject(1008, (error as Error).message);
     return;
   }
-  const agent: Agentica<"chatgpt"> = new Agentica({ ... });
+  const agent: Agentica = new Agentica({ ... });
   const listener: Driver<IAgenticaRpcListener> = acceptor.getDriver();
-  const service: AgenticaRpcService<"chatgpt"> = 
+  const service: AgenticaRpcService = 
     new AgenticaRpcService({
       agent,
       listener,

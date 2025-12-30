@@ -29,7 +29,6 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const SwaggerAgent = async () =>
   new Agentica({
-    model: "chatgpt",
     vendor: {
       api: openai,
       model: "gpt-4o-mini",
@@ -40,7 +39,6 @@ export const SwaggerAgent = async () =>
         document: await fetch(
           "https://shopping-be.wrtn.ai/editor/swagger.json",
         ).then((r) => r.json()), // Swagger Document
-        model: "chatgpt", // JSON schema model
         connection: {
           // This is the actual API host where the API requests will be sent.
           host: "https://shopping-be.wrtn.ai",

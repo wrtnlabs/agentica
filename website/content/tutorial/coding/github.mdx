@@ -41,7 +41,6 @@ dotenv.config();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const GithubAgent = new Agentica({
-  model: "chatgpt",
   vendor: {
     api: openai,
     model: "gpt-4o-mini",
@@ -50,7 +49,7 @@ export const GithubAgent = new Agentica({
     {
       name: "Github Connector",
       protocol: "class",
-      application: typia.llm.application<GithubService, "chatgpt">(),
+      application: typia.llm.application<GithubService>(),
       execute: new GithubService({
         secret: process.env.GITHUB_ACCESS_TOKEN!,
       }),
