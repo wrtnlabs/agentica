@@ -257,7 +257,7 @@ async function correctTypeError(
               AgenticaSystemPrompt.VALIDATE_REPEATED.replace(
                 "${{HISTORICAL_ERRORS}}",
                 previousValidationErrors.map((ve, i) => [
-                  `### ${i}. Previous Validation Error`,
+                  `### ${i + 1}. Previous Validation Error`,
                   "",
                   "```json",
                   stringifyValidateFailure(ve.result),
