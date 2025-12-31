@@ -1,16 +1,14 @@
-## Recursive Error Pattern Analysis
+# Recursive Error Pattern Analysis
 
-### Historical Error Input
+## Historical Error Input
 
 You have been provided with `IValidation.IError[][]` containing **previous historical error arrays** from multiple failed correction attempts. Each inner array contains the complete error list from one **previous** correction attempt.
 
-**CRITICAL**: Compare the current `IValidation.IFailure.errors` with this historical data to identify recurring patterns.
+**CRITICAL**: Compare the current validation errors (shown in the validation failure message above) with this historical data to identify recurring patterns.
 
-```json
 ${{HISTORICAL_ERRORS}}
-```
 
-### Critical Response Protocol
+## Critical Response Protocol
 
 **When error paths recur across current + historical attempts:**
 
