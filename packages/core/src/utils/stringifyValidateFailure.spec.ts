@@ -1,8 +1,8 @@
 import type { IValidation } from "@samchon/openapi";
 
-import { stringifyValidateFailure } from "./stringifyValidateFailure";
+import { JsonUtil } from "./JsonUtil";
 
-describe("stringifyValidateFailure", () => {
+describe("jsonUtil.JsonUtil.stringifyValidateFailure", () => {
   describe("missing Properties", () => {
     it("should display missing required property as undefined with error comment", () => {
       const failure: IValidation.IFailure = {
@@ -19,7 +19,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"email\": undefined");
       expect(result).toContain("// ❌");
@@ -47,7 +47,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"email\": undefined");
       expect(result).toContain("\"age\": undefined");
@@ -72,7 +72,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"user\":");
       expect(result).toContain("\"email\": undefined");
@@ -100,7 +100,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"name\": \"John\"");
       expect(result).toContain("\"age\": 30");
@@ -125,7 +125,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       // Should NOT add "profile" at user level
       // The error is too deep to be represented at the user object level
@@ -150,7 +150,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"age\": \"25\"");
       expect(result).toContain("// ❌");
@@ -172,7 +172,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"name\": 123");
       expect(result).toContain("// ❌");
@@ -194,7 +194,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"status\": true");
       expect(result).toContain("// ❌");
@@ -216,7 +216,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"value\": null");
       expect(result).toContain("// ❌");
@@ -240,7 +240,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"email\": \"invalid-email\"");
       expect(result).toContain("// ❌");
@@ -262,7 +262,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"id\": \"not-a-uuid\"");
       expect(result).toContain("// ❌");
@@ -284,7 +284,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"createdAt\": \"tomorrow\"");
       expect(result).toContain("// ❌");
@@ -307,7 +307,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"email\": \"invalid\"");
       expect(result).toContain("// ❌");
@@ -334,7 +334,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"user\":");
       expect(result).toContain("\"name\": \"John\"");
@@ -364,7 +364,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"user\":");
       expect(result).toContain("\"profile\":");
@@ -396,7 +396,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"name\": 123");
       expect(result).toContain("\"user\":");
@@ -424,7 +424,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"user\":");
       expect(result).toContain("\"profile\":");
@@ -450,7 +450,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"tags\":");
       expect(result).toContain("[");
@@ -481,7 +481,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"numbers\":");
       expect(result).toContain("1,");
@@ -509,7 +509,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"users\":");
       expect(result).toContain("\"name\": \"John\"");
@@ -529,7 +529,7 @@ describe("stringifyValidateFailure", () => {
         errors: [],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"items\":");
       expect(result).toContain("[]");
@@ -550,7 +550,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"tags\": \"single-value\"");
       expect(result).toContain("// ❌");
@@ -590,7 +590,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"user\":");
       expect(result).toContain("\"email\": undefined");
@@ -626,7 +626,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"level1\":");
       expect(result).toContain("\"level2\":");
@@ -683,7 +683,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"name\": 123");
       expect(result).toContain("\"email\": \"invalid-email\"");
@@ -712,7 +712,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"special-key\": \"value\"");
       expect(result).toContain("\"key.with.dots\": 123");
@@ -728,7 +728,7 @@ describe("stringifyValidateFailure", () => {
         errors: [],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toBe("{}");
     });
@@ -746,7 +746,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("{");
       expect(result).toContain("\"name\": undefined");
@@ -767,7 +767,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"wrong-type\"");
       expect(result).toContain("// ❌");
@@ -787,7 +787,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("null");
       expect(result).toContain("// ❌");
@@ -808,7 +808,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"items\":");
       expect(result).toContain("\"valid\"");
@@ -837,7 +837,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"email\": \"invalid\"");
       expect(result).toContain("// ❌");
@@ -868,7 +868,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"custom\":");
       expect(result).toContain("\"serialized\": \"test\"");
@@ -896,7 +896,7 @@ describe("stringifyValidateFailure", () => {
         errors,
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       // Should contain all fields
       for (let i = 0; i < 50; i++) {
@@ -919,7 +919,7 @@ describe("stringifyValidateFailure", () => {
         errors: [],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       // Check that indentation increases with nesting
       const lines = result.split("\n");
@@ -944,7 +944,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("\"items\":");
       expect(result).toContain("\"a\"");
@@ -970,7 +970,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("// ❌");
       expect(result).toContain("\"path\":\"$input.age\"");
@@ -994,7 +994,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       expect(result).toContain("// ❌");
       expect(result).toContain("\"description\":\"Must be a valid email address\"");
@@ -1015,7 +1015,7 @@ describe("stringifyValidateFailure", () => {
         ],
       };
 
-      const result = stringifyValidateFailure(failure);
+      const result = JsonUtil.stringifyValidateFailure(failure);
 
       // Extract error comment
       const match = result.match(/\/\/ ❌ (.+)/);
