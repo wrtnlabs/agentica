@@ -62,6 +62,7 @@
   "dependencies": {
     "@samchon/openapi": "catalog:typia",
     "es-jsonkit": "^0.1.6",
+    "jsonrepair": "^3.13.1",
     "tstl": "catalog:libs",
     "typia": "catalog:typia",
     "uuid": "catalog:libs"
