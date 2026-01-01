@@ -28,7 +28,6 @@ import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageU
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { JsonUtil } from "../utils/JsonUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
-import { stringifyValidateFailure } from "../utils/stringifyValidateFailure";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
 
@@ -244,7 +243,7 @@ async function correctTypeError(
         "You must fix ALL errors to achieve 100% schema compliance.",
         "",
         "```json",
-        stringifyValidateFailure(validateEvent.result),
+        JsonUtil.stringifyValidateFailure(validateEvent.result),
         "```",
       ].join("\n"),
     },
@@ -262,7 +261,7 @@ async function correctTypeError(
                     `### ${i + 1}. Previous Validation Error`,
                     "",
                     "```json",
-                    stringifyValidateFailure(ve.result),
+                    JsonUtil.stringifyValidateFailure(ve.result),
                     "```",
                   ].join("\n"))
                   .join("\n\n"),
