@@ -1,5 +1,6 @@
 import type { IValidation } from "@samchon/openapi";
 
+import { addMissingBraces, removeEmptyObjectPrefix, removeTrailingCommas } from "es-jsonkit";
 import { jsonrepair } from "jsonrepair";
 import { Escaper } from "typia/lib/utils/Escaper";
 
@@ -8,8 +9,10 @@ export const JsonUtil = {
   stringifyValidateFailure,
 };
 
+const pipe = (...fns: ((str: string) => string)[]) => (str: string) => fns.reduce((acc, fn) => fn(acc), str);
+
 function parse(str: string) {
-  str = jsonrepair(str);
+  str = pipe(removeEmptyObjectPrefix, addMissingBraces, removeTrailingCommas, jsonrepair)(str);
   return JSON.parse(str);
 }
 
