@@ -19,6 +19,7 @@ import { createUserMessageEvent } from "./factory/events";
 import { call, describe } from "./orchestrate";
 import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
+import { assertExecuteFailure } from "./utils/assertExecuteFailure";
 import { getChatCompletionWithStreamingFunction } from "./utils/request";
 
 /**
@@ -166,10 +167,18 @@ export class MicroAgentica {
       ctx,
       this.operations_.array,
     );
-    if (executes.length
-      && this.props.config?.executor?.describe !== null
-      && this.props.config?.executor?.describe !== false) {
-      await describe(ctx, executes);
+    if (this.props.config?.throw === true) {
+      for (const execute of executes) {
+        assertExecuteFailure(execute);
+      }
+    }
+
+    // eslint-disable-next-line
+    if (executes.length && !!this.props.config?.executor?.describe) {
+      const func = typeof this.props.config.executor.describe === "function"
+        ? this.props.config.executor.describe
+        : describe;
+      await func(ctx, executes);
     }
 
     const completed: MicroAgenticaHistory[] = await Promise.all(
