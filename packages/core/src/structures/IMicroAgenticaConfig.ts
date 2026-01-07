@@ -79,6 +79,19 @@ export interface IMicroAgenticaConfig {
   retry?: number;
 
   /**
+   * Whether to throw an exception when execution fails.
+   *
+   * If you set this property to `true`, the A.I. chatbot will throw
+   * an exception when {@link AgenticaExecuteHistory.success} is `false`.
+   *
+   * Otherwise, the execution failure will be handled silently without
+   * throwing an exception.
+   *
+   * @default false
+   */
+  throw?: boolean;
+
+  /**
    * Backoff strategy.
    *
    * If OpenAI SDK fails to connect LLM API Server, this Backoff factor

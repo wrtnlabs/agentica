@@ -377,3 +377,48 @@ When you call `MicroAgentica.conversate()` function, the agent will start the [#
 If you want to archive the conversation state of current agent, store the returned prompts to your database with serialization to `IMicroAgenticaHistoryJson` format by calling `MicroAgenticaHistory.toJSON()` function. And then restore the conversation state by assigning the prompt histories to the `IMicroAgenticaProps.histories` property creating a new `Agentica` instance.
 
 By the way, waiting for the completion of internal agents' orchestration and giving prompt results to the user at once is not a good choice in the UX (User Experience) perspective. In that case, it would better to deliver the events to the user step by step with streaming. Enroll event listeners by calling `MicroAgentica.on()` function, and deliver it to the user.
+
+
+
+
+## Error Handling
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IMicroAgenticaConfig</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {12}
+import { MicroAgentica } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new MicroAgentica({
+  vendor: {
+    api: new OpenAI({ apiKey: "********" }),
+    model: "gpt-4o-mini",
+  },
+  controllers: [...],
+  config: {
+    throw: true,
+  },
+});
+
+try {
+  await agent.conversate("I wanna buy MacBook Pro");
+} catch (error) {
+  console.error("Function execution failed:", error);
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IMicroAgenticaConfig.ts"
+      filename="@agentica/core/IMicroAgenticaConfig"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+You can configure the `throw` property to control error handling behavior.
+
+When you set `IMicroAgenticaConfig.throw` to `true`, the agent will throw an exception when function execution fails (`AgenticaExecuteHistory.success === false`). This is useful when you want to handle execution failures explicitly in your application logic.
+
+By default, execution failures are handled silently without throwing exceptions. Set this property to `true` if you need to catch and handle execution errors in a try-catch block.
