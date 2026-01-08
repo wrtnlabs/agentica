@@ -242,9 +242,7 @@ async function correctTypeError(
         "",
         "You must fix ALL errors to achieve 100% schema compliance.",
         "",
-        "```json",
         JsonUtil.stringifyValidateFailure(validateEvent.result),
-        "```",
       ].join("\n"),
     },
     systemPrompt: ctx.config?.systemPrompt?.validate?.(previousValidationErrors.slice(0, -1))
@@ -260,9 +258,7 @@ async function correctTypeError(
                   .map((ve, i) => [
                     `### ${i + 1}. Previous Validation Error`,
                     "",
-                    "```json",
                     JsonUtil.stringifyValidateFailure(ve.result),
-                    "```",
                   ].join("\n"))
                   .join("\n\n"),
                 // JSON.stringify(previousValidationErrors.slice(0, -1).map(e => e.result.errors)),

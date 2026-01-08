@@ -19,14 +19,27 @@ function parse(str: string) {
 function stringifyValidateFailure(
   failure: IValidation.IFailure,
 ): string {
-  return stringify({
+  const usedErrors = new Set<IValidation.IError>();
+
+  const jsonOutput = stringify({
     value: failure.data,
     errors: failure.errors,
     path: "$input",
     tab: 0,
     inArray: false,
     inToJson: false,
+    usedErrors,
   });
+
+  // Find errors that couldn't be embedded
+  const unmappableErrors = failure.errors.filter(e => !usedErrors.has(e));
+
+  // If there are unmappable errors, append them as a separate block
+  if (unmappableErrors.length > 0) {
+    return `\`\`\`json\n${jsonOutput}\n\`\`\`\n\n**Unmappable validation errors:**\n\n\`\`\`json\n${JSON.stringify(unmappableErrors, null, 2)}\n\`\`\``;
+  }
+
+  return `\`\`\`json\n${jsonOutput}\n\`\`\``;
 }
 
 function stringify(props: {
@@ -36,10 +49,11 @@ function stringify(props: {
   tab: number;
   inArray: boolean;
   inToJson: boolean;
+  usedErrors: Set<IValidation.IError>;
 }): string {
-  const { value, errors, path, tab, inArray, inToJson } = props;
+  const { value, errors, path, tab, inArray, inToJson, usedErrors } = props;
   const indent: string = "  ".repeat(tab);
-  const errorComment: string = getErrorComment(path, errors);
+  const errorComment: string = getErrorComment(path, errors, usedErrors);
 
   // Handle undefined in arrays
   if (inArray && value === undefined) {
@@ -64,6 +78,7 @@ function stringify(props: {
         tab: tab + 1,
         inArray: true,
         inToJson: false,
+        usedErrors,
       });
       // Add comma before the error comment if not the last element
       if (index < value.length - 1) {
@@ -100,6 +115,7 @@ function stringify(props: {
         tab,
         inArray,
         inToJson: true,
+        usedErrors,
       });
     }
 
@@ -141,7 +157,7 @@ function stringify(props: {
         || typeof val === "number"
         || typeof val === "string"
       ) {
-        const propErrorComment: string = getErrorComment(propPath, errors);
+        const propErrorComment: string = getErrorComment(propPath, errors, usedErrors);
         const valueStr: string = val === undefined
           ? `${propIndent}"${key}": undefined`
           : `${propIndent}"${key}": ${JSON.stringify(val)}`;
@@ -160,6 +176,7 @@ function stringify(props: {
           tab: tab + 1,
           inArray: false,
           inToJson: false,
+          usedErrors,
         });
         const valStrWithoutIndent: string = valStr.trimStart();
         // Add comma before the error comment if not the last property
@@ -199,13 +216,20 @@ function stringify(props: {
 }
 
 /** Get error comment for a given path */
-function getErrorComment(path: string, errors: IValidation.IError[]): string {
+function getErrorComment(
+  path: string,
+  errors: IValidation.IError[],
+  usedErrors: Set<IValidation.IError>,
+): string {
   const pathErrors: IValidation.IError[] = errors.filter(
     (e: IValidation.IError) => e.path === path,
   );
   if (pathErrors.length === 0) {
     return "";
   }
+
+  // Mark these errors as used
+  pathErrors.forEach(e => usedErrors.add(e));
 
   return ` // ❌ ${JSON.stringify(
     pathErrors.map(e => ({
