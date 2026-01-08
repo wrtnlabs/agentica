@@ -81,13 +81,14 @@ export interface IMicroAgenticaConfig {
   /**
    * Whether to throw an exception when execution fails.
    *
-   * If you set this property to `true`, the A.I. chatbot will throw
-   * an exception when {@link AgenticaExecuteHistory.success} is `false`.
+   * If you set this property to `true` or define nothing, the A.I. chatbot
+   * will throw an exception when {@link AgenticaExecuteHistory.success} is
+   * `false`.
    *
    * Otherwise, the execution failure will be handled silently without
    * throwing an exception.
    *
-   * @default false
+   * @default true
    */
   throw?: boolean;
 

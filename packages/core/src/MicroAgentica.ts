@@ -167,11 +167,6 @@ export class MicroAgentica {
       ctx,
       this.operations_.array,
     );
-    if (this.props.config?.throw === true) {
-      for (const execute of executes) {
-        assertExecuteFailure(execute);
-      }
-    }
 
     // eslint-disable-next-line
     if (executes.length && !!this.props.config?.executor?.describe) {
@@ -185,6 +180,13 @@ export class MicroAgentica {
       histories.map(async h => h()),
     );
     this.histories_.push(...completed);
+
+    // throw exception about failed execution
+    if (this.props.config?.throw !== false) {
+      for (const execute of executes) {
+        assertExecuteFailure(execute);
+      }
+    }
     return completed;
   }
 
