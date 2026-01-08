@@ -181,7 +181,7 @@ export class MicroAgentica {
     );
     this.histories_.push(...completed);
 
-    // throw exception about failured execution
+    // throw exception about failed execution
     if (this.props.config?.throw !== false) {
       for (const execute of executes) {
         assertExecuteFailure(execute);
