@@ -20,6 +20,8 @@ import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { isAgenticaContext } from "../context/internal/isAgenticaContext";
+import { AgenticaJsonParseError } from "../errors/AgenticaJsonParseError";
+import { AgenticaValidationError } from "../errors/AgenticaValidationError";
 import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { __get_retry } from "../utils/__retry";
@@ -223,11 +225,10 @@ async function correctTypeError(
       call_id: callEvent.id,
       operation: callEvent.operation,
       arguments: callEvent.arguments,
-      value: {
-        name: "ValidationError",
-        message: `Invalid arguments. The validation failed after ${AgenticaConstant.RETRY} retries.`,
+      value: new AgenticaValidationError({
+        arguments: callEvent.arguments,
         errors: validateEvent.result.errors,
-      },
+      }),
       success: false,
     }),
     operation: callEvent.operation,
@@ -283,12 +284,10 @@ async function correctJsonError(
       call_id: toolCall.id,
       operation: parseErrorEvent.operation,
       arguments: {},
-      value: {
-        name: "JsonParseError",
-        message: `Invalid JSON format. The parsing failed after ${AgenticaConstant.RETRY} retries.`,
+      value: new AgenticaJsonParseError({
         arguments: parseErrorEvent.arguments,
-        errorMessage: parseErrorEvent.errorMessage,
-      },
+        reason: parseErrorEvent.errorMessage,
+      }),
       success: false,
     }),
     operation: parseErrorEvent.operation,
