@@ -22,13 +22,13 @@ export class AgenticaJsonParseError extends Error {
     this.reason = props.reason;
   }
 
-  public get name(): "AgenticaValidationError" {
-    return "AgenticaValidationError";
+  public get name(): "AgenticaJsonParseError" {
+    return "AgenticaJsonParseError";
   }
 
   public toJSON(): AgenticaJsonParseError.IJson {
     return {
-      name: "AgenticaValidationError",
+      name: "AgenticaJsonParseError",
       message: this.message,
       arguments: this.arguments,
       reason: this.reason,
@@ -41,7 +41,7 @@ export namespace AgenticaJsonParseError {
     reason: string;
   }
   export interface IJson extends IProps {
-    name: "AgenticaValidationError";
+    name: "AgenticaJsonParseError";
     message: string;
   }
 }
