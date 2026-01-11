@@ -2,6 +2,7 @@ export * from "./Agentica";
 
 export * from "./constants";
 export * from "./context";
+export * from "./errors";
 export * from "./events";
 export * as factory from "./factory";
 export * from "./functional";
