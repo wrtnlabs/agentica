@@ -1,6 +1,6 @@
 {
   "name": "@agentica/station",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "private": true,
   "packageManager": "pnpm@10.6.4",
   "description": "Agentic AI library specialized in LLM Function Calling",
