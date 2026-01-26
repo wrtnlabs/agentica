@@ -6,6 +6,7 @@ import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaUserMessageHistory } from "../histories/AgenticaUserMessageHistory";
 import type { IAgenticaConfig } from "../structures/IAgenticaConfig";
 
+import type { AgenticaContextRequestResult } from "./AgenticaContextRequestResult";
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
 import type { AgenticaOperationSelection } from "./AgenticaOperationSelection";
 
@@ -126,7 +127,7 @@ export interface AgenticaContext {
   request: (
     source: AgenticaEventSource,
     body: Omit<OpenAI.ChatCompletionCreateParamsStreaming, "model" | "stream">,
-  ) => Promise<ReadableStream<OpenAI.Chat.Completions.ChatCompletionChunk>>;
+  ) => Promise<AgenticaContextRequestResult>;
 
   /**
    * Initialize the agent.

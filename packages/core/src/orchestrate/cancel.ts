@@ -95,7 +95,7 @@ async function step(
   // ----
   // EXECUTE CHATGPT API
   // ----
-  const completionStream = await ctx.request("cancel", {
+  const result = await ctx.request("cancel", {
     messages: [
       // COMMON SYSTEM PROMPT
       {
@@ -171,8 +171,12 @@ async function step(
     // parallel_tool_calls: true,
   });
 
-  const chunks = await StreamUtil.readAll(completionStream, ctx.abortSignal);
-  const completion = ChatGptCompletionMessageUtil.merge(chunks);
+  const completion = await (async () => {
+    if (result.type === "none-stream") {
+      return result.value;
+    }
+    return ChatGptCompletionMessageUtil.merge(await StreamUtil.readAll(result.value));
+  })();
 
   // ----
   // VALIDATION

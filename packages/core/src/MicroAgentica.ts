@@ -20,7 +20,7 @@ import { call, describe } from "./orchestrate";
 import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
 import { assertExecuteFailure } from "./utils/assertExecuteFailure";
-import { getChatCompletionWithStreamingFunction } from "./utils/request";
+import { getChatCompletionFunction } from "./utils/request";
 
 /**
  * Micro AI chatbot.
@@ -258,7 +258,7 @@ export class MicroAgentica {
     dispatch: (event: MicroAgenticaEvent) => Promise<void>;
     abortSignal?: AbortSignal;
   }): MicroAgenticaContext {
-    const request = getChatCompletionWithStreamingFunction({
+    const request = getChatCompletionFunction({
       vendor: this.props.vendor,
       config: this.props.config,
       dispatch: props.dispatch,

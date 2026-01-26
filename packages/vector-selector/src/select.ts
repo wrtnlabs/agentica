@@ -70,8 +70,12 @@ export async function selectFunction(props: {
     // parallel_tool_calls: false,
     tools: [Tools.select_functions],
   })
-    .then(async v => utils.StreamUtil.readAll(v))
-    .then(utils.ChatGptCompletionMessageUtil.merge);
+    .then(async (v) => {
+      if (v.type === "none-stream") {
+        return v.value;
+      }
+      return utils.ChatGptCompletionMessageUtil.merge(await utils.StreamUtil.readAll(v.value));
+    });
 
   const toolCalls = selectCompletion.choices
     .filter(v => v.message.tool_calls != null);

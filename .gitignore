@@ -17,3 +17,5 @@ mise.toml
 .idea
 
 .DS_Store
+
+.envrc

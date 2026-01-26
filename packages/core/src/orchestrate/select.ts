@@ -108,7 +108,7 @@ async function step(
   // EXECUTE CHATGPT API
   // ----
   const completion = await retryFn(async (prevError) => {
-    const stream = await ctx.request("select", {
+    const result = await ctx.request("select", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -191,7 +191,20 @@ async function step(
       // parallel_tool_calls: false,
     });
 
-    const completion = await reduceStreamingWithDispatch(stream, (props) => {
+    if (result.type === "none-stream") {
+      const completion = result.value;
+      const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+      if (allAssistantMessagesEmpty) {
+        const firstChoice = completion.choices.at(0);
+        if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
+          throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
+        }
+        throw new AssistantMessageEmptyError();
+      }
+      return completion;
+    }
+
+    const completion = await reduceStreamingWithDispatch(result.value, (props) => {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       void ctx.dispatch(event).catch(() => {});
     }, ctx.abortSignal);

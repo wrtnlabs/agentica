@@ -1,5 +1,6 @@
 import type { AgenticaContext } from "../context/AgenticaContext";
 
+import type { IAgenticaConfigBase } from "./IAgenticaConfigBase";
 import type { IAgenticaExecutor } from "./IAgenticaExecutor";
 import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
 
@@ -20,7 +21,7 @@ import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
  *
  * @author Samchon
  */
-export interface IAgenticaConfig {
+export interface IAgenticaConfig extends IAgenticaConfigBase {
   /**
    * Agent executor.
    *
@@ -46,45 +47,6 @@ export interface IAgenticaConfig {
    * messages for each situation.
    */
   systemPrompt?: IAgenticaSystemPrompt;
-
-  /**
-   * Locale of the A.I. chatbot.
-   *
-   * If you configure this property, the A.I. chatbot will conversate with
-   * the given locale. You can get the locale value by
-   *
-   * - Browser: `navigator.language`
-   * - NodeJS: `process.env.LANG.split(".")[0]`
-   *
-   * @default your_locale
-   */
-  locale?: string;
-
-  /**
-   * Timezone of the A.I. chatbot.
-   *
-   * If you configure this property, the A.I. chatbot will consider the
-   * given timezone. You can get the timezone value by
-   * `Intl.DateTimeFormat().resolvedOptions().timeZone`.
-   *
-   * @default your_timezone
-   */
-  timezone?: string;
-
-  /**
-   * Retry count.
-   *
-   * If LLM function calling composed arguments are invalid,
-   * the A.I. chatbot will retry to call the function with
-   * the modified arguments.
-   *
-   * By the way, if you configure it to 0 or 1, the A.I. chatbot
-   * will not retry the LLM function calling for correcting the
-   * arguments.
-   *
-   * @default 3
-   */
-  retry?: number;
 
   /**
    * Capacity of the LLM function selecting.
@@ -118,22 +80,4 @@ export interface IAgenticaConfig {
    * @default true
    */
   eliticism?: boolean;
-
-  /**
-   * Backoff strategy.
-   *
-   * If OpenAI SDK fails to connect LLM API Server, this Backoff factor
-   * would be used to retry for the next connection.
-   *
-   * If the function returns `true`, the retry would be stopped.
-   * Otherwise, the retry would be continued.
-   *
-   * @default (props) => throw props.error
-   * @returns {number} The number of milliseconds to wait before the next retry
-   * @throws {Error} If the function want to stop the retry, you can throw an error
-   */
-  backoffStrategy?: (props: {
-    count: number;
-    error: unknown;
-  }) => number;
 }

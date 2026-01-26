@@ -10,6 +10,7 @@ import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createDescribeEvent } from "../factory/events";
 import { decodeHistory } from "../factory/histories";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
+import { toAsyncGenerator } from "../utils/StreamUtil";
 
 export async function describe(
   ctx: AgenticaContext | MicroAgenticaContext,
@@ -19,7 +20,7 @@ export async function describe(
     return;
   }
 
-  const completionStream = await ctx.request("describe", {
+  const result = await ctx.request("describe", {
     messages: [
       // COMMON SYSTEM PROMPT
       {
@@ -38,7 +39,20 @@ export async function describe(
     ],
   });
 
-  await reduceStreamingWithDispatch(completionStream, (props) => {
+  if (result.type === "none-stream") {
+    const message = result.value.choices[0]?.message.content ?? "";
+    const event: AgenticaDescribeEvent = createDescribeEvent({
+      executes: histories,
+      stream: toAsyncGenerator(message),
+      done: () => true,
+      get: () => message,
+      join: async () => message,
+    });
+    void ctx.dispatch(event).catch(() => {});
+    return;
+  }
+
+  await reduceStreamingWithDispatch(result.value, (props) => {
     const event: AgenticaDescribeEvent = createDescribeEvent({
       executes: histories,
       ...props,
