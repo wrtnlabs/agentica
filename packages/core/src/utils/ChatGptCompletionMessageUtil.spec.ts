@@ -42,9 +42,8 @@ describe("chatGptCompletionMessageUtil", () => {
     });
 
     it("should handle invalid JSON", () => {
-      expect(() => {
-        ChatGptCompletionMessageUtil.transformCompletionChunk("invalid json");
-      }).toThrow();
+      const result = ChatGptCompletionMessageUtil.transformCompletionChunk("invalid json");
+      expect(result).toEqual("invalid json");
     });
   });
 
