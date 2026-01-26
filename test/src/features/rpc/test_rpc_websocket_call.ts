@@ -28,6 +28,7 @@ export async function test_rpc_websocket_call(): Promise<void | false> {
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: TestGlobal.chatgptApiKey,
+        baseURL: TestGlobal.chatgptBaseUrl,
       }),
     },
     controllers: [

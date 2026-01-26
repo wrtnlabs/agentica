@@ -19,6 +19,7 @@ export async function test_json_parse_error_correction(): Promise<void | false> 
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: TestGlobal.chatgptApiKey,
+        baseURL: TestGlobal.chatgptBaseUrl,
       }),
     },
     controllers: [

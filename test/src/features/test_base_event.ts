@@ -19,6 +19,7 @@ export async function test_base_event(): Promise<void | false> {
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: TestGlobal.chatgptApiKey,
+        baseURL: TestGlobal.chatgptBaseUrl,
       }),
     },
     controllers: [],

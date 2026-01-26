@@ -43,6 +43,10 @@ export class TestGlobal {
   public static get chatgptApiKey(): string {
     return this.env.CHATGPT_API_KEY ?? "";
   }
+
+  public static get chatgptBaseUrl(): string {
+    return this.env.CHATGPT_BASE_URL ?? "";
+  }
 }
 
 interface IEnvironments {

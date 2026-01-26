@@ -16,6 +16,7 @@ export async function test_micro_agentica(): Promise<void | false> {
     vendor: {
       api: new OpenAI({
         apiKey: TestGlobal.chatgptApiKey,
+        baseURL: TestGlobal.chatgptBaseUrl,
       }),
       model: "gpt-4o-mini",
     },
