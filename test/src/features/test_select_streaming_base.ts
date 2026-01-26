@@ -35,6 +35,7 @@ export async function test_select_streaming_base(): Promise<void | false> {
       model: "gpt-4o-mini",
       api: new OpenAI({
         apiKey: TestGlobal.chatgptApiKey,
+        baseURL: TestGlobal.chatgptBaseUrl,
       }),
     },
     controllers: [controller],

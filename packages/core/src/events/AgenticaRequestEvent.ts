@@ -5,6 +5,6 @@ import type { AgenticaEventSource } from "./AgenticaEventSource";
 
 export interface AgenticaRequestEvent extends AgenticaEventBase<"request"> {
   source: AgenticaEventSource;
-  body: OpenAI.ChatCompletionCreateParamsStreaming;
+  body: OpenAI.ChatCompletionCreateParamsStreaming | OpenAI.ChatCompletionCreateParamsNonStreaming;
   options?: OpenAI.RequestOptions | undefined;
 }

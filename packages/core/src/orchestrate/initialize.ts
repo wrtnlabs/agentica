@@ -12,6 +12,7 @@ import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
+import { toAsyncGenerator } from "../utils/StreamUtil";
 
 const FUNCTION: ILlmFunction = typia.llm.application<
   __IChatInitialApplication
@@ -21,7 +22,7 @@ export async function initialize(ctx: AgenticaContext): Promise<void> {
   // ----
   // EXECUTE CHATGPT API
   // ----
-  const completionStream = await ctx.request("initialize", {
+  const result = await ctx.request("initialize", {
     messages: [
       // COMMON SYSTEM PROMPT
       {
@@ -62,7 +63,19 @@ export async function initialize(ctx: AgenticaContext): Promise<void> {
     // parallel_tool_calls: false,
   });
 
-  const completion = await reduceStreamingWithDispatch(completionStream, (props) => {
+  if (result.type === "none-stream") {
+    const message = result.value.choices[0]?.message.content ?? "";
+    const event = createAssistantMessageEvent({
+      stream: toAsyncGenerator(message),
+      done: () => true,
+      get: () => message,
+      join: async () => message,
+    });
+    void ctx.dispatch(event).catch(() => {});
+    return;
+  }
+
+  const completion = await reduceStreamingWithDispatch(result.value, (props) => {
     const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
     void ctx.dispatch(event).catch(() => {});
   }, ctx.abortSignal);

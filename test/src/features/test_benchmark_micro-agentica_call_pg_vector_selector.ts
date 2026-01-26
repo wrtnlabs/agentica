@@ -62,6 +62,7 @@ export async function test_benchmark_call_pg_vector_selector(): Promise<
         model: "gpt-4o-mini",
         api: new OpenAI({
           apiKey: TestGlobal.chatgptApiKey,
+          baseURL: TestGlobal.chatgptBaseUrl,
         }),
       },
       controllers: [

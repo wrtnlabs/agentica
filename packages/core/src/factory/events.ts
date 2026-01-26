@@ -310,7 +310,7 @@ export function createDescribeEvent(props: {
 ----------------------------------------------------------- */
 export function createRequestEvent(props: {
   source: AgenticaEventSource;
-  body: OpenAI.ChatCompletionCreateParamsStreaming;
+  body: OpenAI.ChatCompletionCreateParamsStreaming | OpenAI.ChatCompletionCreateParamsNonStreaming;
   options?: OpenAI.RequestOptions | undefined;
 }): AgenticaRequestEvent {
   const id: string = v4();

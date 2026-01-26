@@ -42,9 +42,9 @@ describe("chatGptCompletionMessageUtil", () => {
     });
 
     it("should handle invalid JSON", () => {
-      expect(() => {
-        ChatGptCompletionMessageUtil.transformCompletionChunk("invalid json");
-      }).toThrow();
+      const result = ChatGptCompletionMessageUtil.transformCompletionChunk("invalid json");
+      // https://github.com/wrtnlabs/agentica/pull/464/files
+      expect(result).toEqual("invalid json");
     });
   });
 

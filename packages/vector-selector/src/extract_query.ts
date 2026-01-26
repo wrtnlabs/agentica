@@ -31,8 +31,13 @@ export async function extractQuery(ctx: AgenticaContext) {
     tools: [Tools.extract_query],
   });
 
-  const chunks = await utils.StreamUtil.readAll(completionStream);
-  const completion = utils.ChatGptCompletionMessageUtil.merge(chunks);
+  const completion = await (async () => {
+    if (completionStream.type === "none-stream") {
+      return completionStream.value;
+    }
+    return utils.ChatGptCompletionMessageUtil.merge(await utils.StreamUtil.readAll(completionStream.value));
+  })();
+
   const queries = completion.choices[0]?.message.tool_calls?.filter(tc => tc.type === "function").flatMap((v) => {
     const arg = JSON.parse(v.function.arguments) as Partial<FromSchema<typeof Tools.extract_query.function.parameters>>;
     if (!Array.isArray(arg.query_list)) {

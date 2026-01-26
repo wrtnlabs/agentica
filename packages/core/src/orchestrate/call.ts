@@ -48,7 +48,7 @@ export async function call(
   };
 
   const completion = await retryFn(async (prevError) => {
-    const stream: ReadableStream<OpenAI.ChatCompletionChunk> = await ctx.request("call", {
+    const result = await ctx.request("call", {
       messages: [
         // COMMON SYSTEM PROMPT
         {
@@ -106,7 +106,11 @@ export async function call(
       // parallel_tool_calls: false,
     });
 
-    const completion = await reduceStreamingWithDispatch(stream, (props) => {
+    if (result.type === "none-stream") {
+      return result.value;
+    }
+
+    const completion = await reduceStreamingWithDispatch(result.value, (props) => {
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       void ctx.dispatch(event).catch(() => {});
     });
@@ -349,7 +353,7 @@ async function correctError(
     return props.giveUp();
   }
 
-  const stream: ReadableStream<OpenAI.ChatCompletionChunk> = await ctx.request("call", {
+  const result = await ctx.request("call", {
     messages: [
       // COMMON SYSTEM PROMPT
       {
@@ -423,8 +427,14 @@ async function correctError(
     tool_choice: "required",
     // parallel_tool_calls: false,
   });
-  const chunks: OpenAI.ChatCompletionChunk[] = await StreamUtil.readAll(stream);
-  const completion: OpenAI.ChatCompletion = ChatGptCompletionMessageUtil.merge(chunks);
+
+  const completion = await (async () => {
+    if (result.type === "none-stream") {
+      return result.value;
+    }
+    return ChatGptCompletionMessageUtil.merge(await StreamUtil.readAll(result.value));
+  })();
+
   const toolCall: OpenAI.ChatCompletionMessageFunctionToolCall | undefined = completion.choices[0]?.message.tool_calls?.filter(
     tc => tc.type === "function",
   ).find(

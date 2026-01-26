@@ -5,6 +5,7 @@ import type { AgenticaUserMessageHistory } from "../histories/AgenticaUserMessag
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 import type { IMicroAgenticaConfig } from "../structures/IMicroAgenticaConfig";
 
+import type { AgenticaContextRequestResult } from "./AgenticaContextRequestResult";
 import type { AgenticaOperationCollection } from "./AgenticaOperationCollection";
 
 /**
@@ -94,5 +95,5 @@ export interface MicroAgenticaContext {
   request: (
     source: MicroAgenticaEvent.Source,
     body: Omit<OpenAI.ChatCompletionCreateParamsStreaming, "model" | "stream">,
-  ) => Promise<ReadableStream<OpenAI.Chat.Completions.ChatCompletionChunk>>;
+  ) => Promise<AgenticaContextRequestResult>;
 }

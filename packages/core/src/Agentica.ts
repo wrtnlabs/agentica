@@ -20,7 +20,7 @@ import { createInitializeEvent, createUserMessageEvent } from "./factory/events"
 import { execute } from "./orchestrate/execute";
 import { transformHistory } from "./transformers/transformHistory";
 import { __map_take } from "./utils/__map_take";
-import { getChatCompletionWithStreamingFunction } from "./utils/request";
+import { getChatCompletionFunction } from "./utils/request";
 
 /**
  * Agentica AI chatbot agent.
@@ -256,7 +256,7 @@ export class Agentica {
     dispatch: (event: AgenticaEvent) => Promise<void>;
     abortSignal?: AbortSignal;
   }): AgenticaContext {
-    const request = getChatCompletionWithStreamingFunction({
+    const request = getChatCompletionFunction({
       vendor: this.props.vendor,
       config: this.props.config,
       dispatch: props.dispatch,
