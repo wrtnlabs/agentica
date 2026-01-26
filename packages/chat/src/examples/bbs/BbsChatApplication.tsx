@@ -7,7 +7,6 @@ import { AgenticaChatApplication } from "../../AgenticaChatApplication";
 
 import { BbsArticleService } from "./BbsArticleService";
 
-
 export function BbsChatApplication(props: BbsChatApplication.IProps) {
   const service: BbsArticleService = new BbsArticleService();
   const agent: MicroAgentica = new MicroAgentica({

@@ -14,7 +14,7 @@ export async function test_base_work(): Promise<void | false> {
     vendor: {
       model: "gpt-4o-mini",
       api: new OpenAI({
-        
+
         apiKey: TestGlobal.chatgptApiKey,
         baseURL: TestGlobal.chatgptBaseUrl,
       }),

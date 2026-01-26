@@ -12,7 +12,7 @@ import React from "react";
 import { MarkdownViewer } from "../../components/MarkdownViewer";
 
 export function AgenticaChatFunctionStackSideMovie(
-  props: AgenticaChatFunctionStackSideMovie.IProps
+  props: AgenticaChatFunctionStackSideMovie.IProps,
 ) {
   return (
     <React.Fragment>
