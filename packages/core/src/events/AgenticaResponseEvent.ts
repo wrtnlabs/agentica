@@ -17,9 +17,9 @@ export interface AgenticaResponseEvent extends AgenticaEventBase<"response"> {
   body: OpenAI.ChatCompletionCreateParamsStreaming;
 
   /**
-   * The text content stream.
+   * The response data.
    */
-  stream: AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>;
+  response: AgenticaResponseEvent.Response;
 
   /**
    * Options for the request.
@@ -30,4 +30,15 @@ export interface AgenticaResponseEvent extends AgenticaEventBase<"response"> {
    * Wait the completion.
    */
   join: () => Promise<OpenAI.ChatCompletion>;
+}
+export namespace AgenticaResponseEvent {
+  export type Response = StreamResponse | NonStreamResponse;
+  export interface StreamResponse {
+    stream: true;
+    data: AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>;
+  }
+  export interface NonStreamResponse {
+    stream: false;
+    data: OpenAI.ChatCompletion;
+  }
 }
