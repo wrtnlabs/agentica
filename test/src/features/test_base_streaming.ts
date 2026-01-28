@@ -44,12 +44,12 @@ export async function test_base_streaming(): Promise<void | false> {
   });
 
   agent.on("response", async (event: AgenticaResponseEvent) => {
-    if (event.response.stream === false) {
+    if (event.stream === false) {
       throw new Error("Response is not a stream");
     }
     responseEventFired = true;
     // Test the stream
-    for await (const value of event.response.data) {
+    for await (const value of event.completion) {
       if (value.choices !== undefined && value.choices[0]?.delta?.content !== undefined) {
         streamContentPieces.push(value.choices[0].delta.content as string);
       }

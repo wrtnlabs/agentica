@@ -29,6 +29,7 @@ export function getChatCompletionFunction(props: {
       : { stream: false };
     const event: AgenticaRequestEvent = createRequestEvent({
       source,
+      stream: streamOptions.stream,
       body: {
         ...body,
         model: props.vendor.model,
@@ -75,11 +76,9 @@ export function getChatCompletionFunction(props: {
         type: "response",
         request_id: event.id,
         source,
-        response: {
-          stream: false,
-          data: completion,
-        },
-        body: event.body as OpenAI.ChatCompletionCreateParamsStreaming,
+        stream: false,
+        body: event.body as OpenAI.ChatCompletionCreateParamsNonStreaming,
+        completion,
         options: event.options,
         join: async () => completion,
         created_at: new Date().toISOString(),
@@ -122,11 +121,9 @@ export function getChatCompletionFunction(props: {
       type: "response",
       request_id: event.id,
       source,
-      response: {
-        stream: true,
-        data: streamDefaultReaderToAsyncGenerator(streamForStream.getReader(), props.abortSignal),
-      },
+      stream: true,
       body: event.body as OpenAI.ChatCompletionCreateParamsStreaming,
+      completion: streamDefaultReaderToAsyncGenerator(streamForStream.getReader(), props.abortSignal),
       options: event.options,
       join: async () => {
         const chunks = await StreamUtil.readAll(streamForJoin, props.abortSignal);
