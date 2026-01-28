@@ -308,9 +308,12 @@ export function createDescribeEvent(props: {
 /* -----------------------------------------------------------
   API REQUESTS
 ----------------------------------------------------------- */
-export function createRequestEvent(props: {
+export function createRequestEvent<Stream extends boolean>(props: {
   source: AgenticaEventSource;
-  body: OpenAI.ChatCompletionCreateParamsStreaming | OpenAI.ChatCompletionCreateParamsNonStreaming;
+  stream: Stream;
+  body: Stream extends true
+    ? OpenAI.ChatCompletionCreateParamsStreaming
+    : OpenAI.ChatCompletionCreateParamsNonStreaming;
   options?: OpenAI.RequestOptions | undefined;
 }): AgenticaRequestEvent {
   const id: string = v4();
@@ -320,17 +323,23 @@ export function createRequestEvent(props: {
     id,
     created_at,
     source: props.source,
-    body: props.body,
+    stream: props.stream as false,
+    body: props.body as OpenAI.ChatCompletionCreateParamsNonStreaming,
     options: props.options,
   };
 }
 
-export function createResponseEvent(props: {
+export function createResponseEvent<Stream extends boolean>(props: {
   request_id: string;
   source: AgenticaEventSource;
-  body: OpenAI.ChatCompletionCreateParamsStreaming;
+  stream: Stream;
+  body: Stream extends true
+    ? OpenAI.ChatCompletionCreateParamsStreaming
+    : OpenAI.ChatCompletionCreateParamsNonStreaming;
   options?: OpenAI.RequestOptions | undefined;
-  response: AgenticaResponseEvent.Response;
+  completion: Stream extends true
+    ? AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>
+    : OpenAI.ChatCompletion;
   join: () => Promise<OpenAI.ChatCompletion>;
 }): AgenticaResponseEvent {
   const id: string = v4();
@@ -341,9 +350,10 @@ export function createResponseEvent(props: {
     request_id: props.request_id,
     created_at,
     source: props.source,
-    body: props.body,
+    stream: props.stream as false,
+    body: props.body as OpenAI.ChatCompletionCreateParamsNonStreaming,
+    completion: props.completion as OpenAI.ChatCompletion,
     options: props.options,
-    response: props.response,
     join: props.join,
   };
 }

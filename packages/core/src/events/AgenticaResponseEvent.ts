@@ -3,42 +3,30 @@ import type OpenAI from "openai";
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 import type { AgenticaEventSource } from "./AgenticaEventSource";
 
-export interface AgenticaResponseEvent extends AgenticaEventBase<"response"> {
-  request_id: string;
-
-  /**
-   * The source agent of the response.
-   */
-  source: AgenticaEventSource;
-
-  /**
-   * Request body.
-   */
-  body: OpenAI.ChatCompletionCreateParamsStreaming;
-
-  /**
-   * The response data.
-   */
-  response: AgenticaResponseEvent.Response;
-
-  /**
-   * Options for the request.
-   */
-  options?: OpenAI.RequestOptions | undefined;
-
-  /**
-   * Wait the completion.
-   */
-  join: () => Promise<OpenAI.ChatCompletion>;
-}
+export type AgenticaResponseEvent =
+  | AgenticaResponseEvent.Streaming
+  | AgenticaResponseEvent.NonStreaming;
 export namespace AgenticaResponseEvent {
-  export type Response = StreamResponse | NonStreamResponse;
-  export interface StreamResponse {
-    stream: true;
-    data: AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>;
-  }
-  export interface NonStreamResponse {
-    stream: false;
-    data: OpenAI.ChatCompletion;
+  export type Streaming = Base<
+    true,
+    OpenAI.ChatCompletionCreateParamsStreaming,
+    AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>
+  >;
+
+  export type NonStreaming = Base<
+    false,
+    OpenAI.ChatCompletionCreateParamsNonStreaming,
+    OpenAI.ChatCompletion
+  >;
+
+  interface Base<Stream extends boolean, Body extends object, Completion extends object>
+    extends AgenticaEventBase<"response"> {
+    source: AgenticaEventSource;
+    request_id: string;
+    stream: Stream;
+    body: Body;
+    completion: Completion;
+    options?: OpenAI.RequestOptions | undefined;
+    join: () => Promise<OpenAI.ChatCompletion>;
   }
 }
