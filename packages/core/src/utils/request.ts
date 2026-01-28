@@ -63,6 +63,27 @@ export function getChatCompletionFunction(props: {
     })();
 
     if ("toReadableStream" in completion === false) {
+      if (completion.usage != null) {
+        AgenticaTokenUsageAggregator.aggregate({
+          kind: source,
+          completionUsage: completion.usage,
+          usage: props.usage,
+        });
+      }
+      void props.dispatch({
+        id: v4(),
+        type: "response",
+        request_id: event.id,
+        source,
+        response: {
+          stream: false,
+          data: completion,
+        },
+        body: event.body as OpenAI.ChatCompletionCreateParamsStreaming,
+        options: event.options,
+        join: async () => completion,
+        created_at: new Date().toISOString(),
+      }).catch(() => {});
       return {
         type: "none-stream",
         value: completion,
@@ -101,7 +122,10 @@ export function getChatCompletionFunction(props: {
       type: "response",
       request_id: event.id,
       source,
-      stream: streamDefaultReaderToAsyncGenerator(streamForStream.getReader(), props.abortSignal),
+      response: {
+        stream: true,
+        data: streamDefaultReaderToAsyncGenerator(streamForStream.getReader(), props.abortSignal),
+      },
       body: event.body as OpenAI.ChatCompletionCreateParamsStreaming,
       options: event.options,
       join: async () => {

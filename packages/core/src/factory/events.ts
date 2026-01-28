@@ -330,7 +330,7 @@ export function createResponseEvent(props: {
   source: AgenticaEventSource;
   body: OpenAI.ChatCompletionCreateParamsStreaming;
   options?: OpenAI.RequestOptions | undefined;
-  stream: AsyncGenerator<OpenAI.ChatCompletionChunk, undefined, undefined>;
+  response: AgenticaResponseEvent.Response;
   join: () => Promise<OpenAI.ChatCompletion>;
 }): AgenticaResponseEvent {
   const id: string = v4();
@@ -343,7 +343,7 @@ export function createResponseEvent(props: {
     source: props.source,
     body: props.body,
     options: props.options,
-    stream: props.stream,
+    response: props.response,
     join: props.join,
   };
 }
