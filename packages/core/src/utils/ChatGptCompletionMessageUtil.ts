@@ -23,7 +23,7 @@ function transformCompletionChunk(source: string | Uint8Array): ChatCompletionCh
 }
 
 function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCompletion {
-  const choices = origin.choices;
+  const choices = origin.choices ?? [];
   chunk.choices.forEach((choice) => {
     const accChoice = choices[choice.index];
     if (accChoice != null) {
@@ -101,7 +101,7 @@ function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
   } as ChatCompletion);
 
   // post-process
-  result.choices.forEach((choice) => {
+  result.choices?.forEach((choice) => {
     choice.message.tool_calls?.filter(tc => tc.type === "function").forEach((toolCall) => {
       if (toolCall.function.arguments === "") {
         toolCall.function.arguments = "{}";

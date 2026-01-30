@@ -40,7 +40,7 @@ export async function describe(
   });
 
   if (result.type === "none-stream") {
-    const message = result.value.choices[0]?.message.content ?? "";
+    const message = result.value.choices?.[0]?.message.content ?? "";
     const event: AgenticaDescribeEvent = createDescribeEvent({
       executes: histories,
       stream: toAsyncGenerator(message),

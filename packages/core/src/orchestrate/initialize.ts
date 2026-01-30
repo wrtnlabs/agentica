@@ -64,7 +64,7 @@ export async function initialize(ctx: AgenticaContext): Promise<void> {
   });
 
   if (result.type === "none-stream") {
-    const message = result.value.choices[0]?.message.content ?? "";
+    const message = result.value.choices?.[0]?.message.content ?? "";
     const event = createAssistantMessageEvent({
       stream: toAsyncGenerator(message),
       done: () => true,
@@ -88,7 +88,7 @@ export async function initialize(ctx: AgenticaContext): Promise<void> {
   // PROCESS COMPLETION
   // ----
   if (
-    completion.choices.some(
+    completion.choices?.some(
       c =>
         c.message.tool_calls != null
         && c.message.tool_calls.some(

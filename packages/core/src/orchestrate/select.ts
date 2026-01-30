@@ -193,9 +193,9 @@ async function step(
 
     if (result.type === "none-stream") {
       const completion = result.value;
-      const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+      const allAssistantMessagesEmpty = completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
       if (allAssistantMessagesEmpty) {
-        const firstChoice = completion.choices.at(0);
+        const firstChoice = completion.choices?.at(0);
         if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
           throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
         }
@@ -208,9 +208,9 @@ async function step(
       const event: AgenticaAssistantMessageEvent = createAssistantMessageEvent(props);
       void ctx.dispatch(event).catch(() => {});
     }, ctx.abortSignal);
-    const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+    const allAssistantMessagesEmpty = !!completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
     if (allAssistantMessagesEmpty) {
-      const firstChoice = completion.choices.at(0);
+      const firstChoice = completion.choices?.at(0);
       if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
         throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
       }
@@ -236,7 +236,7 @@ async function step(
   // ----
   if (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)) {
     const failures: IFailure[] = [];
-    for (const choice of completion.choices) {
+    for (const choice of (completion.choices ?? [])) {
       for (const tc of choice.message.tool_calls ?? []) {
         if (tc.type !== "function" || tc.function.name !== "selectFunctions") {
           continue;
@@ -261,7 +261,7 @@ async function step(
   // ----
   // PROCESS COMPLETION
   // ----
-  for (const choice of completion.choices) {
+  for (const choice of (completion.choices ?? [])) {
     // FUNCTION CALLING
     if (choice.message.tool_calls != null) {
       for (const tc of choice.message.tool_calls) {
