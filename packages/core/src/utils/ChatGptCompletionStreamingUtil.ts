@@ -55,10 +55,10 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
       }
     };
     if (acc.object === "chat.completion.chunk") {
-      registerContext([acc, chunk].flatMap(v => v.choices));
+      registerContext([acc, chunk].flatMap(v => v.choices ?? []));
       return ChatGptCompletionMessageUtil.merge([acc, chunk]);
     }
-    registerContext(chunk.choices);
+    registerContext(chunk.choices ?? []);
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
   }, { abortSignal });
 

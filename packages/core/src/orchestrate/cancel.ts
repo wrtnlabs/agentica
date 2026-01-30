@@ -183,7 +183,7 @@ async function step(
   // ----
   if (retry++ < (ctx.config?.retry ?? AgenticaConstant.RETRY)) {
     const failures: IFailure[] = [];
-    for (const choice of completion.choices) {
+    for (const choice of (completion.choices ?? [])) {
       for (const tc of choice.message.tool_calls ?? []) {
         if (tc.type !== "function" || tc.function.name !== "cancelFunctions") {
           continue;
@@ -209,7 +209,7 @@ async function step(
   // ----
   // PROCESS COMPLETION
   // ----
-  for (const choice of completion.choices) {
+  for (const choice of (completion.choices ?? [])) {
     // TOOL CALLING HANDLER
     if (choice.message.tool_calls != null) {
       for (const tc of choice.message.tool_calls) {

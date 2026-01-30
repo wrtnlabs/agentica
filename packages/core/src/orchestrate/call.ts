@@ -115,9 +115,11 @@ export async function call(
       void ctx.dispatch(event).catch(() => {});
     });
 
-    const allAssistantMessagesEmpty = completion.choices.every(v => v.message.tool_calls == null && v.message.content === "");
+    const allAssistantMessagesEmpty: boolean = (completion.choices ?? []).every(
+      v => v.message.tool_calls == null && v.message.content === "",
+    );
     if (allAssistantMessagesEmpty) {
-      const firstChoice = completion.choices.at(0);
+      const firstChoice: OpenAI.ChatCompletion.Choice | undefined = completion.choices?.[0];
       if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
         throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
       }
@@ -142,7 +144,7 @@ export async function call(
   const executes: AgenticaExecuteEvent[] = [];
 
   const retry: number = ctx.config?.retry ?? AgenticaConstant.RETRY;
-  for (const choice of completion.choices) {
+  for (const choice of (completion.choices ?? [])) {
     for (const tc of choice.message.tool_calls ?? []) {
       if (tc.type === "function") {
         const operation: AgenticaOperation | undefined = operations.find(
@@ -435,7 +437,7 @@ async function correctError(
     return ChatGptCompletionMessageUtil.merge(await StreamUtil.readAll(result.value));
   })();
 
-  const toolCall: OpenAI.ChatCompletionMessageFunctionToolCall | undefined = completion.choices[0]?.message.tool_calls?.filter(
+  const toolCall: OpenAI.ChatCompletionMessageFunctionToolCall | undefined = completion.choices?.[0]?.message.tool_calls?.filter(
     tc => tc.type === "function",
   ).find(
     s => s.function.name === props.operation.name,
