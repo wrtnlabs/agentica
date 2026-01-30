@@ -115,7 +115,9 @@ export async function call(
       void ctx.dispatch(event).catch(() => {});
     });
 
-    const allAssistantMessagesEmpty: boolean = !!completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
+    const allAssistantMessagesEmpty: boolean = (completion.choices ?? []).every(
+      v => v.message.tool_calls == null && v.message.content === "",
+    );
     if (allAssistantMessagesEmpty) {
       const firstChoice: OpenAI.ChatCompletion.Choice | undefined = completion.choices?.[0];
       if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
