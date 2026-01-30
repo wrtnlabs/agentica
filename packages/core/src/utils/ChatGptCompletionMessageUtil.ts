@@ -24,7 +24,7 @@ function transformCompletionChunk(source: string | Uint8Array): ChatCompletionCh
 
 function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCompletion {
   const choices = origin.choices ?? [];
-  chunk.choices.forEach((choice) => {
+  (chunk.choices ?? []).forEach((choice) => {
     const accChoice = choices[choice.index];
     if (accChoice != null) {
       choices[choice.index] = mergeChoice(accChoice, choice);
