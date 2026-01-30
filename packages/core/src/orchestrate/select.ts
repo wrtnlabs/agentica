@@ -193,7 +193,7 @@ async function step(
 
     if (result.type === "none-stream") {
       const completion = result.value;
-      const allAssistantMessagesEmpty = completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
+      const allAssistantMessagesEmpty = !!completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
       if (allAssistantMessagesEmpty) {
         const firstChoice = completion.choices?.at(0);
         if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
