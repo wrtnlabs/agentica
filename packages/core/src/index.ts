@@ -12,7 +12,4 @@ export * from "./MicroAgentica";
 export * as orchestrate from "./orchestrate";
 export * from "./structures";
 
-/**
- * @internal
- */
 export * as utils from "./utils";
