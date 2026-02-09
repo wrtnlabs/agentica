@@ -476,7 +476,7 @@ The \`arguments\` field in your function call contains invalid JSON syntax and c
 Here is the \`Error.message\` occurred from the \`JSON.parse()\` function:
 
 \`\`\`
-%{{ERROR_MESSAGE}}
+\${{ERROR_MESSAGE}}
 \`\`\`
 
 ### Issue Location:
