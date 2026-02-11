@@ -6,7 +6,7 @@ import { Escaper } from "typia/lib/utils/Escaper";
 
 export const JsonUtil = {
   parse,
-  stringifyValidateFailure,
+  stringifyValidationFailure,
 };
 
 const pipe = (...fns: ((str: string) => string)[]) => (str: string) => fns.reduce((acc, fn) => fn(acc), str);
@@ -16,7 +16,7 @@ function parse(str: string) {
   return JSON.parse(str);
 }
 
-function stringifyValidateFailure(
+function stringifyValidationFailure(
   failure: IValidation.IFailure,
 ): string {
   const usedErrors = new Set<IValidation.IError>();
@@ -62,7 +62,28 @@ function stringify(props: {
 
   // Array
   if (Array.isArray(value)) {
+    // Check for missing array element errors (path[])
+    const missingElementErrors = getMissingArrayElementErrors(
+      path,
+      errors,
+      usedErrors,
+    );
+    const hasMissingElements = missingElementErrors.length > 0;
+
     if (value.length === 0) {
+      // Empty array but has missing element errors - show placeholders
+      if (hasMissingElements) {
+        const innerIndent = "  ".repeat(tab + 1);
+        const lines: string[] = [];
+        lines.push(`${indent}[${errorComment}`);
+        missingElementErrors.forEach((e, idx) => {
+          const errComment = ` // ❌ ${JSON.stringify([{ path: e.path, expected: e.expected, description: e.description }])}`;
+          const comma = idx < missingElementErrors.length - 1 ? "," : "";
+          lines.push(`${innerIndent}undefined${comma}${errComment}`);
+        });
+        lines.push(`${indent}]`);
+        return lines.join("\n");
+      }
       return `${indent}[]${errorComment}`;
     }
 
@@ -71,6 +92,10 @@ function stringify(props: {
 
     value.forEach((item: unknown, index: number) => {
       const itemPath: string = `${path}[${index}]`;
+      const isLastElement = index === value.length - 1;
+      // If there are missing element errors, this is not truly the last line
+      const needsComma = !isLastElement || hasMissingElements;
+
       let itemStr: string = stringify({
         value: item,
         errors,
@@ -81,15 +106,15 @@ function stringify(props: {
         usedErrors,
       });
       // Add comma before the error comment if not the last element
-      if (index < value.length - 1) {
+      if (needsComma) {
         const itemLines: string[] = itemStr.split("\n");
         const lastLine: string = itemLines[itemLines.length - 1]!;
         const commentIndex: number = lastLine.indexOf(" //");
         if (commentIndex !== -1) {
-          itemLines[itemLines.length - 1]
-            = `${lastLine.slice(0, commentIndex)
-            },${
-              lastLine.slice(commentIndex)}`;
+          itemLines[itemLines.length - 1] = `${lastLine.slice(
+            0,
+            commentIndex,
+          )},${lastLine.slice(commentIndex)}`;
         }
         else {
           itemLines[itemLines.length - 1] += ",";
@@ -98,6 +123,16 @@ function stringify(props: {
       }
       lines.push(itemStr);
     });
+
+    // Add missing element placeholders at the end for each [] error
+    if (hasMissingElements) {
+      const innerIndent = "  ".repeat(tab + 1);
+      missingElementErrors.forEach((e, idx) => {
+        const errComment = ` // ❌ ${JSON.stringify([{ path: e.path, expected: e.expected, description: e.description }])}`;
+        const comma = idx < missingElementErrors.length - 1 ? "," : "";
+        lines.push(`${innerIndent}undefined${comma}${errComment}`);
+      });
+    }
 
     lines.push(`${indent}]`);
     return lines.join("\n");
@@ -119,17 +154,33 @@ function stringify(props: {
       });
     }
 
-    // Get existing entries (filter out undefined values from actual data)
-    const existingEntries: [string, unknown][] = Object.entries(value).filter(
+    // Get all entries from the object (including undefined values that have errors)
+    const allEntries: [string, unknown][] = Object.entries(value);
+
+    // Split into defined and undefined entries
+    const definedEntries: [string, unknown][] = allEntries.filter(
       ([_, val]) => val !== undefined,
     );
+    const undefinedEntryKeys: Set<string> = new Set(
+      allEntries.filter(([_, val]) => val === undefined).map(([key]) => key),
+    );
 
-    // Find missing properties that have validation errors
+    // Find missing properties that have validation errors (not in object at all)
     const missingKeys: string[] = getMissingProperties(path, value, errors);
 
-    // Combine existing and missing properties
+    // Combine: defined entries + undefined entries with errors + missing properties
+    const undefinedKeysWithErrors: string[] = Array.from(
+      undefinedEntryKeys,
+    ).filter((key) => {
+      const propPath = Escaper.variable(key)
+        ? `${path}.${key}`
+        : `${path}[${JSON.stringify(key)}]`;
+      return errors.some(e => e.path.startsWith(propPath));
+    });
+
     const allKeys: string[] = [
-      ...existingEntries.map(([key]) => key),
+      ...definedEntries.map(([key]) => key),
+      ...undefinedKeysWithErrors,
       ...missingKeys,
     ];
 
@@ -146,8 +197,11 @@ function stringify(props: {
         : `${path}[${JSON.stringify(key)}]`;
       const propIndent: string = "  ".repeat(tab + 1);
 
-      // Get the value (undefined for missing properties)
-      const val: unknown = missingKeys.includes(key) ? undefined : (value as any)[key];
+      // Get the value (undefined for missing properties or undefined entries)
+      const val: unknown
+        = missingKeys.includes(key) || undefinedKeysWithErrors.includes(key)
+          ? undefined
+          : (value as any)[key];
 
       // Primitive property value (including undefined for missing properties)
       if (
@@ -157,10 +211,16 @@ function stringify(props: {
         || typeof val === "number"
         || typeof val === "string"
       ) {
-        const propErrorComment: string = getErrorComment(propPath, errors, usedErrors);
-        const valueStr: string = val === undefined
-          ? `${propIndent}"${key}": undefined`
-          : `${propIndent}"${key}": ${JSON.stringify(val)}`;
+        const propErrorComment: string = getErrorComment(
+          propPath,
+          errors,
+          usedErrors,
+        );
+        const keyStr: string = JSON.stringify(key);
+        const valueStr: string
+          = val === undefined
+            ? `${propIndent}${keyStr}: undefined`
+            : `${propIndent}${keyStr}: ${JSON.stringify(val)}`;
         const withComma: string
           = index < array.length - 1 ? `${valueStr},` : valueStr;
         const line: string = withComma + propErrorComment;
@@ -168,7 +228,7 @@ function stringify(props: {
       }
       // Complex property value (object or array)
       else {
-        const keyLine: string = `${propIndent}"${key}": `;
+        const keyLine: string = `${propIndent}${JSON.stringify(key)}: `;
         let valStr: string = stringify({
           value: val,
           errors,
@@ -185,10 +245,10 @@ function stringify(props: {
           const lastLine: string = valLines[valLines.length - 1]!;
           const commentIndex: number = lastLine.indexOf(" //");
           if (commentIndex !== -1) {
-            valLines[valLines.length - 1]
-              = `${lastLine.slice(0, commentIndex)
-              },${
-                lastLine.slice(commentIndex)}`;
+            valLines[valLines.length - 1] = `${lastLine.slice(
+              0,
+              commentIndex,
+            )},${lastLine.slice(commentIndex)}`;
           }
           else {
             valLines[valLines.length - 1] += ",";
@@ -241,8 +301,26 @@ function getErrorComment(
 }
 
 /**
- * Find missing properties that have validation errors but don't exist in the data
- * Returns array of property keys that should be displayed as undefined
+ * Check if there are missing array element errors (path ending with []) Returns
+ * an array of error objects, one per missing element
+ */
+function getMissingArrayElementErrors(
+  path: string,
+  errors: IValidation.IError[],
+  usedErrors: Set<IValidation.IError>,
+): IValidation.IError[] {
+  const wildcardPath = `${path}[]`;
+  const missingErrors = errors.filter(e => e.path === wildcardPath);
+
+  // Mark these errors as used
+  missingErrors.forEach(e => usedErrors.add(e));
+
+  return missingErrors;
+}
+
+/**
+ * Find missing properties that have validation errors but don't exist in the
+ * data Returns array of property keys that should be displayed as undefined
  */
 function getMissingProperties(
   path: string,
@@ -266,24 +344,51 @@ function getMissingProperties(
 }
 
 /**
- * Extract direct child property key if errorPath is a direct child of parentPath
- * Returns null if not a direct child
+ * Extract direct child property key if errorPath is a direct child of
+ * parentPath Returns null if not a direct child
  *
  * Examples:
- * - extractDirectChildKey("$input", "$input.email") => "email"
- * - extractDirectChildKey("$input", "$input.user.email") => null (grandchild)
- * - extractDirectChildKey("$input.user", "$input.user.email") => "email"
- * - extractDirectChildKey("$input", "$input[0]") => null (array index, not object property)
+ *
+ * - ExtractDirectChildKey("$input", "$input.email") => "email"
+ * - ExtractDirectChildKey("$input", "$input.user.email") => null (grandchild)
+ * - ExtractDirectChildKey("$input.user", "$input.user.email") => "email"
+ * - ExtractDirectChildKey("$input", "$input[0]") => null (array index, not object
+ *   property)
+ * - ExtractDirectChildKey("$input", "$input["foo-bar"]") => "foo-bar"
+ * - ExtractDirectChildKey("$input", "$input["foo"]["bar"]") => null (grandchild)
  */
-function extractDirectChildKey(parentPath: string, errorPath: string): string | null {
+function extractDirectChildKey(
+  parentPath: string,
+  errorPath: string,
+): string | null {
   if (!errorPath.startsWith(parentPath)) {
     return null;
   }
 
   const suffix = errorPath.slice(parentPath.length);
 
-  // Match ".propertyName" pattern (direct child property)
+  // Match ".propertyName" pattern (direct child property with dot notation)
   // Should not contain additional dots or brackets after the property name
-  const match = suffix.match(/^\.([^.[\]]+)$/);
-  return match !== null ? match[1]! : null;
+  const dotMatch = suffix.match(/^\.([^.[\]]+)$/);
+  if (dotMatch !== null) {
+    return dotMatch[1]!;
+  }
+
+  // Match '["key"]' pattern (direct child property with bracket notation)
+  // The key is a JSON-encoded string
+  const bracketMatch = suffix.match(/^\[("[^"\\]*(?:\\.[^"\\]*)*")\]$/);
+  if (bracketMatch !== null) {
+    try {
+      const parsed = JSON.parse(bracketMatch[1]!);
+      // Ensure it's a string key, not a number (array index)
+      if (typeof parsed === "string") {
+        return parsed;
+      }
+    }
+    catch {
+      // Invalid JSON, ignore
+    }
+  }
+
+  return null;
 }
