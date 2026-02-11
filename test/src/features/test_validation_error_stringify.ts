@@ -14,6 +14,6 @@ export function test_validate_error_stringify(): void {
       },
     ],
   };
-  const str: string = JsonUtil.stringifyValidateFailure(failure);
+  const str: string = JsonUtil.stringifyValidationFailure(failure);
   console.log(str);
 };

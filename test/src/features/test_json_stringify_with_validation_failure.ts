@@ -27,7 +27,7 @@ export function test_json_stringify_with_validation_failure(): void {
       },
     ],
   };
-  const str: string = JsonUtil.stringifyValidateFailure(failure);
+  const str: string = JsonUtil.stringifyValidationFailure(failure);
   TestValidator.predicate("regular")(str.includes(
     JSON.stringify([
       {
