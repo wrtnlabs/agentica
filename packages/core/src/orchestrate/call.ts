@@ -442,15 +442,20 @@ async function correctError(
   ).find(
     s => s.function.name === props.operation.name,
   );
-  return toolCall === undefined
-    ? props.giveUp()
-    : predicate(
-        ctx,
-        props.operation,
-        toolCall,
-        props.previousValidationErrors,
-        props.life,
-      );
+  if (toolCall === undefined) {
+    // LLM did not return a valid tool call - retry if life remains
+    return correctError(ctx, {
+      ...props,
+      life: props.life - 1,
+    });
+  }
+  return predicate(
+    ctx,
+    props.operation,
+    toolCall,
+    props.previousValidationErrors,
+    props.life,
+  );
 }
 
 /* -----------------------------------------------------------
