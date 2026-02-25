@@ -97,11 +97,6 @@ async function step(
   // ----
   const result = await ctx.request("cancel", {
     messages: [
-      // COMMON SYSTEM PROMPT
-      {
-        role: "system",
-        content: AgenticaDefaultPrompt.write(ctx.config),
-      } satisfies OpenAI.ChatCompletionSystemMessageParam,
       // CANDIDATE FUNCTIONS
       {
         role: "assistant",
@@ -149,6 +144,10 @@ async function step(
       },
       // TYPE CORRECTIONS
       ...emendMessages(failures ?? []),
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      },
     ],
     // STACK FUNCTIONS
     tools: [{

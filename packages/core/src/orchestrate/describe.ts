@@ -22,11 +22,6 @@ export async function describe(
 
   const result = await ctx.request("describe", {
     messages: [
-      // COMMON SYSTEM PROMPT
-      {
-        role: "system",
-        content: AgenticaDefaultPrompt.write(ctx.config),
-      } satisfies OpenAI.ChatCompletionSystemMessageParam,
       // FUNCTION CALLING HISTORIES
       ...histories.map(decodeHistory).flat(),
       // SYSTEM PROMPT
@@ -36,6 +31,11 @@ export async function describe(
           ctx.config?.systemPrompt?.describe?.(histories)
           ?? AgenticaSystemPrompt.DESCRIBE,
       },
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
     ],
   });
 

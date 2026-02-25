@@ -110,11 +110,7 @@ async function step(
   const completion = await retryFn(async (prevError) => {
     const result = await ctx.request("select", {
       messages: [
-        // COMMON SYSTEM PROMPT
-        {
-          role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
+
         // CANDIDATE FUNCTIONS
         {
           role: "assistant",
@@ -171,6 +167,11 @@ async function step(
         },
         // TYPE CORRECTIONS
         ...emendMessages(failures ?? []),
+        // COMMON SYSTEM PROMPT
+        {
+          role: "system",
+          content: AgenticaDefaultPrompt.write(ctx.config),
+        } satisfies OpenAI.ChatCompletionSystemMessageParam,
       ],
       // STACK FUNCTIONS
       tools: [{

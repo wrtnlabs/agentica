@@ -23,10 +23,6 @@ export async function selectFunction(props: {
   const selectCompletion = await ctx.request("select", {
     messages: [
       {
-        role: "system",
-        content: AgenticaDefaultPrompt.write(ctx.config),
-      },
-      {
         role: "assistant",
         tool_calls: [
           {
@@ -60,6 +56,10 @@ export async function selectFunction(props: {
         `,
       },
       ...emendMessages(prevFailures),
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      },
     ],
     tool_choice: {
       type: "function",
