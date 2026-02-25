@@ -24,11 +24,6 @@ export async function initialize(ctx: AgenticaContext): Promise<void> {
   // ----
   const result = await ctx.request("initialize", {
     messages: [
-      // COMMON SYSTEM PROMPT
-      {
-        role: "system",
-        content: AgenticaDefaultPrompt.write(ctx.config),
-      } satisfies OpenAI.ChatCompletionSystemMessageParam,
       // PREVIOUS HISTORIES
       ...ctx.histories.map(decodeHistory).flat(),
       // USER INPUT
@@ -36,13 +31,18 @@ export async function initialize(ctx: AgenticaContext): Promise<void> {
         role: "user",
         content: ctx.prompt.contents.map(decodeUserMessageContent),
       },
+      // SYSTEM PROMPT
       {
-        // SYSTEM PROMPT
         role: "system",
         content:
           ctx.config?.systemPrompt?.initialize?.(ctx.histories)
           ?? AgenticaSystemPrompt.INITIALIZE,
       },
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
     ],
     // GETTER FUNCTION
     tools: [
