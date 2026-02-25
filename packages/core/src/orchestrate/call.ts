@@ -50,11 +50,6 @@ export async function call(
   const completion = await retryFn(async (prevError) => {
     const result = await ctx.request("call", {
       messages: [
-        // COMMON SYSTEM PROMPT
-        {
-          role: "system",
-          content: AgenticaDefaultPrompt.write(ctx.config),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
         // PREVIOUS HISTORIES
         ...ctx.histories.map(decodeHistory).flat(),
         // USER INPUT
@@ -78,6 +73,11 @@ export async function call(
             content: ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory[])
               ?? AgenticaSystemPrompt.EXECUTE,
           } satisfies OpenAI.ChatCompletionSystemMessageParam]),
+        // COMMON SYSTEM PROMPT
+        {
+          role: "system",
+          content: AgenticaDefaultPrompt.write(ctx.config),
+        } satisfies OpenAI.ChatCompletionSystemMessageParam,
       ],
       // STACKED FUNCTIONS
       tools: operations.map(
@@ -357,11 +357,6 @@ async function correctError(
 
   const result = await ctx.request("call", {
     messages: [
-      // COMMON SYSTEM PROMPT
-      {
-        role: "system",
-        content: AgenticaDefaultPrompt.write(ctx.config),
-      } satisfies OpenAI.ChatCompletionSystemMessageParam,
       // PREVIOUS HISTORIES
       ...ctx.histories.map(decodeHistory).flat(),
       // USER INPUT
@@ -398,6 +393,11 @@ async function correctError(
         role: "system",
         content: props.systemPrompt,
       },
+      // COMMON SYSTEM PROMPT
+      {
+        role: "system",
+        content: AgenticaDefaultPrompt.write(ctx.config),
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
     ],
     // STACK FUNCTIONS
     tools: [
