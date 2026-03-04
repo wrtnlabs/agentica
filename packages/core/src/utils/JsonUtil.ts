@@ -46,7 +46,7 @@ function decompose(
     }) === true
   ) {
     try {
-      output[key] = JSON.parse(value);
+      output[key] = parse(value);
     }
     catch {}
   }
