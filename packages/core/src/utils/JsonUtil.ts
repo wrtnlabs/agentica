@@ -1,5 +1,6 @@
-import type { IValidation } from "@samchon/openapi";
+import type { ILlmSchema, IValidation } from "@samchon/openapi";
 
+import { LlmTypeChecker } from "@samchon/openapi";
 import { addMissingBraces, removeEmptyObjectPrefix, removeTrailingCommas } from "es-jsonkit";
 import { jsonrepair } from "jsonrepair";
 import { Escaper } from "typia/lib/utils/Escaper";
@@ -11,9 +12,66 @@ export const JsonUtil = {
 
 const pipe = (...fns: ((str: string) => string)[]) => (str: string) => fns.reduce((acc, fn) => fn(acc), str);
 
-function parse(str: string) {
+function parse(
+  str: string,
+  parameters?: ILlmSchema.IParameters,
+): any {
   str = pipe(removeEmptyObjectPrefix, addMissingBraces, removeTrailingCommas, jsonrepair)(str);
-  return JSON.parse(str);
+  const output: any = JSON.parse(str);
+  if (parameters !== undefined) {
+    decompose(parameters, output);
+  }
+  return output;
+}
+
+function decompose(
+  parameters: ILlmSchema.IParameters,
+  output: any,
+): void {
+  if (Object.keys(parameters.properties).length !== 1) {
+    return;
+  }
+  else if (typeof output !== "object" || output === null) {
+    return;
+  }
+
+  const key: string = Object.keys(parameters.properties)[0]!;
+  const value: any = output[key];
+  const schema: ILlmSchema = parameters.properties[key]!;
+  if (
+    typeof value === "string"
+    && isInstanceType({
+      $defs: parameters.$defs,
+      schema,
+    }) === true
+  ) {
+    try {
+      output[key] = parse(value);
+    }
+    catch {}
+  }
+}
+
+function isInstanceType(props: {
+  $defs: Record<string, ILlmSchema>;
+  schema: ILlmSchema;
+}): boolean {
+  if (LlmTypeChecker.isReference(props.schema)) {
+    return isInstanceType({
+      $defs: props.$defs,
+      schema: props.$defs[props.schema.$ref.split("/").pop()!] ?? {},
+    });
+  }
+  return LlmTypeChecker.isNull(props.schema)
+    || LlmTypeChecker.isObject(props.schema)
+    || LlmTypeChecker.isArray(props.schema)
+    || (
+      LlmTypeChecker.isAnyOf(props.schema)
+      && props.schema.anyOf.every(s => isInstanceType({
+        $defs: props.$defs,
+        schema: s,
+      }))
+    );
 }
 
 function stringifyValidationFailure(
