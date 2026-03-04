@@ -38,27 +38,25 @@ function decompose(
   parameters: ILlmSchema.IParameters,
   output: any,
 ): void {
-  if (Object.keys(parameters.properties).length !== 1) {
-    return;
-  }
-  else if (typeof output !== "object" || output === null) {
+  if (
+    Object.keys(parameters.properties).length === 0
+    || typeof output !== "object"
+    || output === null) {
     return;
   }
 
-  const key: string = Object.keys(parameters.properties)[0]!;
-  const value: any = output[key];
-  const schema: ILlmSchema = parameters.properties[key]!;
-  if (
-    typeof value === "string"
-    && isInstanceType({
-      $defs: parameters.$defs,
-      schema,
-    }) === true
-  ) {
-    try {
-      output[key] = parse(value);
+  for (const [key, schema] of Object.entries(parameters.properties)) {
+    const value: any = output[key];
+    if (typeof value === "string"
+      && isInstanceType({
+        $defs: parameters.$defs,
+        schema,
+      }) === true) {
+      try {
+        output[key] = parse(value);
+      }
+      catch {}
     }
-    catch {}
   }
 }
 
