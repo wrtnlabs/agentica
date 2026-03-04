@@ -17,7 +17,17 @@ function parse(
   parameters?: ILlmSchema.IParameters,
 ): any {
   str = pipe(removeEmptyObjectPrefix, addMissingBraces, removeTrailingCommas, jsonrepair)(str);
-  const output: any = JSON.parse(str);
+
+  const output: any = (() => {
+    const value = JSON.parse(str);
+    if (typeof value === "string" && parameters !== undefined) {
+      try {
+        return parse(value);
+      }
+      catch {}
+    }
+    return value;
+  })();
   if (parameters !== undefined) {
     decompose(parameters, output);
   }
