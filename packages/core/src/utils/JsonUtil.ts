@@ -1,5 +1,6 @@
-import type { IValidation } from "@samchon/openapi";
+import type { ILlmSchema, IValidation } from "@samchon/openapi";
 
+import { LlmTypeChecker } from "@samchon/openapi";
 import { addMissingBraces, removeEmptyObjectPrefix, removeTrailingCommas } from "es-jsonkit";
 import { jsonrepair } from "jsonrepair";
 import { Escaper } from "typia/lib/utils/Escaper";
@@ -11,9 +12,45 @@ export const JsonUtil = {
 
 const pipe = (...fns: ((str: string) => string)[]) => (str: string) => fns.reduce((acc, fn) => fn(acc), str);
 
-function parse(str: string) {
+function parse(
+  str: string,
+  parameters?: ILlmSchema.IParameters,
+): any {
   str = pipe(removeEmptyObjectPrefix, addMissingBraces, removeTrailingCommas, jsonrepair)(str);
-  return JSON.parse(str);
+  const output: any = JSON.parse(str);
+  if (parameters !== undefined) {
+    decompose(parameters, output);
+  }
+  return output;
+}
+
+function decompose(
+  parameters: ILlmSchema.IParameters,
+  output: any,
+): void {
+  if (Object.keys(parameters.properties).length !== 1) {
+    return;
+  }
+  else if (typeof output !== "object" || output === null) {
+    return;
+  }
+
+  const key: string = Object.keys(parameters.properties)[0]!;
+  const value: any = output[key];
+  const schema: ILlmSchema = parameters.properties[key]!;
+  if (
+    typeof value === "string"
+    && (LlmTypeChecker.isObject(schema)
+      || (
+        LlmTypeChecker.isAnyOf(schema)
+        && schema.anyOf.every(s => LlmTypeChecker.isObject(s) || LlmTypeChecker.isNull(s)))
+    )
+  ) {
+    try {
+      output[key] = JSON.parse(value);
+    }
+    catch {}
+  }
 }
 
 function stringifyValidationFailure(

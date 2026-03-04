@@ -318,7 +318,10 @@ function parseArguments(
   life: number,
 ): AgenticaCallEvent | AgenticaJsonParseErrorEvent {
   try {
-    const data: Record<string, unknown> = JsonUtil.parse(toolCall.function.arguments);
+    const data: Record<string, unknown> = JsonUtil.parse(
+      toolCall.function.arguments,
+      operation.function.parameters,
+    );
     return createCallEvent({
       id: toolCall.id,
       operation,
