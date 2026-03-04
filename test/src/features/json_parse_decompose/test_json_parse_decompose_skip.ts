@@ -18,14 +18,14 @@ function test_skip_multiple_properties(): void {
   const parameters = typia.llm.parameters<IInput>();
 
   const input = JSON.stringify({
-    data1: '{"a":1}',
-    data2: '{"b":2}',
+    data1: "{\"a\":1}",
+    data2: "{\"b\":2}",
   });
   const result = JsonUtil.parse(input, parameters);
 
   // 2개 프로퍼티이므로 decompose 안함 - 문자열 그대로 유지
-  TestValidator.equals("skip_multi_data1")(result.data1)('{"a":1}');
-  TestValidator.equals("skip_multi_data2")(result.data2)('{"b":2}');
+  TestValidator.equals("skip_multi_data1")(result.data1)("{\"a\":1}");
+  TestValidator.equals("skip_multi_data2")(result.data2)("{\"b\":2}");
 }
 
 // 스키마가 string 타입이면 decompose 안함
@@ -36,11 +36,11 @@ function test_skip_string_schema(): void {
 
   const parameters = typia.llm.parameters<IInput>();
 
-  const input = JSON.stringify({ data: '{"foo":"bar"}' });
+  const input = JSON.stringify({ data: "{\"foo\":\"bar\"}" });
   const result = JsonUtil.parse(input, parameters);
 
   // string 스키마이므로 decompose 안함
-  TestValidator.equals("skip_string")(result.data)('{"foo":"bar"}');
+  TestValidator.equals("skip_string")(result.data)("{\"foo\":\"bar\"}");
 }
 
 // anyOf에 string이 포함되면 decompose 안함
@@ -51,9 +51,9 @@ function test_skip_anyOf_with_string(): void {
 
   const parameters = typia.llm.parameters<IInput>();
 
-  const input = JSON.stringify({ data: '{"x":1}' });
+  const input = JSON.stringify({ data: "{\"x\":1}" });
   const result = JsonUtil.parse(input, parameters);
 
   // anyOf에 string 포함되므로 decompose 안함
-  TestValidator.equals("skip_anyOf_string")(result.data)('{"x":1}');
+  TestValidator.equals("skip_anyOf_string")(result.data)("{\"x\":1}");
 }
