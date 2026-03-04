@@ -40,17 +40,38 @@ function decompose(
   const schema: ILlmSchema = parameters.properties[key]!;
   if (
     typeof value === "string"
-    && (LlmTypeChecker.isObject(schema)
-      || (
-        LlmTypeChecker.isAnyOf(schema)
-        && schema.anyOf.every(s => LlmTypeChecker.isObject(s) || LlmTypeChecker.isNull(s)))
-    )
+    && isInstanceType({
+      $defs: parameters.$defs,
+      schema,
+    }) === true
   ) {
     try {
       output[key] = JSON.parse(value);
     }
     catch {}
   }
+}
+
+function isInstanceType(props: {
+  $defs: Record<string, ILlmSchema>;
+  schema: ILlmSchema;
+}): boolean {
+  if (LlmTypeChecker.isReference(props.schema)) {
+    return isInstanceType({
+      $defs: props.$defs,
+      schema: props.$defs[props.schema.$ref.split("/").pop()!] ?? {},
+    });
+  }
+  return LlmTypeChecker.isNull(props.schema)
+    || LlmTypeChecker.isObject(props.schema)
+    || LlmTypeChecker.isArray(props.schema)
+    || (
+      LlmTypeChecker.isAnyOf(props.schema)
+      && props.schema.anyOf.every(s => isInstanceType({
+        $defs: props.$defs,
+        schema: s,
+      }))
+    );
 }
 
 function stringifyValidationFailure(
