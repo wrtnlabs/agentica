@@ -24,11 +24,13 @@ export function createMcpLlmApplication(props: {
       },
       schema: tool.inputSchema,
     });
-    if (components.schemas) {
+    if (components.schemas !== undefined) {
       const visited: Set<string> = new Set<string>();
       OpenApiTypeChecker.visit({
-        closure: (schema: any) => {
-          if (typeof schema.$ref === "string") { visited.add(schema.$ref.split("/").pop()); }
+        closure: (schema: OpenApi.IJsonSchema) => {
+          if (OpenApiTypeChecker.isReference(schema)) {
+            visited.add(schema.$ref.split("/").pop()!);
+          }
         },
         components,
         schema,
@@ -50,7 +52,9 @@ export function createMcpLlmApplication(props: {
         | OpenApi.IJsonSchema.IReference,
         accessor: `$input.tools[${i}].inputSchema`,
       });
-    if (parameters.success === false) { return; }
+    if (parameters.success === false) {
+      return;
+    }
 
     functions.push({
       name: tool.name,
