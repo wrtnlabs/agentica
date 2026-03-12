@@ -1,7 +1,7 @@
 import type { Agentica, AgenticaOperation } from "@agentica/core";
-import type { OpenApi } from "@samchon/openapi";
 
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
+import { OpenApi } from "typia";
 
 export interface ShoppingBenchmarkConfig {
   agent: Agentica;

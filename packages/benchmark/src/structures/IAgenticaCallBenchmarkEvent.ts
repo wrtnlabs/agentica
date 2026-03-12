@@ -30,10 +30,10 @@ import type { IAgenticaCallBenchmarkScenario } from "./IAgenticaCallBenchmarkSce
  *
  * @author Samchon
  */
-export type IAgenticaCallBenchmarkEvent =
-  | IAgenticaCallBenchmarkEvent.ISuccess
-  | IAgenticaCallBenchmarkEvent.IFailure
-  | IAgenticaCallBenchmarkEvent.IError;
+export type IAgenticaCallBenchmarkEvent
+  = | IAgenticaCallBenchmarkEvent.ISuccess
+    | IAgenticaCallBenchmarkEvent.IFailure
+    | IAgenticaCallBenchmarkEvent.IError;
 export namespace IAgenticaCallBenchmarkEvent {
   /**
    * Success event type.

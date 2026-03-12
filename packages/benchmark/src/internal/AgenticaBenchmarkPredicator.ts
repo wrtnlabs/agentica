@@ -7,8 +7,9 @@
 
 import type { Agentica, AgenticaHistory, AgenticaOperation, MicroAgentica } from "@agentica/core";
 import type OpenAI from "openai";
+import type { ILlmFunction } from "typia";
 
-import typia, { ILlmFunction } from "typia";
+import typia from "typia";
 
 import type { IAgenticaBenchmarkExpected } from "../structures/IAgenticaBenchmarkExpected";
 
