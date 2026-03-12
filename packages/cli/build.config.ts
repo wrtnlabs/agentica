@@ -43,6 +43,7 @@ export default defineBuildConfig({
       "minipass",
       "mkdirp",
       "chownr",
+      "modern-tar/fs",
     ],
     esbuild: {
       minify: isCI, // minify only in CI and publish
