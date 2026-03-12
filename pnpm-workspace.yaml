@@ -8,6 +8,7 @@ useNodeVersion: 22.15.0
 engineStrict: true
 catalogs:
   libs:
+    "@types/node": ^25.3.0
     openai: ^6.15.0
     tstl: ^3.0.0
     type-fest: ^4.37.0

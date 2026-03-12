@@ -67,7 +67,7 @@
     "@rollup/plugin-typescript": "^12.1.1",
     "@samchon/shopping-api": "^0.17.0",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.10.5",
+    "@types/node": "catalog:libs",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@types/uuid": "^10.0.0",

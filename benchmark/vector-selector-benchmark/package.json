@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^22.10.5",
+    "@types/node": "catalog:libs",
     "dotenv": "^16.4.7",
     "openai": "catalog:libs",
     "rimraf": "^6.0.1",

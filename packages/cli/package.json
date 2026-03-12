@@ -56,7 +56,7 @@
   "devDependencies": {
     "@bluwy/giget-core": "^0.1.2",
     "@clack/prompts": "^0.11.0",
-    "@types/node": "^24.0.1",
+    "@types/node": "catalog:libs",
     "@typia/unplugin": "catalog:typia",
     "commander": "^14.0.0",
     "memfs": "^4.17.2",

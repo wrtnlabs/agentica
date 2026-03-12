@@ -68,7 +68,7 @@
     "@nestia/e2e": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@types/node": "^22.13.9",
+    "@types/node": "catalog:libs",
     "@types/uuid": "^10.0.0",
     "@typia/interface": "catalog:typia",
     "@typia/unplugin": "catalog:typia",
