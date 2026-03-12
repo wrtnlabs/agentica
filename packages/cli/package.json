@@ -1,7 +1,7 @@
 {
   "name": "agentica",
   "type": "module",
-  "version": "0.43.3",
+  "version": "0.44.0-dev.20260313",
   "description": "Agentic AI Library specialized in LLM Function Calling",
   "author": "Wrtn Technologies",
   "license": "MIT",
@@ -39,38 +39,8 @@
   "engines": {
     "node": ">=18.18.0"
   },
-  "scripts": {
-    "prepare": "ts-patch install",
-    "build": "unbuild && publint",
-    "dev": "unbuild --watch",
-    "typecheck": "tsc --noEmit",
-    "prepack": "pnpm run build && npx clean-pkg-json",
-    "lint": "eslint .",
-    "format": "eslint --fix .",
-    "test": "vitest"
-  },
   "dependencies": {
     "detect-indent": "^7.0.1",
     "indent-string": "^5.0.0"
-  },
-  "devDependencies": {
-    "@bluwy/giget-core": "^0.1.2",
-    "@clack/prompts": "^0.11.0",
-    "@types/node": "catalog:libs",
-    "@typia/unplugin": "catalog:typia",
-    "commander": "^14.0.0",
-    "memfs": "^4.17.2",
-    "msw": "^2.10.2",
-    "nano-spawn": "^1.0.2",
-    "picocolors": "^1.1.1",
-    "publint": "^0.3.12",
-    "std-env": "^3.9.0",
-    "ts-node": "catalog:typescript",
-    "ts-patch": "catalog:typescript",
-    "type-fest": "catalog:libs",
-    "typescript": "catalog:typescript",
-    "typia": "catalog:typia",
-    "unbuild": "^3.5.0",
-    "vitest": "catalog:vite"
   }
 }
