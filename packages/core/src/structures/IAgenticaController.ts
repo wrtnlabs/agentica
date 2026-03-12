@@ -1,4 +1,4 @@
-import { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmApplication, ILlmFunction } from "@typia/interface";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmApplication, ILlmFunction } from "@typia/interface";
 
 /**
  * Controller of the Agentica Agent.
@@ -16,10 +16,10 @@ import { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, 
  *
  * @author Samchon
  */
-export type IAgenticaController =
-  | IAgenticaController.IHttp
-  | IAgenticaController.IClass
-  | IAgenticaController.IMcp;
+export type IAgenticaController
+  = | IAgenticaController.IHttp
+    | IAgenticaController.IClass
+    | IAgenticaController.IMcp;
 
 export namespace IAgenticaController {
   /**

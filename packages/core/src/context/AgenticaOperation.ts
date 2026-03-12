@@ -1,8 +1,8 @@
-import type { IHttpLlmFunction } from "@typia/interface"
+import type { IHttpLlmFunction } from "@typia/interface";
 import type { ILlmFunction } from "typia";
 
-import type { IAgenticaController } from "../structures/IAgenticaController";
 import type { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
+import type { IAgenticaController } from "../structures/IAgenticaController";
 
 /**
  * Operation information in the Agentica Agent.
@@ -19,10 +19,10 @@ import type { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
  *
  * @author Samchon
  */
-export type AgenticaOperation =
-  | AgenticaOperation.Class
-  | AgenticaOperation.Http
-  | AgenticaOperation.Mcp;
+export type AgenticaOperation
+  = | AgenticaOperation.Class
+    | AgenticaOperation.Http
+    | AgenticaOperation.Mcp;
 export namespace AgenticaOperation {
   export type Class = Base<
     "class",

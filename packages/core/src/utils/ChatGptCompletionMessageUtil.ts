@@ -1,3 +1,4 @@
+import type { IJsonParseResult } from "@typia/interface";
 import type {
   ChatCompletion,
   ChatCompletionChunk,
@@ -5,16 +6,16 @@ import type {
   ChatCompletionMessageFunctionToolCall,
   ChatCompletionMessageToolCall,
 } from "openai/resources";
-import type { IJsonParseResult } from "@typia/interface";
+
+import { dedent, LlmJson } from "@typia/utils";
 
 // import typia from "typia";
 import { ByteArrayUtil } from "./ByteArrayUtil";
 import { ChatGptTokenUsageAggregator } from "./ChatGptTokenUsageAggregator";
-import { dedent, LlmJson } from "@typia/utils";
 
 function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
-  const str: string = source instanceof Uint8Array 
-    ? ByteArrayUtil.toUtf8(source) 
+  const str: string = source instanceof Uint8Array
+    ? ByteArrayUtil.toUtf8(source)
     : source;
   const result: IJsonParseResult<ChatCompletionChunk> = LlmJson.parse(str);
   if (result.success === false) {
@@ -25,8 +26,8 @@ function transformCompletionChunk(source: string | Uint8Array): ChatCompletionCh
         \`\`\`json
         ${JSON.stringify(result, null, 2)}
         \`\`\`
-      `
-    )
+      `,
+    );
   }
 
   // const valid = typia.validate<ChatCompletionChunk>(result.data);

@@ -18,16 +18,16 @@ import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
  *
  * @author Samchon
  */
-export type MicroAgenticaEvent =
-  | AgenticaUserMessageEvent
-  | AgenticaAssistantMessageEvent
-  | AgenticaCallEvent
-  | AgenticaExecuteEvent
-  | AgenticaDescribeEvent
-  | AgenticaRequestEvent
-  | AgenticaResponseEvent
-  | AgenticaValidateEvent
-  | AgenticaJsonParseErrorEvent;
+export type MicroAgenticaEvent
+  = | AgenticaUserMessageEvent
+    | AgenticaAssistantMessageEvent
+    | AgenticaCallEvent
+    | AgenticaExecuteEvent
+    | AgenticaDescribeEvent
+    | AgenticaRequestEvent
+    | AgenticaResponseEvent
+    | AgenticaValidateEvent
+    | AgenticaJsonParseErrorEvent;
 export namespace MicroAgenticaEvent {
   export type Type = MicroAgenticaEvent["type"];
   export interface Mapper {

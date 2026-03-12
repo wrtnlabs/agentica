@@ -19,19 +19,19 @@ export function aggregate(props: {
   // PROMPT
   component.input.total += props.completionUsage.prompt_tokens;
   component.input.total
-      += props.completionUsage.prompt_tokens_details?.audio_tokens ?? 0;
+    += props.completionUsage.prompt_tokens_details?.audio_tokens ?? 0;
   component.input.cached
-      += props.completionUsage.prompt_tokens_details?.cached_tokens ?? 0;
+    += props.completionUsage.prompt_tokens_details?.cached_tokens ?? 0;
 
   // COMPLETION
   component.output.total += props.completionUsage.completion_tokens;
   component.output.accepted_prediction
-      += props.completionUsage.completion_tokens_details
+    += props.completionUsage.completion_tokens_details
       ?.accepted_prediction_tokens ?? 0;
   component.output.reasoning
-      += props.completionUsage.completion_tokens_details?.reasoning_tokens ?? 0;
+    += props.completionUsage.completion_tokens_details?.reasoning_tokens ?? 0;
   component.output.rejected_prediction
-      += props.completionUsage.completion_tokens_details
+    += props.completionUsage.completion_tokens_details
       ?.rejected_prediction_tokens ?? 0;
 
   // ----

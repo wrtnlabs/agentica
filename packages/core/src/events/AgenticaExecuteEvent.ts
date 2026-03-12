@@ -6,9 +6,9 @@ import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 
-export type AgenticaExecuteEvent =
-  | AgenticaExecuteEvent.Class
-  | AgenticaExecuteEvent.Protocol;
+export type AgenticaExecuteEvent
+  = | AgenticaExecuteEvent.Class
+    | AgenticaExecuteEvent.Protocol;
 export namespace AgenticaExecuteEvent {
   export interface Class
     extends Base<

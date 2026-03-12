@@ -1,4 +1,5 @@
-import { IJsonParseResult } from "typia";
+import type { IJsonParseResult } from "typia";
+
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";

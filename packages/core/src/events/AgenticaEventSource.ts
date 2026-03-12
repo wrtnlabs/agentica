@@ -1,6 +1,6 @@
-export type AgenticaEventSource =
-  | "initialize"
-  | "select"
-  | "cancel"
-  | "call"
-  | "describe";
+export type AgenticaEventSource
+  = | "initialize"
+    | "select"
+    | "cancel"
+    | "call"
+    | "describe";

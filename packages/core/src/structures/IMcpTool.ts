@@ -1,4 +1,4 @@
-import { OpenApiV3_2 } from "@typia/interface";
+import type { OpenApiV3_2 } from "@typia/interface";
 
 /**
  * MCP tool type.

@@ -1,10 +1,11 @@
 import type { IJsonParseResult } from "typia";
 
 import { dedent } from "@typia/utils";
+
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 
 export class AgenticaJsonParseError extends Error {
-  public readonly failure: IJsonParseResult.IFailure
+  public readonly failure: IJsonParseResult.IFailure;
 
   public constructor(failure: IJsonParseResult.IFailure) {
     super(
@@ -14,11 +15,11 @@ export class AgenticaJsonParseError extends Error {
         \`\`\`json
         ${JSON.stringify(failure, null, 2)}
         \`\`\`
-      `
+      `,
     );
 
     const proto = new.target.prototype;
-    
+
     // eslint-disable-next-line
     if (Object.setPrototypeOf) { 
       Object.setPrototypeOf(this, proto);

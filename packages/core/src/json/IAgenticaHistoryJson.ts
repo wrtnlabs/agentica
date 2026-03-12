@@ -21,14 +21,14 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
  *
  * @author Samchon
  */
-export type IAgenticaHistoryJson =
-  | IAgenticaHistoryJson.ISelect
-  | IAgenticaHistoryJson.ICancel
-  | IAgenticaHistoryJson.IExecute
-  | IAgenticaHistoryJson.IDescribe
-  | IAgenticaHistoryJson.IAssistantMessage
-  | IAgenticaHistoryJson.ISystemMessage
-  | IAgenticaHistoryJson.IUserMessage;
+export type IAgenticaHistoryJson
+  = | IAgenticaHistoryJson.ISelect
+    | IAgenticaHistoryJson.ICancel
+    | IAgenticaHistoryJson.IExecute
+    | IAgenticaHistoryJson.IDescribe
+    | IAgenticaHistoryJson.IAssistantMessage
+    | IAgenticaHistoryJson.ISystemMessage
+    | IAgenticaHistoryJson.IUserMessage;
 export namespace IAgenticaHistoryJson {
   export type Type = IAgenticaHistoryJson["type"];
   export interface Mapper {

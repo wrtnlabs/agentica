@@ -1,8 +1,11 @@
-import typia, { ILlmApplication } from "typia";
+import type { ILlmApplication } from "typia";
+
+import typia from "typia";
 
 import type { IAgenticaController } from "../structures/IAgenticaController";
+import type { IMcpTool } from "../structures/IMcpTool";
+
 import { createMcpLlmApplication } from "./createMcpLlmApplication";
-import { IMcpTool } from "../structures/IMcpTool";
 
 /**
  * Create an MCP controller with type assertion.
@@ -30,8 +33,8 @@ export async function assertMcpController(props: {
   // get list of tools
   const { tools } = await props.client.request({ method: "tools/list" }, ListToolsResultSchema);
 
-  const application: ILlmApplication = 
-    createMcpLlmApplication({
+  const application: ILlmApplication
+    = createMcpLlmApplication({
       tools: typia.assert<Array<IMcpTool>>(tools),
       config: props.config,
     });

@@ -1,7 +1,7 @@
-import { SwaggerV2, OpenApiV3, OpenApiV3_1, OpenApiV3_2, IHttpLlmApplication } from "@typia/interface";
-import { HttpLlm, OpenApiConverter } from "@typia/utils";
+import type { IHttpLlmApplication, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
 import type { IValidation, OpenApi } from "typia";
 
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 import typia from "typia";
 
 /**

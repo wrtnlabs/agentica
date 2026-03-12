@@ -6,14 +6,14 @@ import type { AgenticaSelectHistory } from "./AgenticaSelectHistory";
 import type { AgenticaSystemMessageHistory } from "./AgenticaSystemMessageHistory";
 import type { AgenticaUserMessageHistory } from "./AgenticaUserMessageHistory";
 
-export type AgenticaHistory =
-  | AgenticaCancelHistory
-  | AgenticaDescribeHistory
-  | AgenticaExecuteHistory
-  | AgenticaSelectHistory
-  | AgenticaAssistantMessageHistory
-  | AgenticaUserMessageHistory
-  | AgenticaSystemMessageHistory;
+export type AgenticaHistory
+  = | AgenticaCancelHistory
+    | AgenticaDescribeHistory
+    | AgenticaExecuteHistory
+    | AgenticaSelectHistory
+    | AgenticaAssistantMessageHistory
+    | AgenticaUserMessageHistory
+    | AgenticaSystemMessageHistory;
 export namespace AgenticaHistory {
   export type Type = AgenticaHistory["type"];
   export interface Mapper {

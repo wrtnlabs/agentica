@@ -1,5 +1,5 @@
-import type { ILlmFunction } from "typia";
 import type OpenAI from "openai";
+import type { ILlmFunction } from "typia";
 
 import typia from "typia";
 

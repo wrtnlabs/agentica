@@ -38,7 +38,7 @@ export async function cancel(
   }
 
   const stacks: AgenticaOperationSelection[][]
-      = ctx.operations.divided.map(() => []);
+    = ctx.operations.divided.map(() => []);
   const events: AgenticaEvent[] = [];
   await Promise.all(
     ctx.operations.divided.map(async (operations, i) =>
@@ -76,7 +76,7 @@ export async function cancel(
   }
   else {
     const cancelled: AgenticaCancelEvent[]
-        = events.filter(e => e.type === "cancel");
+      = events.filter(e => e.type === "cancel");
     (cancelled.length !== 0 ? cancelled : events)
       .forEach((e) => {
         void ctx.dispatch(e).catch(() => {});

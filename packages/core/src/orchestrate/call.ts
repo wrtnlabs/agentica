@@ -321,13 +321,14 @@ function parseArguments(
   const result: IJsonParseResult<Record<string, unknown>> = operation.function.parse(
     toolCall.function.arguments,
   ) satisfies IJsonParseResult<unknown> as IJsonParseResult<Record<string, unknown>>;
-  if (result.success === false)
+  if (result.success === false) {
     return createJsonParseErrorEvent({
       call_id: toolCall.id,
       operation,
       failure: result,
       life,
-    })
+    });
+  }
   return createCallEvent({
     id: toolCall.id,
     operation,
@@ -499,13 +500,13 @@ async function executeClassFunction(
   const execute = operation.controller.execute;
   const value: unknown = typeof execute === "function"
     ? await execute({
-      application: operation.controller.application,
-      function: operation.function,
-      arguments: call.arguments,
-    })
+        application: operation.controller.application,
+        function: operation.function,
+        arguments: call.arguments,
+      })
     : await (execute as Record<string, any>)[operation.function.name](
-      call.arguments,
-    );
+        call.arguments,
+      );
   return value;
 }
 
@@ -516,17 +517,17 @@ async function executeHttpOperation(
   const execute = operation.controller.execute;
   const value: IHttpResponse = typeof execute === "function"
     ? await execute({
-      connection: operation.controller.connection,
-      application: operation.controller.application,
-      function: operation.function,
-      arguments: call.arguments,
-    })
+        connection: operation.controller.connection,
+        application: operation.controller.application,
+        function: operation.function,
+        arguments: call.arguments,
+      })
     : await HttpLlm.propagate({
-      connection: operation.controller.connection,
-      application: operation.controller.application,
-      function: operation.function,
-      input: call.arguments,
-    });
+        connection: operation.controller.connection,
+        application: operation.controller.application,
+        function: operation.function,
+        input: call.arguments,
+      });
   return value;
 }
 

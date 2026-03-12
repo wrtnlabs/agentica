@@ -3,11 +3,11 @@ import type { AgenticaUserMessageFileContent } from "./AgenticaUserMessageFileCo
 import type { AgenticaUserMessageImageContent } from "./AgenticaUserMessageImageContent";
 import type { AgenticaUserMessageTextContent } from "./AgenticaUserMessageTextContent";
 
-export type AgenticaUserMessageContent =
-  | AgenticaUserMessageAudioContent
-  | AgenticaUserMessageFileContent
-  | AgenticaUserMessageImageContent
-  | AgenticaUserMessageTextContent;
+export type AgenticaUserMessageContent
+  = | AgenticaUserMessageAudioContent
+    | AgenticaUserMessageFileContent
+    | AgenticaUserMessageImageContent
+    | AgenticaUserMessageTextContent;
 export namespace AgenticaUserMessageContent {
   export type Type = AgenticaUserMessageContent["type"];
   export interface Mapper {

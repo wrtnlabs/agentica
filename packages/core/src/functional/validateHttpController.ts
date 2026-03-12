@@ -1,8 +1,10 @@
-import typia, { IValidation, OpenApi } from "typia";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
+import type { IValidation, OpenApi } from "typia";
+
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
+import typia from "typia";
 
 import type { IAgenticaController } from "../structures/IAgenticaController";
-import { SwaggerV2, OpenApiV3, OpenApiV3_1, IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, OpenApiV3_2 } from "@typia/interface";
-import { HttpLlm, OpenApiConverter } from "@typia/utils";
 
 /**
  * Create an HTTP controller with type validation.

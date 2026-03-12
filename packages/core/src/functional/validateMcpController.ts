@@ -1,7 +1,10 @@
-import typia, { ILlmApplication, IValidation } from "typia";
+import type { ILlmApplication, IValidation } from "typia";
+
+import typia from "typia";
 
 import type { IAgenticaController } from "../structures/IAgenticaController";
-import { IMcpTool } from "../structures/IMcpTool";
+import type { IMcpTool } from "../structures/IMcpTool";
+
 import { createMcpLlmApplication } from "./createMcpLlmApplication";
 
 /**

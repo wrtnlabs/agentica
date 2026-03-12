@@ -1,6 +1,8 @@
-import { SwaggerV2, OpenApiV3, OpenApiV3_1, IHttpLlmApplication, OpenApiV3_2 } from "@typia/interface";
+import type { IHttpLlmApplication, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
+import type { OpenApi } from "typia";
+
 import { HttpLlm, OpenApiConverter } from "@typia/utils";
-import typia, { OpenApi } from "typia";
+import typia from "typia";
 
 /**
  * Create an HTTP LLM application instance with type assertion.

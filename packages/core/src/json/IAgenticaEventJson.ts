@@ -18,19 +18,19 @@ import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelect
  *
  * @author Samchon
  */
-export type IAgenticaEventJson =
-  | IAgenticaEventJson.ICall
-  | IAgenticaEventJson.ICancel
-  | IAgenticaEventJson.IDescribe
-  | IAgenticaEventJson.IExecute
-  | IAgenticaEventJson.IInitialize
-  | IAgenticaEventJson.IRequest
-  | IAgenticaEventJson.IResponse
-  | IAgenticaEventJson.ISelect
-  | IAgenticaEventJson.IValidate
-  | IAgenticaEventJson.IJsonParseError
-  | IAgenticaEventJson.IAssistantMessage
-  | IAgenticaEventJson.IUserMessage;
+export type IAgenticaEventJson
+  = | IAgenticaEventJson.ICall
+    | IAgenticaEventJson.ICancel
+    | IAgenticaEventJson.IDescribe
+    | IAgenticaEventJson.IExecute
+    | IAgenticaEventJson.IInitialize
+    | IAgenticaEventJson.IRequest
+    | IAgenticaEventJson.IResponse
+    | IAgenticaEventJson.ISelect
+    | IAgenticaEventJson.IValidate
+    | IAgenticaEventJson.IJsonParseError
+    | IAgenticaEventJson.IAssistantMessage
+    | IAgenticaEventJson.IUserMessage;
 
 export namespace IAgenticaEventJson {
   export type Type = IAgenticaEventJson["type"];

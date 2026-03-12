@@ -1,6 +1,6 @@
 import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, OpenApi, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
-import { HttpLlm, OpenApiConverter } from "@typia/utils";
 
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 import typia from "typia";
 
 import type { IAgenticaController } from "../structures/IAgenticaController";

@@ -13,13 +13,13 @@ import type {
 
 import { Agentica } from "@agentica/core";
 import ShoppingApi from "@samchon/shopping-api";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 import chalk from "chalk";
 import OpenAI from "openai";
 import typia from "typia";
 
 import { TestGlobal } from "../TestGlobal";
 import { ConsoleScanner } from "../utils/ConsoleScanner";
-import { HttpLlm, OpenApiConverter } from "@typia/utils";
 
 function trace(...args: unknown[]): void {
   console.log("----------------------------------------------");
