@@ -1,6 +1,6 @@
 {
   "name": "@agentica/station",
-  "version": "0.43.3",
+  "version": "0.44.0-dev.20260313",
   "private": true,
   "packageManager": "pnpm@10.6.4",
   "description": "Agentic AI library specialized in LLM Function Calling",
@@ -40,7 +40,7 @@
     "build": "pnpm -r build",
     "build:packages": "pnpm --filter='./packages/**' -r build",
     "package:latest": "pnpm --filter='./packages/**' -r publish --tag latest",
-    "package:next": "pnpm --filter='./packages/**' -r publish --tag next",
+    "package:next": "bash next.bash",
     "preinstall": "npx only-allow pnpm",
     "release": "node deploy/sync_readme.js && bumpp",
     "lint": "pnpm --no-bail --aggregate-output /^lint:/",
