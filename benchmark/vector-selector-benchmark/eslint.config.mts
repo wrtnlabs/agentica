@@ -5,10 +5,4 @@ export default wrtnlabs({
   rules: {
     "no-console": "off",
   },
-}, {
-  "languageOptions": {
-    "parserOptions": {
-      "project": "./tsconfig.json",
-    },
-  },
 });

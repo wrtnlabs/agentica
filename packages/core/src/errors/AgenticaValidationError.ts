@@ -1,4 +1,4 @@
-import type { IValidation } from "@samchon/openapi";
+import type { IValidation } from "typia";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 

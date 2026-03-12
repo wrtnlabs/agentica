@@ -37,7 +37,7 @@ At first, you have to setup [`@agentica/core`](/docs/core), [`@samchon/openapi`]
 
 At next, setup `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages. `tgrid` is a TypeScript based RPC (Remote Procedure Call) framework supporting WebSocket protocol, and `@agentica/rpc` is an wrapper module of `@agentica/core` following the WebSocket RPC.
 
-At last, run `npx typia setup` command. It's because `typia` is a transformer library analyzing TypeScript source code in the compilation level, and it needs additional setup process transforming TypeScript compiler via [`ts-patch`](https://github.com/nonara/ts-patch). If you're not using non-standard TypeScript compiler (not `tsc`), you have to rollback to the standard TypeScript compiler, or setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) following its guidance.
+At last, run `npx typia setup` command. It's because `typia` is a transformer library analyzing TypeScript source code in the compilation level, and it needs additional setup process transforming TypeScript compiler via [`ts-patch`](https://github.com/nonara/ts-patch). If you're not using non-standard TypeScript compiler (not `tsc`), you have to rollback to the standard TypeScript compiler, or setup [`@typia/unplugin`](https://typia.io/docs/setup/#typiaunplugin) following its guidance.
 
 
 

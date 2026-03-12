@@ -21,19 +21,19 @@ import type { AgenticaValidateEvent } from "./AgenticaValidateEvent";
  *
  * @author Samchon
  */
-export type AgenticaEvent =
-  | AgenticaUserMessageEvent
-  | AgenticaAssistantMessageEvent
-  | AgenticaInitializeEvent
-  | AgenticaSelectEvent
-  | AgenticaCallEvent
-  | AgenticaCancelEvent
-  | AgenticaExecuteEvent
-  | AgenticaDescribeEvent
-  | AgenticaValidateEvent
-  | AgenticaJsonParseErrorEvent
-  | AgenticaRequestEvent
-  | AgenticaResponseEvent;
+export type AgenticaEvent
+  = | AgenticaUserMessageEvent
+    | AgenticaAssistantMessageEvent
+    | AgenticaInitializeEvent
+    | AgenticaSelectEvent
+    | AgenticaCallEvent
+    | AgenticaCancelEvent
+    | AgenticaExecuteEvent
+    | AgenticaDescribeEvent
+    | AgenticaValidateEvent
+    | AgenticaJsonParseErrorEvent
+    | AgenticaRequestEvent
+    | AgenticaResponseEvent;
 export namespace AgenticaEvent {
   export type Type = AgenticaEvent["type"];
   export interface Mapper {
@@ -50,10 +50,10 @@ export namespace AgenticaEvent {
     request: AgenticaRequestEvent;
     response: AgenticaResponseEvent;
   }
-  export type Source =
-    | "initialize"
-    | "select"
-    | "cancel"
-    | "call"
-    | "describe";
+  export type Source
+    = | "initialize"
+      | "select"
+      | "cancel"
+      | "call"
+      | "describe";
 }

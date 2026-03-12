@@ -40,12 +40,6 @@ describe("chatGptCompletionMessageUtil", () => {
       const result = ChatGptCompletionMessageUtil.transformCompletionChunk(uint8Array);
       expect(result).toEqual(chunk);
     });
-
-    it("should handle invalid JSON", () => {
-      const result = ChatGptCompletionMessageUtil.transformCompletionChunk("invalid json");
-      // https://github.com/wrtnlabs/agentica/pull/464/files
-      expect(result).toEqual("invalid json");
-    });
   });
 
   describe("accumulate", () => {

@@ -16,7 +16,7 @@ export interface IAgenticaVectorSelectorStrategy {
     props: {
       ctx: AgenticaContext;
       setEmbedded: () => void;
-    }
+    },
   ) => Promise<void>;
 }
 

@@ -1,11 +1,22 @@
+import type { IJsonParseResult } from "typia";
+
+import { dedent } from "@typia/utils";
+
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 
 export class AgenticaJsonParseError extends Error {
-  public readonly arguments: string;
-  public readonly reason: string;
+  public readonly failure: IJsonParseResult.IFailure;
 
-  public constructor(props: AgenticaJsonParseError.IProps) {
-    super(`Invalid JSON format. The parsing failed after ${AgenticaConstant.RETRY} retries.`);
+  public constructor(failure: IJsonParseResult.IFailure) {
+    super(
+      dedent`
+        Invalid JSON format. The parsing failed after ${AgenticaConstant.RETRY} retries.
+
+        \`\`\`json
+        ${JSON.stringify(failure, null, 2)}
+        \`\`\`
+      `,
+    );
 
     const proto = new.target.prototype;
 
@@ -17,9 +28,7 @@ export class AgenticaJsonParseError extends Error {
       // eslint-disable-next-line
       (this as any).__proto__ = proto; 
     }
-
-    this.arguments = props.arguments;
-    this.reason = props.reason;
+    this.failure = failure;
   }
 
   public get name(): "AgenticaJsonParseError" {
@@ -29,19 +38,15 @@ export class AgenticaJsonParseError extends Error {
   public toJSON(): AgenticaJsonParseError.IJson {
     return {
       name: "AgenticaJsonParseError",
+      failure: this.failure,
       message: this.message,
-      arguments: this.arguments,
-      reason: this.reason,
     };
   }
 }
 export namespace AgenticaJsonParseError {
-  export interface IProps {
-    arguments: string;
-    reason: string;
-  }
-  export interface IJson extends IProps {
+  export interface IJson {
     name: "AgenticaJsonParseError";
+    failure: IJsonParseResult.IFailure;
     message: string;
   }
 }

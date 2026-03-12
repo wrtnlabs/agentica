@@ -42,9 +42,9 @@ function writeIndex(result: IAgenticaSelectBenchmarkResult): string {
     .map(r => r.events)
     .flat();
   const average: number
-      = events
-        .map(e => e.completed_at.getTime() - e.started_at.getTime())
-        .reduce((a, b) => a + b, 0) / events.length;
+    = events
+      .map(e => e.completed_at.getTime() - e.started_at.getTime())
+      .reduce((a, b) => a + b, 0) / events.length;
   const aggregate: AgenticaTokenUsage.IComponent = result.usage.aggregate;
   return [
     "# LLM Function Selection Benchmark",

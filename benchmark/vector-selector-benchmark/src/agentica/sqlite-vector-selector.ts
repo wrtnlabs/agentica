@@ -1,5 +1,5 @@
 import type { IAgenticaVendor } from "@agentica/core";
-import type { IHttpConnection } from "@samchon/openapi";
+import type { IHttpConnection } from "@typia/interface";
 import type Database from "better-sqlite3";
 
 import { Agentica, AgenticaTokenUsage, assertHttpController } from "@agentica/core";

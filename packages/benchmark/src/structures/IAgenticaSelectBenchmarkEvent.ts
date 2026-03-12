@@ -34,10 +34,10 @@ import type { IAgenticaSelectBenchmarkScenario } from "./IAgenticaSelectBenchmar
  *
  * @author Samchon
  */
-export type IAgenticaSelectBenchmarkEvent =
-  | IAgenticaSelectBenchmarkEvent.ISuccess
-  | IAgenticaSelectBenchmarkEvent.IFailure
-  | IAgenticaSelectBenchmarkEvent.IError;
+export type IAgenticaSelectBenchmarkEvent
+  = | IAgenticaSelectBenchmarkEvent.ISuccess
+    | IAgenticaSelectBenchmarkEvent.IFailure
+    | IAgenticaSelectBenchmarkEvent.IError;
 export namespace IAgenticaSelectBenchmarkEvent {
   /**
    * Success event type.

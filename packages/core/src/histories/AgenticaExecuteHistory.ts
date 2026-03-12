@@ -1,4 +1,4 @@
-import type { IHttpResponse } from "@samchon/openapi";
+import type { IHttpResponse } from "@typia/interface";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
@@ -10,9 +10,9 @@ import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
  *
  * @author Samchon
  */
-export type AgenticaExecuteHistory =
-  | AgenticaExecuteHistory.Class
-  | AgenticaExecuteHistory.Http;
+export type AgenticaExecuteHistory
+  = | AgenticaExecuteHistory.Class
+    | AgenticaExecuteHistory.Http;
 export namespace AgenticaExecuteHistory {
   /**
    * Class protocol case.

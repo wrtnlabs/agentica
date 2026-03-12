@@ -1,15 +1,7 @@
-import type {
-  IHttpLlmApplication,
-  OpenApiV3,
-  OpenApiV3_1,
-  SwaggerV2,
-} from "@samchon/openapi";
-import type { IValidation } from "typia";
+import type { IHttpLlmApplication, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
+import type { IValidation, OpenApi } from "typia";
 
-import {
-  HttpLlm,
-  OpenApi,
-} from "@samchon/openapi";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 import typia from "typia";
 
 /**
@@ -38,6 +30,7 @@ export function validateHttpLlmApplication(props: {
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
     | unknown;
 
@@ -50,11 +43,13 @@ export function validateHttpLlmApplication(props: {
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
   > = typia.validate<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
   >(props.document);
   if (inspect.success === false) {
@@ -63,7 +58,7 @@ export function validateHttpLlmApplication(props: {
   return {
     success: true,
     data: HttpLlm.application({
-      document: OpenApi.convert(inspect.data),
+      document: OpenApiConverter.upgradeDocument(inspect.data),
       config: props.config,
     }),
   };

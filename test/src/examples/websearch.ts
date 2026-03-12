@@ -1,4 +1,4 @@
-import type { ILlmApplication } from "@samchon/openapi";
+import type { ILlmApplication } from "typia";
 
 import { MicroAgentica } from "@agentica/core";
 import OpenAI from "openai";

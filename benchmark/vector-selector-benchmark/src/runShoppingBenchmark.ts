@@ -1,5 +1,5 @@
 import type { Agentica, AgenticaOperation } from "@agentica/core";
-import type { OpenApi } from "@samchon/openapi";
+import type { OpenApi } from "typia";
 
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
 

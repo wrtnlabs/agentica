@@ -1,6 +1,6 @@
-import type { OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
+import type { OpenApi, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
 
-import { OpenApi } from "@samchon/openapi";
+import { OpenApiConverter } from "@typia/utils";
 import { load } from "js-yaml";
 import React from "react";
 // eslint-disable-next-line ts/ban-ts-comment
@@ -20,7 +20,7 @@ interface ExtendedFileProps extends Blob {
 export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProps) {
   const [elements, setElements] = React.useState<ExtendedFileProps[]>([]);
   const onChange = async (array: ExtendedFileProps[]) => {
-    const lastFile: ExtendedFileProps | undefined = array.at(-1);
+    const lastFile: ExtendedFileProps | undefined = array[array.length - 1];
     if (lastFile === undefined) {
       props.onChange(null, null);
       return;
@@ -34,14 +34,14 @@ export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProp
 
     try {
       const document: unknown = extension === "json" ? JSON.parse(content) : load(content);
-      const result = typia.validate<SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument | OpenApi.IDocument>(document);
+      const result = typia.validate<SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument | OpenApiV3_2.IDocument>(document);
       if (result.success === false) {
         props.onChange(null, JSON.stringify(result.errors, null, 2));
         return;
       }
       else {
         props.onChange(
-          OpenApi.convert(result.data),
+          OpenApiConverter.upgradeDocument(result.data),
           null,
         );
       }

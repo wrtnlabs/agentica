@@ -1,11 +1,11 @@
 import type {
   IHttpResponse,
-  ILlmSchema,
+  IJsonParseResult,
   IValidation,
-} from "@samchon/openapi";
+} from "@typia/interface";
 import type OpenAI from "openai";
 
-import { HttpLlm } from "@samchon/openapi";
+import { dedent, HttpLlm, LlmJson } from "@typia/utils";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
@@ -28,7 +28,6 @@ import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
-import { JsonUtil } from "../utils/JsonUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
@@ -87,18 +86,7 @@ export async function call(
             function: {
               name: s.name,
               description: s.function.description,
-              parameters: (
-                "separated" in s.function
-                && s.function.separated !== undefined
-                  ? (s.function.separated.llm
-                    ?? ({
-                      type: "object",
-                      properties: {},
-                      required: [],
-                      additionalProperties: false,
-                      $defs: {},
-                    } satisfies ILlmSchema.IParameters))
-                  : s.function.parameters) as Record<string, any>,
+              parameters: s.function.parameters as Record<string, any>,
             },
           }) as OpenAI.ChatCompletionTool,
       ),
@@ -249,7 +237,7 @@ async function correctTypeError(
         "",
         "You must fix ALL errors to achieve 100% schema compliance.",
         "",
-        JsonUtil.stringifyValidationFailure(validateEvent.result),
+        LlmJson.stringify(validateEvent.result),
       ].join("\n"),
     },
     systemPrompt: ctx.config?.systemPrompt?.validate?.(previousValidationErrors.slice(0, -1))
@@ -265,7 +253,7 @@ async function correctTypeError(
                   .map((ve, i) => [
                     `### ${i + 1}. Previous Validation Error`,
                     "",
-                    JsonUtil.stringifyValidationFailure(ve.result),
+                    LlmJson.stringify(ve.result),
                   ].join("\n"))
                   .join("\n\n"),
                 // JSON.stringify(previousValidationErrors.slice(0, -1).map(e => e.result.errors)),
@@ -290,22 +278,35 @@ async function correctJsonError(
       call_id: toolCall.id,
       operation: parseErrorEvent.operation,
       arguments: {},
-      value: new AgenticaJsonParseError({
-        arguments: parseErrorEvent.arguments,
-        reason: parseErrorEvent.errorMessage,
-      }),
+      value: new AgenticaJsonParseError(parseErrorEvent.failure),
       success: false,
     }),
     operation: parseErrorEvent.operation,
     toolCall: {
       id: parseErrorEvent.id,
-      arguments: parseErrorEvent.arguments,
-      result: parseErrorEvent.errorMessage,
+      arguments: parseErrorEvent.failure.input,
+      result: dedent`
+        Invalid JSON format.
+
+        Here is the detailed parsing failure information, 
+        including error messages and their locations within the input:
+
+        \`\`\`json
+        ${JSON.stringify(parseErrorEvent.failure.errors)}
+        \`\`\`
+
+        And here is the partially parsed data that was successfully 
+        extracted before the error occurred:
+
+        \`\`\`json
+        ${JSON.stringify(parseErrorEvent.failure.data)}
+        \`\`\`
+      `,
     },
     systemPrompt: ctx.config?.systemPrompt?.jsonParseError?.(parseErrorEvent)
       ?? AgenticaSystemPrompt.JSON_PARSE_ERROR.replace(
-        "${{ERROR_MESSAGE}}",
-        parseErrorEvent.errorMessage,
+        "${{FAILURE}}",
+        JSON.stringify(parseErrorEvent.failure),
       ),
     life,
     previousValidationErrors,
@@ -317,26 +318,22 @@ function parseArguments(
   toolCall: OpenAI.ChatCompletionMessageFunctionToolCall,
   life: number,
 ): AgenticaCallEvent | AgenticaJsonParseErrorEvent {
-  try {
-    const data: Record<string, unknown> = JsonUtil.parse(
-      toolCall.function.arguments,
-      operation.function.parameters,
-    );
-    return createCallEvent({
-      id: toolCall.id,
-      operation,
-      arguments: data,
-    });
-  }
-  catch (error) {
+  const result: IJsonParseResult<Record<string, unknown>> = operation.function.parse(
+    toolCall.function.arguments,
+  ) satisfies IJsonParseResult<unknown> as IJsonParseResult<Record<string, unknown>>;
+  if (result.success === false) {
     return createJsonParseErrorEvent({
       call_id: toolCall.id,
       operation,
-      arguments: toolCall.function.arguments,
-      errorMessage: error instanceof Error ? error.message : String(error),
+      failure: result,
       life,
     });
   }
+  return createCallEvent({
+    id: toolCall.id,
+    operation,
+    arguments: result.data,
+  });
 }
 
 async function correctError(
@@ -413,19 +410,7 @@ async function correctError(
            * @TODO fix it
            * The property and value have a type mismatch, but it works.
            */
-          parameters: (
-            ("separated" in props.operation.function
-              && props.operation.function.separated !== undefined)
-              ? (props.operation.function.separated?.llm
-                ?? ({
-                  $defs: {},
-                  type: "object",
-                  properties: {},
-                  additionalProperties: false,
-                  required: [],
-                } satisfies ILlmSchema.IParameters))
-
-              : props.operation.function.parameters) as unknown as Record<string, unknown>,
+          parameters: props.operation.function.parameters as unknown as Record<string, unknown>,
         },
       },
     ],
@@ -515,13 +500,13 @@ async function executeClassFunction(
   const execute = operation.controller.execute;
   const value: unknown = typeof execute === "function"
     ? await execute({
-      application: operation.controller.application,
-      function: operation.function,
-      arguments: call.arguments,
-    })
+        application: operation.controller.application,
+        function: operation.function,
+        arguments: call.arguments,
+      })
     : await (execute as Record<string, any>)[operation.function.name](
-      call.arguments,
-    );
+        call.arguments,
+      );
   return value;
 }
 
@@ -532,17 +517,17 @@ async function executeHttpOperation(
   const execute = operation.controller.execute;
   const value: IHttpResponse = typeof execute === "function"
     ? await execute({
-      connection: operation.controller.connection,
-      application: operation.controller.application,
-      function: operation.function,
-      arguments: call.arguments,
-    })
+        connection: operation.controller.connection,
+        application: operation.controller.application,
+        function: operation.function,
+        arguments: call.arguments,
+      })
     : await HttpLlm.propagate({
-      connection: operation.controller.connection,
-      application: operation.controller.application,
-      function: operation.function,
-      input: call.arguments,
-    });
+        connection: operation.controller.connection,
+        application: operation.controller.application,
+        function: operation.function,
+        input: call.arguments,
+      });
   return value;
 }
 
@@ -551,7 +536,6 @@ async function executeMcpOperation(
   operation: AgenticaOperation.Mcp,
 ): Promise<unknown> {
   return operation.controller.client.callTool({
-    method: operation.function.name,
     name: operation.function.name,
     arguments: call.arguments,
   }).then(v => v.content);

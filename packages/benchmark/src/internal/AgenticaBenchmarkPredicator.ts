@@ -6,8 +6,8 @@
  */
 
 import type { Agentica, AgenticaHistory, AgenticaOperation, MicroAgentica } from "@agentica/core";
-import type { ILlmFunction } from "@samchon/openapi";
 import type OpenAI from "openai";
+import type { ILlmFunction } from "typia";
 
 import typia from "typia";
 
@@ -51,9 +51,8 @@ interface IConsentProps {
 }
 
 async function isNext(agent: Agentica | MicroAgentica): Promise<string | null> {
-  const last: AgenticaHistory | undefined = agent
-    .getHistories()
-    .at(-1);
+  const histories: AgenticaHistory[] = agent.getHistories();
+  const last: AgenticaHistory | undefined = histories[histories.length - 1];
 
   /**
    * Agentica Props is private, we can't access it

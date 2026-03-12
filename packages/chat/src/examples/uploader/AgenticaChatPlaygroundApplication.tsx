@@ -1,5 +1,5 @@
 import type { IAgenticaVendor } from "@agentica/core";
-import type { IHttpConnection, OpenApi } from "@samchon/openapi";
+import type { IHttpConnection, OpenApi } from "@typia/interface";
 import type { ReactElement } from "react";
 
 import { Agentica } from "@agentica/core";
@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { HttpLlm } from "@samchon/openapi";
+import { HttpLlm } from "@typia/utils";
 import OpenAI from "openai";
 import React, { useState } from "react";
 

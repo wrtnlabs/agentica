@@ -1,6 +1,5 @@
-import type { ILlmApplication } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { IValidation } from "typia";
+import type { ILlmFunction, IValidation } from "typia";
 
 import typia from "typia";
 
@@ -20,14 +19,13 @@ import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
-import { JsonUtil } from "../utils/JsonUtil";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
 import { selectFunctionFromContext } from "./internal/selectFunctionFromContext";
 
-const CONTAINER: ILlmApplication = typia.llm.application<
+const FUNCTION: ILlmFunction = typia.llm.application<
   __IChatSelectFunctionsApplication
->();
+>().functions[0]!;
 
 interface IFailure {
   id: string;
@@ -177,13 +175,13 @@ async function step(
       tools: [{
         type: "function",
         function: {
-          name: CONTAINER.functions[0]!.name,
-          description: CONTAINER.functions[0]!.description,
+          name: FUNCTION.name,
+          description: FUNCTION.description,
           /**
            * @TODO fix it
            * The property and value have a type mismatch, but it works.
            */
-          parameters: CONTAINER.functions[0]!.parameters as unknown as Record<string, unknown>,
+          parameters: FUNCTION.parameters as unknown as Record<string, unknown>,
         },
       } satisfies OpenAI.ChatCompletionTool],
       tool_choice: retry === 0
@@ -196,7 +194,7 @@ async function step(
       const completion = result.value;
       const allAssistantMessagesEmpty = !!completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
       if (allAssistantMessagesEmpty) {
-        const firstChoice = completion.choices?.at(0);
+        const firstChoice = completion.choices?.[0];
         if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
           throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
         }
@@ -211,7 +209,7 @@ async function step(
     }, ctx.abortSignal);
     const allAssistantMessagesEmpty = !!completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
     if (allAssistantMessagesEmpty) {
-      const firstChoice = completion.choices?.at(0);
+      const firstChoice = completion.choices?.[0];
       if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
         throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
       }
@@ -242,9 +240,9 @@ async function step(
         if (tc.type !== "function" || tc.function.name !== "selectFunctions") {
           continue;
         }
-        const input: object = JsonUtil.parse(tc.function.arguments) as object;
+        const input: object = FUNCTION.parse(tc.function.arguments) as object;
         const validation: IValidation<__IChatFunctionReference.IProps>
-          = typia.validate<__IChatFunctionReference.IProps>(input);
+          = FUNCTION.validate(input) as IValidation<__IChatFunctionReference.IProps>;
         if (validation.success === false) {
           failures.push({
             id: tc.id,

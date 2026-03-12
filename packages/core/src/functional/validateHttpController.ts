@@ -1,6 +1,7 @@
-import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, IValidation, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
+import type { IValidation, OpenApi } from "typia";
 
-import { HttpLlm, OpenApi } from "@samchon/openapi";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 import typia from "typia";
 
 import type { IAgenticaController } from "../structures/IAgenticaController";
@@ -35,6 +36,7 @@ export function validateHttpController(props: {
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
     | unknown;
 
@@ -89,6 +91,7 @@ export function validateHttpController(props: {
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
   >(props.document);
   if (inspect.success === false) {
@@ -100,7 +103,7 @@ export function validateHttpController(props: {
       protocol: "http",
       name: props.name,
       application: HttpLlm.application({
-        document: OpenApi.convert(inspect.data),
+        document: OpenApiConverter.upgradeDocument(inspect.data),
         config: props.config,
       }),
       execute: props.execute,

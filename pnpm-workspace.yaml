@@ -8,6 +8,7 @@ useNodeVersion: 22.15.0
 engineStrict: true
 catalogs:
   libs:
+    "@types/node": ^25.3.0
     openai: ^6.15.0
     tstl: ^3.0.0
     type-fest: ^4.37.0
@@ -20,9 +21,10 @@ catalogs:
     ts-patch: ^3.3.0
     typescript: ~5.9.3
   typia:
-    "@ryoppippi/unplugin-typia": ^2.6.4
-    "@samchon/openapi": ^6.0.1
-    typia: ^11.0.3
+    "@typia/interface": 12.0.0-dev.20260312-5
+    "@typia/unplugin": 12.0.0-dev.20260312-5
+    "@typia/utils": 12.0.0-dev.20260312-5
+    typia: 12.0.0-dev.20260312-5
   vite:
     vitest: ^3.0.9
 onlyBuiltDependencies:

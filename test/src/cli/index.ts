@@ -7,15 +7,13 @@ import type {
   IHttpLlmApplication,
   OpenApiV3,
   OpenApiV3_1,
+  OpenApiV3_2,
   SwaggerV2,
-} from "@samchon/openapi";
+} from "@typia/interface";
 
 import { Agentica } from "@agentica/core";
-import {
-  HttpLlm,
-  OpenApi,
-} from "@samchon/openapi";
 import ShoppingApi from "@samchon/shopping-api";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 import chalk from "chalk";
 import OpenAI from "openai";
 import typia from "typia";
@@ -37,9 +35,9 @@ async function main(): Promise<void> {
 
   // GET LLM APPLICATION SCHEMA
   const application: IHttpLlmApplication = HttpLlm.application({
-    document: OpenApi.convert(
+    document: OpenApiConverter.upgradeDocument(
       typia.json.assertParse<
-        SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument
+        SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument | OpenApiV3_2.IDocument
       >(
         await fetch(`https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/swagger.json`).then(
           async r => r.text(),

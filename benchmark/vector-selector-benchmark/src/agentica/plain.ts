@@ -1,5 +1,5 @@
 import type { IAgenticaVendor } from "@agentica/core";
-import type { IHttpConnection } from "@samchon/openapi";
+import type { IHttpConnection } from "@typia/interface";
 
 import { Agentica, assertHttpController } from "@agentica/core";
 import ShoppingApi from "@samchon/shopping-api";

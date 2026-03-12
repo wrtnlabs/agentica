@@ -32,12 +32,12 @@ export function compose(props: {
   });
   const capacity: number | undefined = (props.config as IAgenticaConfig)?.capacity;
   const divided: AgenticaOperation[][] | undefined
-      = capacity !== undefined && array.length > capacity
-        ? divide({
-            array,
-            capacity,
-          })
-        : undefined;
+    = capacity !== undefined && array.length > capacity
+      ? divide({
+          array,
+          capacity,
+        })
+      : undefined;
 
   const flat: Map<string, AgenticaOperation> = new Map();
   const group: Map<string, Map<string, AgenticaOperation>> = new Map();

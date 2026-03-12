@@ -3,9 +3,9 @@ import type OpenAI from "openai";
 import type { AgenticaEventBase } from "./AgenticaEventBase";
 import type { AgenticaEventSource } from "./AgenticaEventSource";
 
-export type AgenticaRequestEvent =
-  | AgenticaRequestEvent.Streaming
-  | AgenticaRequestEvent.NonStreaming;
+export type AgenticaRequestEvent
+  = | AgenticaRequestEvent.Streaming
+    | AgenticaRequestEvent.NonStreaming;
 export namespace AgenticaRequestEvent {
   export type Streaming = Base<
     true,

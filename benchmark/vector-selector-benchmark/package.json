@@ -23,6 +23,7 @@
     "@agentica/core": "workspace:^",
     "@agentica/vector-selector": "workspace:^",
     "@samchon/shopping-api": "^0.17.0",
+    "@typia/interface": "catalog:typia",
     "better-sqlite3": "^11.9.1",
     "dotenv": "^16.4.7",
     "openai": "catalog:libs",
@@ -30,9 +31,8 @@
     "typia": "catalog:typia"
   },
   "devDependencies": {
-    "@samchon/openapi": "catalog:typia",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^22.10.5",
+    "@types/node": "catalog:libs",
     "dotenv": "^16.4.7",
     "openai": "catalog:libs",
     "rimraf": "^6.0.1",

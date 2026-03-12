@@ -1,4 +1,4 @@
-import type { IValidation } from "@samchon/openapi";
+import type { IJsonParseResult, IValidation } from "@typia/interface";
 import type OpenAI from "openai";
 
 import { v4 } from "uuid";
@@ -116,8 +116,7 @@ export function createCallEvent(props: {
 export function createJsonParseErrorEvent(props: {
   call_id: string;
   operation: AgenticaOperation;
-  arguments: string;
-  errorMessage: string;
+  failure: IJsonParseResult.IFailure;
   life: number;
 }): AgenticaJsonParseErrorEvent {
   const id: string = v4();
@@ -128,8 +127,7 @@ export function createJsonParseErrorEvent(props: {
     call_id: props.call_id,
     created_at,
     operation: props.operation,
-    arguments: props.arguments,
-    errorMessage: props.errorMessage,
+    failure: props.failure,
     life: props.life,
   };
 }

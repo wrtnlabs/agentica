@@ -18,11 +18,11 @@ import type { AgenticaOperation } from "@agentica/core";
  *
  * @author Samchon
  */
-export type IAgenticaBenchmarkExpected =
-  | IAgenticaBenchmarkExpected.IAllOf
-  | IAgenticaBenchmarkExpected.IAnyOf
-  | IAgenticaBenchmarkExpected.IArray
-  | IAgenticaBenchmarkExpected.IStandalone;
+export type IAgenticaBenchmarkExpected
+  = | IAgenticaBenchmarkExpected.IAllOf
+    | IAgenticaBenchmarkExpected.IAnyOf
+    | IAgenticaBenchmarkExpected.IArray
+    | IAgenticaBenchmarkExpected.IStandalone;
 
 export namespace IAgenticaBenchmarkExpected {
   /**
