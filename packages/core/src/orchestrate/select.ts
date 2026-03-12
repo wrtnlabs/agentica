@@ -194,7 +194,7 @@ async function step(
       const completion = result.value;
       const allAssistantMessagesEmpty = !!completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
       if (allAssistantMessagesEmpty) {
-        const firstChoice = completion.choices?.at(0);
+        const firstChoice = completion.choices?.[0];
         if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
           throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
         }
@@ -209,7 +209,7 @@ async function step(
     }, ctx.abortSignal);
     const allAssistantMessagesEmpty = !!completion.choices?.every(v => v.message.tool_calls == null && v.message.content === "");
     if (allAssistantMessagesEmpty) {
-      const firstChoice = completion.choices?.at(0);
+      const firstChoice = completion.choices?.[0];
       if ((firstChoice?.message as { reasoning?: string })?.reasoning != null) {
         throw new AssistantMessageEmptyWithReasoningError((firstChoice?.message as { reasoning?: string })?.reasoning ?? "");
       }

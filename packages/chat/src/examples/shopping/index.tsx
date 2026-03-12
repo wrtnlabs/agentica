@@ -1,4 +1,4 @@
-import type { IHttpConnection } from "@samchon/openapi";
+import type { IHttpConnection } from "@typia/interface";
 
 import {
   Button,

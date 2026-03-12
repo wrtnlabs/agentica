@@ -1,15 +1,12 @@
-import type { IHttpConnection } from "@samchon/openapi";
+import type { IHttpConnection } from "@typia/interface";
 import type OpenAI from "openai";
 
 import { Agentica } from "@agentica/core";
-import {
-  HttpLlm,
-  OpenApi,
-} from "@samchon/openapi";
 import { useEffect, useState } from "react";
 import typia from "typia";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 
 function ShoppingChatApplicationSkeleton() {
   return (
@@ -27,12 +24,12 @@ export function ShoppingChatApplication(props: ShoppingChatApplication.IProps) {
   useEffect(() => {
     (async () => {
       const application = HttpLlm.application({
-        document: OpenApi.convert(
+        document: OpenApiConverter.upgradeDocument(
           await fetch(
             "https://raw.githubusercontent.com/samchon/shopping-backend/refs/heads/master/packages/api/customer.swagger.json",
           )
             .then(async r => r.json() as unknown)
-            .then(v => typia.assert<Parameters<typeof OpenApi.convert>[0]>(v)),
+            .then(v => typia.assert<Parameters<typeof OpenApiConverter.upgradeDocument>[0]>(v)),
         ),
       });
       const agent: Agentica = new Agentica({
