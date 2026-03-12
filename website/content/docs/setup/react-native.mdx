@@ -101,7 +101,7 @@ Next, set up [Typia](https://typia.io/).
 Install the required libraries:
 
 ```bash
-npm install typia @ryoppippi/unplugin-typia
+npm install typia @typia/unplugin
 ```
 
 Then, update your `tsconfig.json` to extend the default config and include any required `compilerOptions`:
@@ -126,7 +126,7 @@ Lastly, add the UnpluginTypia plugin to your `rspack.config.mjs`:
 ```js
 // rspack.config.mjs
 import ...
-import UnpluginTypia from '@ryoppippi/unplugin-typia/webpack';
+import UnpluginTypia from '@typia/unplugin/webpack';
 
 export default {
   ...

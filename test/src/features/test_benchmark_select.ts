@@ -2,11 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 import type { AgenticaOperation } from "@agentica/core";
-import type { OpenApi } from "@samchon/openapi";
+import type { OpenApi } from "typia";
 
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
 import { Agentica } from "@agentica/core";
-import { HttpLlm } from "@samchon/openapi";
+import { HttpLlm } from "@typia/utils";
 import OpenAI from "openai";
 
 import { TestGlobal } from "../TestGlobal";

@@ -1,15 +1,6 @@
-import type {
-  IHttpLlmApplication,
-  OpenApiV3,
-  OpenApiV3_1,
-  SwaggerV2,
-} from "@samchon/openapi";
-
-import {
-  HttpLlm,
-  OpenApi,
-} from "@samchon/openapi";
-import typia from "typia";
+import { SwaggerV2, OpenApiV3, OpenApiV3_1, IHttpLlmApplication, OpenApiV3_2 } from "@typia/interface";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
+import typia, { OpenApi } from "typia";
 
 /**
  * Create an HTTP LLM application instance with type assertion.
@@ -37,6 +28,7 @@ export function assertHttpLlmApplication(props: {
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
     | unknown;
 
@@ -46,10 +38,11 @@ export function assertHttpLlmApplication(props: {
   config?: Partial<IHttpLlmApplication.IConfig>;
 }): IHttpLlmApplication {
   return HttpLlm.application({
-    document: OpenApi.convert(typia.assert<
+    document: OpenApiConverter.upgradeDocument(typia.assert<
       | SwaggerV2.IDocument
       | OpenApiV3.IDocument
       | OpenApiV3_1.IDocument
+      | OpenApiV3_2.IDocument
       | OpenApi.IDocument
     >(props.document)),
     config: props.config,

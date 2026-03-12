@@ -50,7 +50,6 @@
   },
   "dependencies": {
     "@agentica/core": "workspace:^",
-    "@samchon/openapi": "catalog:typia",
     "openai": "catalog:libs",
     "tstl": "catalog:libs",
     "typia": "catalog:typia",

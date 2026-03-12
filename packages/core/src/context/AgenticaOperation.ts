@@ -1,7 +1,8 @@
-import type { IHttpLlmFunction, ILlmFunction, IMcpLlmFunction } from "@samchon/openapi";
+import type { IHttpLlmFunction } from "@typia/interface"
+import type { ILlmFunction } from "typia";
 
-import type { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
 import type { IAgenticaController } from "../structures/IAgenticaController";
+import type { IAgenticaOperationJson } from "../json/IAgenticaOperationJson";
 
 /**
  * Operation information in the Agentica Agent.
@@ -36,7 +37,7 @@ export namespace AgenticaOperation {
   export type Mcp = Base<
     "mcp",
     IAgenticaController.IMcp,
-    IMcpLlmFunction
+    ILlmFunction
   >;
 
   interface Base<

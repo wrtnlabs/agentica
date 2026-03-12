@@ -1,12 +1,4 @@
-import type {
-  IHttpConnection,
-  IHttpLlmApplication,
-  IHttpLlmFunction,
-  IHttpResponse,
-  ILlmApplication,
-  ILlmFunction,
-  IMcpLlmApplication,
-} from "@samchon/openapi";
+import { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, ILlmApplication, ILlmFunction } from "@typia/interface";
 
 /**
  * Controller of the Agentica Agent.
@@ -118,7 +110,7 @@ export namespace IAgenticaController {
   /**
    * MCP Server controller.
    */
-  export interface IMcp extends IBase<"mcp", IMcpLlmApplication> {
+  export interface IMcp extends IBase<"mcp", ILlmApplication> {
     /**
      * MCP client for connection.
      *

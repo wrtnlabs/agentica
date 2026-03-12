@@ -1,4 +1,4 @@
-import type { IHttpResponse } from "@samchon/openapi";
+import type { IHttpResponse } from "@typia/interface";
 import type OpenAI from "openai";
 import type { tags } from "typia";
 

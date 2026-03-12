@@ -32,7 +32,7 @@ To install `@agentica/core`, you also have to install [`@samchon/openapi`](https
 
 By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`. 
 
-If you're not using non-standard TypeScript compiler (not `tsc`) or developing the agent in the frontend environment, you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) following its guide.
+If you're not using non-standard TypeScript compiler (not `tsc`) or developing the agent in the frontend environment, you have to setup [`@typia/unplugin`](https://typia.io/docs/setup/#typiaunplugin) following its guide.
 
 
 
@@ -126,7 +126,7 @@ Just install `@agentica/rpc` and [`tgrid`](https://tgrid.com) packages.
 npm install @agentica/core @samchon/openapi typia
 npx typia setup
 
-npm install -D @ryoppippi/unplugin-typia
+npm install -D @typia/unplugin
 ```
 
 If you want to develop a standalone application which does everything in the frontend environment without any backend server interaction, you need to install above additional packages.
@@ -135,7 +135,7 @@ At first, [`@samchon/openapi`](https://github.com/samchon/openapi) is an OpenAPI
 
 By the way, as `typia` is a transformer library analyzing TypeScript source code in the compilation level, it needs additional setup command `npx typia setup`.
 
-Also, as frontend environment tends to use non-standard TypeScript compiler (not `tsc`) like `Vite`, you have to setup [`@ryoppippi/unplugin-typia`](https://typia.io/docs/setup/#unplugin-typia) package additionally following its setup guide document.
+Also, as frontend environment tends to use non-standard TypeScript compiler (not `tsc`) like `Vite`, you have to setup [`@typia/unplugin`](https://typia.io/docs/setup/#typiaunplugin) package additionally following its setup guide document.
 
 > [!WARNING]
 >

@@ -1,4 +1,4 @@
-import type { IHttpLlmFunction } from "@samchon/openapi";
+import type { IHttpLlmFunction } from "@typia/interface";
 
 export interface __IChatInitialApplication {
   /**

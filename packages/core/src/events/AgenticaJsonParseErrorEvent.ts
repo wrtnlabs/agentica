@@ -1,3 +1,4 @@
+import { IJsonParseResult } from "typia";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
@@ -9,7 +10,6 @@ export interface AgenticaJsonParseErrorEvent
    */
   call_id: string;
   operation: AgenticaOperation;
-  arguments: string;
-  errorMessage: string;
+  failure: IJsonParseResult.IFailure;
   life: number;
 }

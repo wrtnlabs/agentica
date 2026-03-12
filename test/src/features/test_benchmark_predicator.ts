@@ -1,11 +1,11 @@
 import type { IAgenticaBenchmarkExpected } from "@agentica/benchmark/src/structures/IAgenticaBenchmarkExpected";
 import type { AgenticaOperation } from "@agentica/core";
-import type { OpenApi } from "@samchon/openapi";
+import type { OpenApi } from "typia";
 
 import { AgenticaBenchmarkPredicator } from "@agentica/benchmark/src/internal/AgenticaBenchmarkPredicator";
 import { Agentica } from "@agentica/core";
 import { TestValidator } from "@nestia/e2e";
-import { HttpLlm } from "@samchon/openapi";
+import { HttpLlm } from "@typia/utils";
 
 export async function test_benchmark_predicator(): Promise<void> {
   // ----

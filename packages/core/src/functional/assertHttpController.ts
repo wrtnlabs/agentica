@@ -1,6 +1,6 @@
-import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, OpenApiV3, OpenApiV3_1, SwaggerV2 } from "@samchon/openapi";
+import type { IHttpConnection, IHttpLlmApplication, IHttpLlmFunction, IHttpResponse, OpenApi, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 
-import { HttpLlm, OpenApi } from "@samchon/openapi";
 import typia from "typia";
 
 import type { IAgenticaController } from "../structures/IAgenticaController";
@@ -35,6 +35,7 @@ export function assertHttpController(props: {
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
     | unknown;
 
@@ -85,10 +86,11 @@ export function assertHttpController(props: {
     arguments: object;
   }) => Promise<IHttpResponse>;
 }): IAgenticaController.IHttp {
-  const document = OpenApi.convert(typia.assert<
+  const document = OpenApiConverter.upgradeDocument(typia.assert<
     | SwaggerV2.IDocument
     | OpenApiV3.IDocument
     | OpenApiV3_1.IDocument
+    | OpenApiV3_2.IDocument
     | OpenApi.IDocument
   >(props.document));
   return {

@@ -1,6 +1,5 @@
-import type { ILlmApplication } from "@samchon/openapi";
 import type OpenAI from "openai";
-import type { IValidation } from "typia";
+import type { ILlmFunction, IValidation } from "typia";
 
 import typia from "typia";
 
@@ -17,14 +16,13 @@ import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
-import { JsonUtil } from "../utils/JsonUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
 import { cancelFunctionFromContext } from "./internal/cancelFunctionFromContext";
 
-const CONTAINER: ILlmApplication = typia.llm.application<
+const FUNCTION: ILlmFunction = typia.llm.application<
   __IChatCancelFunctionsApplication
->();
+>().functions[0]!;
 
 interface IFailure {
   id: string;
@@ -153,15 +151,13 @@ async function step(
     tools: [{
       type: "function",
       function: {
-        name: CONTAINER.functions[0]!.name,
-        description: CONTAINER.functions[0]!.description,
+        name: FUNCTION.name,
+        description: FUNCTION.description,
         /**
          * @TODO fix it
          * The property and value have a type mismatch, but it works.
          */
-        parameters: (
-          CONTAINER.functions[0]!.parameters as unknown as Record<string, unknown>
-        ),
+        parameters: FUNCTION.parameters as Record<string, any>,
       },
     } satisfies OpenAI.ChatCompletionTool],
     tool_choice: retry === 0
@@ -188,9 +184,9 @@ async function step(
           continue;
         }
 
-        const input: object = JsonUtil.parse(tc.function.arguments) as object;
+        const input: object = FUNCTION.parse(tc.function.arguments) as object;
         const validation: IValidation<__IChatFunctionReference.IProps>
-          = typia.validate<__IChatFunctionReference.IProps>(input);
+          = FUNCTION.validate(input) as IValidation<__IChatFunctionReference.IProps>;
         if (validation.success === false) {
           failures.push({
             id: tc.id,

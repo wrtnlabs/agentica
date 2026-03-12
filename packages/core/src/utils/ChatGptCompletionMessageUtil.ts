@@ -5,21 +5,35 @@ import type {
   ChatCompletionMessageFunctionToolCall,
   ChatCompletionMessageToolCall,
 } from "openai/resources";
+import type { IJsonParseResult } from "@typia/interface";
 
 // import typia from "typia";
 import { ByteArrayUtil } from "./ByteArrayUtil";
 import { ChatGptTokenUsageAggregator } from "./ChatGptTokenUsageAggregator";
-import { JsonUtil } from "./JsonUtil";
+import { dedent, LlmJson } from "@typia/utils";
 
 function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
-  const str
-      = source instanceof Uint8Array ? ByteArrayUtil.toUtf8(source) : source;
-  const result: ChatCompletionChunk = JsonUtil.parse(str) as ChatCompletionChunk;
-  // const valid = typia.validate<ChatCompletionChunk>(result);
+  const str: string = source instanceof Uint8Array 
+    ? ByteArrayUtil.toUtf8(source) 
+    : source;
+  const result: IJsonParseResult<ChatCompletionChunk> = LlmJson.parse(str);
+  if (result.success === false) {
+    throw new Error(
+      dedent`
+        Failed to parse ChatCompletionChunk:
+
+        \`\`\`json
+        ${JSON.stringify(result, null, 2)}
+        \`\`\`
+      `
+    )
+  }
+
+  // const valid = typia.validate<ChatCompletionChunk>(result.data);
   // if (valid.success === false) {
   //   console.error("Invalid ChatCompletionChunk", valid.errors);
   // }
-  return result;
+  return result.data;
 }
 
 function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCompletion {

@@ -1,4 +1,4 @@
-import type { ILlmFunction } from "@samchon/openapi";
+import type { ILlmFunction } from "typia";
 import type OpenAI from "openai";
 
 import typia from "typia";

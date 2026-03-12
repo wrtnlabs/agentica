@@ -1,5 +1,4 @@
-import type { IHttpResponse } from "@samchon/openapi";
-
+import { IHttpResponse } from "@typia/interface";
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 

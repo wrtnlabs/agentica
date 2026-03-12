@@ -50,7 +50,6 @@
   },
   "peerDependencies": {
     "@modelcontextprotocol/sdk": "catalog:mcp",
-    "@samchon/openapi": "catalog:typia",
     "openai": "catalog:libs",
     "typia": "catalog:typia"
   },
@@ -60,9 +59,6 @@
     }
   },
   "dependencies": {
-    "@samchon/openapi": "catalog:typia",
-    "es-jsonkit": "^0.1.6",
-    "jsonrepair": "^3.13.1",
     "tstl": "catalog:libs",
     "typia": "catalog:typia",
     "uuid": "catalog:libs"
@@ -72,9 +68,11 @@
     "@nestia/e2e": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@ryoppippi/unplugin-typia": "catalog:typia",
     "@types/node": "^22.13.9",
     "@types/uuid": "^10.0.0",
+    "@typia/interface": "catalog:typia",
+    "@typia/unplugin": "catalog:typia",
+    "@typia/utils": "catalog:typia",
     "@wrtnlabs/calculator-mcp": "catalog:mcp",
     "openai": "catalog:libs",
     "rimraf": "^6.0.1",

@@ -3,16 +3,16 @@ import path from "node:path";
 import process from "node:process";
 
 import type { AgenticaOperation } from "@agentica/core";
-import type { IHttpConnection, OpenApi } from "@samchon/openapi";
 
 import { AgenticaSelectBenchmark } from "@agentica/benchmark";
 import { Agentica } from "@agentica/core";
 import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
 import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
-import { HttpLlm } from "@samchon/openapi";
+import { HttpLlm } from "@typia/utils";
 import OpenAI from "openai";
 
 import { TestGlobal } from "../TestGlobal";
+import { IHttpConnection, OpenApi } from "@typia/interface";
 
 export async function test_benchmark_select_pg_vector_selector(): Promise<
   void | false

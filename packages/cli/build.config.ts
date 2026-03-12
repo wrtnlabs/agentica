@@ -1,4 +1,4 @@
-import UnpluginTypia from "@ryoppippi/unplugin-typia/rollup";
+import UnpluginTypia from "@typia/unplugin/rollup";
 import { isCI } from "std-env";
 import { defineBuildConfig } from "unbuild";
 
