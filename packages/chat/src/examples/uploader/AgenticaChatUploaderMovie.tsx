@@ -1,4 +1,4 @@
-import type { OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
+import type { OpenApi, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
 import { OpenApiConverter } from "@typia/utils";
 
 import { load } from "js-yaml";
@@ -76,7 +76,7 @@ export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProp
 export namespace AgenticaChatUploaderMovie {
   export interface IProps {
     onChange: (
-      document: OpenApiV3.IDocument | OpenApiV3_1.IDocument | OpenApiV3_2.IDocument | SwaggerV2.IDocument | null,
+      document: OpenApi.IDocument | null,
       error: string | null,
     ) => void;
   }
