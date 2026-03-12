@@ -1,6 +1,6 @@
 import type { OpenApi, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
-import { OpenApiConverter } from "@typia/utils";
 
+import { OpenApiConverter } from "@typia/utils";
 import { load } from "js-yaml";
 import React from "react";
 // eslint-disable-next-line ts/ban-ts-comment

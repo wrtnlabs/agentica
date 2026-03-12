@@ -2,11 +2,11 @@ import type { IHttpConnection } from "@typia/interface";
 import type OpenAI from "openai";
 
 import { Agentica } from "@agentica/core";
+import { HttpLlm, OpenApiConverter } from "@typia/utils";
 import { useEffect, useState } from "react";
 import typia from "typia";
 
 import { AgenticaChatApplication } from "../../AgenticaChatApplication";
-import { HttpLlm, OpenApiConverter } from "@typia/utils";
 
 function ShoppingChatApplicationSkeleton() {
   return (
