@@ -1,5 +1,3 @@
-import type { IHttpLlmFunction } from "@typia/interface";
-
 export interface __IChatInitialApplication {
   /**
    * Get list of API functions.
@@ -11,5 +9,5 @@ export interface __IChatInitialApplication {
    * Also, user just wants to list up every remote API functions that can be
    * called from the backend server, utilize this function too.
    */
-  getApiFunctions: (props: object) => Promise<Array<IHttpLlmFunction>>;
+  getApiFunctions: (props: object) => Promise<void>;
 }
