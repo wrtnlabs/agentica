@@ -1,6 +1,6 @@
 {
   "name": "@agentica/station",
-  "version": "0.44.0-dev.20260313",
+  "version": "0.44.0-dev.20260313-2",
   "private": true,
   "packageManager": "pnpm@10.6.4",
   "description": "Agentic AI library specialized in LLM Function Calling",
@@ -69,9 +69,7 @@
     "overrides": {
       "@types/react": "19.0.0"
     },
-    "patchedDependencies": {
-      "@bluwy/giget-core": "patches/@bluwy__giget-core.patch"
-    }
+    "patchedDependencies": {}
   },
   "changelogithub": {
     "types": {

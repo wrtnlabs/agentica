@@ -14,6 +14,9 @@ export default defineBuildConfig({
     },
   },
   rollup: {
+    resolve: {
+      exportConditions: ["node"],
+    },
     inlineDependencies: [
       "typia",
 
@@ -34,16 +37,7 @@ export default defineBuildConfig({
 
       // giget
       "@bluwy/giget-core",
-
-      // tar (dependency of giget)
-      "tar",
-      "fs-minipass",
-      "yallist",
-      "minizlib",
-      "minipass",
-      "mkdirp",
-      "chownr",
-      "modern-tar/fs",
+      "modern-tar",
     ],
     esbuild: {
       minify: isCI, // minify only in CI and publish
