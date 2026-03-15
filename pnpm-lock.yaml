@@ -40,17 +40,17 @@ catalogs:
       version: 5.9.3
   typia:
     '@typia/interface':
-      specifier: ^12.0.0
-      version: 12.0.0
+      specifier: ^12.0.1
+      version: 12.0.1
     '@typia/unplugin':
-      specifier: ^12.0.0
-      version: 12.0.0
+      specifier: ^12.0.1
+      version: 12.0.1
     '@typia/utils':
-      specifier: ^12.0.0
-      version: 12.0.0
+      specifier: ^12.0.1
+      version: 12.0.1
     typia:
-      specifier: ^12.0.0
-      version: 12.0.0
+      specifier: ^12.0.1
+      version: 12.0.1
   vite:
     vitest:
       specifier: ^3.0.9
@@ -107,7 +107,7 @@ importers:
         version: 0.17.0(@samchon/openapi@4.7.2)(@types/node@25.5.0)(typescript@5.9.3)
       '@typia/interface':
         specifier: catalog:typia
-        version: 12.0.0
+        version: 12.0.1
       better-sqlite3:
         specifier: ^11.9.1
         version: 11.10.0
@@ -122,7 +122,7 @@ importers:
         version: 0.1.7-alpha.2
       typia:
         specifier: catalog:typia
-        version: 12.0.0(@types/node@25.5.0)(typescript@5.9.3)
+        version: 12.0.1(@types/node@25.5.0)(typescript@5.9.3)
     devDependencies:
       '@types/better-sqlite3':
         specifier: ^7.6.13
@@ -159,7 +159,7 @@ importers:
         version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 12.0.0(@types/node@25.5.0)(typescript@5.9.3)
+        version: 12.0.1(@types/node@25.5.0)(typescript@5.9.3)
       uuid:
         specifier: catalog:libs
         version: 13.0.0
@@ -205,10 +205,10 @@ importers:
         version: 6.5.0(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react@18.3.1))(@types/react@19.0.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@typia/interface':
         specifier: catalog:typia
-        version: 12.0.0
+        version: 12.0.1
       '@typia/utils':
         specifier: catalog:typia
-        version: 12.0.0
+        version: 12.0.1
       html-to-image:
         specifier: ^1.11.13
         version: 1.11.13
@@ -229,7 +229,7 @@ importers:
         version: 1.0.2
       typia:
         specifier: catalog:typia
-        version: 12.0.0(@types/node@25.5.0)(typescript@5.9.3)
+        version: 12.0.1(@types/node@25.5.0)(typescript@5.9.3)
       uuid:
         specifier: catalog:libs
         version: 13.0.0
@@ -263,7 +263,7 @@ importers:
         version: 10.0.0
       '@typia/unplugin':
         specifier: catalog:typia
-        version: 12.0.0(rollup@4.59.0)(typia@12.0.0(@types/node@25.5.0)(typescript@5.9.3))(vite@5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0))
+        version: 12.0.1(rollup@4.59.0)(typia@12.0.1(@types/node@25.5.0)(typescript@5.9.3))(vite@5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0))
       '@vitejs/plugin-react':
         specifier: ^4.3.3
         version: 4.7.0(vite@5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0))
@@ -320,7 +320,7 @@ importers:
         version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 12.0.0(@types/node@25.5.0)(typescript@5.9.3)
+        version: 12.0.1(@types/node@25.5.0)(typescript@5.9.3)
       uuid:
         specifier: catalog:libs
         version: 13.0.0
@@ -345,13 +345,13 @@ importers:
         version: 10.0.0
       '@typia/interface':
         specifier: catalog:typia
-        version: 12.0.0
+        version: 12.0.1
       '@typia/unplugin':
         specifier: catalog:typia
-        version: 12.0.0(rollup@4.59.0)(typia@12.0.0(@types/node@25.5.0)(typescript@5.9.3))(vite@5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0))
+        version: 12.0.1(rollup@4.59.0)(typia@12.0.1(@types/node@25.5.0)(typescript@5.9.3))(vite@5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0))
       '@typia/utils':
         specifier: catalog:typia
-        version: 12.0.0
+        version: 12.0.1
       '@wrtnlabs/calculator-mcp':
         specifier: catalog:mcp
         version: 0.2.1
@@ -393,7 +393,7 @@ importers:
         version: link:../core
       typia:
         specifier: catalog:typia
-        version: 12.0.0(@types/node@25.5.0)(typescript@5.9.3)
+        version: 12.0.1(@types/node@25.5.0)(typescript@5.9.3)
     devDependencies:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
@@ -503,10 +503,10 @@ importers:
         version: 0.17.0(@samchon/openapi@4.7.2)(@types/node@25.5.0)(typescript@5.9.3)
       '@typia/interface':
         specifier: catalog:typia
-        version: 12.0.0
+        version: 12.0.1
       '@typia/utils':
         specifier: catalog:typia
-        version: 12.0.0
+        version: 12.0.1
       '@wrtnlabs/calculator-mcp':
         specifier: catalog:mcp
         version: 0.2.1
@@ -530,7 +530,7 @@ importers:
         version: 3.0.0
       typia:
         specifier: catalog:typia
-        version: 12.0.0(@types/node@25.5.0)(typescript@5.9.3)
+        version: 12.0.1(@types/node@25.5.0)(typescript@5.9.3)
       uuid:
         specifier: catalog:libs
         version: 13.0.0
@@ -3118,20 +3118,20 @@ packages:
     peerDependencies:
       typescript: '*'
 
-  '@typia/core@12.0.0':
-    resolution: {integrity: sha512-KtxUiqSqJVT6Eiyn56FL/nnAaRewHiYUx83PRz41CtI6w/P/DgvZhVe2kUjxjWjiaOirEGzu33KbztNf9APvCA==}
+  '@typia/core@12.0.1':
+    resolution: {integrity: sha512-w7BZDLliZ4sJJW6WNN2cMhpLhKHghRELRZynCsfX1eFbQqsi3/lVtvpkTBSzEZXzuFJjb6VxyugB/e2gIZZeKw==}
 
-  '@typia/interface@12.0.0':
-    resolution: {integrity: sha512-Kxtlc2vM6mjoHza3DBjqNY02jMCB07BDCTc54qdHfr9sT/TYELsYEOzNblF7d7xeJRQrXw7e0R/3pJqik/zKWg==}
+  '@typia/interface@12.0.1':
+    resolution: {integrity: sha512-HUlNN6Iqq3LXecVCzoSdwTYIZ4dq7eYRbUsNREPvtM10Ej1J2dKIH6zCEl9Ey0tQhcAwexdbubfLOSUQQYCD5A==}
 
-  '@typia/transform@12.0.0':
-    resolution: {integrity: sha512-BYl/FM1oZ5ZwyA4BrzqyGA6dOOFNae4pMWIgehOH+Ai55sdDB5kGTCRaN289FODrLbfs0UgUDunhIdbVVZN3nQ==}
+  '@typia/transform@12.0.1':
+    resolution: {integrity: sha512-SX4VCRPHTxRY3l99iU74yn8iqZIQ0DE4939n+XYoojKlvFVmTlg/OCMxsWq3xe6Qw19Vaa8bdcXGV4tx+TAlqw==}
 
-  '@typia/unplugin@12.0.0':
-    resolution: {integrity: sha512-XS9br0pXm4j9gQ2SufvpwyvrQj6kBXbw/0osz98LjaIjU0hLBjjlOa062z1p6fh7r/XeNp9azMvAbfvFZYL67g==}
+  '@typia/unplugin@12.0.1':
+    resolution: {integrity: sha512-/Q9meFSRbrLWcQ/V6k24Ks/9fkO2M3ke2P8Vam1wrOOgDTbX0vAJGpW9IDebquqT9hDaFGq7w2HIP10y6lYJWg==}
     peerDependencies:
       svelte: ^5.28.2
-      typia: ^12.0.0
+      typia: ^12.0.1
       vite: '>=3.0.0'
     peerDependenciesMeta:
       svelte:
@@ -3139,8 +3139,8 @@ packages:
       vite:
         optional: true
 
-  '@typia/utils@12.0.0':
-    resolution: {integrity: sha512-wb1av26sn6QzXXwVUz4mbWmy/cDc5AOySFol8XwO7VRIEZUcnuDW/3+LOFPdLiNyEIkOSvoJhi08NTecF6TcEg==}
+  '@typia/utils@12.0.1':
+    resolution: {integrity: sha512-JIKsRhY4jxLtl/obttkR3vGp8d8hPysY6g0PUsIEDZ9/OO85OU7q8lYhu2GkZOJN/7htyqP+95GhpSNt2uELBQ==}
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -7245,8 +7245,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typia@12.0.0:
-    resolution: {integrity: sha512-gmTfpAdq25LpG9E+JmYf6Ho+ePzqoi+0vLxgQyN8Et0vwZwAt7NQNyHA9cxVBhq3HN9j/7hHfuti67qup864LA==}
+  typia@12.0.1:
+    resolution: {integrity: sha512-meL2qpo6yYFj6wC5coz7T3XpQT9+UjdHErhw46jGfmLFJUq6Za74B0/KYMDRjLxF/0Fd63oVx6X3+MUlI1ZJcQ==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.8.0 <5.10.0'
@@ -10441,20 +10441,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typia/core@12.0.0':
+  '@typia/core@12.0.1':
     dependencies:
-      '@typia/interface': 12.0.0
-      '@typia/utils': 12.0.0
+      '@typia/interface': 12.0.1
+      '@typia/utils': 12.0.1
 
-  '@typia/interface@12.0.0': {}
+  '@typia/interface@12.0.1': {}
 
-  '@typia/transform@12.0.0':
+  '@typia/transform@12.0.1':
     dependencies:
-      '@typia/core': 12.0.0
-      '@typia/interface': 12.0.0
-      '@typia/utils': 12.0.0
+      '@typia/core': 12.0.1
+      '@typia/interface': 12.0.1
+      '@typia/utils': 12.0.1
 
-  '@typia/unplugin@12.0.0(rollup@4.59.0)(typia@12.0.0(@types/node@25.5.0)(typescript@5.9.3))(vite@5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0))':
+  '@typia/unplugin@12.0.1(rollup@4.59.0)(typia@12.0.1(@types/node@25.5.0)(typescript@5.9.3))(vite@5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0))':
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
       bun-only: 0.0.1
@@ -10466,16 +10466,16 @@ snapshots:
       pathe: 2.0.3
       pkg-types: 2.3.0
       type-fest: 4.41.0
-      typia: 12.0.0(@types/node@25.5.0)(typescript@5.9.3)
+      typia: 12.0.1(@types/node@25.5.0)(typescript@5.9.3)
       unplugin: 2.3.11
     optionalDependencies:
       vite: 5.4.21(@types/node@25.5.0)(lightningcss@1.31.1)(terser@5.46.0)
     transitivePeerDependencies:
       - rollup
 
-  '@typia/utils@12.0.0':
+  '@typia/utils@12.0.1':
     dependencies:
-      '@typia/interface': 12.0.0
+      '@typia/interface': 12.0.1
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -15586,13 +15586,13 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  typia@12.0.0(@types/node@25.5.0)(typescript@5.9.3):
+  typia@12.0.1(@types/node@25.5.0)(typescript@5.9.3):
     dependencies:
       '@standard-schema/spec': 1.1.0
-      '@typia/core': 12.0.0
-      '@typia/interface': 12.0.0
-      '@typia/transform': 12.0.0
-      '@typia/utils': 12.0.0
+      '@typia/core': 12.0.1
+      '@typia/interface': 12.0.1
+      '@typia/transform': 12.0.1
+      '@typia/utils': 12.0.1
       commander: 10.0.1
       comment-json: 4.6.2
       inquirer: 8.2.7(@types/node@25.5.0)
