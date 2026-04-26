@@ -13,7 +13,10 @@ import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaSelectHistory } from "../histories/AgenticaSelectHistory";
 import type { AgenticaSystemMessageHistory } from "../histories/AgenticaSystemMessageHistory";
 import type { AgenticaUserMessageHistory } from "../histories/AgenticaUserMessageHistory";
+import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
+
+import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
 
 /**
  * @internal
@@ -25,7 +28,7 @@ export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMe
   }
   else if (history.type === "select" || history.type === "cancel") {
     return [
-      {
+      ChatGptAssistantMessageUtil.assign({
         role: "assistant",
         tool_calls: [
           {
@@ -42,7 +45,7 @@ export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMe
             },
           },
         ],
-      },
+      }, history.assistant),
       {
         role: "tool",
         tool_call_id: history.id,
@@ -52,7 +55,7 @@ export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMe
   }
   else if (history.type === "execute") {
     return [
-      {
+      ChatGptAssistantMessageUtil.assign({
         role: "assistant",
         tool_calls: [
           {
@@ -64,7 +67,7 @@ export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMe
             },
           },
         ],
-      },
+      }, history.assistant),
       {
         role: "tool",
         tool_call_id: history.id,
@@ -277,17 +280,20 @@ export function createSelectHistory(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
   selection: AgenticaOperationSelection;
+  assistant?: AgenticaCallReasoningPayload["assistant"];
 }): AgenticaSelectHistory {
   return {
     type: "select",
     id: props.id,
     selection: props.selection,
     created_at: props.created_at,
+    assistant: props.assistant,
     toJSON: () => ({
       type: "select",
       id: props.id,
       created_at: props.created_at,
       selection: props.selection.toJSON(),
+      assistant: props.assistant,
     }),
   };
 }
@@ -299,17 +305,20 @@ export function createCancelHistory(props: {
   id: string;
   created_at: string & tags.Format<"date-time">;
   selection: AgenticaOperationSelection;
+  assistant?: AgenticaCallReasoningPayload["assistant"];
 }): AgenticaCancelHistory {
   return {
     type: "cancel",
     id: props.id,
     created_at: props.created_at,
     selection: props.selection,
+    assistant: props.assistant,
     toJSON: () => ({
       type: "cancel",
       id: props.id,
       created_at: props.created_at,
       selection: props.selection.toJSON(),
+      assistant: props.assistant,
     }),
   };
 }
@@ -324,6 +333,7 @@ export function createExecuteHistory(props: {
   arguments: Record<string, any>;
   value: unknown;
   success: boolean;
+  assistant?: AgenticaCallReasoningPayload["assistant"];
 }): AgenticaExecuteHistory {
   return {
     type: "execute",
@@ -334,6 +344,7 @@ export function createExecuteHistory(props: {
     arguments: props.arguments,
     value: props.value,
     success: props.success,
+    assistant: props.assistant,
     toJSON: () => ({
       type: "execute",
       id: props.id,
@@ -343,6 +354,7 @@ export function createExecuteHistory(props: {
       arguments: props.arguments,
       value: props.value,
       success: props.success,
+      assistant: props.assistant,
     }),
   };
 }

@@ -95,6 +95,7 @@ function transformSelect(props: {
       }),
       reason: props.history.selection.reason,
     }),
+    assistant: props.history.assistant,
   });
 }
 
@@ -112,6 +113,7 @@ function transformCancel(props: {
       }),
       reason: props.history.selection.reason,
     }),
+    assistant: props.history.assistant,
   });
 }
 
@@ -133,6 +135,7 @@ function transformExecute(props: {
      */
     value: props.history.value as Record<string, unknown>,
     success: props.history.success,
+    assistant: props.history.assistant,
   });
 }
 

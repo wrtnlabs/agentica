@@ -18,6 +18,7 @@ import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
+import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
@@ -261,6 +262,7 @@ async function step(
   // PROCESS COMPLETION
   // ----
   for (const choice of (completion.choices ?? [])) {
+    const assistant = ChatGptAssistantMessageUtil.collect(choice.message);
     // FUNCTION CALLING
     if (choice.message.tool_calls != null) {
       for (const tc of choice.message.tool_calls) {
@@ -279,7 +281,11 @@ async function step(
           continue;
         }
         for (const reference of input.functions) {
-          selectFunctionFromContext(ctx, reference);
+          selectFunctionFromContext(
+            ctx,
+            reference,
+            assistant === undefined ? undefined : { assistant },
+          );
         }
       }
     }

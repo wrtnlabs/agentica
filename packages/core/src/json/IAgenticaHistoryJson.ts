@@ -1,6 +1,7 @@
 import type { tags } from "typia";
 
 import type { AgenticaUserMessageContent } from "../histories";
+import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
 import type { IAgenticaOperationSelectionJson } from "./IAgenticaOperationSelectionJson";
@@ -78,7 +79,7 @@ export namespace IAgenticaHistoryJson {
    *
    * Selection prompt about candidate functions to call.
    */
-  export interface ISelect extends IBase<"select"> {
+  export interface ISelect extends IBase<"select">, AgenticaCallReasoningPayload {
     /**
      * Operations that have been selected.
      */
@@ -90,7 +91,7 @@ export namespace IAgenticaHistoryJson {
    *
    * Cancellation prompt about the candidate functions to be discarded.
    */
-  export interface ICancel extends IBase<"cancel"> {
+  export interface ICancel extends IBase<"cancel">, AgenticaCallReasoningPayload {
     /**
      * Operations that have been cancelled.
      */
@@ -102,7 +103,7 @@ export namespace IAgenticaHistoryJson {
    *
    * Execution prompt about the LLM function calling.
    */
-  export interface IExecute extends IBase<"execute"> {
+  export interface IExecute extends IBase<"execute">, AgenticaCallReasoningPayload {
     /**
      * Target operation to call.
      */

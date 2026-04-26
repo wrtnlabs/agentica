@@ -14,6 +14,7 @@ import type { AgenticaAssistantMessageEvent, AgenticaValidateEvent } from "../ev
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaJsonParseErrorEvent } from "../events/AgenticaJsonParseErrorEvent";
+import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
@@ -26,6 +27,7 @@ import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, creat
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
+import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { StreamUtil, toAsyncGenerator } from "../utils/StreamUtil";
@@ -133,6 +135,10 @@ export async function call(
 
   const retry: number = ctx.config?.retry ?? AgenticaConstant.RETRY;
   for (const choice of (completion.choices ?? [])) {
+    const assistant = ChatGptAssistantMessageUtil.collect(choice.message);
+    const reasoning: AgenticaCallReasoningPayload | undefined = assistant === undefined
+      ? undefined
+      : { assistant };
     for (const tc of choice.message.tool_calls ?? []) {
       if (tc.type === "function") {
         const operation: AgenticaOperation | undefined = operations.find(
@@ -145,6 +151,7 @@ export async function call(
           ctx,
           operation,
           tc,
+          reasoning,
           [],
           retry,
         );
@@ -166,6 +173,7 @@ async function predicate(
   ctx: AgenticaContext | MicroAgenticaContext,
   operation: AgenticaOperation,
   toolCall: OpenAI.ChatCompletionMessageFunctionToolCall,
+  reasoning: AgenticaCallReasoningPayload | undefined,
   previousValidationErrors: AgenticaValidateEvent[],
   life: number,
 ): Promise<AgenticaExecuteEvent> {
@@ -174,11 +182,12 @@ async function predicate(
     = parseArguments(
       operation,
       toolCall,
+      reasoning,
       life,
     );
   await ctx.dispatch(call);
   if (call.type === "jsonParseError") {
-    return correctJsonError(ctx, toolCall, call, previousValidationErrors, life - 1);
+    return correctJsonError(ctx, toolCall, reasoning, call, previousValidationErrors, life - 1);
   }
 
   // CHECK TYPE VALIDATION
@@ -224,11 +233,13 @@ async function correctTypeError(
         errors: validateEvent.result.errors,
       }),
       success: false,
+      assistant: callEvent.assistant,
     }),
     operation: callEvent.operation,
     toolCall: {
       id: callEvent.id,
       arguments: JSON.stringify(callEvent.arguments),
+      assistant: callEvent.assistant,
       result: [
         "🚨 VALIDATION FAILURE: Your function arguments do not conform to the required schema.",
         "",
@@ -269,6 +280,7 @@ async function correctTypeError(
 async function correctJsonError(
   ctx: AgenticaContext | MicroAgenticaContext,
   toolCall: OpenAI.ChatCompletionMessageFunctionToolCall,
+  reasoning: AgenticaCallReasoningPayload | undefined,
   parseErrorEvent: AgenticaJsonParseErrorEvent,
   previousValidationErrors: AgenticaValidateEvent[],
   life: number,
@@ -280,11 +292,13 @@ async function correctJsonError(
       arguments: {},
       value: new AgenticaJsonParseError(parseErrorEvent.failure),
       success: false,
+      assistant: reasoning?.assistant,
     }),
     operation: parseErrorEvent.operation,
     toolCall: {
       id: parseErrorEvent.id,
       arguments: parseErrorEvent.failure.input,
+      assistant: reasoning?.assistant,
       result: dedent`
         Invalid JSON format.
 
@@ -316,6 +330,7 @@ async function correctJsonError(
 function parseArguments(
   operation: AgenticaOperation,
   toolCall: OpenAI.ChatCompletionMessageFunctionToolCall,
+  reasoning: AgenticaCallReasoningPayload | undefined,
   life: number,
 ): AgenticaCallEvent | AgenticaJsonParseErrorEvent {
   const result: IJsonParseResult<Record<string, unknown>> = operation.function.parse(
@@ -333,6 +348,7 @@ function parseArguments(
     id: toolCall.id,
     operation,
     arguments: result.data,
+    assistant: reasoning?.assistant,
   });
 }
 
@@ -344,6 +360,7 @@ async function correctError(
     toolCall: {
       id: string;
       arguments: string;
+      assistant?: AgenticaCallReasoningPayload["assistant"];
       result: string;
     };
     systemPrompt: string;
@@ -371,7 +388,7 @@ async function correctError(
         ctx.config?.systemPrompt?.execute?.(ctx.histories as MicroAgenticaHistory[])
         ?? AgenticaSystemPrompt.EXECUTE,
       },
-      {
+      ChatGptAssistantMessageUtil.assign({
         role: "assistant",
         tool_calls: [
           {
@@ -383,7 +400,7 @@ async function correctError(
             },
           } satisfies OpenAI.ChatCompletionMessageFunctionToolCall,
         ],
-      } satisfies OpenAI.ChatCompletionAssistantMessageParam,
+      } satisfies OpenAI.ChatCompletionAssistantMessageParam, props.toolCall.assistant),
       {
         role: "tool",
         content: props.toolCall.result,
@@ -425,7 +442,8 @@ async function correctError(
     return ChatGptCompletionMessageUtil.merge(await StreamUtil.readAll(result.value));
   })();
 
-  const toolCall: OpenAI.ChatCompletionMessageFunctionToolCall | undefined = completion.choices?.[0]?.message.tool_calls?.filter(
+  const choice = completion.choices?.[0];
+  const toolCall: OpenAI.ChatCompletionMessageFunctionToolCall | undefined = choice?.message.tool_calls?.filter(
     tc => tc.type === "function",
   ).find(
     s => s.function.name === props.operation.name,
@@ -437,10 +455,14 @@ async function correctError(
       life: props.life - 1,
     });
   }
+  const assistant = choice === undefined
+    ? undefined
+    : ChatGptAssistantMessageUtil.collect(choice.message);
   return predicate(
     ctx,
     props.operation,
     toolCall,
+    assistant === undefined ? undefined : { assistant },
     props.previousValidationErrors,
     props.life,
   );
@@ -473,6 +495,7 @@ async function executeFunction(
       arguments: call.arguments,
       value,
       success: true,
+      assistant: call.assistant,
     });
   }
   catch (error) {
@@ -489,6 +512,7 @@ async function executeFunction(
           }
         : error,
       success: false,
+      assistant: call.assistant,
     });
   }
 }
