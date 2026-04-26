@@ -264,6 +264,36 @@ describe("chatGptCompletionMessageUtil", () => {
       const result = ChatGptCompletionMessageUtil.mergeChoice(acc, cur);
       expect(result.message.refusal).toBe("I cannot do that");
     });
+
+    it("should merge reasoning payloads", () => {
+      const acc: ChatCompletion.Choice = {
+        index: 0,
+        message: {
+          role: "assistant",
+          content: null,
+          reasoning: "think",
+          reasoning_content: "deep",
+          reasoning_details: [{ index: 0 }],
+        } as any,
+      } as any;
+
+      const cur: ChatCompletionChunk.Choice = {
+        index: 0,
+        delta: {
+          reasoning: " more",
+          reasoning_content: " seek",
+          reasoning_details: [{ index: 1 }],
+        } as any,
+      } as any;
+
+      const result = ChatGptCompletionMessageUtil.mergeChoice(acc, cur);
+      expect((result.message as { reasoning?: string }).reasoning).toBe("think more");
+      expect((result.message as { reasoning_content?: string }).reasoning_content).toBe("deep seek");
+      expect((result.message as { reasoning_details?: unknown[] }).reasoning_details).toEqual([
+        { index: 0 },
+        { index: 1 },
+      ]);
+    });
   });
 
   describe("mergeToolCalls", () => {

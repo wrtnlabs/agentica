@@ -1,4 +1,5 @@
 import type { AgenticaOperation } from "../context/AgenticaOperation";
+import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
@@ -8,7 +9,7 @@ import type { AgenticaEventBase } from "./AgenticaEventBase";
  *
  * @author Samchon
  */
-export interface AgenticaCallEvent extends AgenticaEventBase<"call"> {
+export interface AgenticaCallEvent extends AgenticaEventBase<"call">, AgenticaCallReasoningPayload {
   /**
    * Target operation to call.
    */

@@ -4,6 +4,7 @@ import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
 
 import type { AgenticaHistoryBase } from "./AgenticaHistoryBase";
+import type { AgenticaCallReasoningPayload } from "./contents/AgenticaCallReasoningPayload";
 
 /**
  * Execute prompt.
@@ -28,7 +29,7 @@ export namespace AgenticaExecuteHistory {
     Protocol extends "http" | "class",
     Operation extends AgenticaOperation,
     Value,
-  > extends AgenticaHistoryBase<"execute", IAgenticaHistoryJson.IExecute> {
+  > extends AgenticaHistoryBase<"execute", IAgenticaHistoryJson.IExecute>, AgenticaCallReasoningPayload {
     /**
      * Protocol of the operation.
      */

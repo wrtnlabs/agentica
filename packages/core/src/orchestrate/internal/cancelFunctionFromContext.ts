@@ -2,6 +2,7 @@ import type { AgenticaContext } from "../../context/AgenticaContext";
 import type { AgenticaOperationSelection } from "../../context/AgenticaOperationSelection";
 import type { __IChatFunctionReference } from "../../context/internal/__IChatFunctionReference";
 import type { AgenticaCancelEvent } from "../../events";
+import type { AgenticaCallReasoningPayload } from "../../histories/contents/AgenticaCallReasoningPayload";
 
 import { createCancelEvent } from "../../factory/events";
 import { createOperationSelection } from "../../factory/operations";
@@ -12,6 +13,7 @@ import { createOperationSelection } from "../../factory/operations";
 export function cancelFunctionFromContext(
   ctx: AgenticaContext,
   reference: __IChatFunctionReference,
+  reasoning?: AgenticaCallReasoningPayload,
 ): void {
   const index: number = ctx.stack.findIndex(
     item => item.operation.name === reference.name,
@@ -28,6 +30,7 @@ export function cancelFunctionFromContext(
       operation: item.operation,
       reason: reference.reason,
     }),
+    assistant: reasoning?.assistant,
   });
   void ctx.dispatch(event).catch(() => {});
 }

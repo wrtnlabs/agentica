@@ -2,6 +2,7 @@ import type { IHttpResponse } from "@typia/interface";
 
 import type { AgenticaOperation } from "../context/AgenticaOperation";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
 import type { AgenticaEventBase } from "./AgenticaEventBase";
@@ -31,7 +32,7 @@ export namespace AgenticaExecuteEvent {
     Operation extends AgenticaOperation,
     History extends AgenticaExecuteHistory,
     Value,
-  > extends AgenticaEventBase<"execute"> {
+  > extends AgenticaEventBase<"execute">, AgenticaCallReasoningPayload {
     protocol: Protocol;
     call_id: string;
     operation: Operation;
