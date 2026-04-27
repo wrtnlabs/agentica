@@ -3,6 +3,7 @@ import type { AgenticaOperation } from "../../context/AgenticaOperation";
 import type { AgenticaOperationSelection } from "../../context/AgenticaOperationSelection";
 import type { __IChatFunctionReference } from "../../context/internal/__IChatFunctionReference";
 import type { AgenticaSelectEvent } from "../../events/AgenticaSelectEvent";
+import type { AgenticaCallReasoningPayload } from "../../histories/contents/AgenticaCallReasoningPayload";
 
 import { createSelectEvent } from "../../factory/events";
 import { createOperationSelection } from "../../factory/operations";
@@ -13,6 +14,7 @@ import { createOperationSelection } from "../../factory/operations";
 export function selectFunctionFromContext(
   ctx: AgenticaContext,
   reference: __IChatFunctionReference,
+  reasoning?: AgenticaCallReasoningPayload,
 ): void {
   const operation: AgenticaOperation | undefined
     = ctx.operations.flat.get(reference.name);
@@ -29,6 +31,7 @@ export function selectFunctionFromContext(
 
   const event: AgenticaSelectEvent = createSelectEvent({
     selection,
+    assistant: reasoning?.assistant,
   });
   void ctx.dispatch(event).catch(() => {});
 }

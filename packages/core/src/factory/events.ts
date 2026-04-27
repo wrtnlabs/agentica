@@ -20,6 +20,7 @@ import type { AgenticaUserMessageEvent } from "../events/AgenticaUserMessageEven
 import type { AgenticaValidateEvent } from "../events/AgenticaValidateEvent";
 import type { AgenticaUserMessageContent } from "../histories";
 import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory";
+import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 import type { IAgenticaEventJson } from "../json/IAgenticaEventJson";
 
 import {
@@ -47,6 +48,7 @@ export function createInitializeEvent(): AgenticaInitializeEvent {
 
 export function createSelectEvent(props: {
   selection: AgenticaOperationSelection;
+  assistant?: AgenticaCallReasoningPayload["assistant"];
 }): AgenticaSelectEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
@@ -55,22 +57,26 @@ export function createSelectEvent(props: {
     id,
     created_at,
     selection: props.selection,
+    assistant: props.assistant,
     toJSON: () => ({
       type: "select",
       id,
       created_at,
       selection: props.selection.toJSON(),
+      assistant: props.assistant,
     }),
     toHistory: () => createSelectHistory({
       id,
       created_at,
       selection: props.selection,
+      assistant: props.assistant,
     }),
   };
 }
 
 export function createCancelEvent(props: {
   selection: AgenticaOperationSelection;
+  assistant?: AgenticaCallReasoningPayload["assistant"];
 }): AgenticaCancelEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
@@ -79,11 +85,13 @@ export function createCancelEvent(props: {
     id,
     created_at,
     selection: props.selection,
+    assistant: props.assistant,
     toJSON: () => ({
       type: "cancel",
       id,
       created_at,
       selection: props.selection.toJSON(),
+      assistant: props.assistant,
     }),
   };
 }
@@ -95,6 +103,7 @@ export function createCallEvent(props: {
   id: string;
   operation: AgenticaOperation;
   arguments: Record<string, any>;
+  assistant?: AgenticaCallReasoningPayload["assistant"];
 }): AgenticaCallEvent {
   const created_at: string = new Date().toISOString();
   return {
@@ -103,12 +112,14 @@ export function createCallEvent(props: {
     created_at,
     operation: props.operation,
     arguments: props.arguments,
+    assistant: props.assistant,
     toJSON: () => ({
       type: "call",
       id: props.id,
       created_at,
       operation: props.operation.toJSON(),
       arguments: props.arguments,
+      assistant: props.assistant,
     }),
   };
 }
@@ -166,6 +177,7 @@ export function createExecuteEvent(props: {
   arguments: Record<string, unknown>;
   value: unknown;
   success: boolean;
+  assistant?: AgenticaCallReasoningPayload["assistant"];
 }): AgenticaExecuteEvent {
   const id: string = v4();
   const created_at: string = new Date().toISOString();
@@ -179,6 +191,7 @@ export function createExecuteEvent(props: {
     arguments: props.arguments,
     value: props.value as any,
     success: props.success,
+    assistant: props.assistant,
     toJSON: () => ({
       type: "execute",
       id,
@@ -189,6 +202,7 @@ export function createExecuteEvent(props: {
       arguments: props.arguments,
       value: props.value,
       success: props.success,
+      assistant: props.assistant,
     }),
     toHistory: () =>
       createExecuteHistory({

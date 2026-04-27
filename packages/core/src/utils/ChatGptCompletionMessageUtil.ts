@@ -11,6 +11,7 @@ import { dedent, LlmJson } from "@typia/utils";
 
 // import typia from "typia";
 import { ByteArrayUtil } from "./ByteArrayUtil";
+import { ChatGptAssistantMessageUtil } from "./ChatGptAssistantMessageUtil";
 import { ChatGptTokenUsageAggregator } from "./ChatGptTokenUsageAggregator";
 
 function transformCompletionChunk(source: string | Uint8Array): ChatCompletionChunk {
@@ -54,7 +55,7 @@ function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCom
           ?? (null as unknown as ChatCompletion.Choice["finish_reason"]),
 
       logprobs: choice.logprobs ?? null,
-      message: {
+      message: ChatGptAssistantMessageUtil.assignFrom({
         tool_calls: choice.delta.tool_calls !== undefined
           ? choice.delta.tool_calls.reduce((acc, cur) => {
               acc[cur.index] = {
@@ -71,11 +72,7 @@ function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCom
         content: choice.delta.content ?? null,
         refusal: choice.delta.refusal ?? null,
         role: "assistant",
-        ...({
-          // for open router
-          reasoning: (choice.delta as { reasoning?: string }).reasoning ?? null,
-        }),
-      } satisfies ChatCompletionMessage,
+      } satisfies ChatCompletionMessage, choice.delta),
     };
   });
 
@@ -154,15 +151,7 @@ function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice
     }
   }
 
-  // for open router
-  if ((cur.delta as { reasoning?: string }).reasoning != null) {
-    if ((acc.message as { reasoning?: string }).reasoning == null) {
-      (acc.message as { reasoning?: string }).reasoning = (cur.delta as { reasoning?: string }).reasoning;
-    }
-    else {
-      (acc.message as unknown as { reasoning: string }).reasoning += (cur.delta as { reasoning: string }).reasoning;
-    }
-  }
+  mergeAssistantMessagePayload(acc.message, cur.delta);
 
   if (cur.delta.tool_calls != null) {
     acc.message.tool_calls ??= [];
@@ -199,6 +188,33 @@ function mergeToolCalls(acc: ChatCompletionMessageFunctionToolCall, cur: ChatCom
   }
   acc.id += cur.id ?? "";
   return acc;
+}
+
+function mergeAssistantMessagePayload(
+  message: ChatCompletionMessage,
+  delta: ChatCompletionChunk.Choice.Delta,
+): void {
+  const target = message as unknown as Record<string, unknown>;
+  const source = delta as Record<string, unknown>;
+  for (const [key, value] of Object.entries(source)) {
+    if (key.startsWith("reasoning") === false || value === undefined) {
+      continue;
+    }
+    if (typeof value === "string") {
+      target[key] = typeof target[key] === "string"
+        ? `${target[key]}${value}`
+        : value;
+    }
+    else if (Array.isArray(value)) {
+      target[key] = [
+        ...(Array.isArray(target[key]) ? target[key] : []),
+        ...value,
+      ];
+    }
+    else {
+      target[key] = value;
+    }
+  }
 }
 
 export const ChatGptCompletionMessageUtil = {

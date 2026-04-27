@@ -3,6 +3,7 @@ import type { IValidation, tags } from "typia";
 
 import type { AgenticaEventSource } from "../events/AgenticaEventSource";
 import type { AgenticaUserMessageContent } from "../histories";
+import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 
 import type { IAgenticaHistoryJson } from "./IAgenticaHistoryJson";
 import type { IAgenticaOperationJson } from "./IAgenticaOperationJson";
@@ -74,21 +75,21 @@ export namespace IAgenticaEventJson {
   /**
    * Event of selecting a function to call.
    */
-  export interface ISelect extends IBase<"select"> {
+  export interface ISelect extends IBase<"select">, AgenticaCallReasoningPayload {
     selection: IAgenticaOperationSelectionJson;
   }
 
   /**
    * Event of canceling a function calling.
    */
-  export interface ICancel extends IBase<"cancel"> {
+  export interface ICancel extends IBase<"cancel">, AgenticaCallReasoningPayload {
     selection: IAgenticaOperationSelectionJson;
   }
 
   /**
    * Event of calling a function.
    */
-  export interface ICall extends IBase<"call"> {
+  export interface ICall extends IBase<"call">, AgenticaCallReasoningPayload {
     /**
      * Target operation to call.
      */
@@ -152,7 +153,7 @@ export namespace IAgenticaEventJson {
   /**
    * Event of function calling execution.
    */
-  export interface IExecute extends IBase<"execute"> {
+  export interface IExecute extends IBase<"execute">, AgenticaCallReasoningPayload {
     /**
      * ID of the tool calling.
      */

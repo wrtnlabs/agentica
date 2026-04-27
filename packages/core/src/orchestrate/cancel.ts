@@ -15,6 +15,7 @@ import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "../utils/StreamUtil";
 
@@ -205,6 +206,7 @@ async function step(
   // PROCESS COMPLETION
   // ----
   for (const choice of (completion.choices ?? [])) {
+    const assistant = ChatGptAssistantMessageUtil.collect(choice.message);
     // TOOL CALLING HANDLER
     if (choice.message.tool_calls != null) {
       for (const tc of choice.message.tool_calls) {
@@ -224,7 +226,11 @@ async function step(
         }
 
         for (const reference of input.functions) {
-          cancelFunctionFromContext(ctx, reference);
+          cancelFunctionFromContext(
+            ctx,
+            reference,
+            assistant === undefined ? undefined : { assistant },
+          );
         }
       }
     }
