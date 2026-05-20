@@ -221,6 +221,30 @@ async function step(
             name: tc.function.name,
             validation,
           });
+          continue;
+        }
+
+        // FUNCTION EXISTENCE
+        //
+        // `typia` only proves that `name` is a `string`; it cannot know which
+        // functions are currently selected. A name that is not stacked would
+        // otherwise be silently dropped by `cancelFunctionFromContext`, so
+        // report it back to the LLM as an `IValidation.IFailure`.
+        const referenceErrors: IValidation.IError[] = validateFunctionExistence(
+          ctx,
+          validation.data,
+        );
+        if (referenceErrors.length > 0) {
+          failures.push({
+            kind: "validation",
+            id: tc.id,
+            name: tc.function.name,
+            validation: {
+              success: false,
+              data: validation.data,
+              errors: referenceErrors,
+            },
+          });
         }
       }
     }
@@ -326,4 +350,36 @@ function emendMessages(failures: IFailure[]): OpenAI.ChatCompletionMessageParam[
       } satisfies OpenAI.ChatCompletionSystemMessageParam,
     ])
     .flat();
+}
+
+/**
+ * Validate that every function to cancel is actually selected right now.
+ *
+ * `typia` validation only proves that `__IChatFunctionReference.name` is a
+ * `string`; it cannot know which functions are currently stacked. Without this
+ * check a name that is not selected would be silently dropped by
+ * `cancelFunctionFromContext`. The returned errors are fed back to the LLM
+ * through `emendMessages`, exactly like a type validation error - with the
+ * list of cancellable function names in `expected`.
+ */
+function validateFunctionExistence(
+  ctx: AgenticaContext,
+  data: __IChatFunctionReference.IProps,
+): IValidation.IError[] {
+  const cancellable: string[] = ctx.stack.map(s => s.operation.name);
+  const expected: string = cancellable.length === 0
+    ? "never"
+    : cancellable.map(name => JSON.stringify(name)).join(" | ");
+  return data.functions.flatMap((reference, i): IValidation.IError[] =>
+    cancellable.includes(reference.name)
+      ? []
+      : [{
+          path: `$input.functions[${i}].name`,
+          expected,
+          value: reference.name,
+          description: cancellable.length === 0
+            ? `Function "${reference.name}" cannot be cancelled because no function is currently selected.`
+            : `Function "${reference.name}" is not in the current selection, so it cannot be cancelled.`,
+        }],
+  );
 }

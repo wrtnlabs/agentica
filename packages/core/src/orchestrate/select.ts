@@ -277,6 +277,31 @@ async function step(
             name: tc.function.name,
             validation,
           });
+          continue;
+        }
+
+        // FUNCTION EXISTENCE
+        //
+        // `typia` only proves that `name` is a `string`; it cannot know which
+        // functions exist at runtime. A hallucinated name would otherwise be
+        // silently dropped by `selectFunctionFromContext`, so report it back
+        // to the LLM as an `IValidation.IFailure`, just like a type error.
+        const referenceErrors: IValidation.IError[] = validateFunctionExistence(
+          ctx,
+          operations,
+          validation.data,
+        );
+        if (referenceErrors.length > 0) {
+          failures.push({
+            kind: "validation",
+            id: tc.id,
+            name: tc.function.name,
+            validation: {
+              success: false,
+              data: validation.data,
+              errors: referenceErrors,
+            },
+          });
         }
       }
     }
@@ -381,4 +406,37 @@ function emendMessages(failures: IFailure[]): OpenAI.ChatCompletionMessageParam[
       } satisfies OpenAI.ChatCompletionSystemMessageParam,
     ])
     .flat();
+}
+
+/**
+ * Validate that every selected function actually exists.
+ *
+ * `typia` validation only proves that `__IChatFunctionReference.name` is a
+ * `string`; it cannot know which functions exist at runtime. Without this
+ * check a hallucinated name would be silently dropped by
+ * `selectFunctionFromContext`. The returned errors are fed back to the LLM
+ * through `emendMessages`, exactly like a type validation error - with the
+ * list of valid function names in `expected`.
+ */
+function validateFunctionExistence(
+  ctx: AgenticaContext,
+  candidates: AgenticaOperation[],
+  data: __IChatFunctionReference.IProps,
+): IValidation.IError[] {
+  const expected: string = candidates
+    .map(op => JSON.stringify(op.name))
+    .join(" | ");
+  return data.functions.flatMap((reference, i): IValidation.IError[] =>
+    ctx.operations.flat.has(reference.name)
+      ? []
+      : [{
+          path: `$input.functions[${i}].name`,
+          expected,
+          value: reference.name,
+          description: [
+            `Function "${reference.name}" does not exist.`,
+            "Select only from the functions provided by getApiFunctions().",
+          ].join(" "),
+        }],
+  );
 }
