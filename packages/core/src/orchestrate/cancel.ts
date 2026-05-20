@@ -1,6 +1,8 @@
+import type { IJsonParseResult } from "@typia/interface";
 import type OpenAI from "openai";
 import type { ILlmFunction, IValidation } from "typia";
 
+import { dedent, LlmJson } from "@typia/utils";
 import typia from "typia";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
@@ -25,11 +27,19 @@ const FUNCTION: ILlmFunction = typia.llm.application<
   __IChatCancelFunctionsApplication
 >().functions[0]!;
 
-interface IFailure {
-  id: string;
-  name: string;
-  validation: IValidation.IFailure;
-}
+type IFailure
+  = | {
+    kind: "parse";
+    id: string;
+    name: string;
+    failure: IJsonParseResult.IFailure;
+  }
+  | {
+    kind: "validation";
+    id: string;
+    name: string;
+    validation: IValidation.IFailure;
+  };
 
 export async function cancel(
   ctx: AgenticaContext,
@@ -185,14 +195,55 @@ async function step(
           continue;
         }
 
-        const input: object = FUNCTION.parse(tc.function.arguments) as object;
+        // LENIENT JSON PARSING
+        //
+        // A malformed JSON string is reported back to the LLM as a parse
+        // failure, mirroring `call.ts`. On success the parsed `.data` (never
+        // the `IJsonParseResult` wrapper itself) is forwarded to validation.
+        const parsed: IJsonParseResult<unknown> = FUNCTION.parse(
+          tc.function.arguments,
+        );
+        if (parsed.success === false) {
+          failures.push({
+            kind: "parse",
+            id: tc.id,
+            name: tc.function.name,
+            failure: parsed,
+          });
+          continue;
+        }
         const validation: IValidation<__IChatFunctionReference.IProps>
-          = FUNCTION.validate(input) as IValidation<__IChatFunctionReference.IProps>;
+          = FUNCTION.validate(parsed.data) as IValidation<__IChatFunctionReference.IProps>;
         if (validation.success === false) {
           failures.push({
+            kind: "validation",
             id: tc.id,
             name: tc.function.name,
             validation,
+          });
+          continue;
+        }
+
+        // FUNCTION EXISTENCE
+        //
+        // `typia` only proves that `name` is a `string`; it cannot know which
+        // functions are currently selected. A name that is not stacked would
+        // otherwise be silently dropped by `cancelFunctionFromContext`, so
+        // report it back to the LLM as an `IValidation.IFailure`.
+        const referenceErrors: IValidation.IError[] = validateFunctionExistence(
+          ctx,
+          validation.data,
+        );
+        if (referenceErrors.length > 0) {
+          failures.push({
+            kind: "validation",
+            id: tc.id,
+            name: tc.function.name,
+            validation: {
+              success: false,
+              data: validation.data,
+              errors: referenceErrors,
+            },
           });
         }
       }
@@ -217,15 +268,18 @@ async function step(
           continue;
         }
 
-        const input: __IChatFunctionReference.IProps | null
-          = typia.json.isParse<
-            __IChatFunctionReference.IProps
-          >(tc.function.arguments);
-        if (input === null) {
+        // Reuse the lenient parser + validator so that arguments accepted
+        // by the VALIDATION retry above are processed consistently here.
+        const parsed: IJsonParseResult<unknown> = FUNCTION.parse(
+          tc.function.arguments,
+        );
+        const validation: IValidation<__IChatFunctionReference.IProps>
+          = FUNCTION.validate(parsed.data) as IValidation<__IChatFunctionReference.IProps>;
+        if (validation.success === false) {
           continue;
         }
 
-        for (const reference of input.functions) {
+        for (const reference of validation.data.functions) {
           cancelFunctionFromContext(
             ctx,
             reference,
@@ -240,32 +294,92 @@ async function step(
 function emendMessages(failures: IFailure[]): OpenAI.ChatCompletionMessageParam[] {
   return failures
     .map(f => [
-        {
-          role: "assistant",
-          tool_calls: [
-            {
-              type: "function",
-              id: f.id,
-              function: {
-                name: f.name,
-                arguments: JSON.stringify(f.validation.data),
-              },
+      {
+        role: "assistant",
+        tool_calls: [
+          {
+            type: "function",
+            id: f.id,
+            function: {
+              name: f.name,
+              arguments: f.kind === "parse"
+                ? f.failure.input
+                : JSON.stringify(f.validation.data),
             },
-          ],
-        } satisfies OpenAI.ChatCompletionAssistantMessageParam,
-        {
-          role: "tool",
-          content: JSON.stringify(f.validation.errors),
-          tool_call_id: f.id,
-        } satisfies OpenAI.ChatCompletionToolMessageParam,
-        {
-          role: "system",
-          content: [
-            "You A.I. assistant has composed wrong typed arguments.",
-            "",
-            "Correct it at the next function calling.",
-          ].join("\n"),
-        } satisfies OpenAI.ChatCompletionSystemMessageParam,
+          },
+        ],
+      } satisfies OpenAI.ChatCompletionAssistantMessageParam,
+      {
+        role: "tool",
+        tool_call_id: f.id,
+        content: f.kind === "parse"
+          ? dedent`
+              Invalid JSON format.
+
+              Here is the detailed parsing failure information,
+              including error messages and their locations within the input:
+
+              \`\`\`json
+              ${JSON.stringify(f.failure.errors)}
+              \`\`\`
+
+              And here is the partially parsed data that was successfully
+              extracted before the error occurred:
+
+              \`\`\`json
+              ${JSON.stringify(f.failure.data)}
+              \`\`\`
+            `
+          : [
+              "🚨 VALIDATION FAILURE: Your function arguments do not conform to the required schema.",
+              "",
+              "Each error below is computed absolute truth from rigorous type validation.",
+              "You must fix ALL errors to achieve 100% schema compliance.",
+              "",
+              LlmJson.stringify(f.validation),
+            ].join("\n"),
+      } satisfies OpenAI.ChatCompletionToolMessageParam,
+      {
+        role: "system",
+        content: f.kind === "parse"
+          ? AgenticaSystemPrompt.JSON_PARSE_ERROR.replace(
+              "${{FAILURE}}",
+              JSON.stringify(f.failure),
+            )
+          : AgenticaSystemPrompt.VALIDATE,
+      } satisfies OpenAI.ChatCompletionSystemMessageParam,
     ])
     .flat();
+}
+
+/**
+ * Validate that every function to cancel is actually selected right now.
+ *
+ * `typia` validation only proves that `__IChatFunctionReference.name` is a
+ * `string`; it cannot know which functions are currently stacked. Without this
+ * check a name that is not selected would be silently dropped by
+ * `cancelFunctionFromContext`. The returned errors are fed back to the LLM
+ * through `emendMessages`, exactly like a type validation error - with the
+ * list of cancellable function names in `expected`.
+ */
+function validateFunctionExistence(
+  ctx: AgenticaContext,
+  data: __IChatFunctionReference.IProps,
+): IValidation.IError[] {
+  const cancellable: string[] = ctx.stack.map(s => s.operation.name);
+  const expected: string = cancellable.length === 0
+    ? "never"
+    : cancellable.map(name => JSON.stringify(name)).join(" | ");
+  return data.functions.flatMap((reference, i): IValidation.IError[] =>
+    cancellable.includes(reference.name)
+      ? []
+      : [{
+          path: `$input.functions[${i}].name`,
+          expected,
+          value: reference.name,
+          description: cancellable.length === 0
+            ? `Function "${reference.name}" cannot be cancelled because no function is currently selected.`
+            : `Function "${reference.name}" is not in the current selection, so it cannot be cancelled.`,
+        }],
+  );
 }
