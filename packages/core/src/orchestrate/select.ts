@@ -1,6 +1,8 @@
+import type { IJsonParseResult } from "@typia/interface";
 import type OpenAI from "openai";
 import type { ILlmFunction, IValidation } from "typia";
 
+import { dedent, LlmJson } from "@typia/utils";
 import typia from "typia";
 
 import type { AgenticaContext } from "../context/AgenticaContext";
@@ -28,11 +30,19 @@ const FUNCTION: ILlmFunction = typia.llm.application<
   __IChatSelectFunctionsApplication
 >().functions[0]!;
 
-interface IFailure {
-  id: string;
-  name: string;
-  validation: IValidation.IFailure;
-}
+type IFailure
+  = | {
+    kind: "parse";
+    id: string;
+    name: string;
+    failure: IJsonParseResult.IFailure;
+  }
+  | {
+    kind: "validation";
+    id: string;
+    name: string;
+    validation: IValidation.IFailure;
+  };
 
 export async function select(
   ctx: AgenticaContext,
@@ -241,11 +251,28 @@ async function step(
         if (tc.type !== "function" || tc.function.name !== "selectFunctions") {
           continue;
         }
-        const input: object = FUNCTION.parse(tc.function.arguments) as object;
+        // LENIENT JSON PARSING
+        //
+        // A malformed JSON string is reported back to the LLM as a parse
+        // failure, mirroring `call.ts`. On success the parsed `.data` (never
+        // the `IJsonParseResult` wrapper itself) is forwarded to validation.
+        const parsed: IJsonParseResult<unknown> = FUNCTION.parse(
+          tc.function.arguments,
+        );
+        if (parsed.success === false) {
+          failures.push({
+            kind: "parse",
+            id: tc.id,
+            name: tc.function.name,
+            failure: parsed,
+          });
+          continue;
+        }
         const validation: IValidation<__IChatFunctionReference.IProps>
-          = FUNCTION.validate(input) as IValidation<__IChatFunctionReference.IProps>;
+          = FUNCTION.validate(parsed.data) as IValidation<__IChatFunctionReference.IProps>;
         if (validation.success === false) {
           failures.push({
+            kind: "validation",
             id: tc.id,
             name: tc.function.name,
             validation,
@@ -273,14 +300,17 @@ async function step(
           continue;
         }
 
-        const input: __IChatFunctionReference.IProps | null
-          = typia.json.isParse<__IChatFunctionReference.IProps>(
-            tc.function.arguments,
-          );
-        if (input === null) {
+        // Reuse the lenient parser + validator so that arguments accepted
+        // by the VALIDATION retry above are processed consistently here.
+        const parsed: IJsonParseResult<unknown> = FUNCTION.parse(
+          tc.function.arguments,
+        );
+        const validation: IValidation<__IChatFunctionReference.IProps>
+          = FUNCTION.validate(parsed.data) as IValidation<__IChatFunctionReference.IProps>;
+        if (validation.success === false) {
           continue;
         }
-        for (const reference of input.functions) {
+        for (const reference of validation.data.functions) {
           selectFunctionFromContext(
             ctx,
             reference,
@@ -303,23 +333,51 @@ function emendMessages(failures: IFailure[]): OpenAI.ChatCompletionMessageParam[
             id: f.id,
             function: {
               name: f.name,
-              arguments: JSON.stringify(f.validation.data),
+              arguments: f.kind === "parse"
+                ? f.failure.input
+                : JSON.stringify(f.validation.data),
             },
           },
         ],
       } satisfies OpenAI.ChatCompletionAssistantMessageParam,
       {
         role: "tool",
-        content: JSON.stringify(f.validation.errors),
         tool_call_id: f.id,
+        content: f.kind === "parse"
+          ? dedent`
+              Invalid JSON format.
+
+              Here is the detailed parsing failure information,
+              including error messages and their locations within the input:
+
+              \`\`\`json
+              ${JSON.stringify(f.failure.errors)}
+              \`\`\`
+
+              And here is the partially parsed data that was successfully
+              extracted before the error occurred:
+
+              \`\`\`json
+              ${JSON.stringify(f.failure.data)}
+              \`\`\`
+            `
+          : [
+              "🚨 VALIDATION FAILURE: Your function arguments do not conform to the required schema.",
+              "",
+              "Each error below is computed absolute truth from rigorous type validation.",
+              "You must fix ALL errors to achieve 100% schema compliance.",
+              "",
+              LlmJson.stringify(f.validation),
+            ].join("\n"),
       } satisfies OpenAI.ChatCompletionToolMessageParam,
       {
         role: "system",
-        content: [
-          "You A.I. assistant has composed wrong typed arguments.",
-          "",
-          "Correct it at the next function calling.",
-        ].join("\n"),
+        content: f.kind === "parse"
+          ? AgenticaSystemPrompt.JSON_PARSE_ERROR.replace(
+              "${{FAILURE}}",
+              JSON.stringify(f.failure),
+            )
+          : AgenticaSystemPrompt.VALIDATE,
       } satisfies OpenAI.ChatCompletionSystemMessageParam,
     ])
     .flat();
