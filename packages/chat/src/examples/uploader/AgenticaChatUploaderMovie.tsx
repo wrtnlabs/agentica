@@ -1,4 +1,4 @@
-import type { OpenApi, OpenApiV3, OpenApiV3_1, OpenApiV3_2, SwaggerV2 } from "@typia/interface";
+import type { OpenApi } from "@typia/interface";
 
 import { OpenApiConverter } from "@typia/utils";
 import { load } from "js-yaml";
@@ -6,7 +6,6 @@ import React from "react";
 // eslint-disable-next-line ts/ban-ts-comment
 // @ts-ignore
 import FileUpload from "react-mui-fileuploader";
-import typia from "typia";
 
 interface ExtendedFileProps extends Blob {
   arrayBuffer: () => Promise<ArrayBuffer>;
@@ -28,28 +27,43 @@ export function AgenticaChatUploaderMovie(props: AgenticaChatUploaderMovie.IProp
 
     const buffer: ArrayBuffer = await lastFile.arrayBuffer();
     const content: string = new TextDecoder().decode(buffer);
-    const extension: "json" | "yaml" = lastFile.name.split(".").pop()! as
-      | "json"
-      | "yaml";
+    const isJson: boolean
+      = (lastFile.name.split(".").pop() ?? "").toLowerCase() === "json";
 
+    // PARSE THE RAW FILE (JSON or YAML)
+    let document: unknown;
     try {
-      const document: unknown = extension === "json" ? JSON.parse(content) : load(content);
-      const result = typia.validate<SwaggerV2.IDocument | OpenApiV3.IDocument | OpenApiV3_1.IDocument | OpenApiV3_2.IDocument>(document);
-      if (result.success === false) {
-        props.onChange(null, JSON.stringify(result.errors, null, 2));
-        return;
-      }
-      else {
-        props.onChange(
-          OpenApiConverter.upgradeDocument(result.data),
-          null,
-        );
-      }
+      document = isJson ? JSON.parse(content) : load(content);
     }
     catch {
       props.onChange(
         null,
-        extension === "json" ? "Invalid JSON file" : "Invalid YAML file",
+        isJson ? "Invalid JSON file." : "Invalid YAML file.",
+      );
+      return;
+    }
+
+    // CONVERT TO THE EMENDED OPENAPI DOCUMENT
+    //
+    // Do not run a strict `typia.validate()` here. `OpenApiConverter` (the
+    // very same converter that `Agentica`/`HttpLlm` rely on) only needs the
+    // `swagger`/`openapi` version property, and accepts real-world
+    // specifications leniently. A strict validation would reject lots of
+    // perfectly usable Swagger/OpenAPI documents, blocking the uploader.
+    try {
+      props.onChange(
+        OpenApiConverter.upgradeDocument(
+          document as Parameters<typeof OpenApiConverter.upgradeDocument>[0],
+        ),
+        null,
+      );
+    }
+    catch (error) {
+      props.onChange(
+        null,
+        error instanceof Error
+          ? error.message
+          : "Not a valid Swagger/OpenAPI document.",
       );
       return;
     }
