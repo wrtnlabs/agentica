@@ -89,7 +89,7 @@ export function AgenticaChatUploaderApplication(props: AgenticaChatUploaderAppli
         ],
         config: {
           eliticism: false,
-        }
+        },
       });
       props.onSuccess(<AgenticaChatApplication agent={agent} />);
     }
