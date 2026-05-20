@@ -95,13 +95,13 @@ function accumulate(origin: ChatCompletion, chunk: ChatCompletionChunk): ChatCom
   };
 }
 
-function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
+function mergeChunks(chunks: ChatCompletionChunk[]): ChatCompletion {
   const firstChunk = chunks[0];
   if (firstChunk === undefined) {
     throw new Error("No chunks received");
   }
 
-  const result = chunks.reduce(accumulate, {
+  return chunks.reduce(accumulate, {
     id: firstChunk.id,
     choices: [],
     created: firstChunk.created,
@@ -111,17 +111,29 @@ function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
     service_tier: firstChunk.service_tier,
     system_fingerprint: firstChunk.system_fingerprint,
   } as ChatCompletion);
+}
 
-  // post-process
-  result.choices?.forEach((choice) => {
+/**
+ * Replace any tool call's empty `arguments` with `"{}"`.
+ *
+ * MUST only be applied to a final, fully streamed completion. Running it while
+ * more chunks may still arrive would seed `"{}"` into a not-yet-complete tool
+ * call, and the remaining streamed argument chunks would then be appended onto
+ * it - corrupting the arguments into `{}{...}`.
+ */
+function fixEmptyToolArguments(completion: ChatCompletion): ChatCompletion {
+  completion.choices?.forEach((choice) => {
     choice.message.tool_calls?.filter(tc => tc.type === "function").forEach((toolCall) => {
       if (toolCall.function.arguments === "") {
         toolCall.function.arguments = "{}";
       }
     });
   });
+  return completion;
+}
 
-  return result;
+function merge(chunks: ChatCompletionChunk[]): ChatCompletion {
+  return fixEmptyToolArguments(mergeChunks(chunks));
 }
 
 function mergeChoice(acc: ChatCompletion.Choice, cur: ChatCompletionChunk.Choice): ChatCompletion.Choice {
@@ -221,6 +233,8 @@ export const ChatGptCompletionMessageUtil = {
   transformCompletionChunk,
   accumulate,
   merge,
+  mergeChunks,
+  fixEmptyToolArguments,
   mergeChoice,
   mergeToolCalls,
 };

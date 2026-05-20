@@ -56,7 +56,11 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
     };
     if (acc.object === "chat.completion.chunk") {
       registerContext([acc, chunk].flatMap(v => v.choices ?? []));
-      return ChatGptCompletionMessageUtil.merge([acc, chunk]);
+      // Use `mergeChunks`, NOT `merge`: `merge` runs the empty-arguments
+      // fixup, which mid-stream seeds a still-incomplete tool call with "{}"
+      // so the remaining streamed argument chunks append onto it (`{}{...}`).
+      // The fixup is applied once, to the final completion, below.
+      return ChatGptCompletionMessageUtil.mergeChunks([acc, chunk]);
     }
     registerContext(chunk.choices ?? []);
     return ChatGptCompletionMessageUtil.accumulate(acc, chunk);
@@ -85,7 +89,7 @@ async function reduceStreamingWithDispatch(stream: ReadableStream<ChatCompletion
     });
     return completion;
   }
-  return nullableCompletion;
+  return ChatGptCompletionMessageUtil.fixEmptyToolArguments(nullableCompletion);
 }
 
 export { reduceStreamingWithDispatch };
