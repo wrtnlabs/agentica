@@ -16,6 +16,7 @@
 6. Agentica Next 구현 계획이 phase별 파일 단위 변경 계획, API 초안, migration 전략, compatibility 전략, test 전략을 포함한다.
 7. 각 설계 주장에는 근거 파일 또는 reference가 연결되어 있다.
 8. 미독해 영역이 남아 있으면 완료가 아니다.
+9. Claude Code source, Agentica source, `.wiki` 설계를 세 축으로 대조한 총괄 리뷰가 있어야 한다.
 
 ## 현재 완료 상태
 
@@ -24,6 +25,7 @@
 - Claude Code의 query loop, deferred ToolSearch/schema loading, Plan/Config/Skill/Web/MCP/Team/Schedule/RemoteTrigger 도구군, MCP service/Skill/Plugin loading, MCP auth/UI/approval/control-plane, MCP SDK/in-process transport, plugin marketplace/install/update runtime, plugin UI/validation/MCPB/cache/reload/startup runtime, task/coordinator runtime, remote/bridge/server/CLI transport/runtime, state/swarm runtime, UI adapter/Ink renderer 세부, PowerShell/REPL/platform shell runtime, BashTool execution/sandbox/output runtime, BashTool legacy security/parser-trust runtime, tool permission control flow, compact/context/memory slash command runtime, slash command catalog와 heavy UI/internal command 예외는 문서화했다. plugin validate 전용 fixture/test bundle은 전체 snapshot 검색 결과 확인되지 않아 Agentica 자체 fixture pack 필요로 정리했다.
 - 외부 reference 조사는 `02-research/external-references.md`에 1차 정리했다.
 - 구현 단계별 세부 test matrix는 `03-design/agentica-next/verification-strategy.md`에 문서화했고, source-specific 검증 항목은 각 연구 문서와 연결했다.
+- 세 축 대조와 최종 우선순위는 `00-governance/total-review.md`에 정리했다.
 
 ## 잔여 주의
 

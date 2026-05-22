@@ -9,6 +9,16 @@
 - 코드 변경과 직접 관련 없는 추측은 기록하지 않고, 확인된 사실과 합리적 추론을 구분한다.
 - 문서는 작게 유지하되, 같은 주제가 커지면 하위 문서로 분리한다.
 
+## 권장 독서 순서
+
+구현자는 전체 세부 문서를 순서대로 읽기 전에 아래 경로를 먼저 읽는다.
+
+1. [전수정독 총괄 리뷰](./00-governance/total-review.md)
+2. [Agentica 적용 로드맵](./03-design/agentica-next/roadmap.md)
+3. [Agentica Next 아키텍처 청사진](./03-design/agentica-next/architecture-blueprint.md)
+4. [Agentica Next 검증 전략](./03-design/agentica-next/verification-strategy.md)
+5. 구현 대상별 `02-research`, `03-design`, `04-agentica` 세부 문서
+
 ## 문서 지도
 
 - [프로젝트 개요](./01-project/overview.md)
@@ -16,6 +26,7 @@
 - [위키 운영 매뉴얼](./00-governance/wiki-operating-manual.md)
 - [전수정독 진행판](./00-governance/reading-ledger.md)
 - [완성 조건과 검증 기준](./00-governance/completion-criteria.md)
+- [전수정독 총괄 리뷰](./00-governance/total-review.md)
 - [Agentica 소스 인벤토리](./01-project/source-inventory.md)
 - [Claude Code 아키텍처 관찰](./02-research/claude-code/architecture.md)
 - [Claude Code 소스 인벤토리](./02-research/claude-code/source-inventory.md)

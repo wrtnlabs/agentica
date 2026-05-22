@@ -52,10 +52,17 @@
 
 ## 다음 독해 우선순위
 
-1. 완료 선언 전 감사 명령 실행: `rg "\| .* \| 부분 \||\| .* \| 대기 \||추가 독해 필요|현재 미완료 사유" .wiki | rg -v "00-governance/(completion-criteria|reading-ledger)"`
+1. 구현 전에는 `00-governance/total-review.md`, `03-design/agentica-next/roadmap.md`, `03-design/agentica-next/architecture-blueprint.md`, `03-design/agentica-next/verification-strategy.md` 순서로 먼저 읽는다.
+2. 완료 선언 전 감사 명령 실행: `rg "\| .* \| 부분 \||\| .* \| 대기 \||추가 독해 필요|현재 미완료 사유" .wiki | rg -v "00-governance/(completion-criteria|reading-ledger)"`
 
 ## 외부 Reference
 
 | 영역 | 상태 | 근거/메모 |
 | --- | --- | --- |
 | OpenAI/Anthropic/MCP/SQLite/React/Unicode/JSON Schema 공식 문서 | 완료 | tool calling, structured outputs, context caching/editing/compaction, MCP primitives/tasks/tools/security, local FTS, render key/deferred UI, grapheme segmentation을 `02-research/external-references.md`에 반영 |
+
+## 총괄 대조
+
+| 영역 | 상태 | 근거/메모 |
+| --- | --- | --- |
+| Claude Code source, Agentica source, `.wiki` 설계 세 축 리뷰 | 완료 | 핵심 설계 일치점, 보정점, 구현 우선순위, 남은 위험을 `00-governance/total-review.md`에 정리 |
