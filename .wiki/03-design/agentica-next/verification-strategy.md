@@ -88,10 +88,15 @@ pnpm --filter @agentica/test start --include benchmark_select
 
 - full `AgenticaHistory[]`에서 model-facing messages 생성
 - execute result preview/reference projection
+- full public history와 model-facing projected context가 분리되는지
 - OpenAI tool call/result pairing 유지
 - failed validation feedback 유지
 - describe history가 model-facing request에 들어가지 않는 기존 의미 유지
 - compact marker/systemMessage가 projection에서 올바른 위치에 들어가는지
+- result ref의 digest/version이 같으면 unchanged stub으로 projection되는지
+- output reserve와 max result budget이 deterministic하게 적용되는지
+- context diagnostics가 raw history가 아니라 projected model request를 기준으로 category/token breakdown을 계산하는지
+- render projection metadata가 public history 원본을 mutate하지 않는지
 
 기존 e2e:
 
@@ -106,6 +111,28 @@ pnpm --filter @agentica/test start --include benchmark_select
 - 큰 execute result를 반환하는 class controller
 - result budget 적용 후 다음 turn에서 model request가 prompt-too-long 없이 진행되는지
 
+### Phase 3A: Progressive Read와 Result Store
+
+필수 unit test:
+
+- `AgenticaResultReference`가 preview, digest, version, byteLength/tokenEstimate, segment ids를 보존하는지
+- line/page/item/jsonPath/byte range descriptor가 stable serialization을 갖는지
+- large HTTP/class/MCP result가 full inline이 아니라 preview/reference/segment metadata로 materialize되는지
+- search/list/read operation projection이 `limit`, `offset`, `truncated`, `digest`, `version`을 보존하는지
+- 같은 digest/version의 반복 read가 unchanged stub으로 줄어드는지
+- write/destructive operation의 `requiresFreshRead` precondition이 stale digest/version에서 call 직전 차단되는지
+- segment rehydrate 실패가 validation failure가 아니라 recoverable runtime state로 남는지
+- adapter persistence가 없을 때 preview-only fallback과 복원 불가 marker가 생성되는지
+- task output tail read가 output offset과 digest를 갱신하는지
+- result store cleanup이 compact boundary와 recent refs를 지키는지
+
+필수 compatibility test:
+
+- public `IAgenticaHistoryJson`을 즉시 깨지 않는지
+- chat renderer가 large result full JSON을 무제한 출력하지 않는지
+- RPC final-only listener가 result reference metadata 추가 후에도 기존 ordering을 유지하는지
+- `MicroAgentica`가 result store/progressive read state 없이 기존 direct result path를 유지하는지
+
 ### Phase 4: Compact
 
 필수 unit test:
@@ -116,6 +143,7 @@ pnpm --filter @agentica/test start --include benchmark_select
 - summary message formatting
 - compact boundary metadata 생성
 - boundary 이후 projection
+- result refs, segment refs, task output cursor restore
 - preserved history id와 summarized history id 기록
 - prompt-too-long retry가 operation/API round 단위로 안전하게 절단
 

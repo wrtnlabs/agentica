@@ -125,6 +125,8 @@ selector 변경 검증에 직접 필요하다.
 
 - Agentica Next runtime은 "새 workflow graph"가 아니라 existing selector/caller/describer runtime의 internal optimization으로 문서화한다.
 - local selector는 core no-DBMS path와 optional `@agentica/vector-selector` embedding strategy의 관계를 분명히 나눈다.
+- context projector/result store/progressive read는 selector 이후의 다음 최적화 축으로 문서화한다.
+- Claude Code의 file splitting은 filesystem feature가 아니라 controller/API/resource result slicing protocol로 번역한다.
 - compact/history docs는 stale `AgenticaHistory.Text` 표현을 current `userMessage`/`assistantMessage`/`systemMessage` contract로 정리한 뒤 확장한다.
 - public event/RPC docs는 `text` listener가 아니라 current `assistantMessage`/`userMessage`/`describe` contract를 기준으로 정리한다.
 - CLI docs와 tutorial command는 실제 `agentica start` command/options/template matrix와 맞춘다.

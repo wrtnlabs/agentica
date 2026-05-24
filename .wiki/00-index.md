@@ -14,10 +14,11 @@
 구현자는 전체 세부 문서를 순서대로 읽기 전에 아래 경로를 먼저 읽는다.
 
 1. [전수정독 총괄 리뷰](./00-governance/total-review.md)
-2. [Agentica 적용 로드맵](./03-design/agentica-next/roadmap.md)
-3. [Agentica Next 아키텍처 청사진](./03-design/agentica-next/architecture-blueprint.md)
-4. [Agentica Next 검증 전략](./03-design/agentica-next/verification-strategy.md)
-5. 구현 대상별 `02-research`, `03-design`, `04-agentica` 세부 문서
+2. [Claude Code 최적화 패턴 적용 지도](./03-design/agentica-next/claude-code-optimization-map.md)
+3. [Agentica 적용 로드맵](./03-design/agentica-next/roadmap.md)
+4. [Agentica Next 아키텍처 청사진](./03-design/agentica-next/architecture-blueprint.md)
+5. [Agentica Next 검증 전략](./03-design/agentica-next/verification-strategy.md)
+6. 구현 대상별 `02-research`, `03-design`, `04-agentica` 세부 문서
 
 ## 문서 지도
 
@@ -71,6 +72,7 @@
 - [Agentica CLI/Create Scaffold 현재 구조](./04-agentica/cli-scaffold-current.md)
 - [Agentica Website/Docs/Articles 현재 구조](./04-agentica/website-docs-current.md)
 - [Agentica 영향면 분석](./04-agentica/impact-surfaces.md)
+- [Claude Code 최적화 패턴 적용 지도](./03-design/agentica-next/claude-code-optimization-map.md)
 - [Agentica 적용 로드맵](./03-design/agentica-next/roadmap.md)
 - [Agentica Next 아키텍처 청사진](./03-design/agentica-next/architecture-blueprint.md)
 - [Agentica Orchestration 재설계](./03-design/agentica-next/orchestration-design.md)

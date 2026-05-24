@@ -27,6 +27,8 @@
 - operation runtime metadata
 - stateful loop transition
 - result budget
+- result materialization/reference store
+- progressive content read
 - compact/recovery
 - selector strategy abstraction
 
@@ -61,6 +63,9 @@ interface AgenticaRuntimeState {
   turn: number;
   transition?: AgenticaRuntimeTransition;
   compact?: AgenticaCompactState;
+  resultStore?: AgenticaResultStoreState;
+  contentSegments?: Record<string, AgenticaContentSegment>;
+  attachmentQueue?: AgenticaRuntimeAttachment[];
   tasks?: Record<string, AgenticaTaskRuntimeState>;
   teams?: Record<string, AgenticaTeamRuntimeState>;
   remoteSessions?: Record<string, AgenticaRemoteSessionState>;
@@ -98,6 +103,8 @@ interface AgenticaRuntimeStateObserver {
 - permission mode sync
 - connector registry version 증가와 selector cache invalidation
 - task terminal notification queue
+- result reference lifecycle and digest/version dedup
+- attachment drain into next model-facing projection
 - compact boundary marker projection
 - remote reconnect/status transition logging
 - team member idle/shutdown notification
@@ -147,6 +154,78 @@ interface AgenticaSelector {
 - 큰 execute result preview화
 - selected stack/pending state 재주입
 - system/common prompt ordering 보장
+- result/segment/task refs를 model-facing context에 필요한 만큼만 재주입
+- token/result budget과 output reserve 적용
+
+### AgenticaResultStore
+
+큰 operation result를 public history와 model-facing context에 그대로 반복 주입하지 않기 위한 runtime store다.
+
+```typescript
+interface AgenticaResultReference {
+  id: string;
+  source: "operation" | "task" | "connector" | "manual";
+  contentType: string;
+  preview: string;
+  digest?: string;
+  version?: string;
+  tokenEstimate?: number;
+  byteLength?: number;
+  segments?: string[];
+  storage?: "memory" | "adapter" | "external";
+}
+
+interface AgenticaResultStoreState {
+  refs: Record<string, AgenticaResultReference>;
+  recentRefIds: string[];
+}
+```
+
+1차 구현은 memory-only와 adapter hook을 허용한다. core가 파일 저장을 직접 책임지지는 않는다. adapter가 persistence를 제공하지 못하면 `storage: "memory"` 또는 preview-only fallback을 명시한다.
+
+### AgenticaSegmentedContentReader
+
+Claude Code의 `FileRead` line/page/range, `Grep`/`Glob` cap, task output cursor를 Agentica general result protocol로 일반화한다.
+
+```typescript
+interface AgenticaContentSegment {
+  sourceId: string;
+  contentType: string;
+  range?: {
+    kind: "line" | "page" | "byte" | "jsonPath" | "item";
+    start: number | string;
+    end?: number | string;
+  };
+  digest?: string;
+  version?: string;
+  preview: string;
+  fullRef?: string;
+  tokenEstimate?: number;
+  truncated: boolean;
+}
+
+interface AgenticaSegmentedContentReader {
+  read(ref: AgenticaResultReference, range: AgenticaContentSegment["range"]): Promise<AgenticaContentSegment>;
+}
+```
+
+적용 대상은 파일이 아니라 큰 controller/API/MCP/remote/task output 전반이다. 같은 digest/version이면 projector는 full segment 대신 unchanged stub을 넣을 수 있다.
+
+### AgenticaRuntimeAttachmentQueue
+
+Claude Code의 attachment drain은 compact 후 file/plan/skill/tool/MCP state를 다시 붙인다. Agentica 대응물은 selected operations, validation retry facts, result refs, segment refs, task output cursor다.
+
+```typescript
+interface AgenticaRuntimeAttachment {
+  id: string;
+  kind: "operation" | "validation" | "result" | "segment" | "task" | "connector" | "policy";
+  priority: number;
+  expiresAtTurn?: number;
+  project: "model" | "render" | "resume" | "audit";
+}
+```
+
+이 queue는 public history가 아니라 projector 입력이다. compact 후 restore 순서와 next-turn projection을 안정화하는 데 쓴다.
 
 ### AgenticaCompactor
 
@@ -570,11 +649,13 @@ worker prompt는 parent history dump가 아니라 self-contained task brief, all
 2. `AgenticaSelector` 인터페이스를 만들고 현행 selector를 adapter로 감싼다.
 3. hybrid selector를 opt-in으로 추가한다.
 4. `AgenticaContextProjector`를 도입해 decodeHistory 경로를 대체 가능하게 한다.
-5. result budget과 compact boundary history를 추가한다.
-6. task output reference와 internal task notification queue를 추가한다.
-7. remote session state와 remote message adapter를 internal로 추가한다.
-8. interaction/config/connector/capability-pack/team/coordinator runtime metadata를 internal로 추가한다.
-9. `execute.ts`를 runtime loop로 대체하되 legacy executor는 유지한다.
+5. `AgenticaResultStore`와 execute result preview/reference를 추가한다.
+6. `AgenticaSegmentedContentReader`와 range/digest/unchanged projection을 추가한다.
+7. compact boundary와 restore attachment queue를 추가한다.
+8. task output reference와 internal task notification queue를 추가한다.
+9. remote session state와 remote message adapter를 internal로 추가한다.
+10. interaction/config/connector/capability-pack/team/coordinator runtime metadata를 internal로 추가한다.
+11. `execute.ts`를 runtime loop로 대체하되 legacy executor는 유지한다.
 
 ## 유지할 것
 
