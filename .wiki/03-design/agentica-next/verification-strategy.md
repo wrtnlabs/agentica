@@ -20,6 +20,17 @@ Agentica 강화 작업은 selector, context projection, compact, runtime loop, p
 
 ### Phase 1: Local Operation Index
 
+2026-05-24 1차 구현에서 아래 deterministic gate를 추가했다.
+
+```bash
+pnpm --filter @agentica/core exec vitest run src/selector/AgenticaOperationIndex.spec.ts
+pnpm --filter @agentica/core exec tsc --noEmit
+pnpm --filter @agentica/core test -- --run
+pnpm --filter @agentica/core lint
+```
+
+현재 통과 항목은 tokenizer split, exact name ranking, `select:` direct selection, `+required` filtering, searchHint weighting, HTTP method/path/tag match, parameter description match, registry version change, local selector no-LLM path다. `lint`는 기존 `functional/*` JSDoc warning 20개만 남고 error는 없다.
+
 필수 unit test:
 
 - controller/function/name/description/parameter/path/tag tokenization

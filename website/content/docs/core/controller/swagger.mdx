@@ -20,7 +20,7 @@ import typia from "typia";
 const agent = new Agentica({
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
-    model: "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [
     assertHttpController({
@@ -93,7 +93,7 @@ import typia from "typia";
 const agent = new Agentica({
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
-    model: "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [
     assertHttpController({
@@ -143,7 +143,7 @@ If target HTTP server requires authentication, you can provide the authenticatio
 
 `assertHttpController()` embeds [#Validation Feedback Strategy](/docs/concepts/function-calling/#validation-feedback).
 
-You know what? LLM (Large Language Model) like OpenAI takes a lot of mistakes when commposing arguments in the function calling. Even though `number` like simple type is defined in the parameters schema, LLM often fills it just by a `string` typed value.
+LLMs can make mistakes when composing arguments in function calling. Even when a simple `number` is defined in the parameter schema, the model may fill it with a `string` value.
 
 To correct such LLM function calling mistakes, `@agentica` is running a validation feedback strategy which informs the validation errors to the AI agent, so that induce the AI agent to correct the mistakes at the next trial.
 

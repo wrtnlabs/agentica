@@ -117,6 +117,8 @@ DBMS 없는 local operation search index다.
 
 이 모듈은 `Agentica` selector용이며 `MicroAgentica` 경로에는 연결하지 않는다.
 
+상태: 2026-05-24 1차 구현 완료. 실제 파일은 `packages/core/src/selector/AgenticaOperationIndex.ts`이며, `MicroAgentica` path는 변경하지 않았다.
+
 ### AgenticaSelector
 
 ```typescript
@@ -132,6 +134,8 @@ interface AgenticaSelector {
 - `hybrid`: local top-K 뒤 LLM selector
 
 초기 기본값은 호환성을 위해 현행 `llm`을 유지하고, opt-in으로 `hybrid`를 넣는 것이 안전하다.
+
+상태: 2026-05-24에 `IAgenticaConfig.selector.type`으로 `llm`, `standard`, `local`, `hybrid`, `auto`를 추가했다. 기본값은 `llm`이다.
 
 ### AgenticaContextProjector
 

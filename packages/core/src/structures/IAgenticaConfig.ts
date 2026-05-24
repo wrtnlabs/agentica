@@ -2,6 +2,7 @@ import type { AgenticaContext } from "../context/AgenticaContext";
 
 import type { IAgenticaConfigBase } from "./IAgenticaConfigBase";
 import type { IAgenticaExecutor } from "./IAgenticaExecutor";
+import type { IAgenticaSelectorConfig } from "./IAgenticaSelectorConfig";
 import type { IAgenticaSystemPrompt } from "./IAgenticaSystemPrompt";
 
 /**
@@ -80,4 +81,15 @@ export interface IAgenticaConfig extends IAgenticaConfigBase {
    * @default true
    */
   eliticism?: boolean;
+
+  /**
+   * Candidate operation selector strategy.
+   *
+   * The default keeps the existing LLM selector behavior. Configure this as
+   * `local`, `hybrid`, or `auto` to use the dependency-free local operation
+   * index before the function calling step.
+   *
+   * @default { type: "llm" }
+   */
+  selector?: IAgenticaSelectorConfig;
 }

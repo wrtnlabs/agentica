@@ -12,9 +12,9 @@ import { BbsArticleService } from "./services/BbsArticleService";
 
 const agent: Agentica = new Agentica({
   vendor: {
-    model: "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     api: new OpenAI({
-      apiKey: "********",
+      apiKey: process.env.OPENAI_API_KEY,
     }),
   } satisfies IAgenticaVendor,
   controllers: [

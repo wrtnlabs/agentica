@@ -7,8 +7,9 @@
 - Claude Code snapshot: `/home/samchon/github/samchon/claude-code`
 - Agentica 현재 저장소: `/home/samchon/github/wrtnlabs/agentica`
 - 이 위키의 설계 문서: `.wiki`
+- 2026-05-24 후속 구현: `packages/core/src/selector/*`, `IAgenticaConfig.selector`, `orchestrate/select.ts`
 
-이번 리뷰의 조치 범위는 `.wiki` 개정뿐이다. Agentica source package와 `MicroAgentica` 구현은 변경하지 않는다.
+2026-05-22 최초 리뷰의 조치 범위는 `.wiki` 개정뿐이었다. 2026-05-24 후속 작업에서는 사용자의 구현 지시에 따라 Agentica source package 변경을 시작했다. `MicroAgentica` 구현은 여전히 변경하지 않는다.
 
 ## 최종 결론
 
@@ -75,6 +76,6 @@
 ## 리뷰 결과
 
 - 세 축 비교 결과, 위키의 핵심 방향은 유지한다.
-- 위키 진입점과 완료 기준에 이 총괄 리뷰를 추가했다.
-- 날짜별 작업 로그는 반복 설명을 줄이고, 세부 근거는 주제 문서로 남겼다.
-- source package 변경은 수행하지 않았다.
+- OpenAI `tool_search` 공식 문서가 추가되어 provider-native deferred schema loading 가능성은 보정했다. 그래도 Agentica 기본 경로는 provider-neutral local selector가 맞다.
+- 2026-05-24에 local operation index와 opt-in selector mode 구현을 시작했고, 위키 진입점/로드맵/구현 현황 문서를 최신화했다.
+- 날짜별 작업 로그는 반복 설명을 줄이고, 세부 근거는 주제 문서로 남긴다.

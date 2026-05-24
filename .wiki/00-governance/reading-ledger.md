@@ -25,6 +25,13 @@
 | `benchmark/vector-selector-benchmark` | 완료 | plain/pg/sqlite vector selector comparison과 shopping scenario를 `04-agentica/benchmark-test-current.md`에 반영 |
 | `website` | 완료 | Next/Nextra build, route/meta, TypeDoc/playground prebuild, setup/core/event/history/websocket/plugin docs, public articles redirect를 `04-agentica/website-docs-current.md`에 반영 |
 | `articles`, `docs` | 완료 | root articles positioning, `docs/AgenticaFN.png` 자료 범위, function-calling-first narrative와 문서 영향도를 `04-agentica/website-docs-current.md`에 반영 |
+| `packages/core` local selector 구현 | 완료 | `selector/AgenticaOperationIndex.ts`, `IAgenticaSelectorConfig`, `orchestrate/select.ts` opt-in local/hybrid/auto 경로와 테스트를 `04-agentica/local-selector-implementation.md`에 반영 |
+
+## AutoBe 참고 구현
+
+| 영역 | 상태 | 근거/메모 |
+| --- | --- | --- |
+| AutoBe public in-memory/hybrid RAG | 완료 | `RAGRetrieval.ts`, preliminary controller/request/application fixer를 읽고 section-level retrieval, BM25/vector hybrid, cache/dynamic-K/schema projection을 `02-research/autobe/in-memory-rag.md`에 반영 |
 
 ## Claude Code Snapshot
 
@@ -59,7 +66,7 @@
 
 | 영역 | 상태 | 근거/메모 |
 | --- | --- | --- |
-| OpenAI/Anthropic/MCP/SQLite/React/Unicode/JSON Schema 공식 문서 | 완료 | tool calling, structured outputs, context caching/editing/compaction, MCP primitives/tasks/tools/security, local FTS, render key/deferred UI, grapheme segmentation을 `02-research/external-references.md`에 반영 |
+| OpenAI/Anthropic/MCP/SQLite/React/Unicode/JSON Schema 공식 문서 | 완료 | tool calling, OpenAI `tool_search`, structured outputs, context caching/editing/compaction, MCP primitives/tasks/tools/security, local FTS, render key/deferred UI, grapheme segmentation을 `02-research/external-references.md`에 반영 |
 
 ## 총괄 대조
 

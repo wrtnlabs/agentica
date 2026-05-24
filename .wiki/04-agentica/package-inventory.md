@@ -9,13 +9,14 @@
 - `src/Agentica.ts`: full Agentica facade. selector stack과 histories, event listener, semaphore, executor를 소유한다.
 - `src/MicroAgentica.ts`: 경량 facade. 이 작업의 변경 대상이 아니다.
 - `src/orchestrate/*`: initialize/select/cancel/call/describe/execute 기본 workflow.
+- `src/selector/*`: dependency-free local operation index와 selector search result 타입.
 - `src/context/*`: operation collection, context, token usage.
 - `src/factory/*`: event/history/operation 생성과 OpenAI message decode.
 - `src/functional/*`: HTTP/MCP controller 검증과 LLM application 생성.
 - `src/structures/*`: public config/props/vendor/controller 타입.
 - `src/utils/request.ts`: OpenAI chat completion request wrapper와 usage aggregation.
 
-강화 작업의 중심이다.
+강화 작업의 중심이다. 2026-05-24 기준 `IAgenticaConfig.selector`가 추가되어 기본값은 기존 LLM selector를 유지하고, opt-in으로 `local`/`hybrid`/`auto` selector를 사용할 수 있다. 세부 구현은 [Local Selector 구현 현황](./local-selector-implementation.md)에 정리했다.
 
 ## `@agentica/vector-selector`
 

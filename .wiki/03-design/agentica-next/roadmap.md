@@ -48,6 +48,8 @@ core에 dependency-free operation index를 추가한다.
 
 이 단계만으로 `@agentica/vector-selector` 없이도 큰 API surface에서 후보를 줄일 수 있다.
 
+상태: 2026-05-24에 1차 구현 완료. `packages/core/src/selector/AgenticaOperationIndex.ts`와 `IAgenticaConfig.selector` opt-in mode가 들어갔다. 남은 일은 benchmark 비교와 compact/resume state 연결이다.
+
 ### 2단계: Selector 재설계
 
 기존 `select.ts`를 바로 제거하지 않고 새 selector를 병행 도입한다.
@@ -56,6 +58,8 @@ core에 dependency-free operation index를 추가한다.
 - 기본값은 처음에는 기존 호환을 위해 `"llm"` 또는 `"hybrid"`로 둔다.
 - hybrid는 local index로 top-K를 만든 뒤 기존 LLM selector가 top-K 안에서 순서/필요성을 판정한다.
 - hallucinated function name 검증은 유지한다.
+
+상태: 2026-05-24에 opt-in 병행 경로까지 구현했다. 기본값은 `"llm"`이며, `hybrid`는 local top-K를 기존 LLM selector의 candidate catalog로 넘긴다. LLM selector의 hallucinated function validation은 전체 registry가 아니라 이번 candidate catalog 기준으로 보정했다.
 
 ### 3단계: Context Budget과 Microcompact
 

@@ -12,12 +12,15 @@ import type { __IChatFunctionReference } from "../context/internal/__IChatFuncti
 import type { __IChatSelectFunctionsApplication } from "../context/internal/__IChatSelectFunctionsApplication";
 import type { AgenticaAssistantMessageEvent, AgenticaSelectEvent } from "../events";
 import type { AgenticaEvent } from "../events/AgenticaEvent";
+import type { AgenticaOperationSearchResult } from "../selector/AgenticaOperationIndex";
+import type { IAgenticaSelectorConfig } from "../structures/IAgenticaSelectorConfig";
 
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createAssistantMessageEvent } from "../factory/events";
 import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { AgenticaOperationIndex } from "../selector/AgenticaOperationIndex";
 import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
@@ -29,6 +32,7 @@ import { selectFunctionFromContext } from "./internal/selectFunctionFromContext"
 const FUNCTION: ILlmFunction = typia.llm.application<
   __IChatSelectFunctionsApplication
 >().functions[0]!;
+const AUTO_THRESHOLD_CHARACTERS = 24_000;
 
 type IFailure
   = | {
@@ -45,6 +49,30 @@ type IFailure
   };
 
 export async function select(
+  ctx: AgenticaContext,
+): Promise<void> {
+  const local: ILocalSelection | undefined = prepareLocalSelection(ctx);
+  if (local !== undefined) {
+    if (local.results.length === 0) {
+      return;
+    }
+    if (
+      local.mode === "local"
+      || local.results.some(result => result.direct)
+    ) {
+      return selectLocal(ctx, local.results);
+    }
+    return step(
+      ctx,
+      local.results.map(result => result.operation),
+      0,
+    );
+  }
+
+  return selectByLlm(ctx);
+}
+
+async function selectByLlm(
   ctx: AgenticaContext,
 ): Promise<void> {
   if (ctx.operations.divided === undefined) {
@@ -95,6 +123,80 @@ export async function select(
       .forEach((e) => {
         void ctx.dispatch(e).catch(() => {});
       });
+  }
+}
+
+interface ILocalSelection {
+  mode: "local" | "hybrid";
+  results: AgenticaOperationSearchResult[];
+}
+
+function prepareLocalSelection(
+  ctx: AgenticaContext,
+): ILocalSelection | undefined {
+  const config: IAgenticaSelectorConfig | undefined = ctx.config?.selector;
+  const type: IAgenticaSelectorConfig["type"] = config?.type ?? "llm";
+  if (type === "llm" || type === "standard") {
+    return undefined;
+  }
+
+  const index: AgenticaOperationIndex = new AgenticaOperationIndex({
+    operations: ctx.operations.array,
+  });
+  if (
+    type === "auto"
+    && index.estimateSchemaCharacters()
+    < (config?.autoThresholdCharacters ?? AUTO_THRESHOLD_CHARACTERS)
+  ) {
+    return undefined;
+  }
+
+  const results: AgenticaOperationSearchResult[] = index.search(
+    getLocalSearchQuery(ctx),
+    {
+      topK: config?.topK,
+      minScore: config?.minScore,
+    },
+  );
+  if (results.length === 0 && (config?.fallback ?? "llm") === "llm") {
+    return undefined;
+  }
+
+  return {
+    mode: type === "local" ? "local" : "hybrid",
+    results,
+  };
+}
+
+function getLocalSearchQuery(ctx: AgenticaContext): string {
+  const previous: string[] = ctx.histories
+    .filter(history => history.type === "userMessage")
+    .slice(-3)
+    .flatMap(history => history.contents)
+    .filter(content => content.type === "text")
+    .map(content => content.text);
+  const prompt: string[] = ctx.prompt.contents
+    .filter(content => content.type === "text")
+    .map(content => content.text);
+  return [...previous, ...prompt].join("\n");
+}
+
+function selectLocal(
+  ctx: AgenticaContext,
+  results: AgenticaOperationSearchResult[],
+): void {
+  const selected: Set<string> = new Set(ctx.stack.map(s => s.operation.name));
+  for (const result of results) {
+    if (selected.has(result.operation.name)) {
+      continue;
+    }
+    selected.add(result.operation.name);
+    selectFunctionFromContext(ctx, {
+      name: result.operation.name,
+      reason: result.direct
+        ? result.reason
+        : `Local selector ${result.reason}.`,
+    });
   }
 }
 
@@ -287,7 +389,6 @@ async function step(
         // silently dropped by `selectFunctionFromContext`, so report it back
         // to the LLM as an `IValidation.IFailure`, just like a type error.
         const referenceErrors: IValidation.IError[] = validateFunctionExistence(
-          ctx,
           operations,
           validation.data,
         );
@@ -419,7 +520,6 @@ function emendMessages(failures: IFailure[]): OpenAI.ChatCompletionMessageParam[
  * list of valid function names in `expected`.
  */
 function validateFunctionExistence(
-  ctx: AgenticaContext,
   candidates: AgenticaOperation[],
   data: __IChatFunctionReference.IProps,
 ): IValidation.IError[] {
@@ -427,7 +527,7 @@ function validateFunctionExistence(
     .map(op => JSON.stringify(op.name))
     .join(" | ");
   return data.functions.flatMap((reference, i): IValidation.IError[] =>
-    ctx.operations.flat.has(reference.name)
+    candidates.some(candidate => candidate.name === reference.name)
       ? []
       : [{
           path: `$input.functions[${i}].name`,

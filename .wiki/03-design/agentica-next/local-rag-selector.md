@@ -6,11 +6,13 @@ Agentica의 기본 함수 선택은 DBMS, embedding provider, external vector st
 
 이 설계는 `Agentica` 전용이다. `MicroAgentica`는 적은 수의 operation을 그대로 모델에 제공하는 현재 역할을 유지한다.
 
+2026-05-24 구현 상태: `packages/core/src/selector/AgenticaOperationIndex.ts`와 `IAgenticaConfig.selector`가 추가되었다. 기본값은 기존 LLM selector이며, opt-in으로 `local`, `hybrid`, `auto` mode를 사용할 수 있다. 구현 세부는 [Local Selector 구현 현황](../../04-agentica/local-selector-implementation.md)에 둔다.
+
 ## Claude Code에서 배울 점
 
 Claude Code의 ToolSearch는 모든 tool schema를 처음부터 model context에 넣지 않는다. deferred tool은 이름만 알려주고, model이 필요할 때 검색 도구를 호출해 schema reference를 얻는다.
 
-Anthropic의 `tool_reference`를 OpenAI Chat Completions에 그대로 이식할 수는 없다. 대신 Agentica에서는 다음 방식으로 유사 효과를 낼 수 있다.
+Anthropic/Claude Code의 `tool_reference`를 OpenAI Chat Completions에 그대로 이식할 수는 없다. 2026-05-24 기준 OpenAI도 `tool_search`를 제공하지만 현재 공식 문서상 지원 모델과 API path가 제한적이다. 따라서 Agentica에서는 provider-native path가 없어도 다음 방식으로 유사 효과를 내야 한다.
 
 1. local operation index가 user request에서 top-K 후보를 찾는다.
 2. LLM에는 top-K operation의 요약만 보낸다.
@@ -47,6 +49,7 @@ Claude Code의 `tst`, `tst-auto`, `standard`를 Agentica에서는 provider-neutr
 ```typescript
 type AgenticaSelectorMode =
   | "standard" // 기존처럼 모든 operation schema를 inline projection
+  | "llm" // 현행 LLM selector와 같은 호환 모드
   | "local" // local lexical selector가 top-K 후보를 고름
   | "hybrid" // local recall + LLM precision/rerank
   | "auto"; // schema token estimate가 threshold 이상이면 local/hybrid 사용
@@ -176,14 +179,11 @@ provider native path를 추가하더라도 같은 `AgenticaDiscoveredOperationSt
 
 ```typescript
 interface IAgenticaSelectorConfig {
-  type?: "llm" | "local" | "hybrid" | "standard" | "auto";
+  type?: "llm" | "standard" | "local" | "hybrid" | "auto";
   topK?: number;
   minScore?: number;
-  rerank?: boolean;
-  autoThresholdPercent?: number;
-  alwaysLoad?: string[];
-  neverExpose?: string[];
-  providerNativeDeferred?: boolean;
+  fallback?: "llm" | "none";
+  autoThresholdCharacters?: number;
 }
 
 interface AgenticaOperationSearchResult {
@@ -216,6 +216,8 @@ interface AgenticaOperationIndexEntry {
 
 `hybrid` 모드에서는 local search가 recall을 책임지고, LLM은 precision과 ordering만 담당한다.
 
+구현된 1차 API는 위처럼 작게 시작했다. `alwaysLoad`, `neverExpose`, `providerNativeDeferred`, `autoThresholdPercent`는 context projector/provider adapter가 들어온 뒤 확장하는 편이 맞다. 지금 노출하면 실제 projection 정책 없이 타입만 앞서가게 된다.
+
 ## `@agentica/vector-selector` 처리
 
 단기적으로는 다음 중 하나가 좋다.
@@ -242,3 +244,25 @@ interface AgenticaOperationIndexEntry {
 - hallucinated function name은 selector 단계에서 validation failure로 재시도되어야 한다.
 - local selector 결과가 0개일 때 기존 LLM selector fallback이 가능해야 한다.
 - `MicroAgentica` path는 selector state/projection 없이 기존처럼 full schema direct path를 유지해야 한다.
+
+## 2026-05-24 구현 결과
+
+완료:
+
+- dependency-free `AgenticaOperationIndex`
+- `select:<operationKey>` direct selection
+- `+required` term filtering
+- field-weighted lexical scoring
+- `searchHint` 가중치
+- HTTP method/path/tag, parameter/schema 구조 순회
+- `IAgenticaConfig.selector` opt-in local/hybrid/auto mode
+- local no-match의 LLM fallback
+- deterministic unit test와 `tsc --noEmit`
+
+보류:
+
+- compact/resume의 discovered operation state 복원
+- provider-native OpenAI `tool_search` adapter
+- model context window 기반 auto threshold
+- benchmark package의 plain/local/hybrid 품질 비교
+- full schema projection과 render projection의 분리

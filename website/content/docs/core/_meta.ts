@@ -10,6 +10,7 @@ const meta: MetaRecord = {
     },
   },
   config: "Configurations",
+  selector: "Operation Selector",
   event: "Event Handling",
   history: "Prompt Histories",
   micro: "Micro Agent",

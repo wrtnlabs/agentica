@@ -2,6 +2,7 @@ export * from "./IAgenticaConfig";
 export * from "./IAgenticaController";
 export * from "./IAgenticaExecutor";
 export * from "./IAgenticaProps";
+export * from "./IAgenticaSelectorConfig";
 export * from "./IAgenticaSystemPrompt";
 export * from "./IAgenticaVendor";
 export * from "./IMicroAgenticaConfig";

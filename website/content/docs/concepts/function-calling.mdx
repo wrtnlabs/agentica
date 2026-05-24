@@ -9,8 +9,8 @@ And the LLM function calling means that, LLM (Large Language Model) selects prop
 
 `@agentica` is framework concentrating on such LLM function calling feature, and doing everything with it. Just by listing up candidate functions to `@agentica`, you can accomplish the Agentic AI. In here chapter, we will learn how `@agentica` accomplishes the idealistic LLM function calling with theoretical stories.
 
-- https://platform.openai.com/docs/guides/function-calling
-- https://platform.openai.com/docs/guides/structured-outputs
+- https://developers.openai.com/api/docs/guides/function-calling
+- https://developers.openai.com/api/docs/guides/structured-outputs
 
 
 
@@ -33,9 +33,9 @@ flowchart
   end
 ```
 
-Conversion of OpenAPI Specification to LLM Function Calling Scema.
+Conversion of OpenAPI Specification to LLM Function Calling Schema.
 
-LLM function calling needs JSON schema based function schema. However, service vendors of LLM (Large Language Model) are not using the same specified JSON schema. "OpenAI GPT" and "Anthropic Claude" are using different JSON schema speicification of LLM function calling, and Google Gemini is also different with them either.
+LLM function calling needs JSON schema based function schema. However, service vendors of LLM (Large Language Model) are not using the same specified JSON schema. "OpenAI GPT" and "Anthropic Claude" are using different JSON schema specifications for LLM function calling, and Google Gemini is also different.
 
 What's even more horrible is that Swagger/OpenAPI documents also use a different kind of JSON schema specification than the LLM function calling schema, and the specifications vary greatly between versions of Swagger/OpenAPI. 
 
@@ -87,7 +87,7 @@ Is LLM Function Calling perfect? No, absolutely not.
 
 LLM (Large Language Model) service vendor like OpenAI takes a lot of type level mistakes when composing the arguments of function calling or structured output. Even though target schema is super simple like `Array<string>` type, LLM often fills it just by a `string` typed value.
 
-In my experience, OpenAI `gpt-4o-mini` (`8b` parameters) is taking about 30% of type level mistakes when filling the arguments of function calling to Shopping Mall service. To overcome the imperfection of such LLM function calling, `@agentia` is using validation feedback strategy.
+In the shopping mall benchmark, smaller OpenAI models have historically produced many type-level mistakes when filling function-calling arguments. To overcome the imperfection of LLM function calling, `@agentica` uses validation feedback strategy.
 
 The key concept of validation feedback strategy is, let LLM function calling to construct invalid typed arguments first, and informing detailed type errors to the LLM, so that induce LLM to emend the wrong typed arguments at the next turn.
 
@@ -182,6 +182,8 @@ end
 
 When user says, `@agentica` delivers the conversation text to the `selector` agent, and let the `selector` agent to find (or cancel) candidate functions from the context. If the `selector` agent could not find any candidate function to call and there is not any candidate function previously selected either, the `selector` agent will work just like a plain ChatGPT.
 
-And `@agentica` enters to a loop statement until the candidate functions to be empty. In the loop statement, `caller` agent tries to LLM function calling by analyzing the user's conversation text. If context is enough to compose arguments of candidate functions, the `caller` agent actually calls the target functions, and let `decriber` agent to explain the function calling results. Otherwise the context is not enough to compose arguments, `caller` agent requests more information to user.
+And `@agentica` enters a loop until candidate functions are empty. In the loop, the `caller` agent tries LLM function calling by analyzing the user's conversation text. If the context is enough to compose arguments, the `caller` agent calls the target functions and lets the `describer` agent explain the results. Otherwise, the `caller` agent requests more information from the user.
 
 Such LLM (Large Language Model) function calling strategy separating `selector`, `caller`, and `describer` is the key logic of `@agentica`.
+
+In current `@agentica/core`, the selector phase can be configured with [`config.selector`](/docs/core/selector). The default `llm` mode preserves the full-catalog LLM selector. `local`, `hybrid`, and `auto` modes use `AgenticaOperationIndex` to reduce candidate operations before execution.
