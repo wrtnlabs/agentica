@@ -15,13 +15,17 @@ import type { AgenticaSystemMessageHistory } from "../histories/AgenticaSystemMe
 import type { AgenticaUserMessageHistory } from "../histories/AgenticaUserMessageHistory";
 import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 import type { IAgenticaHistoryJson } from "../json/IAgenticaHistoryJson";
+import type { IAgenticaResultBudgetConfig } from "../structures/IAgenticaContextConfig";
 
 import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
 
 /**
  * @internal
  */
-export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMessageParam[] {
+export function decodeHistory(
+  history: AgenticaHistory,
+  options: IAgenticaHistoryDecodeOptions = {},
+): OpenAI.ChatCompletionMessageParam[] {
   // NO NEED TO DECODE DESCRIBE
   if (history.type === "describe") {
     return [];
@@ -87,10 +91,20 @@ export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMe
           ...(history.operation.protocol === "http"
             ? {
                 status: (history.value as IHttpResponse).status,
-                data: (history.value as IHttpResponse).body,
+                data: projectResultValue({
+                  history,
+                  field: "data",
+                  value: (history.value as IHttpResponse).body,
+                  budget: options.resultBudget,
+                }),
               }
             : {
-                value: history.value,
+                value: projectResultValue({
+                  history,
+                  field: "value",
+                  value: history.value,
+                  budget: options.resultBudget,
+                }),
               }),
         }),
       },
@@ -127,6 +141,86 @@ export function decodeHistory(history: AgenticaHistory): OpenAI.ChatCompletionMe
 
   history satisfies never;
   throw new Error(`Unsupported history type, value: ${JSON.stringify(history)}`);
+}
+
+/**
+ * @internal
+ */
+export function decodeHistories(
+  histories: AgenticaHistory[],
+  options: IAgenticaHistoryDecodeOptions = {},
+): OpenAI.ChatCompletionMessageParam[] {
+  const preservedExecuteIds: Set<string> = new Set();
+  const preserveRecentResults: number = normalizePreserveRecentResults(
+    options.resultBudget?.preserveRecentResults,
+  );
+  if (preserveRecentResults !== 0) {
+    for (let i: number = histories.length - 1; i >= 0; --i) {
+      const history: AgenticaHistory = histories[i]!;
+      if (history.type !== "execute") {
+        continue;
+      }
+      preservedExecuteIds.add(history.id);
+      if (preservedExecuteIds.size >= preserveRecentResults) {
+        break;
+      }
+    }
+  }
+
+  return histories
+    .map(history =>
+      decodeHistory(history, preservedExecuteIds.has(history.id)
+        ? {
+            ...options,
+            resultBudget: undefined,
+          }
+        : options),
+    )
+    .flat();
+}
+
+/**
+ * @internal
+ */
+export interface IAgenticaHistoryDecodeOptions {
+  resultBudget?: IAgenticaResultBudgetConfig;
+}
+
+function projectResultValue(props: {
+  history: AgenticaExecuteHistory;
+  field: "data" | "value";
+  value: unknown;
+  budget?: IAgenticaResultBudgetConfig;
+}): unknown {
+  const max: number | undefined = props.budget?.maxResultCharacters;
+  if (max === undefined || Number.isFinite(max) === false || max < 0) {
+    return props.value;
+  }
+
+  const serialized: string = stringifyResultValue(props.value);
+  if (serialized.length <= max) {
+    return props.value;
+  }
+
+  return {
+    __agentica_result__: "truncated",
+    reference: `execute:${props.history.id}:${props.field}`,
+    operation: props.history.operation.name,
+    originalCharacters: serialized.length,
+    preview: serialized.slice(0, max),
+  };
+}
+
+function stringifyResultValue(value: unknown): string {
+  const json: string | undefined = JSON.stringify(value);
+  return json ?? String(value);
+}
+
+function normalizePreserveRecentResults(value: number | undefined): number {
+  if (value === undefined || Number.isFinite(value) === false || value <= 0) {
+    return 0;
+  }
+  return Math.floor(value);
 }
 
 /**

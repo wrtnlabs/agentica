@@ -7,8 +7,9 @@ import type { AgenticaExecuteHistory } from "../histories/AgenticaExecuteHistory
 
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
+import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { createDescribeEvent } from "../factory/events";
-import { decodeHistory } from "../factory/histories";
+import { decodeHistories, decodeHistory } from "../factory/histories";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
@@ -23,7 +24,11 @@ export async function describe(
   const result = await ctx.request("describe", {
     messages: [
       // FUNCTION CALLING HISTORIES
-      ...histories.map(decodeHistory).flat(),
+      ...(isAgenticaContext(ctx)
+        ? decodeHistories(histories, {
+            resultBudget: ctx.config?.context?.resultBudget,
+          })
+        : histories.map(history => decodeHistory(history)).flat()),
       // SYSTEM PROMPT
       {
         role: "system",

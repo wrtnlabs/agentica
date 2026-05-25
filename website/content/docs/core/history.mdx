@@ -14,7 +14,7 @@ import AgenticaOperationSnippet from "../../snippets/AgenticaOperationSnippet.md
   <code>IAgenticaHistoryJson</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {16, 21}
+```typescript filename="src/main.ts" showLineNumbers {15, 20}
 import {
   Agentica,
   AgenticaHistory,
@@ -25,16 +25,16 @@ import OpenAI from "openai";
 export const main = async (id: string): Promise<void> => {
   const agent = new Agentica({
     vendor: {
-      api: new OpenAI({ apiKey: "*****" }),
-      model: "gpt-4o-mini",
+      api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+      model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     },
     controllers: [...],
     histories: (await getHistories(id)) satisfies IAgenticaHistoryJson[],
   });
-  const prompts: AgenticaHistory[] = await agent.conversate(
+  const histories: AgenticaHistory[] = await agent.conversate(
     "I wanna buy MacBook Pro",
   );
-  await archiveHistories(id, prompts.map((p) => p.toJSON()));
+  await archiveHistories(id, histories.map((history) => history.toJSON()));
 };
 ```
   </Tabs.Tab>
@@ -46,43 +46,42 @@ export const main = async (id: string): Promise<void> => {
   </Tabs.Tab>
 </Tabs>
 
-You can start chatbot by creating `Agentica` instance, and calling its function `Agentica.conversate()`. When creating the `Agentica` instance, you have to specify the LLM (Large Language Model) service vendor, and lists of controller to serving for function calling.
+`Agentica.conversate()` returns the histories created during the turn. Store `history.toJSON()` results when you need to resume a session, then pass those JSON records to `IAgenticaProps.histories` when constructing the next `Agentica`.
 
-In the `Agentica.conversate()` function, [#Multi Agent Orchestration](/docs/concepts/function-calling/#orchestration-strategy) to the internal sub agents would be processed including function callings and executions. When the orchestration has been completed, the `Agentica.conversate()` function will return the list of newly created prompts.
-
-When you want to archive the conversation state of current agent, store the returned prompots to your database serializing them from `AgenticaHistory` type to JSON format's `IAgenticaHistoryJson` type. And then restore the conversation state by assigning the prompt histories to the `IAgenticaProps.histories` property when creating a new `Agentica` instance.
-
-For reference, loading and saving the prompt histories, it is possible to change its content or remove some of them for management purpose. For example, you can summarize some or all prompts to a single prompt to reduce the LLM token costs.
-
-If you're not considering the summarization, but just hope to remove some of the prompt histories, you can remove `AgenticaHistory.Select` and `AgenticaHistory.Execute` types. In that case, remained `AgenticaHistory.Describe` type will keep the context.
+Histories are also useful for trimming context. A common compacting strategy is to keep user/assistant/system messages and `describe` summaries, while removing old `select`, `cancel`, and `execute` histories after their results have already been described.
 
 
 
 
-## Text Prompt
+## Message Histories
 <Tabs items={[
   <code>src/main.ts</code>,
   <code>AgenticaHistory</code>,
-  <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {17}
+```typescript filename="src/main.ts" showLineNumbers {15-23}
 import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
   vendor: {
-    api: new OpenAI({ apiKey: "*****" }),
-    model: "gpt-4o-mini",
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [...],
 });
 
-const prompts: AgenticaHistory[] = await agent.conversate(
+const histories: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
-for (const p of prompts)
-  if (p.type === "text") console.log(p.role, p.text);
+for (const history of histories) {
+  if (history.type === "userMessage")
+    console.log(history.contents);
+  if (history.type === "assistantMessage")
+    console.log(history.text);
+  if (history.type === "systemMessage")
+    console.log(history.text);
+}
 ```
   </Tabs.Tab>
   <Tabs.Tab>
@@ -90,14 +89,12 @@ for (const p of prompts)
   </Tabs.Tab>
 </Tabs>
 
-Text conversation history.
-
-`AgenticaHistory.Text` is a type of history that represents the text conversation between the user and the agent. And it is separated by the role of the speaker, which is either `user` or `agent`.
+`userMessage` stores user input contents. `assistantMessage` stores ordinary assistant text. `systemMessage` stores system text that was inserted into the conversation history.
 
 
 
 
-## Select Prompt
+## Select and Cancel Histories
 <Tabs items={[
   <code>src/main.ts</code>,
   <code>AgenticaHistory</code>,
@@ -105,29 +102,31 @@ Text conversation history.
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers {17}
+```typescript filename="src/main.ts" showLineNumbers {15-27}
 import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
   vendor: {
-    api: new OpenAI({ apiKey: "*****" }),
-    model: "gpt-4o-mini",
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [...],
 });
 
-const prompts: AgenticaHistory[] = await agent.conversate(
+const histories: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
-for (const p of prompts)
-  if (p.type === "select")
-    for (const selection of p.selections) 
-      console.log(
-        "select",
-        selection.operation.name,
-        selection.reason,
-      );
+for (const history of histories) {
+  if (history.type === "select")
+    console.log(
+      "select",
+      history.selection.operation.name,
+      history.selection.reason,
+    );
+  if (history.type === "cancel")
+    console.log("cancel", history.selection.operation.name);
+}
 ```
   </Tabs.Tab>
   <Tabs.Tab>
@@ -141,17 +140,12 @@ for (const p of prompts)
   </Tabs.Tab>
 </Tabs>
 
-Selection history of the candidate functions.
-
-`AgenticaHistory.Select` is a type of history that represents the selection of the candidate functions to call with detailed reasons.
-
-For reference, as the selection is sometimes done by grouping several functions together, if `AgenticaHistory.Select.selections` has more than one element, it means that the selection to multiple functions are made by just one conversation step.
-
-Also, if you want to reduce the number of prompt histories to reduce the LLM token costs, this `AgenticaHistory.Select` type can be the elimination target with `AgenticaHistory.Execute` type. Instead, you have to keep the `AgenticaHistory.Describe` type to remain the context.
+`select` records one selected candidate operation. `cancel` records a selected operation that the orchestration cancelled before execution. Both histories include the same `selection` shape used by the `select` and `cancel` events.
 
 
 
-## Execute Prompt
+
+## Execute History
 <Tabs items={[
   <code>src/main.ts</code>,
   <code>AgenticaHistory</code>,
@@ -159,27 +153,29 @@ Also, if you want to reduce the number of prompt histories to reduce the LLM tok
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers
+```typescript filename="src/main.ts" showLineNumbers {15-25}
 import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
   vendor: {
-    api: new OpenAI({ apiKey: "*****" }),
-    model: "gpt-4o-mini",
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [...],
 });
-const prompts: AgenticaHistory[] = await agent.conversate(
+
+const histories: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
-for (const p of prompts)
-  if (p.type === "execute")
+for (const history of histories)
+  if (history.type === "execute")
     console.log(
-      "execute",
-      p.operation.name,
-      p.arguments,
-      p.value,
+      history.protocol,
+      history.operation.name,
+      history.arguments,
+      history.success,
+      history.value,
     );
 ```
   </Tabs.Tab>
@@ -194,16 +190,12 @@ for (const p of prompts)
   </Tabs.Tab>
 </Tabs>
 
-Execution history of the function call.
-
-`AgenticaHistory.Execute` is a type of history that represents the execution of the function call with its arguments composed by LLM function calling, and return value by the execution. If a target function comes from an HTTP controller, the return value also contains the status and headers of the HTTP response.
-
-For reference, this `AgenticaHistory.Execute` often becomes the elimination target with `AgenticaHistory.Select` when you want to reduce the number of prompt histories to reduce the LLM token costs. It is okay to eliminating `AgenticaHistory.Execute` and `AgenticaHistory.Select` types from the prompt histories, but you have to keep the `AgenticaHistory.Describe` type to remain the context.
+`execute` records a function execution. For class controllers, `value` is the function return value. For HTTP controllers, `value` is the HTTP response object.
 
 
 
 
-## Describe Prompt
+## Describe History
 <Tabs items={[
   <code>src/main.ts</code>,
   <code>AgenticaHistory</code>,
@@ -211,26 +203,26 @@ For reference, this `AgenticaHistory.Execute` often becomes the elimination targ
   <code>AgenticaOperation</code>,
 ]}>
   <Tabs.Tab>
-```typescript filename="src/main.ts" showLineNumbers
+```typescript filename="src/main.ts" showLineNumbers {15-23}
 import { Agentica, AgenticaHistory } from "@agentica/core";
 import OpenAI from "openai";
 
 const agent = new Agentica({
   vendor: {
-    api: new OpenAI({ apiKey: "*****" }),
-    model: "gpt-4o-mini",
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [...],
 });
-const prompts: AgenticaHistory[] = await agent.conversate(
+
+const histories: AgenticaHistory[] = await agent.conversate(
   "I wanna buy MacBook Pro",
 );
-for (const p of prompts)
-  if (p.type === "describe")
+for (const history of histories)
+  if (history.type === "describe")
     console.log(
-      "describe",
-      p.executes.map((e) => e.operation.name),
-      p.text,
+      history.executes.map((execute) => execute.operation.name),
+      history.text,
     );
 ```
   </Tabs.Tab>
@@ -245,8 +237,4 @@ for (const p of prompts)
   </Tabs.Tab>
 </Tabs>
 
-Description history of function calling results.
-
-`AgenticaHistory.Describe` is a type of history that represents the description of the function calling results. It contains the list of target function execution prompts, and the text description about the results.
-
-If you want to reduce the LLM token costs, make `AgenticaHistory.Describe.text` to be shorter by configuring system prompt of the describe agent, or summarize `AgenticaHistory.Text` and `AgenticaHistory.Describe` types to a single prompt after eliminating the `AgenticaHistory.Select` and `AgenticaHistory.Execute` types.
+`describe` records the assistant explanation of execution results. It links back to the `execute` histories through `executes`, so it is the safest history to keep when you compact older function-call detail.

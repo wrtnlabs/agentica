@@ -1,0 +1,122 @@
+---
+title: Agentica > Guide Documents > Core Library > Operation Selector
+---
+import { Tabs } from "nextra/components";
+
+import RemoteSource from "../../../components/RemoteSource";
+
+## Operation Selector
+
+Agentica has a selector phase before function execution. The selector narrows a controller catalog into candidate operations, then the caller phase composes arguments and executes the selected functions.
+
+By default, Agentica keeps the existing LLM selector behavior. The new `config.selector` field lets you switch to a dependency-free local operation index, a hybrid local-plus-LLM selector, or an automatic threshold mode.
+
+<Tabs items={[
+  <code>src/main.ts</code>,
+  <code>IAgenticaSelectorConfig</code>,
+  <code>AgenticaOperationIndex</code>,
+]}>
+  <Tabs.Tab>
+```typescript filename="src/main.ts" showLineNumbers {10-16}
+import { Agentica } from "@agentica/core";
+import OpenAI from "openai";
+
+const agent = new Agentica({
+  vendor: {
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+  },
+  controllers: [...],
+  config: {
+    selector: {
+      type: "auto",
+      topK: 12,
+      fallback: "llm",
+    },
+  },
+});
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/structures/IAgenticaSelectorConfig.ts"
+      filename="@agentica/core/IAgenticaSelectorConfig"
+      showLineNumbers />
+  </Tabs.Tab>
+  <Tabs.Tab>
+    <RemoteSource
+      url="https://raw.githubusercontent.com/wrtnlabs/agentica/refs/heads/main/packages/core/src/selector/AgenticaOperationIndex.ts"
+      filename="@agentica/core/AgenticaOperationIndex"
+      showLineNumbers />
+  </Tabs.Tab>
+</Tabs>
+
+
+
+
+## Modes
+
+`type` accepts five values:
+
+- `llm`: the default full-catalog LLM selector.
+- `standard`: alias of `llm`.
+- `local`: local lexical search only.
+- `hybrid`: local lexical search first, then LLM selection within the retrieved candidate list.
+- `auto`: `llm` below `autoThresholdCharacters`, `hybrid` above it.
+
+`topK` controls how many local matches are projected. The default is `12`.
+
+`minScore` filters weak local matches. The default is `0`.
+
+`fallback` controls what happens when local search finds no candidates. `llm` falls back to the standard selector, while `none` returns no selection.
+
+`autoThresholdCharacters` controls the `auto` mode schema-size threshold. The default is `24_000` estimated characters.
+
+
+
+
+## Local Index
+
+The local selector builds an `AgenticaOperationIndex` from the current operation catalog. It scores:
+
+- operation and function names
+- controller names
+- descriptions
+- parameter and schema text
+- HTTP method, path, and tags
+- protocol
+- optional `searchHint` metadata
+
+Search syntax also supports:
+
+- `+term`: require a term to match.
+- `select:<operationKey>`: directly select one operation.
+- `select:keyA,keyB`: directly select multiple operations in query order.
+
+Direct selection is mainly useful for tests, scripted routing, and expert tools that already know Agentica operation keys.
+
+
+
+
+## Choosing a Mode
+
+Use `llm` for small catalogs where the full schema fits comfortably in the model context.
+
+Use `hybrid` for large catalogs where the LLM should still make the final semantic choice, but only after the local index reduces token pressure.
+
+Use `auto` when the same code path handles both small and large controller sets.
+
+Use `local` when operation names, descriptions, and parameter names are strong enough to trust deterministic lexical retrieval.
+
+For semantic retrieval beyond lexical matching, use [`@agentica/vector-selector`](/docs/plugins/vector-selector). That plugin uses an embedding strategy and external storage, while the built-in selector uses no extra service or database.
+
+
+
+
+## Reference Notes
+
+OpenAI currently documents two relevant ideas separately: model-native function calling and hosted tool search. Agentica's built-in selector is independent of those hosted retrieval APIs; it runs locally before the OpenAI-compatible chat completion request. See OpenAI's official references for the vendor-side concepts:
+
+- [OpenAI Function Calling](https://developers.openai.com/api/docs/guides/function-calling)
+- [OpenAI Tool Search](https://developers.openai.com/api/docs/guides/tools-tool-search)
+- [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)

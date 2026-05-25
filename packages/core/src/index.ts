@@ -10,6 +10,7 @@ export * from "./histories";
 export * from "./json";
 export * from "./MicroAgentica";
 export * as orchestrate from "./orchestrate";
+export * from "./selector";
 export * from "./structures";
 
 export * as utils from "./utils";

@@ -14,6 +14,7 @@ import type { AgenticaAssistantMessageEvent, AgenticaValidateEvent } from "../ev
 import type { AgenticaCallEvent } from "../events/AgenticaCallEvent";
 import type { AgenticaExecuteEvent } from "../events/AgenticaExecuteEvent";
 import type { AgenticaJsonParseErrorEvent } from "../events/AgenticaJsonParseErrorEvent";
+import type { AgenticaHistory } from "../histories/AgenticaHistory";
 import type { AgenticaCallReasoningPayload } from "../histories/contents/AgenticaCallReasoningPayload";
 import type { MicroAgenticaHistory } from "../histories/MicroAgenticaHistory";
 
@@ -24,7 +25,7 @@ import { isAgenticaContext } from "../context/internal/isAgenticaContext";
 import { AgenticaJsonParseError } from "../errors/AgenticaJsonParseError";
 import { AgenticaValidationError } from "../errors/AgenticaValidationError";
 import { createAssistantMessageEvent, createCallEvent, createExecuteEvent, createJsonParseErrorEvent, createValidateEvent } from "../factory/events";
-import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { decodeHistories, decodeHistory, decodeUserMessageContent } from "../factory/histories";
 import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
 import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
@@ -52,7 +53,7 @@ export async function call(
     const result = await ctx.request("call", {
       messages: [
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodeHistory).flat(),
+        ...decodeContextHistories(ctx),
         // USER INPUT
         {
           role: "user",
@@ -375,7 +376,7 @@ async function correctError(
   const result = await ctx.request("call", {
     messages: [
       // PREVIOUS HISTORIES
-      ...ctx.histories.map(decodeHistory).flat(),
+      ...decodeContextHistories(ctx),
       // USER INPUT
       {
         role: "user",
@@ -563,4 +564,17 @@ async function executeMcpOperation(
     name: operation.function.name,
     arguments: call.arguments,
   }).then(v => v.content);
+}
+
+function decodeContextHistories(
+  ctx: AgenticaContext | MicroAgenticaContext,
+): OpenAI.ChatCompletionMessageParam[] {
+  if (isAgenticaContext(ctx)) {
+    return decodeHistories(ctx.histories, {
+      resultBudget: ctx.config?.context?.resultBudget,
+    });
+  }
+  return ctx.histories
+    .map(history => decodeHistory(history as AgenticaHistory))
+    .flat();
 }

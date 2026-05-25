@@ -29,7 +29,7 @@ export const main = async (id: string): Promise<void> => {
   const agent: MicroAgentica = new MicroAgentica({
     vendor: {
       api: new OpenAI({ apiKey: "********" }),
-      model: "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     },
     controllers: [
       {
@@ -43,7 +43,7 @@ export const main = async (id: string): Promise<void> => {
   });
 
   // EVENT HANDLING
-  agent.on("text", async (event) => {
+  agent.on("assistantMessage", async (event) => {
     for await (const piece of event.stream)
       console.log(piece);
   });
@@ -88,9 +88,9 @@ export const main = async (id: string): Promise<void> => {
 
 Micro AI chatbot.
 
-`MicroAgentica` is a facade class of micro AI agent, which is a lightweight version of `Agentica` that is suitable for small-scale applications. Its [#Orchestration](/docs/concepts/function-calling/#orchestration-strategy) does not have `selector` agent, but has only `caller` and `describer` agents. `MicroAgentica` directly list up every functions to the `caller` agent.
+`MicroAgentica` is a facade class of micro AI agent, which is a lightweight version of `Agentica` that is suitable for small-scale applications. Its [#Orchestration](/docs/concepts/function-calling/#orchestration-strategy) does not have a selector phase, but has the caller and describer phases. `MicroAgentica` directly lists every function to the caller.
 
-If your number of functions is less than 8, `MicroAgentica` is recommended. As there's no [selector agent](/docs/concepts/function-calling/#orchestration-strategy), `MicroAgentica` is faster than `Agentica`. In contrary, if your number of functions is more than 8, `Agentica` is recommended. Note that, if number of functions is more than 8, AI agent tends to be confused and the function calling performance is lowered.
+If your number of functions is less than 8, `MicroAgentica` is recommended. As there is no [selector phase](/docs/concepts/function-calling/#orchestration-strategy), `MicroAgentica` is faster than `Agentica`. If your catalog is larger, use `Agentica` with [`config.selector`](/docs/core/selector), because the caller model tends to lose accuracy when every function is listed at once.
 
 
 
@@ -119,7 +119,7 @@ import { BbsArticleService } from "./services/BbsArticleService";
 
 const agent: MicroAgentica = new MicroAgentica({
   vendor: {
-    model: "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     api: new OpenAI({
       apiKey: "********",
     }),
@@ -231,13 +231,12 @@ import OpenAI from "openai";
 const agent = new MicroAgentica({
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
-    model: "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [...],
 });
 
-agent.on("text", async (event) => {
-  console.log("Text from", event.role);
+agent.on("assistantMessage", async (event) => {
   for await (const text of event.stream)
     process.stdout.write(text);
   process.stdout.write("\n");
@@ -273,7 +272,7 @@ await agent.conversate("I wanna buy Surface Pro");
   </Tabs.Tab>
 </Tabs>
 
-As `MicroAgentica` does not have `selector` agent, its event types are also narrower than `Agentica`.
+As `MicroAgentica` does not have a selector phase, its event types are narrower than `Agentica`. It emits `userMessage`, `assistantMessage`, `call`, `execute`, `describe`, `request`, `response`, `validate`, and `jsonParseError`.
 
 
 
@@ -296,7 +295,7 @@ export const main = async (id: string): Promise<void> => {
   const agent = new MicroAgentica({
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
-      model: "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     },
     controllers: [...],
     histories: (await getHistories(id)) satisfies IMicroAgenticaHistoryJson[],
@@ -337,13 +336,14 @@ import {
   MicroAgentica,
   MicroAgenticaHistory,
 } from "@agentica/core";
+import OpenAI from "openai";
 import typia from "typia";
 
 export const main = async (id: string): Promise<void> => {
   const agent = new MicroAgentica({
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
-      model: "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     },
     controllers: [...],
     histories: (await getHistories(id)) satisfies IMicroAgenticaHistoryJson[],
@@ -394,7 +394,7 @@ import OpenAI from "openai";
 const agent = new MicroAgentica({
   vendor: {
     api: new OpenAI({ apiKey: "********" }),
-    model: "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
   controllers: [...],
   config: {

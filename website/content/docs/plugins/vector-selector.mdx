@@ -3,19 +3,14 @@ title: Agentica > Guide Documents > Plugin Modules > Vector Selector
 ---
 import { Tabs } from "nextra/components";
 
-# Vector Selector
+## Vector Selector
 
-## Introduction
+`@agentica/vector-selector` is an optional selector plugin for large controller catalogs. It embeds operation descriptions, searches semantically relevant tools, then runs Agentica's selection prompt against that reduced candidate list.
 
-The Vector Selector is a powerful tool designed to optimize function selection in Agentica by significantly reducing token consumption. By leveraging Vector Semantic Search technology, it embeds text into a high-dimensional vector space, enabling efficient semantic similarity-based searches.
+Use the built-in [`config.selector`](/docs/core/selector) first when lexical local search is enough. Use this plugin when semantic retrieval and persistent embeddings are worth the extra infrastructure.
 
-Key benefits (based on 100 trials from [vector-selector-benchmark](https://github.com/wrtnlabs/agentica/tree/main/benchmark/vector-selector-benchmark)):
-- **Token Efficiency**: Reduces token consumption by approximately 70% compared to plain function calling (2.9M → 0.9M tokens)
-- **Improved Accuracy**: Increases success rate from 75% to 91-93% compared to plain function calling
-- **Performance**: 
-  - PostgreSQL: ~19.4s average response time
-  - SQLite: ~14.3s average response time (faster than PostgreSQL)
-  - Both options are slightly slower than plain function calling (~10s) but provide better accuracy and token efficiency
+
+
 
 ## Installation
 
@@ -23,251 +18,186 @@ Key benefits (based on 100 trials from [vector-selector-benchmark](https://githu
 npm install @agentica/vector-selector
 ```
 
+SQLite mode also needs:
+
+```bash copy
+npm install better-sqlite3
+```
+
+
+
+
 ## Usage
 
-Simply replace the existing `executor.select` with the `selectorExecute` function.
+The vector selector replaces `executor.select`. This is lower-level than `config.selector` because the plugin owns the selection step.
 
-```typescript copy
+<Tabs items={["SQLite", "PostgreSQL", "Custom Strategy"]}>
+  <Tabs.Tab>
+```typescript filename="src/main.sqlite.ts" showLineNumbers {4-5, 13-23}
 import { Agentica } from "@agentica/core";
-import { AgenticaVectorSelector } from "@agentica/vector-selector";
-import typia from "typia";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+import { configureSqliteStrategy } from "@agentica/vector-selector/strategy";
+import Database from "better-sqlite3";
+import OpenAI from "openai";
 
-// Initialize the vector selector
-const selectorExecute = AgenticaVectorSelector.boot({
-  // Configuration options
+const selectorExecute = BootAgenticaVectorSelector({
+  strategy: configureSqliteStrategy({
+    db: new Database("agentica-vector-selector.sqlite"),
+    cohereApiKey: process.env.COHERE_API_KEY!,
+  }),
 });
 
 const agent = new Agentica({
   vendor: {
-    model: "gpt-4o-mini",
-    api: new OpenAI({
-      apiKey: process.env.CHATGPT_API_KEY,
-    }),
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   },
-  controllers: [
-    await fetch(
-      "https://shopping-be.wrtn.ai/editor/swagger.json",
-    ).then(r => r.json()),
-    typia.llm.application<ShoppingCounselor>(),
-    typia.llm.application<ShoppingPolicy>(),
-    typia.llm.application<ShoppingSearchRag>(),
-  ],
+  controllers: [...],
   config: {
     executor: {
-      select: selectorExecute, // Replace the existing selector
-    }
-  }
+      select: selectorExecute,
+    },
+  },
 });
+
 await agent.conversate("I wanna buy MacBook Pro");
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.postgres.ts" showLineNumbers {3-4, 7-11, 21-25}
+import { Agentica } from "@agentica/core";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
+import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
+import OpenAI from "openai";
 
-## Setup
+const connectorHiveUrl = process.env.CONNECTOR_HIVE_URL!;
+if (!(await fetch(`${connectorHiveUrl}/health`).catch(() => ({ ok: false }))).ok)
+  throw new Error("Connector Hive is not running");
 
-### Basic Setup
-
-For basic usage, you can initialize the vector selector with minimal configuration:
-
-```typescript copy
-const selectorExecute = AgenticaVectorSelector.boot({
-  // Basic configuration options
+const selectorExecute = BootAgenticaVectorSelector({
+  strategy: configurePostgresStrategy({
+    host: connectorHiveUrl,
+  }),
 });
+
+const agent = new Agentica({
+  vendor: {
+    api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
+  },
+  controllers: [...],
+  config: {
+    executor: {
+      select: selectorExecute,
+    },
+  },
+});
+
+await agent.conversate("I wanna buy MacBook Pro");
 ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```typescript filename="src/main.custom.ts" showLineNumbers {4-21, 23-27}
+import type { AgenticaContext } from "@agentica/core";
+import type { IAgenticaVectorSelectorStrategy } from "@agentica/vector-selector";
 
-### Advanced Setup
+import { Agentica } from "@agentica/core";
+import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
 
-For more advanced use cases, you can configure additional options:
-
-```typescript copy
-const selectorExecute = AgenticaVectorSelector.boot({
-  // Advanced configuration options
-  experimental: {
-    select_prompt: "Custom prompt for function selection",
-    // Additional experimental features
+class CustomStrategy implements IAgenticaVectorSelectorStrategy {
+  async searchTool(
+    ctx: AgenticaContext,
+    query: string,
+  ): Promise<Array<{ name: string; description: string | undefined }>> {
+    return searchYourVectorStore(ctx, query);
   }
+
+  async embedContext(props: {
+    ctx: AgenticaContext;
+    setEmbedded: () => void;
+  }): Promise<void> {
+    await embedYourOperationCatalog(props.ctx);
+    props.setEmbedded();
+  }
+}
+
+const selectorExecute = BootAgenticaVectorSelector({
+  strategy: new CustomStrategy(),
+});
+
+const agent = new Agentica({
+  vendor: ...,
+  controllers: [...],
+  config: {
+    executor: {
+      select: selectorExecute,
+    },
+  },
 });
 ```
-
-### Vector Store Setup
-
-<Tabs items={["PostgreSQL", "SQLite", "Custom"]}>
-  <Tabs.Tab>
-    To use PostgreSQL with vector extension for enhanced performance, you'll need to set up both PostgreSQL and the connector-hive server:
-
-    1. First, set up PostgreSQL with vector extension:
-
-    ```bash copy
-    docker run -d \
-      --name postgres-vector \
-      -e POSTGRES_USER=your_user \
-      -e POSTGRES_PASSWORD=your_password \
-      -e POSTGRES_DB=your_database \
-      -p 5432:5432 \
-      pgvector/pgvector
-    ```
-
-    2. Set up the environment variables for connector-hive:
-
-    ```env copy
-    PROJECT_API_PORT=37001
-    DATABASE_URL=postgresql://your_user:your_password@host.docker.internal:5432/your_database
-    COHERE_API_KEY=your_cohere_api_key
-    API_KEY=your_optional_api_key  # Optional: If set, all requests except GET /health must include this key
-    ```
-
-    3. Run the connector-hive server:
-
-    ```bash copy
-    docker pull ghcr.io/wrtnlabs/connector-hive:latest && \
-    docker run -d \
-      --name connector-hive \
-      --env-file .env \
-      -p 37001:37001 \
-      ghcr.io/wrtnlabs/connector-hive:latest
-    ```
-
-    4. Configure the vector selector with PostgreSQL:
-
-    ```typescript copy
-    import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
-    import { configurePostgresStrategy } from "@agentica/vector-selector/strategy";
-
-    // Check if connector-hive is running
-    if (!(await fetch(`${connectorHiveUrl}/health`).catch(() => ({ ok: false }))).ok) {
-      throw new Error("Connector Hive is not running");
-    }
-
-    const selectorExecute = BootAgenticaVectorSelector({
-      strategy: configurePostgresStrategy({
-        host: connectorHiveUrl,
-      }),
-    });
-
-    const agent = new Agentica({
-      // ... other configurations
-      config: {
-        executor: {
-          select: selectorExecute,
-        }
-      }
-    });
-    ```
-  </Tabs.Tab>
-  <Tabs.Tab>
-    For a lightweight alternative, you can use SQLite with vector support:
-
-    1. Install the required dependencies:
-
-    ```bash copy
-    npm install better-sqlite3
-    ```
-
-    2. Configure the vector selector with SQLite:
-
-    ```typescript copy
-    import { BootAgenticaVectorSelector } from "@agentica/vector-selector";
-    import { configureSqliteStrategy } from "@agentica/vector-selector/strategy";
-    import Database from "better-sqlite3";
-
-    // Initialize SQLite database
-    const db = new Database("vector-store.sqlite");
-
-    const selectorExecute = BootAgenticaVectorSelector({
-      strategy: configureSqliteStrategy({
-        db: db,
-        cohereApiKey: process.env.COHERE_API_KEY,
-      }),
-    });
-
-    const agent = new Agentica({
-      // ... other configurations
-      config: {
-        executor: {
-          select: selectorExecute,
-        }
-      }
-    });
-
-    // Optional: Warm up the vector selector
-    const ctxForWarming = agent.getContext({
-      prompt: {
-        role: "user",
-        text: "warming",
-        type: "text",
-        toJSON: () => ({
-          role: "user",
-          text: "warming",
-          type: "text",
-        }),
-      },
-      usage: AgenticaTokenUsage.zero(),
-    });
-    await selectorExecute(ctxForWarming);
-    ```
-  </Tabs.Tab>
-  <Tabs.Tab>
-    You can implement your own vector selector strategy by implementing the `IAgenticaVectorSelectorStrategy` interface:
-
-    ```typescript copy
-    import { IAgenticaVectorSelectorStrategy } from "@agentica/vector-selector";
-    import type { AgenticaContext } from "@agentica/core";
-
-    class CustomVectorSelector implements IAgenticaVectorSelectorStrategy {
-      async searchTool(
-        ctx: AgenticaContext,
-        query: string
-      ): Promise<{
-        name: string;
-        description: string | undefined;
-      }[]> {
-        // Implement your custom tool search logic here
-        // This should return a list of tools that match the query
-        return [];
-      }
-
-      async embedContext(props: {
-        ctx: AgenticaContext;
-        setEmbedded: () => void;
-      }): Promise<void> {
-        // Implement your custom context embedding logic here
-        // This is called when the context needs to be embedded into vector space
-      }
-    }
-
-    // Use your custom strategy
-    const selectorExecute = BootAgenticaVectorSelector({
-      strategy: new CustomVectorSelector(),
-    });
-
-    const agent = new Agentica({
-      // ... other configurations
-      config: {
-        executor: {
-          select: selectorExecute,
-        }
-      }
-    });
-    ```
-
-    The `IAgenticaVectorSelectorStrategy` interface requires two methods:
-
-    1. `searchTool`: Searches for tools based on a query string
-       - Takes a context and query string as input
-       - Returns a promise of tool list with name and description
-
-    2. `embedContext`: Embeds the context into vector space
-       - Takes context and a callback to mark context as embedded
-       - Returns a promise that resolves when embedding is complete
-
-    You can implement these methods to use any vector database or search engine of your choice.
   </Tabs.Tab>
 </Tabs>
 
+
+
+
 ## How It Works
 
-The Vector Selector operates through the following process:
+`BootAgenticaVectorSelector()` returns an `IAgenticaExecutor.select` function. On the first matching context, it asks the strategy to embed the operation catalog. For each user turn it:
 
-1. Converts input text into high-dimensional vectors
-2. Performs semantic similarity search in the vector space
-3. Selects and executes the most appropriate function based on similarity scores
+1. extracts search queries from the conversation,
+2. calls `strategy.searchTool(ctx, query)` for each query,
+3. removes duplicate tool names,
+4. asks the selector prompt to choose functions from the retrieved tool list.
+
+The plugin supports HTTP and class controllers through Agentica operations. HTTP operations include method, path, and tags in the reduced tool list when available.
 
 
+
+
+## Strategies
+
+### SQLite
+
+`configureSqliteStrategy()` stores embeddings locally with `better-sqlite3` and `sqlite-vec`. It currently uses Cohere `embed-multilingual-light-v3.0`, so it requires `COHERE_API_KEY`.
+
+Use SQLite for local development, small deployments, and benchmark runs where a single process owns the embedding database.
+
+### PostgreSQL
+
+`configurePostgresStrategy()` talks to Connector Hive and its retrieval API. The common local setup is:
+
+```bash copy
+docker run -d \
+  --name postgres-vector \
+  -e POSTGRES_USER=agentica \
+  -e POSTGRES_PASSWORD=agentica \
+  -e POSTGRES_DB=agentica \
+  -p 5432:5432 \
+  pgvector/pgvector
+```
+
+Then run Connector Hive with `DATABASE_URL`, `COHERE_API_KEY`, and optional API-key settings as required by that service.
+
+Use PostgreSQL when you need a shared retrieval service or a deployment topology where multiple Agentica processes share the same operation embedding store.
+
+### Custom
+
+Implement `IAgenticaVectorSelectorStrategy` when you already have an embedding pipeline or want to use another vector database. The contract is intentionally small:
+
+- `embedContext`: index the current operation catalog and call `setEmbedded()` when done.
+- `searchTool`: return matching tool names and optional descriptions for a query.
+
+
+
+
+## Built-In Selector vs Vector Selector
+
+The built-in selector in `@agentica/core` is dependency-free and runs locally. It is usually the first choice because it needs no embedding model, database, or warm-up step.
+
+The vector selector can outperform lexical search when operation names are weak, user wording differs from API wording, or you need semantic retrieval over a very large catalog. It costs extra setup and an embedding provider call path.
+
+OpenAI also documents hosted tool search and vector-store-oriented workflows. Agentica's vector selector is not a wrapper around those hosted APIs today; it is an Agentica executor plugin with SQLite/PostgreSQL/custom strategy hooks. See:
+
+- [OpenAI Tool Search](https://developers.openai.com/api/docs/guides/tools-tool-search)
+- [OpenAI Function Calling](https://developers.openai.com/api/docs/guides/function-calling)

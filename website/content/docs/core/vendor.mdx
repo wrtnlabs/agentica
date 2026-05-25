@@ -32,7 +32,7 @@ import OpenApiDiagramSnippet from "../../snippets/OpenApiDiagramSnippet.mdx";
 
 When creating `Agentica` instance, you can specify the LLM service vendor.
 
-`Agentica` is utilizing OpenAI SDK (`npm i openai`) for LLM (Large Language Model) service interaction. However, it does not mean you can use only the OpenAPI's GTP models. The OpenAI SDK is just a connection tool to the LLM vendor's API, and as the most of modern LLMs are following the OpenAI's API design, you can use other LLM vendors like Claude, DeepSeek, and so on.
+`Agentica` is utilizing OpenAI SDK (`npm i openai`) for LLM (Large Language Model) service interaction. However, it does not mean you can use only OpenAI GPT models. The OpenAI SDK is just a connection tool to the LLM vendor's API, and as most modern LLM vendors provide OpenAI-compatible APIs, you can use other vendors like Claude, DeepSeek, and so on.
 
 In that case, configure `IAgenticaVendor.api.baseURL` and `IAgenticaVendor.model` properties to the LLM vendor's API endpoint and model name. For example, if you want to use Meta Llama instead of OpenAI GPT, you can do it like below.
 
@@ -168,7 +168,7 @@ import typia from "typia";
 
 OpenAI has its own JSON schema model different from the standard JSON schema specification.
 
-OpenAI's JSON schema model is based on JSON schema 2020-12 draft (OpenAPI v3.1 is following), but it has banned some constraint properties like `IJsonSchema.IString.format` and `IJsonSchema.IInteger.minimum`. In detailly, these specifications are not supported in the OpenAI's JSON schema model `IChatGptSchema`.
+OpenAI's JSON schema model is based on JSON schema 2020-12 draft (OpenAPI v3.1 is following), but some constraint properties like `IJsonSchema.IString.format` and `IJsonSchema.IInteger.minimum` are not supported in the OpenAI schema model `IChatGptSchema`.
 
   - `IJsonSchema.INumber.minimum`
   - `IJsonSchema.INumber.maximum`

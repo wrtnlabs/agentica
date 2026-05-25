@@ -13,22 +13,22 @@ import { YoutubeRenderer } from "../../../components/YoutubeRenderer";
 ## `@agentica/core`
 The simplest **Agentic AI** library, specialized in **LLM Function Calling**.
 
-`@agentica/core` is an agent library utilizing LLM function calling feature, provided from Swagger/OpenAPI document and TypeScript class functions, enhanced by compiler and validation feedback strategy. 
+`@agentica/core` is an agent library utilizing LLM function calling features, provided from Swagger/OpenAPI documents, MCP servers, and TypeScript class functions, enhanced by compiler and validation feedback strategy.
 
-With these strategies, you can build Agentic AI chatbot only with Swagger documents or TypeScript class types. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica/core`. Only by listing up functions, `@agentica/core` will do everything with the function calling.
+With these strategies, you can build an Agentic AI chatbot with Swagger/OpenAPI documents, MCP servers, or TypeScript class types. Complex agent workflows and graphs required in conventional AI agent development are not necessary in `@agentica/core`. Only by listing up functions, `@agentica/core` will do everything with the function calling.
 
 Look at the below demonstration, and feel how `@agentica/core` is easy and powerful. You can let users to search and purchase products only with conversation texts. The backend API and TypeScript class functions would be adequately called in the AI chatbot with LLM function calling.
 
 ```typescript filename="src/main.ts" showLineNumbers {15-22, 33-34, 40-41, 47-48}
 import { Agentica, assertHttpController } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import OpenAI from "openai";
 import typia from "typia";
 
 const main = async (): Promise<void> => {
   const agent = new Agentica({
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
-      model: "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     },
     controllers: [
       assertHttpController({
@@ -66,10 +66,9 @@ const main = async (): Promise<void> => {
       },
     ],
     config: {
-      executor: {
-        select: AgenticaPgVectorSelector.boot(
-          'https://your-connector-hive-server.com'
-        ),
+      selector: {
+        type: "hybrid",
+        topK: 12,
       },
     },
   });
@@ -170,7 +169,7 @@ import { BbsArticleService } from "./services/BbsArticleService";
 
 const agent: Agentica = new Agentica({
   vendor: {
-    model: "gpt-4o-mini",
+    model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     api: new OpenAI({
       apiKey: "********",
     }),
@@ -222,24 +221,24 @@ await agent.conversate("I wanna buy MacBook Pro");
 </Tabs>
 
 ### Function Controller
-In `@agentica/core`, there is a concept of controller, a set LLM function calling schemas (application schema) and execute functions for actual function calling. And `@agentica/core` supports two protocol types of controllers; HTTP server and TypeScript class.
+In `@agentica/core`, there is a concept of controller, a set LLM function calling schemas (application schema) and execute functions for actual function calling. And `@agentica/core` supports three protocol types of controllers; HTTP Restful API, MCP (Model Context Protocol), and TypeScript class.
 
 When you're using HTTP server controller, create LLM application schema from `assertHttpController()` or `validateHttpController()` function. These functions will validate whether the target Swagger/OpenAPI document is correct or not. And then, configure connection information to the HTTP server with destination URL and headers. 
 
 Otherwise you want to serve the function calling from a TypeScript class, create LLM application schema from `typia.llm.application<Class>()` function. And provide the class instance for the actual function calling.
 
-For reference, `IAgenticaController.name` must be unique, because it is used to identify the controller in the agent. Also, if number of your controller functions are too many, it would better to configure `executor.selector` as vector selector of plugin. If you don't do it, too much LLM token costs would be consumed.
+For reference, `IAgenticaController.name` must be unique, because it is used to identify the controller in the agent. Also, if your controller catalog is large, configure [`config.selector`](/docs/core/selector) as `auto` or `hybrid` to reduce selection token pressure before the caller phase.
 
 ```typescript filename="src/main.ts" showLineNumbers {11-47}
 import { Agentica, assertHttpController } from "@agentica/core";
-import { AgenticaPgVectorSelector } from "@agentica/pg-vector-selector";
+import OpenAI from "openai";
 import typia from "typia";
 
 const main = async (): Promise<void> => {
   const agent = new Agentica({
     vendor: {
       api: new OpenAI({ apiKey: "*****" }),
-      model: "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     },
     controllers: [
       assertHttpController({
@@ -277,10 +276,9 @@ const main = async (): Promise<void> => {
       },
     ],
     config: {
-      executor: {
-        select: AgenticaPgVectorSelector.boot(
-          'https://your-connector-hive-server.com'
-        ),
+      selector: {
+        type: "hybrid",
+        topK: 12,
       },
     },
   });
@@ -330,7 +328,7 @@ When you call `Agentica.conversate()` function, the agent will start the [#Multi
 
 And you can change some of internal agent's behavior by configuring the `IAgenticaExecutor` property. For example, if you assign `null` value to the `IAgenticaExecutor.initialize`, the agent will skip the initialize process and directly go to the select process.
 
-Otherwise you configure `IAgenticaExecutor.select` to another function like [PG Vector Selector](/docs/plugins/pg-vector-selector), the agent will select the functions to call by the PG Vector Selector's strategy. And this way is recommend when your number of controller functions are too many. If you don't do that with a lot of controller functions, your agent will consume a lot of LLM token costs.
+If you only want to change function selection, configure [`IAgenticaConfig.selector`](/docs/core/selector). Use `auto` or `hybrid` for large catalogs so Agentica can narrow candidates before the final caller phase. Use `IAgenticaExecutor.select` only when you need to replace the selection step itself.
 
 ### System Prompts
 You can change system prompts by configuring `IAgenticaSystemPrompt` properties.
@@ -356,7 +354,7 @@ Here is the list of events emitted by the `Agentica` class.
 
 And you can listen the events by calling `Agentica.on()` function, and erase the event listener by calling `Agentica.off()` function. And the events are emitted only when the `Agentica.conversate()` function is on the process. 
 
-Even though the event listening is not essential, I recommend you to at least listen `text` and `describe` type events, because these events are the most import events containing the conversation contents between the user and the AI agent.
+Even though event listening is not essential, listen to `assistantMessage` and `describe` for streaming user-facing text, and listen to `execute` when your UI needs function-call results.
 
 
 

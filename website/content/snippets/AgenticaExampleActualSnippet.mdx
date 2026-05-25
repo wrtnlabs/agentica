@@ -1,12 +1,13 @@
 ```typescript showLineNumbers
 import { Agentica, assertHttpController } from "@agentica/core";
+import OpenAI from "openai";
 import typia from "typia";
 
 const main = async (): Promise<void> => {
   const agent = new Agentica({
     vendor: {
-      api: new OpenAI({ apiKey: "*****" }),
-      model: "gpt-4o-mini",
+      api: new OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
+      model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
     },
     controllers: [
       assertHttpController({
@@ -43,6 +44,12 @@ const main = async (): Promise<void> => {
         execute: new ShoppingSearchRag(),
       },
     ],
+    config: {
+      selector: {
+        type: "hybrid",
+        topK: 12,
+      },
+    },
   });
   await agent.conversate("I wanna buy MacBook Pro");
 };

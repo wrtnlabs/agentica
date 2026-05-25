@@ -3,5 +3,21 @@ title: Agentica > Guide Documents > Plugin Modules > OpenAI Vector Store
 ---
 import { YoutubeRenderer } from "../../../components/YoutubeRenderer";
 
+## OpenAI Vector Store
+
+OpenAI vector stores are a hosted retrieval feature in the OpenAI platform. They are useful when you want OpenAI-hosted file or tool retrieval, but they are separate from Agentica's current core selector implementation.
+
+For Agentica function selection today:
+
+- Use [`config.selector`](/docs/core/selector) for built-in local, hybrid, or automatic operation selection.
+- Use [`@agentica/vector-selector`](/docs/plugins/vector-selector) for Agentica-owned semantic retrieval with SQLite, PostgreSQL, or a custom strategy.
+- Use OpenAI vector stores directly in your own application code when your workflow depends on OpenAI-hosted retrieval state.
+
+OpenAI's official references:
+
+- [Tool Search](https://developers.openai.com/api/docs/guides/tools-tool-search)
+- [Function Calling](https://developers.openai.com/api/docs/guides/function-calling)
+- [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
+
 <br/>
 <YoutubeRenderer src="https://www.youtube.com/embed/zEtMXzHwzX0" />
