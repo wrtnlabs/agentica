@@ -26,6 +26,7 @@
 | `website` | 완료 | Next/Nextra build, route/meta, TypeDoc/playground prebuild, setup/core/event/history/websocket/plugin docs, public articles redirect를 `04-agentica/website-docs-current.md`에 반영 |
 | `articles`, `docs` | 완료 | root articles positioning, `docs/AgenticaFN.png` 자료 범위, function-calling-first narrative와 문서 영향도를 `04-agentica/website-docs-current.md`에 반영 |
 | `packages/core` local selector 구현 | 완료 | `selector/AgenticaOperationIndex.ts`, `IAgenticaSelectorConfig`, `orchestrate/select.ts` opt-in local/hybrid/auto 경로와 테스트를 `04-agentica/local-selector-implementation.md`에 반영 |
+| `packages/core` context projection/result budget 구현 | 완료 | `IAgenticaContextConfig`, `decodeHistories`, Agentica orchestration 연결과 테스트를 `04-agentica/context-projection-implementation.md`에 반영 |
 
 ## AutoBe 참고 구현
 

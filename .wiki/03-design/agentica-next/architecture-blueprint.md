@@ -157,6 +157,8 @@ interface AgenticaSelector {
 - result/segment/task refs를 model-facing context에 필요한 만큼만 재주입
 - token/result budget과 output reserve 적용
 
+상태: 2026-05-25에 1차 구현을 시작했다. 이름은 아직 독립 class가 아니라 `factory/histories.ts`의 `decodeHistories()`이며, `IAgenticaConfig.context.resultBudget`으로 큰 execute result의 preview/reference projection을 opt-in 적용한다. Public history와 `MicroAgentica` path는 변경하지 않았다.
+
 ### AgenticaResultStore
 
 큰 operation result를 public history와 model-facing context에 그대로 반복 주입하지 않기 위한 runtime store다.

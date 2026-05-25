@@ -67,6 +67,7 @@
 - [Agentica Core Utils/Request/Streaming 구조](./04-agentica/core-utils-request-streaming.md)
 - [Vector Selector 현재 구조](./04-agentica/vector-selector-current.md)
 - [Local Selector 구현 현황](./04-agentica/local-selector-implementation.md)
+- [Context Projection 구현 현황](./04-agentica/context-projection-implementation.md)
 - [Agentica Benchmark/Test 현재 구조](./04-agentica/benchmark-test-current.md)
 - [Agentica Test CLI/Examples 현재 구조](./04-agentica/test-cli-examples-current.md)
 - [Agentica CLI/Create Scaffold 현재 구조](./04-agentica/cli-scaffold-current.md)
@@ -84,3 +85,4 @@
 - [컨텍스트 압축 설계](./03-design/agentica-next/context-compaction.md)
 - [2026-05-22 작업 로그](./99-worklog/2026-05-22.md)
 - [2026-05-24 작업 로그](./99-worklog/2026-05-24.md)
+- [2026-05-25 작업 로그](./99-worklog/2026-05-25.md)

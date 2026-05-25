@@ -10,7 +10,7 @@ import type { AgenticaAssistantMessageEvent } from "../events/AgenticaAssistantM
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createAssistantMessageEvent } from "../factory/events";
-import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { decodeHistories, decodeUserMessageContent } from "../factory/histories";
 import { reduceStreamingWithDispatch } from "../utils/ChatGptCompletionStreamingUtil";
 import { toAsyncGenerator } from "../utils/StreamUtil";
 
@@ -25,7 +25,9 @@ export async function initialize(ctx: AgenticaContext): Promise<void> {
   const result = await ctx.request("initialize", {
     messages: [
       // PREVIOUS HISTORIES
-      ...ctx.histories.map(decodeHistory).flat(),
+      ...decodeHistories(ctx.histories, {
+        resultBudget: ctx.config?.context?.resultBudget,
+      }),
       // USER INPUT
       {
         role: "user",

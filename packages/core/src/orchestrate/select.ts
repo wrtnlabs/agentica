@@ -19,7 +19,7 @@ import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
 import { createAssistantMessageEvent } from "../factory/events";
-import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { decodeHistories, decodeUserMessageContent } from "../factory/histories";
 import { AgenticaOperationIndex } from "../selector/AgenticaOperationIndex";
 import { __get_retry } from "../utils/__retry";
 import { AssistantMessageEmptyError, AssistantMessageEmptyWithReasoningError } from "../utils/AssistantMessageEmptyError";
@@ -254,7 +254,9 @@ async function step(
           ),
         },
         // PREVIOUS HISTORIES
-        ...ctx.histories.map(decodeHistory).flat(),
+        ...decodeHistories(ctx.histories, {
+          resultBudget: ctx.config?.context?.resultBudget,
+        }),
         // USER INPUT
         {
           role: "user",

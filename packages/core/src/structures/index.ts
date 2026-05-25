@@ -1,4 +1,5 @@
 export * from "./IAgenticaConfig";
+export * from "./IAgenticaContextConfig";
 export * from "./IAgenticaController";
 export * from "./IAgenticaExecutor";
 export * from "./IAgenticaProps";

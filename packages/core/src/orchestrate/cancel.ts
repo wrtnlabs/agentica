@@ -16,7 +16,7 @@ import type { AgenticaEvent } from "../events/AgenticaEvent";
 import { AgenticaConstant } from "../constants/AgenticaConstant";
 import { AgenticaDefaultPrompt } from "../constants/AgenticaDefaultPrompt";
 import { AgenticaSystemPrompt } from "../constants/AgenticaSystemPrompt";
-import { decodeHistory, decodeUserMessageContent } from "../factory/histories";
+import { decodeHistories, decodeUserMessageContent } from "../factory/histories";
 import { ChatGptAssistantMessageUtil } from "../utils/ChatGptAssistantMessageUtil";
 import { ChatGptCompletionMessageUtil } from "../utils/ChatGptCompletionMessageUtil";
 import { StreamUtil } from "../utils/StreamUtil";
@@ -138,7 +138,9 @@ async function step(
         ),
       },
       // PREVIOUS HISTORIES
-      ...ctx.histories.map(decodeHistory).flat(),
+      ...decodeHistories(ctx.histories, {
+        resultBudget: ctx.config?.context?.resultBudget,
+      }),
       // USER INPUT
       {
         role: "user",
